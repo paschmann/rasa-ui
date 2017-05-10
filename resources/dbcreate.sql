@@ -296,3 +296,11 @@ FROM entities
 RIGHT JOIN parameters ON parameters.entity_id = entities.entity_id
 RIGHT JOIN expressions ON expressions.expression_id = parameters.expression_id
 JOIN intents ON intents.intent_id = expressions.intent_id;
+
+CREATE OR REPLACE VIEW public.intent_usage_by_day AS
+ SELECT count(*) AS count,
+    to_char(nlu_log."timestamp", 'MM/DD'::text) AS to_char
+   FROM nlu_log
+  GROUP BY (to_char(nlu_log."timestamp", 'MM/DD'::text))
+  ORDER BY (to_char(nlu_log."timestamp", 'MM/DD'::text))
+ LIMIT 30;
