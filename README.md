@@ -18,10 +18,12 @@ Rasa UI is a web application built on top of, and for, Rasa NLU. Rasa UI provide
 
 ## Getting Started
 
-Rasa UI can run directly on your Rasa NLU instance, or on a separate machine.
+Rasa UI can run directly on your Rasa NLU instance, or on a separate machine. Technically Rasa NLU is not required, you could just use the UI for managing training data.
 
 
 ### Prerequisites
+
+[Rasa NLU](https://github.com/golastmile/rasa_nlu) - Version 8.2.?+
 
 [PostgreSQL](https://www.postgresql.org/) - Used for storing training data (entities, intents, synonyms, etc.)
 
