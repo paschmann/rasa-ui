@@ -1,0 +1,93 @@
+<ol class="breadcrumb" breadcrumb="">
+  <li class="breadcrumb-item ng-scope active"><span>Agent > {{ agent.agent_name }} > Intent > {{ intent.intent_name }}</span></li>
+  <!-- Breadcrumb Menu-->
+  <li class="breadcrumb-menu">
+    <div class="btn-group" role="group">
+      <a class="btn btn-secondary" ng-click="deleteIntent()" confirm-click-title="Delete Intent" confirm-click="Are you sure? This will delete the intent and all its expressions, and their resolved entities."><i class="icon-trash"></i> &nbsp;Delete Intent</a>
+    </div>
+  </li>
+</ol>
+<div class="container-fluid">
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12 col-lg-12">
+        <form>
+          <div class="card">
+            <div class="card-header">
+              <strong>Add Expression</strong>
+            </div>
+            <div class="card-block">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="name">User Says ...</label>
+                    <input type="text" ng-model="expression_text" class="form-control" id="text" placeholder="Enter the expression">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <button type="submit" class="btn btn-sm btn-primary" ng-click="addExpression()"><i class="fa fa-dot-circle-o"></i> Save</button>
+            </div>
+          </form>
+
+          <form>
+            <div class="card-block">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="list-group" ng-repeat="expression in expressionList track by expression.expression_id">
+                    <div class="list-group-item">
+                      <span id="expression_{{expression.expression_id}}">{{ expression.expression_text }}</span>
+                      <span class="pull-right">
+                        <span class="badge badge-default badge-pill mr-2" ng-hide="parameterFilterList.length == 0">{{ parameterFilterList.length }}</span>
+                        <button class="btn btn-secondary" ng-click="runExpression(expression.expression_text)">
+                          <span class="icon-energy"></span>
+                        </button>
+                        <button class="btn btn-secondary" ng-click="addParameter(expression.expression_id)">
+                          <span class="icon-link"></span>
+                        </button>
+                        <button class="btn btn-secondary mr-2" data-toggle="collapse" ng-click="toggleArrow(expression.expression_id)" data-target="#table_expression_{{expression.expression_id}}" aria-expanded="false" aria-controls="table_expression_{{expression.expression_id}}">
+                          <span class="icon-arrow-down" id="icon_expression_{{expression.expression_id}}"></span>
+                        </button>
+                        <button class="btn btn btn-outline-danger" confirm-click-title="Delete Expression" confirm-click="Are you sure? This will delete the expression and all its resolved entities." ng-click="deleteExpression(expression.expression_id)">
+                          <span class="icon-trash"></span>
+                        </button>
+                      </span>
+                    </div>
+                    <div class="collapse" id="table_expression_{{expression.expression_id}}">
+                      <table class="table table-bordered" ng-hide="parameterFilterList == null || parameterFilterList.length == 0">
+                        <thead>
+                          <tr>
+                            <th>Entity</th>
+                            <th>Resolved Value</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr ng-repeat="parameter in parameterFilterList = (parameterList | orderBy: parameter_id  | filter: { expression_id: expression.expression_id })">
+                            <td class="col-md-3">
+                              <select ng-options="entity.entity_id as entity.entity_name for entity in entityList" ng-change="updateParameterEntity(parameter.parameter_id, parameter.entity_id)" ng-model="parameter.entity_id" class="form-control">
+                                <option value="">Please select one</option>
+                              </select>
+                            </td>
+                            <td class="td-middle">{{ parameter.parameter_value }}</td>
+                            <td class="col-md-1">
+                              <button class="btn btn btn-outline-danger" ng-click="deleteParameter(parameter.parameter_id)">
+                                <span class="icon-trash"></span>
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

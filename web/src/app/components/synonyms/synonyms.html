@@ -1,0 +1,56 @@
+<ol class="breadcrumb" breadcrumb="">
+        <li class="breadcrumb-item ng-scope active"><span>Entity > {{entity.entity_name }}</span></li>
+
+        <li class="breadcrumb-menu">
+          <div class="btn-group" role="group">
+            <a class="btn btn-secondary" ng-click="deleteEntity()" confirm-click-title="Delete Entity" confirm-click="Are you sure? This will delete the entity and all of its synonyms."><i class="icon-trash"></i> &nbsp;Delete Entity</a>
+          </div>
+        </li>
+</ol>
+<div class="container-fluid">
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-sm-12 col-lg-12">
+              <div class="card">
+                  <div class="card-header">
+                      <strong>Synonyms</strong>
+                  </div>
+                  <div class="card-block">
+                      <div class="row">
+                          <div class="col-sm-12">
+                              <div class="form-group">
+                                  <label for="name">Reference value ...</label>
+                                  <input id="synonym_reference" type="text" ng-model="formData.synonym_reference" class="form-control" placeholder="Any synonyms matched, will resolve to this value">
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+              <div class="card-footer">
+                <button type="submit" class="btn btn-sm btn-primary" ng-click="saveNewSynonym()"><i class="fa fa-dot-circle-o"></i> Save</button>
+              </div>
+
+              <div class="card-block" ng-show="synonymsList.length > 0">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr ng-repeat="synonym in synonymsList | orderBy:'synonym_id':true">
+                                <td class="col-md-2">
+                                  {{ synonym.synonym_reference }}
+                                </td>
+                                <td>
+                                  <tags-input replace-spaces-with-dashes="false" on-tag-removed="synonymRemoved($tag, synonym.synonym_id)" on-tag-added="synonymAdded($tag, synonym.synonym_id)" add-on-comma="true" ng-init="getEntitySynonymVariants(synonym.synonym_id)" id="synonym_values_{{synonym.synonym_id}}" ng-model="tags[synonym.synonym_id]" placeholder="Enter synonyms comma seperated ..."></tags-input>
+                                  <!-- <input type="text" ng-blur="saveSynonyms(synonym.synonym_id)" class="form-control" > -->
+                                </td>
+                                <td class="col-md-1" align="center">
+                                  <button class="btn btn btn-outline-danger" ng-click="deleteSynonym(synonym.synonym_id)">
+                                    <span class="icon-trash"></span>
+                                  </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  </div>
+          </div>
+        </div>
+      </div>
+</div>

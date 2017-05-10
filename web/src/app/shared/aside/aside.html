@@ -1,0 +1,34 @@
+<aside class="aside-menu" ng-controller="AsideController">
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <form>
+      <div class="tab-pane active" id="dialog" role="tabpanel">
+        <div class="callout m-0 py-2 text-muted text-center bg-faded text-uppercase">
+          <small><b>Input</b></small>
+        </div>
+        <div class="callout m-0 py-3">
+          <div class="input-group" ng-show="modelname !== 'Default'">
+            <select ng-options="model.name as model.name for model in $root.config.server_model_dirs_array" ng-model="modelname" class="form-control"></select>
+          </div>
+          <hr class="m-x-1 m-y-0">
+          <div class="input-group">
+            <input type="test_text" ng-model="test_text" class="form-control" id="test_text" placeholder="Try it now ...">
+            <span class="input-group-btn">
+              <button class="btn btn btn-outline-secondary" ng-click="executeTestRequest()">Go</button>
+            </span>
+          </div>
+        </div>
+        <div class="callout m-0 py-2 text-muted text-center bg-faded text-uppercase">
+          <small><b>Output</b>
+          </small>
+        </div>
+        <div class="callout m-0 py-3">
+          <json-formatter json="test_text_response" open="3"></json-formatter>
+        </div>
+        <hr class="mx-3 my-0">
+      </form>
+    </div>
+
+  </div>
+</aside>

@@ -1,0 +1,22 @@
+<ol class="breadcrumb" breadcrumb="">
+        <li class="breadcrumb-item ng-scope active"><span>Agent > {{ agent.agent_name }} > Intents</span></li>
+        <!-- Breadcrumb Menu-->
+        <li class="breadcrumb-menu">
+            <div class="btn-group" role="group">
+                <a class="btn btn-secondary" href="#!/agent/{{agent.agent_id}}/intent/add"><i class="icon-plus"></i> &nbsp;Add Intent</a>
+                <a class="btn btn-secondary" ng-click="deleteAgent()"><i class="icon-trash" confirm-click-title="Delete Agent" confirm-click="Are you sure? This will delete the agent, all its intents, expressions, and resolved entities."></i> &nbsp;Delete Agent</a>
+            </div>
+        </li>
+</ol>
+<div class="container-fluid">
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-sm-12 col-lg-12">
+              <div class="list-group">
+                <a href="#!/agent/{{intent.agent_id}}/intent/{{ intent.intent_id }}" class="list-group-item" ng-repeat="intent in intentList track by intent.intent_id">{{ intent.intent_name }}</a>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>

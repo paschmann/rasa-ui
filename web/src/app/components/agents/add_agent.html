@@ -1,0 +1,32 @@
+<ol class="breadcrumb" breadcrumb="">
+        <li class="breadcrumb-item ng-scope active"><span>Agents > Add Agent</span></li>
+</ol>
+<div class="container-fluid">
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-sm-12 col-lg-12">
+                <form ng-submit="addAgent()">
+                            <div class="card">
+                                <div class="card-header">
+                                    <strong>New Agent</strong>
+                                </div>
+                                <div class="card-block">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label for="name">Name</label>
+                                                <input type="text" ng-model="formData.agent_name" class="form-control" id="name" placeholder="Enter the agent name">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            <div class="card-footer">
+                                    <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i> Save</button>
+                            </div>
+                          </div>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>

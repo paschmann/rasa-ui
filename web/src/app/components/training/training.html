@@ -1,0 +1,63 @@
+<ol class="breadcrumb" breadcrumb="">
+        <li class="breadcrumb-item ng-scope active"><span>Training</span></li>
+</ol>
+<div class="container-fluid">
+    <div class="animated fadeIn">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="alert alert-info" role="alert" ng-show="trainings_under_this_process !== 0">
+              <strong>Training</strong> is currently running.
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <strong>Create Model</strong>
+                </div>
+                <div class="card-block">
+                    <div class="form-group row">
+                      <div class="col-sm-1">
+                        <label class="col-md-1 form-control-label" for="select">Agent</label>
+                      </div>
+                      <div class="col-sm-3">
+                        <select id="agent_name" ng-change="getData(agent.agent_id)" ng-options="agent.agent_id as agent.agent_name for agent in agentList" ng-model="agent.agent_id" class="form-control">
+                          <option value="">Please select one</option>
+                        </select>
+                      </div>
+                      <div class="col-sm-3">
+                            <button type="button" class="btn" ng-class="(exportdata !== undefined) ? 'btn-success' : 'btn-secondary'" ng-click="train()"><i class="fa fa-magic"></i>&nbsp; Start Training</button>
+                      </div>
+                    </div>
+                </div>
+                <div class="card-block" ng-show="exportdata !== undefined">
+                  <div class="col-sm-12">
+                    <div class="alert alert-danger" role="alert" ng-show="generateError !== ''">
+                      <strong>Error</strong> seems some data is missing. ({{generateError}})
+                    </div>
+                    <json-formatter json="exportdata" open="4"></json-formatter>
+                  </div>
+                </div>
+                <div class="card-header">
+                    <strong>Available Models</strong>
+                </div>
+                <div class="card-block">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Create Date/Time</th>
+                        <th>Path</th>
+                        <th>Loaded</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="model in available_models track by model.folder | orderBy: datetime : true">
+                        <td>{{ model.date }}</td>
+                        <td>{{ model.folder }}</td>
+                        <td><span class="tag tag-success" ng-show="model.available !== ''">{{model.available}}</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

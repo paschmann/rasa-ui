@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="assets/img/favicon.png">
+
+  <title>Rasa UI</title>
+
+  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-resource.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+
+  <!-- 3rd Party libs -->
+  <script src="assets/libs/Chart.js"></script>
+  <script src="assets/libs/angular-chart.js"></script>
+  <script src="assets/libs/ng-tags-input.min.js"></script>
+  <script src="assets/libs/json-formatter.js"></script>
+  <script src="assets/libs/xdate.min.js"></script>
+
+  <!-- core app -->
+  <script src="app/app.js"></script>
+  <script src="app/router.js"></script>
+  <script src="app/directives.js"></script>
+
+  <!-- general js scripts -->
+  <script src="app/utils.js"></script>
+
+  <!-- Components/pages -->
+  <script src="app/components/dashboard/dashboard.js"></script>
+  <script src="app/components/dashboard/widgets.js"></script>
+  <script src="app/components/agents/agents.js"></script>
+  <script src="app/components/agents/edit_agent.js"></script>
+  <script src="app/components/agents/add_agent.js"></script>
+  <script src="app/components/intents/add_intent.js"></script>
+  <script src="app/components/intents/edit_intent.js"></script>
+  <script src="app/components/entities/entities.js"></script>
+  <script src="app/components/entities/add_entity.js"></script>
+  <script src="app/components/synonyms/synonyms.js"></script>
+  <script src="app/components/rasaconfig/rasa_config.js"></script>
+  <script src="app/components/logs/logs.js"></script>
+  <script src="app/components/training/training.js"></script>
+  <script src="app/components/settings/settings.js"></script>
+
+  <!-- Middleware Interceptor/Layer -->
+  <script src="app/components/middleware/middleware.js"></script>
+
+  <!-- Shared components -->
+  <script src="app/shared/sidebar/sidebar.js"></script>
+  <script src="app/shared/navbar/navbar.js"></script>
+  <script src="app/shared/aside/aside.js"></script>
+
+  <!-- Services -->
+  <script src="app/services/api.js"></script>
+  <script src="app/services/rasa_api.js"></script>
+  <script src="app/services/log.js"></script>
+
+  <!-- Styles -->
+  <link href="assets/css/vendor/core-ui.css" rel="stylesheet">
+  <link href="assets/css/vendor/json-formatter.css" rel="stylesheet">
+  <link href="assets/css/vendor/font-awesome.min.css" rel="stylesheet">
+  <link href="assets/css/vendor/simple-line-icons.css" rel="stylesheet">
+  <link href="assets/css/vendor/ng-tags-input.min.css"  rel="stylesheet">
+  <link href="assets/css/vendor/ng-tags-input.bootstrap.min.css" rel="stylesheet">
+
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+
+<body class="app header-fixed sidebar-fixed" ng-class="$route.current.activePage == 'agents' ? 'aside-menu-fixed' : 'aside-menu-hidden'" ng-controller="app">
+  <div ng-include="'/app/shared/navbar/navbar.html'"></div>
+
+  <div class="app-body">
+    <div ng-include="'/app/shared/sidebar/sidebar.html'"></div>
+
+    <!-- Main content -->
+    <main class="main">
+      <span ng-view></span>
+    </main>
+
+    <div ng-include="'/app/shared/aside/aside.html'"></div>
+  </div>
+
+  <div class="modal fade" id="modal_confirm">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modal_title"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="modal_body"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="modal_save_btn">OK</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="assets/libs/tether.min.js"></script>
+  <script src="assets/libs/bootstrap.min.js"></script>
+
+</body>
+</html>

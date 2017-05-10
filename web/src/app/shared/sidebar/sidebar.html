@@ -1,0 +1,37 @@
+<div class="sidebar" ng-controller="SideBarController">
+    <nav class="sidebar-nav">
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" ng-class="{active: $route.current.activePage == 'dashboard'}" href="#!/dashboard"><i class="icon-speedometer"></i> Dashboard </a>
+            </li>
+
+            <li class="nav-title">
+                Interface
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" ng-class="{active: $route.current.activePage == 'agents'}" href="#!/agents"><i class="icon-people"></i> Agents</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" ng-class="{active: $route.current.activePage == 'entities'}" href="#!/entities"><i class="icon-organization"></i> Entities</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" ng-class="{active: $route.current.activePage == 'training'}" href="#!/training"><i class="icon-graduation"></i> Training</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" ng-class="{active: $route.current.activePage == 'settings'}" href="#!/settings"><i class="icon-settings"></i> Settings</a>
+            </li>
+
+            <li class="divider"></li>
+
+            <li class="nav-title">
+                Rasa Components
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" ng-class="{active: $route.current.activePage == 'logs'}" href="#!/logs"><i class="icon-list"></i> Logs </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" ng-class="{active: $route.current.activePage == 'config'}" href="#!/rasaconfig"><i class="icon-chemistry"></i> Configuration</a>
+            </li>
+        </ul>
+    </nav>
+</div>

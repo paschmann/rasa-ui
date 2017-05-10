@@ -1,0 +1,14 @@
+<header class="app-header navbar" ng-controller="NavBarController">
+  <a class="navbar-brand" href="#"></a>
+  <ul class="nav navbar-nav ml-auto">
+    <li class="nav-item  d-md-down-none" ng-show="config.isonline == 1">
+      <i class="fa fa-server"></i>
+    </li>
+    <li class="nav-item  d-md-down-none" ng-show="config.isonline == 0">
+      <i class="fa fa-server btn-danger"></i>
+    </li>
+    <li class="nav-item d-md-down-none">
+      <a class="nav-link navbar-toggler aside-menu-toggler" ng-click="toggleAside()">☰</a>
+    </li>
+  </ul>
+</header>

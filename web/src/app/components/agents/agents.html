@@ -1,0 +1,20 @@
+<ol class="breadcrumb" breadcrumb="">
+        <li class="breadcrumb-item ng-scope active"><span>Agents</span></li>
+        <!-- Breadcrumb Menu-->
+        <li class="breadcrumb-menu">
+            <div class="btn-group" role="group">
+                <a class="btn btn-secondary" href="#!/agent/add"><i class="icon-plus"></i> &nbsp;Add Agent</a>
+            </div>
+        </li>
+</ol>
+<div class="container-fluid">
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-sm-12 col-lg-12">
+              <div class="list-group">
+                <a ng-href="#!/agent/{{agent.agent_id}}" class="list-group-item" ng-repeat="agent in agentList track by agent.agent_id">{{ agent.agent_name }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

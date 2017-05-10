@@ -1,0 +1,27 @@
+{
+  "name": "RasaUI",
+  "version": "0.0.1",
+  "description": "Rasa UI is a web application built on top of, and for, Rasa NLU.",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "http-proxy-middleware": "^0.17.4",
+    "request": "^2.81.0"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.16.0",
+    "gulp": "^3.9.1"
+  },
+  "config": {
+    "rasaserver": "http://10.211.55.3:5000",
+    "postgrestserver": "http://10.211.55.3:4000"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/server.js"
+  },
+  "author": "Paul Aschmann",
+  "url": "http://",
+  "copyright": "Copyright 2017",
+  "license": "http://"
+}

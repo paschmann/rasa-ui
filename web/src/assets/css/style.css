@@ -1,0 +1,49 @@
+.app-header.navbar .navbar-brand {
+  background-image: url("../img/logo.png");
+}
+
+.aside-menu {
+    width: 350px;
+}
+
+.aside-menu-hidden .aside-menu {
+    margin-right: -350px;
+}
+
+.aside-menu-fixed .main, .aside-menu-fixed .app-footer {
+    margin-right: 350px;
+}
+
+.p-a-1 {
+    padding: 1rem!important;
+}
+
+.m-b-0, .m-y-0 {
+    margin-bottom: 0!important;
+}
+
+.m-t-h, .m-y-h {
+    margin-top: .5rem!important;
+}
+
+.td-middle {
+  vertical-align: middle !important;
+}
+
+.tag-success {
+    background-color: #4dbd74;
+}
+
+.tag {
+    display: inline-block;
+    padding: .25em .4em;
+    font-size: 75%;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    vertical-align: baseline;
+}
+
+tags-input .tags .tag-item .remove-button {
+    color: #fff;
+}
