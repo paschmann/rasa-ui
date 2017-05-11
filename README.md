@@ -40,10 +40,11 @@ Clone/download the Rasa UI repository
 
 ```
 git clone https://github.com/paschmann/rasaui.git
+
+npm install
 ```
 
-Update your package.json file to include the IP Addresses of your postgrest and rasa servers.
-Update your app.js file to include the IP Addresses of your local middleware server and postgrest server
+Please see the [wiki](https://github.com/paschmann/rasa-ui/wiki/Rasa-UI-Install-Guide) for more detailed instructions.
 
 ## Running
 
@@ -52,6 +53,9 @@ Run npm start from the server folder
 ```
 npm start
 ```
+
+- Update your package.json file to include the IP Addresses of your postgrest and rasa servers. 
+- Update your web/src/app.js file to include the IP Addresses of your local middleware server and postgrest server
 
 Your web application should be available on http://localhost:5001
 
