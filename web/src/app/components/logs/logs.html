@@ -45,7 +45,7 @@
                           </thead>
                           <tbody>
                               <tr ng-repeat="entry in logData track by $index">
-                                  <td>{{ entry.timestamp }}</td>
+                                  <td ng-bind="entry.timestamp | date:'MM/dd/yyyy HH:mm:ss'"></td>
                                   <td>{{ entry.ip_address }}</td>
                                   <td>{{ entry.event_type }}</td>
                                   <td>{{ entry.event_data }}</td>

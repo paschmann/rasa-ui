@@ -11,7 +11,7 @@ function LogsController($scope, $http, $sce, NLU_log) {
     } else {
       query = 'event_type=neq.parse&event_type=neq.train'
     }
-    query += '&limit=100'
+    query += '&limit=100&order=timestamp.desc'
 
     NLU_log.query({query: query}, function(data) {
         $scope.logData = data;

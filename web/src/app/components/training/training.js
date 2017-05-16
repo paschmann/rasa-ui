@@ -20,6 +20,8 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
 
   $scope.train = function() {
     $http.post(rasa_api_endpoint + "/train?model=production", JSON.stringify(exportData));
+    //Minimize training data
+
   }
 
   $scope.getData = function(agent_id) {
@@ -158,22 +160,28 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
   }
 
   function getRasaStatus() {
-    Rasa_Status.get(function(data) {
-      if (data !== undefined || data.available_models !== undefined) {
-        $scope.trainings_under_this_process = data.trainings_under_this_process;
-        var model_data = [];
-        for (var i = 0; i <= data.available_models.length -1; i++) {
-          var available = "";
-          var xdate = parseRasaModelFolderDate(data.available_models[i]);
-          for (var z = 0; z <= $rootScope.config.server_model_dirs_array.length - 1; z++) {
-              if ($rootScope.config.server_model_dirs_array[z].folder === data.available_models[i]) {
-                available = $rootScope.config.server_model_dirs_array[z].name;
-              }
+    Rasa_Status.get(function(statusdata) {
+      Rasa_Config.get(function(configdata) {
+        $rootScope.config = configdata.toJSON();
+        $rootScope.config.isonline = 1;
+        $rootScope.config.server_model_dirs_array = getLoadedModels($rootScope.config.server_model_dirs);
+        $scope.modelname = $rootScope.config.server_model_dirs_array[0].name;
+        if (statusdata !== undefined || statusdata.available_models !== undefined) {
+          $scope.trainings_under_this_process = statusdata.trainings_under_this_process;
+          var model_data = [];
+          for (var i = 0; i <= statusdata.available_models.length -1; i++) {
+            var available = "";
+            var xdate = parseRasaModelFolderDate(statusdata.available_models[i]);
+            for (var z = 0; z <= $rootScope.config.server_model_dirs_array.length - 1; z++) {
+                if ($rootScope.config.server_model_dirs_array[z].folder === statusdata.available_models[i]) {
+                  available = $rootScope.config.server_model_dirs_array[z].name;
+                }
+            }
+            model_data.push({xdate: xdate, date: xdate.toString("MM/dd/yy h(:mm)TT"), folder: statusdata.available_models[i], available: available})
           }
-          model_data.push({xdate: xdate, date: xdate.toString("MM/dd/yy h(:mm)TT"), folder: data.available_models[i], available: available})
+          $scope.available_models = sortArrayByDate(model_data, 'xdate');
         }
-        $scope.available_models = sortArrayByDate(model_data, 'xdate');
-      }
+      });
     });
   }
 }
