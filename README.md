@@ -54,10 +54,16 @@ Run npm start from the server folder
 npm start
 ```
 
-- Update your package.json file to include the IP Addresses of your postgrest and rasa servers. 
+- Update your package.json file to include the IP Addresses of your postgrest and rasa servers.
 - Update your web/src/app.js file to include the IP Addresses of your local middleware server and postgrest server
 
 Your web application should be available on http://localhost:5001
+
+## Logging
+
+Since Rasa UI can be used to log events/intent parsing/training etc. we would suggest changing your endpoints for your API calls to "pass through" the Rasa UI middleware layer. All API requests are simply forwarded, logged and then returned.
+
+e.g. Instead of calling: http://localhost:5000/parse?q=hello%20there rather call: http://localhost:5001/api/parse?q=hello%20there
 
 ## Contributing
 
