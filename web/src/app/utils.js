@@ -30,3 +30,8 @@ function getLoadedModels(models) {
   }
   return arrModels;
 }
+
+function pastelColors(){
+  var hue = Math.floor(Math.random() * 360);
+  return 'hsl(' + hue + ', 100%, 87.5%)';
+}

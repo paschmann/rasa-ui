@@ -38,7 +38,7 @@
                 <div class="col-sm-12">
                   <div class="list-group" ng-repeat="expression in expressionList track by expression.expression_id">
                     <div class="list-group-item">
-                      <span id="expression_{{expression.expression_id}}">{{ expression.expression_text }}</span>
+                      <span id="expression_{{expression.expression_id}}" ng-bind-html="expression.expression_text | trusted"></span>
                       <span class="pull-right">
                         <span class="badge badge-default badge-pill mr-2" ng-hide="parameterFilterList.length == 0">{{ parameterFilterList.length }}</span>
                         <button class="btn btn-secondary" ng-click="runExpression(expression.expression_text)">

@@ -37,14 +37,9 @@ function EditIntentController($rootScope, $scope, Agent, Intent, Expressions, Ex
     });
   };
 
-  function highlight (element, start, end) {
-    var str = element.innerHTML;
-    str = str.substr(0, start) +
-        '<span style="background-color: #d1d4d7">' +
-        str.substr(start, end - start + 1) +
-        '</span>' +
-        str.substr(end + 1);
-    element.innerHTML = str;
+  function highlight (str, word) {
+    str = str.replace(word, '<span style="padding: 3px; background-color: ' + pastelColors() + '">' + word + '</span>');
+    return str;
   }
 
   $scope.toggleArrow = function(expression_id) {
@@ -66,9 +61,17 @@ function EditIntentController($rootScope, $scope, Agent, Intent, Expressions, Ex
         $scope.parameterList = data;
         $scope.parameterFilterList = data;
         //Loop through each parameter and highlight the words it is for
-        for (var i = 0; i <= data.length - 1; i++) {
-          //$('#expression_' + data[i].expression_id)[0].innerHTML.replace(/data[i].parameter_value/,"<span style='background-color: " + grayLighter + ">" + data[i].parameter_value + "</span>");
-          //highlight($('#expression_' + data[i].expression_id)[0], data[i].parameter_start, data[i].parameter_end - 1);
+        for (var z = 0; z <= $scope.expressionList.length; z++) {
+          if ($scope.expressionList[z] !== undefined) {
+            var text = $scope.expressionList[z].expression_text;
+            for (var i = 0; i <= data.length - 1; i++) {
+              if ($scope.expressionList[z].expression_id === data[i].expression_id) {
+                //$('#expression_' + data[i].expression_id)[0].innerHTML.replace(/data[i].parameter_value/,"<span style='background-color: " + grayLighter + ">" + data[i].parameter_value + "</span>");
+                text = highlight(text, data[i].parameter_value);
+              }
+            }
+            $scope.expressionList[z].expression_text = text;
+          }
         }
       });
   }
