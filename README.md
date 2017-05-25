@@ -8,7 +8,7 @@ Rasa UI is a web application built on top of, and for, Rasa NLU. Rasa UI provide
 
 - Training data stored in DB
 - UI for managing training data
-- Initiate training from training data from UI
+- Initiate training from UI
 - Review Rasa configuration and component pipelines
 - Log requests for usage tracking, history, improvements
 - Usage dashboard
