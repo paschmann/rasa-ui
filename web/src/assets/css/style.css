@@ -14,6 +14,10 @@
     margin-right: 350px;
 }
 
+.app-header.navbar .nav-item .nav-link, .app-header.navbar .nav-item .dropdown-toggle {
+    cursor: pointer;
+}
+
 .p-a-1 {
     padding: 1rem!important;
 }
