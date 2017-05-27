@@ -1,6 +1,12 @@
 <div class="sidebar" ng-controller="SideBarController">
     <nav class="sidebar-nav">
         <ul class="nav">
+            <!--
+            <li class="nav-item">
+              <a class="nav-link" ng-class="{active: $route.current.activePage == 'dashboard'}" href="#!/dashboard"><i class="icon-speedometer"></i> Dashboard </a>
+              <select ng-options="model.name as model.name for model in $root.config.server_model_dirs_array" ng-model="modelname" class="nav-link"></select>
+            </li>
+          -->
             <li class="nav-item">
                 <a class="nav-link" ng-class="{active: $route.current.activePage == 'dashboard'}" href="#!/dashboard"><i class="icon-speedometer"></i> Dashboard </a>
             </li>

@@ -27,6 +27,8 @@ app.use('/api', function(req, res) {
               'Content-Type': 'application/json'
             });
             res.write(body);
+
+            // TODO: Check that the response includes the required fields, otherwise, return the incomplete flag? Maybe this should rather be in the backend
           } else {
             res.writeHead(404, {
               'Access-Control-Allow-Origin': '*',
@@ -69,11 +71,11 @@ app.use('/api', function(req, res) {
     }
 
     var path = url.parse(req.url).pathname.split('/').pop();
-    if (path == '/parse') {
-      logRequest(req, path, {model: 'unknown', intent: '', query: getParameterByName('q', request_url)});
-      // TODO: Check that the response includes the required fields, otherwise, return the incomplete flag
+    if (path == 'parse') {
+      var model = getParameterByName('model', request_url) == undefined ? getParameterByName('model', request_url) : "default";
+      logRequest(req, path, {model: model, intent: '', query: getParameterByName('q', request_url)});
     } else {
-      logRequest(req, path, {model: 'unknown', intent: '', query: getParameterByName('q', request_url)});
+      logRequest(req, path);
     }
   } catch (err) {
     console.log("Error: " + err);

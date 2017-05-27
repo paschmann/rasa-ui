@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "browser-sync": "^2.16.0",
+    "connect-livereload": "^0.6.0",
     "gulp": "^3.9.1"
   },
   "config": {
