@@ -2,7 +2,7 @@
 
 # Rasa UI
 
-Rasa UI is a web application built on top of, and for, Rasa NLU. Rasa UI provides a web application to quickly and easily be able to create agents, define intents and entities. It also provides some convenience features for Rasa NLU, like training your models, monitoring usage or viewing logs. Our goal is to replace API.ai with Rasa, so a lot of the terminology and usage concepts are similar.
+Rasa UI is a web application built on top of, and for, [Rasa NLU](https://github.com/RasaHQ/rasa_nlu). Rasa UI provides a web application to quickly and easily be able to create agents, define intents and entities. It also provides some convenience features for Rasa NLU, like training your models, monitoring usage or viewing logs. Our goal is to replace API.ai with Rasa, so a lot of the terminology and usage concepts are similar.
 
 ## Features
 
