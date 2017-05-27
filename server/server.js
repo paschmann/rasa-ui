@@ -72,7 +72,7 @@ app.use('/api', function(req, res) {
 
     var path = url.parse(req.url).pathname.split('/').pop();
     if (path == 'parse') {
-      var model = getParameterByName('model', request_url) == undefined ? getParameterByName('model', request_url) : "default";
+      var model = getParameterByName('model', request_url) !== undefined ? getParameterByName('model', request_url) : "default";
       logRequest(req, path, {model: model, intent: '', query: getParameterByName('q', request_url)});
     } else {
       logRequest(req, path);
