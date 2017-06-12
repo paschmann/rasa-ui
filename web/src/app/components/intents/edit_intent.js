@@ -70,7 +70,7 @@ function EditIntentController($rootScope, $scope, Agent, Intent, Expressions, Ex
                 text = highlight(text, data[i].parameter_value);
               }
             }
-            $scope.expressionList[z].expression_text = text;
+            $scope.expressionList[z].expression_highlighted_text = text;
           }
         }
       });
