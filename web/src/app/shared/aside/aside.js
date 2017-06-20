@@ -2,7 +2,7 @@ angular
 .module('app')
 .controller('AsideController', AsideController)
 
-function AsideController($scope, $rootScope, $interval, Rasa_Parse, Rasa_Config, Rasa_Version, Settings) {
+function AsideController($scope, $rootScope, $interval, Rasa_Parse, Rasa_Config, Rasa_Version, Settings, Rasa_Status) {
   console.log("aside");
   $scope.test_text = 'I want italian food in new york';
   $scope.test_text_response = {};
@@ -38,16 +38,20 @@ function AsideController($scope, $rootScope, $interval, Rasa_Parse, Rasa_Config,
 
   function getRasaConfig() {
     // Add a status param to config and set to 0 if server is offline
-    Rasa_Config.get().$promise.then(function(data) {
-      $rootScope.config = data.toJSON();
-      $rootScope.config.isonline = 1;
-      $rootScope.config.server_model_dirs_array = getLoadedModels($rootScope.config.server_model_dirs);
-      $scope.modelname = $rootScope.config.server_model_dirs_array[0].name;
-    }, function(error) {
-      // error handler
-      $rootScope.config.isonline = 0;
+    Rasa_Status.get(function(statusdata) {
+      Rasa_Config.get().$promise.then(function(data) {
+        $rootScope.config = data.toJSON();
+        $rootScope.config.isonline = 1;
+        $rootScope.config.server_model_dirs_array = getAvailableModels(statusdata.available_models);
+        $scope.modelname = $rootScope.config.server_model_dirs_array[0].name;
+      }, function(error) {
+        // error handler
+        $rootScope.config.isonline = 0;
+      });
     });
   }
+
+
 
   $scope.executeTestRequest = function() {
     var options = {};

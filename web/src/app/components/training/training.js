@@ -19,7 +19,10 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
   });
 
   $scope.train = function() {
-    $http.post(rasa_api_endpoint + "/train?model=production", JSON.stringify(exportData));
+    var agentname = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id).agent_name;
+    
+    var id = new XDate().toString('yyyyMMdd-HHmmss');
+    $http.post(rasa_api_endpoint + "/train?name=" + agentname + "_" + id, JSON.stringify(exportData));
     //Minimize training data
     $scope.exportdata = {};
   }
@@ -162,24 +165,35 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
   function getRasaStatus() {
     Rasa_Status.get(function(statusdata) {
       Rasa_Config.get(function(configdata) {
-        $rootScope.config = configdata.toJSON();
-        $rootScope.config.isonline = 1;
-        $rootScope.config.server_model_dirs_array = getLoadedModels($rootScope.config.server_model_dirs);
-        $scope.modelname = $rootScope.config.server_model_dirs_array[0].name;
-        if (statusdata !== undefined || statusdata.available_models !== undefined) {
-          $scope.trainings_under_this_process = statusdata.trainings_under_this_process;
-          var model_data = [];
-          for (var i = 0; i <= statusdata.available_models.length -1; i++) {
-            var available = "";
-            var xdate = parseRasaModelFolderDate(statusdata.available_models[i]);
-            for (var z = 0; z <= $rootScope.config.server_model_dirs_array.length - 1; z++) {
-                if ($rootScope.config.server_model_dirs_array[z].folder === statusdata.available_models[i]) {
-                  available = $rootScope.config.server_model_dirs_array[z].name;
-                }
+        try {
+          $rootScope.config = configdata.toJSON();
+          $rootScope.config.isonline = 1;
+          $rootScope.config.server_model_dirs_array = getAvailableModels(statusdata.available_models);
+          $scope.modelname = $rootScope.config.server_model_dirs_array[0].name;
+          if (statusdata !== undefined || statusdata.available_models !== undefined) {
+            $scope.trainings_under_this_process = statusdata.trainings_under_this_process;
+            var model_data = [];
+            for (var i = 0; i <= statusdata.available_models.length -1; i++) {
+              var available = "";
+              var xdate;
+              try {
+                xdate = parseRasaModelFolderDate(statusdata.available_models[i]);
+              } catch (err) {
+                xdate = "Unknown";
+              }
+              /*
+              for (var z = 0; z <= $rootScope.config.server_model_dirs_array.length - 1; z++) {
+                  if ($rootScope.config.server_model_dirs_array[z].folder === statusdata.available_models[i]) {
+                    available = $rootScope.config.server_model_dirs_array[z].name;
+                  }
+              }
+              */
+              model_data.push({xdate: xdate, date: xdate.toString("MM/dd/yy h(:mm)TT"), folder: statusdata.available_models[i], available: available})
             }
-            model_data.push({xdate: xdate, date: xdate.toString("MM/dd/yy h(:mm)TT"), folder: statusdata.available_models[i], available: available})
+            $scope.available_models = sortArrayByDate(model_data, 'xdate');
           }
-          $scope.available_models = sortArrayByDate(model_data, 'xdate');
+        } catch (err) {
+          console.log(err);
         }
       });
     });

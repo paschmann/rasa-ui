@@ -44,14 +44,12 @@
                       <tr>
                         <th>Create Date/Time</th>
                         <th>Path</th>
-                        <th>Loaded</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr ng-repeat="model in available_models track by model.folder | orderBy: datetime : true">
                         <td>{{ model.date }}</td>
                         <td>{{ model.folder }}</td>
-                        <td><span class="tag tag-success" ng-show="model.available !== ''">{{model.available}}</span></td>
                       </tr>
                     </tbody>
                   </table>

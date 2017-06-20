@@ -9,7 +9,7 @@
         </div>
         <div class="callout m-0 py-3">
           <div class="input-group" ng-show="modelname !== 'Default'">
-            <select ng-options="model.name as model.name for model in $root.config.server_model_dirs_array" ng-model="modelname" class="form-control"></select>
+            <select ng-options="model.name as model.name for model in $root.config.server_model_dirs_array | orderBy: 'xdate' : true" ng-model="modelname" class="form-control"></select>
           </div>
           <hr class="m-x-1 m-y-0">
           <div class="input-group">

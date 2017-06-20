@@ -9,12 +9,33 @@ function sortArrayByDate(arr, dt_property) {
   return arr;
 }
 
+function objectFindByKey(array, key, value) {
+  for (var i = 0; i < array.length; i++) {
+      if (array[i][key] === value) {
+          return array[i];
+      }
+  }
+  return null;
+}
+
 function parseRasaModelFolderDate(folder) {
-  var p = folder.split('/model_')[1];
+  var p = folder.substring(folder.lastIndexOf("_") + 1)
   var d = p.substring(0,4) + '-' + p.substring(4,6) + '-' + p.substring(6,8) + 'T' + p.substring(9,11) + ':' + p.substring(11,13);
   var s = p.substring(4,6) + '-' + p.substring(6,8) + '-' + p.substring(0,4);
   var t = p.substring(9,11) + ':' + p.substring(11,13);
   return new XDate(p.substring(0,4), p.substring(4,6) - 1, p.substring(6,8), p.substring(9,11), p.substring(11,13))
+}
+
+function getAvailableModels(models) {
+  var arrModels = [];
+  for (var i = 0; i <= models.length - 1; i++) {
+    var name = models[i].substring(models[i].lastIndexOf("/") + 1);
+    arrModels.push({name: name, folder: models[i], xdate: parseRasaModelFolderDate(models[i])});
+  }
+  arrModels.sort(function(a, b){
+    return a.xdate[0] > b.xdate[0];
+  });
+  return arrModels;
 }
 
 function getLoadedModels(models) {
