@@ -21,7 +21,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
   $scope.train = function() {
     $http.post(rasa_api_endpoint + "/train?model=production", JSON.stringify(exportData));
     //Minimize training data
-
+    $scope.exportdata = {};
   }
 
   $scope.getData = function(agent_id) {

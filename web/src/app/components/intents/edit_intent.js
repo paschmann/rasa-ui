@@ -66,7 +66,6 @@ function EditIntentController($rootScope, $scope, Agent, Intent, Expressions, Ex
             var text = $scope.expressionList[z].expression_text;
             for (var i = 0; i <= data.length - 1; i++) {
               if ($scope.expressionList[z].expression_id === data[i].expression_id) {
-                //$('#expression_' + data[i].expression_id)[0].innerHTML.replace(/data[i].parameter_value/,"<span style='background-color: " + grayLighter + ">" + data[i].parameter_value + "</span>");
                 text = highlight(text, data[i].parameter_value);
               }
             }
