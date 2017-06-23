@@ -3,6 +3,11 @@ var proxy = require('http-proxy-middleware');
 var bodyParser = require('body-parser');
 var app = express();
 var request = require('request');
+var routes = require('./routes/index')
+var cors = require('cors')
+
+app.use(cors())
+
 const url = require('url');
 
 app.use(bodyParser.json());
@@ -10,11 +15,13 @@ app.use(bodyParser.json());
 /** Serve static files for UI website on root / */
 app.use('/', express.static('web/src/'));
 
+app.use('/api/v2/', routes);
+
 /** Middleware layer for shuttling requests to both Postgres DB (via Postgrest) and to the Rasa API */
-app.use('/api', function(req, res) {
+app.use('/api/v2/rasa/', function(req, res) {
   try {
     //Strip /api off request
-    var request_url = req.originalUrl.split('/api')[1];
+    var request_url = req.originalUrl.split('/rasa')[1];
 
     console.log(req.method + ": " + request_url + " -> " + process.env.npm_package_config_rasaserver + request_url);
 
@@ -117,5 +124,29 @@ function logRequest(req, type, data) {
     console.log("Error: " + err);
   }
 }
+
+// error handlers
+
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
+  app.use(function(err, req, res, next) {
+    res.status( err.code || 500 )
+    .json({
+      status: 'error',
+      message: err
+    });
+  });
+}
+
+// production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500)
+  .json({
+    status: 'error',
+    message: err.message
+  });
+});
 
 app.listen(5001);

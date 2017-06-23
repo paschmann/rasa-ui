@@ -2,11 +2,11 @@ angular
 .module('app')
 .controller('SettingsController', SettingsController)
 
-function SettingsController($scope, Setting) {
+function SettingsController($scope, Settings) {
   console.log('Settings controller loaded');
 
   $scope.updateSettings = function(setting_name, setting_value) {
-    Setting.update({setting_name: setting_name}, {setting_name: setting_name, setting_value: setting_value}).$promise.then(function() {
+    Settings.update({setting_name: setting_name}, {setting_name: setting_name, setting_value: setting_value}).$promise.then(function() {
       console.log('saved');
     });
   }

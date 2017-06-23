@@ -2,19 +2,19 @@ angular
 .module('app')
 .controller('SynonymController', SynonymController)
 
-function SynonymController($scope, Synonym, EntitySynonymVariants, Synonyms, Entity, SynonymVariant, EntitySynonymVariants, DeleteSynonymVariants) {
+function SynonymController($scope, Synonym, EntitySynonymVariants, EntitySynonyms, Entity, Entities, SynonymVariant, EntitySynonymVariants) {
   console.log('Synonym controller loaded');
 
   $scope.tags = [{}];
 
   loadSynonyms();
 
-  Entity.query({entity_id: $scope.$routeParams.entity_id}, function(data) {
-      $scope.entity = data[0];
+  Entity.get({entity_id: $scope.$routeParams.entity_id}, function(data) {
+      $scope.entity = data;
   });
 
   function loadSynonyms() {
-    Synonyms.query({entity_id: $scope.$routeParams.entity_id}, function(data) {
+    EntitySynonyms.query({entity_id: $scope.$routeParams.entity_id}, function(data) {
         $scope.synonymsList = data;
     });
   }
@@ -24,7 +24,7 @@ function SynonymController($scope, Synonym, EntitySynonymVariants, Synonyms, Ent
     var data = $scope.synonymsList;
     for (var i = 0; i <= data.length - 1; i++) {
       Synonym.remove({synonym_id: data[i].synonym_id});
-      DeleteSynonymVariants.remove({synonym_id: data[i].synonym_id});
+      EntitySynonymVariants.remove({synonym_id: data[i].synonym_id});
     }
     Entity.remove({entity_id: $scope.$routeParams.entity_id}, function(data) {
         $scope.go('/entities');
@@ -56,7 +56,7 @@ function SynonymController($scope, Synonym, EntitySynonymVariants, Synonyms, Ent
     //First save the synonym into the synonym table
     var obNew = {entity_id: $scope.$routeParams.entity_id, synonym_reference: $('#synonym_reference').val()};
     $('#synonym_reference').val('');
-    Synonyms.save(obNew).$promise.then(function(resp) {
+    Synonym.save(obNew).$promise.then(function(resp) {
       loadSynonyms();
     });
   }
@@ -79,7 +79,7 @@ function SynonymController($scope, Synonym, EntitySynonymVariants, Synonyms, Ent
 
   $scope.deleteSynonym = function(synonym_id) {
     //First delete all synonym variants, then the synonym
-    DeleteSynonymVariants.remove({synonym_id: synonym_id}, function(data) {
+    EntitySynonymVariants.remove({synonym_id: synonym_id}, function(data) {
         Synonym.remove({synonym_id: synonym_id}, function(data) {
             loadSynonyms();
         });

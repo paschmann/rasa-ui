@@ -2,7 +2,7 @@ angular
 .module('app')
 .controller('TrainingController', TrainingController)
 
-function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Agents, Intents, Expressions, ExpressionParameters, Rasa_Config) {
+function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Agent, Intents, Expressions, ExpressionParameters, Rasa_Config) {
   var exportData;
   var statuscheck = $interval(getRasaStatus, 5000);
   $scope.generateError = "";
@@ -14,13 +14,13 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
     $interval.cancel(statuscheck);
   });
 
-  Agents.query(function(data) {
+  Agent.query(function(data) {
     $scope.agentList = data;
   });
 
   $scope.train = function() {
     var agentname = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id).agent_name;
-    
+
     var id = new XDate().toString('yyyyMMdd-HHmmss');
     $http.post(rasa_api_endpoint + "/train?name=" + agentname + "_" + id, JSON.stringify(exportData));
     //Minimize training data
@@ -37,19 +37,19 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
     var params;
     var synonyms;
 
-    $http({method: 'GET', url: api_endpoint + "/intents?agent_id=eq." + agent_id}).
+    $http({method: 'GET', url: api_endpoint_v2 + "/agents/" + agent_id + "/intents"}).
     then(function(data) {
       intents = data.data;
       var intentIds = intents.map(function(item) { return item['intent_id']; }).toString();
-      $http({method: 'GET', url: api_endpoint + "/expressions?intent_id=in." + intentIds}).
+      $http({method: 'GET', url: api_endpoint_v2 + "/intent_expressions?intent_ids=" + intentIds }).
       then(function(data) {
         expressions = data.data;
         var expressionIds = expressions.map(function(item) { return item['expression_id']; }).toString();
-        $http({method: 'GET', url: api_endpoint + "/expression_parameters?expression_id=in." + expressionIds}).
+        $http({method: 'GET', url: api_endpoint_v2 + "/expression_parameters?expression_ids=" + expressionIds}).
         then(function(data) {
           params = data.data;
           var entityIds = params.map(function(item) { return item['entity_id']; }).toString();
-          $http({method: 'GET', url: api_endpoint + '/entity_synonym_variants?entity_id=in.' + entityIds}).
+          $http({method: 'GET', url: api_endpoint_v2 + '/entity_synonym_variants?entity_ids=' + entityIds}).
           then(function(data) {
             synonyms = data.data;
             generateData(intents, expressions, params, synonyms)

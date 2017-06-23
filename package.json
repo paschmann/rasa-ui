@@ -1,11 +1,14 @@
 {
   "name": "RasaUI",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "Rasa UI is a web application built on top of, and for, Rasa NLU.",
   "dependencies": {
+    "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
+    "cors": "^2.8.3",
     "express": "^4.15.2",
     "http-proxy-middleware": "^0.17.4",
+    "pg-promise": "^5.9.5",
     "request": "^2.81.0"
   },
   "devDependencies": {
@@ -15,7 +18,7 @@
   },
   "config": {
     "rasaserver": "http://10.211.55.3:5000",
-    "postgrestserver": "http://10.211.55.3:4000"
+    "postgresConnectionString": "postgres://postgres:password@10.211.55.3:5432/rasaui"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

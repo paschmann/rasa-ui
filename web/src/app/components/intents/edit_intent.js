@@ -5,16 +5,16 @@ angular
 function EditIntentController($rootScope, $scope, Agent, Intent, Expressions, Expression, Parameter, Parameters, Entities, UniqueIntentEntities) {
   console.log('Edit Intent controller loaded');
 
-  Agent.query({agent_id: $scope.$routeParams.agent_id}, function(data) {
-      $scope.agent = data[0];
+  Agent.get({agent_id: $scope.$routeParams.agent_id}, function(data) {
+      $scope.agent = data;
   });
 
   Entities.query( function(data) {
       $scope.entityList = data;
   });
 
-  Intent.query({intent_id: $scope.$routeParams.intent_id}, function(data) {
-      $scope.intent = data[0];
+  Intent.get({intent_id: $scope.$routeParams.intent_id}, function(data) {
+      $scope.intent = data;
   });
 
   loadExpressions();
@@ -103,7 +103,7 @@ function EditIntentController($rootScope, $scope, Agent, Intent, Expressions, Ex
     newObj.intent_id = $scope.$routeParams.intent_id;
     newObj.expression_text = this.expression_text;
 
-    Expressions.save(newObj).$promise.then(function() {
+    Expression.save(newObj).$promise.then(function() {
       $scope.expression_text = '';
       loadExpressions();
     });

@@ -27,8 +27,6 @@ Rasa UI can run directly on your Rasa NLU instance, or on a separate machine. Te
 
 [PostgreSQL](https://www.postgresql.org/) - Used for storing training data (entities, intents, synonyms, etc.)
 
-[Postgrest](https://postgrest.com) - Provides a RESTful API for PostgreSQL db
-
 [Node.js/npm](https://nodejs.org/en/) - Serves Rasa UI and acts as a middleware server for logging (to the PostgreSQL DB)
 
 
@@ -54,8 +52,8 @@ Run npm start from the server folder
 npm start
 ```
 
-- Update your package.json file to include the IP Addresses of your postgrest and rasa servers.
-- Update your web/src/app.js file to include the IP Addresses of your local middleware server and postgrest server
+- Update your package.json file to include the IP Addresses of your rasa server and the connection string of your postgres instance.
+- Update your web/src/app.js file to include the IP Addresses of your local middleware server (no need to change this if they are running on the same instance)
 
 Your web application should be available on http://localhost:5001
 
