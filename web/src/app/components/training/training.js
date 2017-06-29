@@ -27,6 +27,15 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
     $scope.exportdata = {};
   }
 
+  $scope.savetofile = function() {
+      var data = new Blob([JSON.stringify($scope.exportdata, null, 2)], {type: 'text/plain'});
+
+      var a = document.getElementById("a");
+      a.download = "trainingdata.txt";
+      a.href = URL.createObjectURL(data);
+      a.click();
+  }
+
   $scope.getData = function(agent_id) {
     //Get Intents, Expressions, Parameters/Entities, Synonyms
     var intent_i;

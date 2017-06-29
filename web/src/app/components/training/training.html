@@ -23,7 +23,9 @@
                         </select>
                       </div>
                       <div class="col-sm-3">
-                            <button type="button" class="btn" ng-class="(exportdata !== undefined) ? 'btn-success' : 'btn-secondary'" ng-click="train()"><i class="fa fa-magic"></i>&nbsp; Start Training</button>
+                            <button type="button" class="btn btn-success" ng-show="exportdata !== undefined" ng-click="train()"><i class="fa fa-magic"></i>&nbsp; Start Training</button>
+                            <button type="button" class="btn btn-secondary" ng-show="exportdata !== undefined" ng-click="savetofile()"><i class="fa fa-file"></i>&nbsp; Download File</button>
+                            <a href="" id="a"></a>
                       </div>
                     </div>
                 </div>
