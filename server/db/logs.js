@@ -24,7 +24,7 @@ function getLogs(req, res, next) {
 
 function getAvgIntentUsageByDay(req, res, next) {
   console.log("logs.getAvgIntentUsageByDay");
-  db.any('select avg(count) from intent_usage_by_day')
+  db.any('select round(avg(count)) as avg from intent_usage_by_day')
     .then(function (data) {
       res.status(200)
         .json(data);

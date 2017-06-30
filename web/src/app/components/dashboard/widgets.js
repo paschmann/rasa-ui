@@ -49,7 +49,7 @@ function usageChartCtrl($scope, NLU_log, NLU_log_intent_usage_by_day, NLU_log_av
       }
 
       $scope.labels = labels;
-      $scope.series = ['Current', 'Baseline'];
+      $scope.series = ['Processed', 'Average'];
       $scope.data = [ data1, data2];
       $scope.colors = [{
         backgroundColor: convertHex(brandInfo,10),
