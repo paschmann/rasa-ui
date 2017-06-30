@@ -43,7 +43,11 @@ function AsideController($scope, $rootScope, $interval, Rasa_Parse, Rasa_Config,
         $rootScope.config = data.toJSON();
         $rootScope.config.isonline = 1;
         $rootScope.config.server_model_dirs_array = getAvailableModels(statusdata.available_models);
-        $scope.modelname = $rootScope.config.server_model_dirs_array[0].name;
+        if ($rootScope.config.server_model_dirs_array.length > 0) {
+          $scope.modelname = $rootScope.config.server_model_dirs_array[0].name;
+        } else {
+          $scope.modelname = "Default";
+        }
       }, function(error) {
         // error handler
         $rootScope.config.isonline = 0;

@@ -18,7 +18,7 @@ app.use('/', express.static('web/src/'));
 
 app.use('/api/v2/', routes);
 
-/** Middleware layer for shuttling requests to both Postgres DB (via Postgrest) and to the Rasa API */
+/** Middleware layer for logging and then shuttling requests to the Rasa API */
 app.use('/api/v2/rasa/', function(req, res) {
   try {
     //Strip /api off request
