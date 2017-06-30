@@ -178,28 +178,15 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
           $rootScope.config = configdata.toJSON();
           $rootScope.config.isonline = 1;
           $rootScope.config.server_model_dirs_array = getAvailableModels(statusdata.available_models);
-          $scope.modelname = $rootScope.config.server_model_dirs_array[0].name;
+          if ($rootScope.config.server_model_dirs_array.length > 0) {
+            $rootScope.modelname = $rootScope.config.server_model_dirs_array[0].name;
+          } else {
+            $rootScope.modelname = "Default";
+          }
+
           if (statusdata !== undefined || statusdata.available_models !== undefined) {
-            $scope.trainings_under_this_process = statusdata.trainings_under_this_process;
-            var model_data = [];
-            for (var i = 0; i <= statusdata.available_models.length -1; i++) {
-              var available = "";
-              var xdate;
-              try {
-                xdate = parseRasaModelFolderDate(statusdata.available_models[i]);
-              } catch (err) {
-                xdate = "Unknown";
-              }
-              /*
-              for (var z = 0; z <= $rootScope.config.server_model_dirs_array.length - 1; z++) {
-                  if ($rootScope.config.server_model_dirs_array[z].folder === statusdata.available_models[i]) {
-                    available = $rootScope.config.server_model_dirs_array[z].name;
-                  }
-              }
-              */
-              model_data.push({xdate: xdate, date: xdate.toString("MM/dd/yy h(:mm)TT"), folder: statusdata.available_models[i], available: available})
-            }
-            $scope.available_models = sortArrayByDate(model_data, 'xdate');
+            $rootScope.available_models = sortArrayByDate(getAvailableModels(statusdata.available_models), 'xdate');
+            $rootScope.trainings_under_this_process = statusdata.trainings_under_this_process;
           }
         } catch (err) {
           console.log(err);

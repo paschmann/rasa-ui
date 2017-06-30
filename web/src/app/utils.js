@@ -30,7 +30,8 @@ function getAvailableModels(models) {
   var arrModels = [];
   for (var i = 0; i <= models.length - 1; i++) {
     var name = models[i].substring(models[i].lastIndexOf("/") + 1);
-    arrModels.push({name: name, folder: models[i], xdate: parseRasaModelFolderDate(models[i])});
+    var xdate = parseRasaModelFolderDate(models[i]);
+    arrModels.push({name: name, folder: models[i], xdate: xdate, date: xdate.toString("MM/dd/yy h(:mm)TT")});
   }
   arrModels.sort(function(a, b){
     return a.xdate[0] > b.xdate[0];
