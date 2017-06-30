@@ -34,65 +34,66 @@ function random(min,max) {
 }
 
 
-function usageChartCtrl($scope, NLU_log, NLU_log_intent_usage_by_day){
+function usageChartCtrl($scope, NLU_log, NLU_log_intent_usage_by_day, NLU_log_avg_intent_usage_by_day){
+  NLU_log_avg_intent_usage_by_day.query(function(avg_data) {
+    NLU_log_intent_usage_by_day.query(function(data) {
+      var elements = data.length;
+      var data1 = [];
+      var data2 = [];
+      var labels = [];
 
-  NLU_log_intent_usage_by_day.query(function(data) {
-    var elements = data.length;
-    var data1 = [];
-    var data2 = [];
-    var labels = [];
+      for (var i = 0; i <= elements - 1; i++) {
+        labels.push(data[i].to_char);
+        data1.push(data[i].count);
+        data2.push(avg_data[0].avg);
+      }
 
-    for (var i = 0; i <= elements - 1; i++) {
-      labels.push(data[i].to_char);
-      data1.push(data[i].count);
-      data2.push(80);
-    }
+      $scope.labels = labels;
+      $scope.series = ['Current', 'Baseline'];
+      $scope.data = [ data1, data2];
+      $scope.colors = [{
+        backgroundColor: convertHex(brandInfo,10),
+        borderColor: brandInfo,
+        pointHoverBackgroundColor: '#fff'
 
-    $scope.labels = labels;
-    $scope.series = ['Current', 'Baseline'];
-    $scope.data = [ data1, data2];
-    $scope.colors = [{
-      backgroundColor: convertHex(brandInfo,10),
-      borderColor: brandInfo,
-      pointHoverBackgroundColor: '#fff'
-
-    }, {
-      backgroundColor: 'transparent',
-      borderColor: brandSuccess,
-      pointHoverBackgroundColor: '#fff'
-    }];
-    $scope.options = {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        xAxes: [{
-          gridLines: {
-            drawOnChartArea: false,
-          },
-          ticks: {
-            callback: function(value) {
-              return value;
+      }, {
+        backgroundColor: 'transparent',
+        borderColor: brandSuccess,
+        pointHoverBackgroundColor: '#fff'
+      }];
+      $scope.options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          xAxes: [{
+            gridLines: {
+              drawOnChartArea: false,
+            },
+            ticks: {
+              callback: function(value) {
+                return value;
+              }
             }
+          }],
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+              maxTicksLimit: 5,
+              stepSize: Math.ceil((Math.max.apply(Math, data1) + (Math.max.apply(Math, data1)/10)) / 5),
+              max: Math.ceil((Math.max.apply(Math, data1) + (Math.max.apply(Math, data1)/10)))
+            }
+          }]
+        },
+        elements: {
+          point: {
+            radius: 0,
+            hitRadius: 10,
+            hoverRadius: 4,
+            hoverBorderWidth: 3,
           }
-        }],
-        yAxes: [{
-          ticks: {
-            beginAtZero: true,
-            maxTicksLimit: 5,
-            stepSize: Math.ceil((Math.max.apply(Math, data1) + (Math.max.apply(Math, data1)/10)) / 5),
-            max: Math.ceil((Math.max.apply(Math, data1) + (Math.max.apply(Math, data1)/10)))
-          }
-        }]
-      },
-      elements: {
-        point: {
-          radius: 0,
-          hitRadius: 10,
-          hoverRadius: 4,
-          hoverBorderWidth: 3,
-        }
-      },
-    }
+        },
+      }
+    });
   });
 
 

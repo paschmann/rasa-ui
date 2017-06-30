@@ -68,5 +68,6 @@ router.get('/nlu_log/:query', logs.getLogs);
 router.get('/intent_usage_by_day', logs.getIntentUsageByDay);
 router.get('/intent_usage_total', logs.getIntentUsageTotal);
 router.get('/request_usage_total', logs.getRequestUsageTotal);
+router.get('/avg_intent_usage_by_day', logs.getAvgIntentUsageByDay);
 
 module.exports = router;

@@ -18,7 +18,6 @@ function DashboardController($scope, Rasa_Status, NLU_log_intent_usage_total, NL
     NLU_log_request_usage_total.query(function(data) {
         $scope.request_processed = data[0].count;
     });
-
   }
 
   function getIntentUsageTotalStatus() {

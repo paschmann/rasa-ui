@@ -1,10 +1,30 @@
 const db = require('./db')
 
+module.exports = {
+  getLogs: getLogs,
+  getRequestUsageTotal: getRequestUsageTotal,
+  getIntentUsageTotal: getIntentUsageTotal,
+  getIntentUsageByDay: getIntentUsageByDay,
+  getAvgIntentUsageByDay: getAvgIntentUsageByDay
+};
+
 function getLogs(req, res, next) {
   console.log("logs.getLogs");
   var query = req.params.query;
   console.log("logs.getLogs - " + query);
   db.any('select * from nlu_log where event_type = $1 order by timestamp desc LIMIT 100', query)
+    .then(function (data) {
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function getAvgIntentUsageByDay(req, res, next) {
+  console.log("logs.getAvgIntentUsageByDay");
+  db.any('select avg(count) from intent_usage_by_day')
     .then(function (data) {
       res.status(200)
         .json(data);
@@ -49,12 +69,3 @@ function getRequestUsageTotal(req, res, next) {
       return next(err);
     });
 }
-
-
-
-module.exports = {
-  getLogs: getLogs,
-  getRequestUsageTotal: getRequestUsageTotal,
-  getIntentUsageTotal: getIntentUsageTotal,
-  getIntentUsageByDay: getIntentUsageByDay
-};
