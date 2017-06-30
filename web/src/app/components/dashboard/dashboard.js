@@ -3,8 +3,6 @@ angular
 .controller('DashboardController', DashboardController)
 
 function DashboardController($scope, Rasa_Status, NLU_log_intent_usage_total, NLU_log_request_usage_total) {
-  console.log('dashboard controller loaded');
-  $scope.onlineusers = 129122;
   getRasaStatus();
   getIntentUsageTotalStatus();
   getRequestUsageTotalStatus();

@@ -3,8 +3,6 @@ angular
 .controller('EditAgentController', EditAgentController)
 
 function EditAgentController($scope, Agent, Intents) {
-  console.log('Edit Agent controller loaded');
-
   Agent.get({agent_id: $scope.$routeParams.agent_id}, function(data) {
       $scope.agent = data;
   });

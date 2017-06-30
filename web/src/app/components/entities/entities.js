@@ -3,8 +3,6 @@ angular
 .controller('EntitiesController', EntitiesController)
 
 function EntitiesController($scope, Entities, Entity) {
-  console.log('Entities controller loaded');
-
   loadEntities();
 
   function loadEntities() {

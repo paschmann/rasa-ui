@@ -3,5 +3,5 @@ angular
 .controller('SideBarController', SideBarController)
 
 function SideBarController() {
-  console.log("sidebar controller");
+  
 }

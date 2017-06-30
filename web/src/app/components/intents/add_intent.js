@@ -3,8 +3,6 @@ angular
 .controller('AddIntentController', AddIntentController)
 
 function AddIntentController($scope, Agent, Intent) {
-  console.log('Add Intent controller loaded');
-
   Agent.get({agent_id: $scope.$routeParams.agent_id}, function(data) {
       $scope.agent = data;
   });

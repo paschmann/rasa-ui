@@ -3,8 +3,6 @@ angular
 .controller('SynonymController', SynonymController)
 
 function SynonymController($scope, Synonym, EntitySynonymVariants, EntitySynonyms, Entity, Entities, SynonymVariant, EntitySynonymVariants) {
-  console.log('Synonym controller loaded');
-
   $scope.tags = [{}];
 
   loadSynonyms();

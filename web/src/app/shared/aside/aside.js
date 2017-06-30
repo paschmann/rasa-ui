@@ -3,7 +3,6 @@ angular
 .controller('AsideController', AsideController)
 
 function AsideController($scope, $rootScope, $interval, Rasa_Parse, Rasa_Config, Rasa_Version, Settings, Rasa_Status) {
-  console.log("aside");
   $scope.test_text = 'I want italian food in new york';
   $scope.test_text_response = {};
   $rootScope.config = {}; //Initilize in case server is not online at startup
