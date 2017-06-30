@@ -5,6 +5,7 @@ var app = express();
 var request = require('request');
 var routes = require('./routes/index')
 var cors = require('cors')
+const db = require('./db/db')
 
 app.use(cors())
 
@@ -107,19 +108,12 @@ function logRequest(req, type, data) {
     obj.event_type = type;
     obj.event_data = data;
 
-    var postrequest = {
-      uri: process.env.npm_package_config_postgrestserver + '/nlu_log',
-      method: 'post',
-      json: true,
-      body: obj,
-      headers: { 'Content-Type': 'application/json' }
-    };
-
-    request.post(postrequest, function (error, response, body) {
-      if (error === undefined) {
-        console.log("Error: " + error);
-      }
-    });
+    db.any('insert into nlu_log(ip_address, query, event_type, event_data)' +
+      'values(${ip_address}, ${query}, ${event_type}, ${event_data})',
+      obj)
+      .catch(function (err) {
+        console.log(err);
+      });
   } catch (err) {
     console.log("Error: " + err);
   }
