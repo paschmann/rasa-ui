@@ -1,4 +1,4 @@
-var api_endpoint_v2 = 'http://localhost:5001/api/v2'; //rasa UI API = location of Nodejs server.js script running
+var api_endpoint_v2 = '/api/v2'; //rasa UI API = location of Nodejs server.js script running, edit this if the nodejs web front end is not running on the server instance
 
 var app = angular.module('app', ['ngRoute', 'chart.js', 'ngResource', 'ngTagsInput', 'jsonFormatter'])
 
