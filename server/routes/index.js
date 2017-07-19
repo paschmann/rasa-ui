@@ -9,6 +9,7 @@ var entities = require('../db/entities');
 var synonyms = require('../db/synonyms');
 var variants = require('../db/variants');
 var settings = require('../db/settings');
+var responses = require('../db/responses');
 var logs = require('../db/logs');
 
 router.get('/agents', agents.getAllAgents);
@@ -63,6 +64,13 @@ router.delete('/synonyms/:synonym_id/variants', variants.removeSynonymVariants);
 router.get('/settings', settings.getSettings);
 router.get('/settings/:setting_name', settings.getSingleSetting);
 router.put('/settings/:setting_name', settings.updateSetting);
+
+
+router.get('/response/:intent_id', responses.getIntentResponses);
+router.get('/rndmresponse', responses.getRandomResponseForIntent);
+router.post('/response', responses.createIntentResponse);
+router.delete('/response/:response_id', responses.removeIntentResponse);
+
 
 router.get('/nlu_log/:query', logs.getLogs);
 router.get('/intent_usage_by_day', logs.getIntentUsageByDay);
