@@ -2,7 +2,7 @@ angular
 .module('app')
 .controller('EditIntentController', EditIntentController)
 
-function EditIntentController($rootScope, $scope, Agent, Intent, Expressions, Expression, Parameter, Parameters, Entities, UniqueIntentEntities) {
+function EditIntentController($rootScope, $scope, Agent, Intent, Expressions, Expression, Parameter, Parameters, Entities, UniqueIntentEntities,Responses, Response ) {
   Agent.get({agent_id: $scope.$routeParams.agent_id}, function(data) {
       $scope.agent = data;
   });
@@ -10,12 +10,12 @@ function EditIntentController($rootScope, $scope, Agent, Intent, Expressions, Ex
   Entities.query( function(data) {
       $scope.entityList = data;
   });
-
   Intent.get({intent_id: $scope.$routeParams.intent_id}, function(data) {
       $scope.intent = data;
   });
 
   loadExpressions();
+  loadResponses();
   loadUniqueIntentEntities();
 
   function loadExpressions() {
@@ -23,6 +23,26 @@ function EditIntentController($rootScope, $scope, Agent, Intent, Expressions, Ex
         $scope.expressionList = data;
         loadParameters();
       });
+  }
+  function loadResponses(){
+    Responses.query({intent_id: $scope.$routeParams.intent_id}, function(data) {
+        $scope.responses = data;
+    });
+  }
+  $scope.saveNewResponse = function(event){
+    this.formData.intent_id = $scope.$routeParams.intent_id;
+    this.formData.response_type = 1;//DEFAULT type
+    Response.save(this.formData).$promise.then(function(resp) {
+      //update list
+      loadResponses();
+      //empty formData
+      $scope.formData={}
+    });
+  }
+  $scope.deleteResponse = function(response_id) {
+    Response.remove({response_id: response_id}).$promise.then(function(resp) {
+      loadResponses();
+    });
   }
 
   $scope.runExpression = function(expression_text) {

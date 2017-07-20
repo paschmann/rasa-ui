@@ -70,3 +70,14 @@ return $resource(api_endpoint_v2 + '/settings/:setting_name', {setting_id:'@id'}
         'update': { method:'PATCH' }
     });
 }]);
+//All responses for an intent
+app.factory('Responses', function($resource) {
+  return $resource(api_endpoint_v2 + '/response/:intent_id', {intent_id:'@id'});
+});
+//Reponse actions: create and delete
+app.factory('Response', function($resource) {
+  return $resource(api_endpoint_v2 + '/response/:response_id', {response_id:'@id'});
+});
+app.factory('IntentResponse', function($resource) {
+  return $resource(api_endpoint_v2 + '/rndmresponse');
+});

@@ -102,6 +102,13 @@ MINVALUE 1
 MAXVALUE 9223372036854775807
 CACHE 1;
 
+CREATE SEQUENCE public.response_type_response_type_id_seq
+INCREMENT 1
+START 1
+MINVALUE 1
+MAXVALUE 9223372036854775807
+CACHE 1;
+
 CREATE SEQUENCE public.synonym_variant_synonym_id_seq
 INCREMENT 1
 START 1
@@ -174,11 +181,22 @@ WITH (
 )
 TABLESPACE pg_default;
 
+CREATE TABLE public.response_type
+(
+  response_type_id integer NOT NULL DEFAULT nextval('response_type_response_type_id_seq'::regclass),
+  response_type_text character varying COLLATE pg_catalog."default",
+  CONSTRAINT response_type_id_pk PRIMARY KEY (response_type_id)
+)
+WITH (
+  OIDS = FALSE
+)
+TABLESPACE pg_default;
+
 CREATE TABLE public.responses
 (
   intent_id integer NOT NULL,
   response_text character varying COLLATE pg_catalog."default",
-  response_type integer,
+  response_type integer REFERENCES response_type (response_type_id),
   response_id integer NOT NULL DEFAULT nextval('responses_response_id_seq'::regclass)
 )
 WITH (
@@ -304,3 +322,6 @@ FROM nlu_log
 GROUP BY (to_char(nlu_log."timestamp", 'MM/DD'::text))
 ORDER BY (to_char(nlu_log."timestamp", 'MM/DD'::text))
 LIMIT 30;
+
+/* Static Data */
+INSERT INTO response_type (response_type_text) VALUES ('DEFAULT'),('RICH TEXT');

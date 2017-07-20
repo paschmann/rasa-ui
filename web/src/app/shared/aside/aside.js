@@ -2,9 +2,10 @@ angular
 .module('app')
 .controller('AsideController', AsideController)
 
-function AsideController($scope, $rootScope, $interval, Rasa_Parse, Rasa_Config, Rasa_Version, Settings, Rasa_Status) {
+function AsideController($scope, $rootScope, $interval, Rasa_Parse, Rasa_Config, Rasa_Version, Settings, Rasa_Status, IntentResponse) {
   $scope.test_text = 'I want italian food in new york';
   $scope.test_text_response = {};
+  $scope.response_text ="Your configured reponses Appear here"
   $rootScope.config = {}; //Initilize in case server is not online at startup
   var configcheck;
 
@@ -54,9 +55,8 @@ function AsideController($scope, $rootScope, $interval, Rasa_Parse, Rasa_Config,
     });
   }
 
-
-
   $scope.executeTestRequest = function() {
+    $scope.response_text=''
     var options = {};
     var model = '';
     if ($scope.modelname !== 'Default') {
@@ -64,7 +64,13 @@ function AsideController($scope, $rootScope, $interval, Rasa_Parse, Rasa_Config,
     }
     options = {query: $scope.test_text, model: model};
     Rasa_Parse.get(options, function(data) {
-        $scope.test_text_response = data.toJSON();
+      $scope.test_text_response = data.toJSON();
+      //if there is a default response to this intent, pick a random one and show it.
+      var intent_name = data.intent.name;
+      IntentResponse.get({intent_name: intent_name}, function(data){
+        if(data.rowCount> 0)
+          $scope.response_text = data.rows[0].response_text;
+      });
     });
   }
 }
