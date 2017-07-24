@@ -44,6 +44,11 @@ function EditIntentController($rootScope, $scope, Agent, Intent, Expressions, Ex
       loadResponses();
     });
   }
+  $scope.updateIntentNameAndWebhook = function(intent) {
+    Intent.update({ intent_id:intent.intent_id }, intent).$promise.then(function() {
+      $rootScope.$broadcast('setAlertText', "Intent information updated Sucessfully!!");
+    });
+  }
 
   $scope.runExpression = function(expression_text) {
     $rootScope.$broadcast('executeTestRequest', expression_text);

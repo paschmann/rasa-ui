@@ -21,6 +21,7 @@ router.delete('/agents/:agent_id', agents.removeAgent);
 router.get('/agents/:agent_id/intents', intents.getAgentIntents);
 router.get('/intents/:intent_id', intents.getSingleIntent);
 router.get('/intents/:intent_id/unique_intent_entities', intents.getUniqueIntents);
+router.put('/intents/:intent_id', intents.updateIntent);
 
 router.post('/agents/:agent_id/intents', intents.createAgentIntent);
 router.post('/intents', intents.createAgentIntent);

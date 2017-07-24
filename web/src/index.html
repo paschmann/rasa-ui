@@ -72,6 +72,12 @@
 </head>
 
 <body class="app header-fixed sidebar-fixed" ng-class="$route.current.activePage == 'agents' ? 'aside-menu-fixed' : 'aside-menu-hidden'" ng-controller="app">
+  <div id="alertTextDiv" class="alert alert-warning alert-dismissible fade alert-div" role="alert">
+    <button style="padding: 0px !important" type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <span class="alert-text"><strong>{{alert_text}}</strong></span>
+  </div>
   <div ng-include="'/app/shared/navbar/navbar.html'"></div>
 
   <div class="app-body">
@@ -108,6 +114,5 @@
   <!-- Bootstrap core JavaScript -->
   <script src="assets/libs/tether.min.js"></script>
   <script src="assets/libs/bootstrap.min.js"></script>
-
 </body>
 </html>

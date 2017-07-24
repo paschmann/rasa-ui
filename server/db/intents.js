@@ -56,6 +56,7 @@ function createAgentIntent(req, res, next) {
 }
 
 function removeIntent(req, res, next) {
+  console.log("intents.removeIntent");
   var intentID = parseInt(req.params.intent_id);
   db.result('delete from intents where intent_id = $1', intentID)
     .then(function (result) {
@@ -72,10 +73,27 @@ function removeIntent(req, res, next) {
     });
 }
 
+function updateIntent(req, res, next) {
+  console.log("intents.updateIntentEndpoint");
+  db.none('update intents set intent_name=$2,endpoint_enabled=$3 where intent_id=$1',
+    [parseInt(req.params.intent_id),req.body.intent_name, req.body.endpoint_enabled])
+    .then(function () {
+      res.status(200)
+        .json({
+          status: 'success',
+          message: 'Updated Intent'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
 module.exports = {
   getAgentIntents: getAgentIntents,
   createAgentIntent: createAgentIntent,
   getSingleIntent: getSingleIntent,
   removeIntent: removeIntent,
-  getUniqueIntents: getUniqueIntents
+  getUniqueIntents: getUniqueIntents,
+  updateIntent: updateIntent
 };

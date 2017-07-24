@@ -41,8 +41,9 @@ function createAgent(req, res, next) {
 }
 
 function updateAgent(req, res, next) {
-  db.none('update agents set agent_name=$1 where id=$2',
-    [req.body.agent_name, parseInt(req.params.agent_id)])
+  console.log("Agent.updateAgent");
+  db.none('update agents set agent_name=$2, endpoint_enabled=$3, endpoint_url=$4, basic_auth_username=$5, basic_auth_password=$6 where agent_id=$1',
+    [parseInt(req.params.agent_id), req.body.agent_name, req.body.endpoint_enabled, req.body.endpoint_url, req.body.basic_auth_username, req.body.basic_auth_password])
     .then(function () {
       res.status(200)
         .json({

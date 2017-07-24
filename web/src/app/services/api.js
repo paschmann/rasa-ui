@@ -1,11 +1,17 @@
 
 
 app.factory('Agent', function($resource) {
-  return $resource(api_endpoint_v2 + '/agents/:agent_id');
+  return $resource(api_endpoint_v2 + '/agents/:agent_id', {agent_id: '@id'},
+      {
+          'update': { method:'PUT' }
+      });
 });
 
 app.factory('Intent', function($resource) {
-  return $resource(api_endpoint_v2 + '/intents/:intent_id');
+  return $resource(api_endpoint_v2 + '/intents/:intent_id', {intent_id: '@id'},
+      {
+          'update': { method:'PUT' }
+      });
 });
 
 app.factory('Intents', function($resource) {

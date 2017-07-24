@@ -130,6 +130,10 @@ CREATE TABLE public.agents
 (
   agent_id integer NOT NULL DEFAULT nextval('agents_agent_id_seq'::regclass),
   agent_name character varying COLLATE pg_catalog."default",
+  endpoint_enabled boolean DEFAULT FALSE,
+  endpoint_url character varying COLLATE pg_catalog."default",
+  basic_auth_username character varying COLLATE pg_catalog."default",
+  basic_auth_password character varying COLLATE pg_catalog."default",
   CONSTRAINT agent_pkey PRIMARY KEY (agent_id)
 )
 WITH (
@@ -238,6 +242,7 @@ CREATE TABLE public.intents
 (
   intent_name character varying COLLATE pg_catalog."default" NOT NULL,
   agent_id integer,
+  endpoint_enabled boolean,
   intent_id integer NOT NULL DEFAULT nextval('intents_intent_id_seq'::regclass)
 )
 WITH (
