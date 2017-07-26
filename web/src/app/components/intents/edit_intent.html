@@ -34,12 +34,11 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="name">User Says ...</label>
-                    <input type="text" ng-model="expression_text" class="form-control" id="text" placeholder="Enter the expression">
+                    <input type="text" ng-model="expression_text" class="form-control" id="text" placeholder="Enter an expression and hit enter" ng-keyup="$event.keyCode == 13 && addExpression($event)">
                   </div>
                 </div>
               </div>
             </div>
-
           </form>
 
           <form>
