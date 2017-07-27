@@ -19,11 +19,13 @@
             </span>
           </div>
         </div>
-        <div class="callout m-0 py-2 text-muted text-center bg-faded text-uppercase">
+        <div class="callout m-0 py-2 text-muted text-center bg-faded text-uppercase" ng-hide="response_text === undefined">
           <small><b>Output</b>
           </small>
         </div>
-        <div class="callout m-0 py-3">{{response_text}}</div>
+        <div class="callout m-0 py-3" ng-hide="response_text === undefined">
+          {{response_text}}
+        </div>
         <div class="callout m-0 py-2 text-muted text-center bg-faded text-uppercase">
           <small><b>JSON Data</b>
           </small>

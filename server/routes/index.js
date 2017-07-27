@@ -67,10 +67,10 @@ router.put('/settings/:setting_name', settings.updateSetting);
 
 
 router.get('/response/:intent_id', responses.getIntentResponses);
-router.get('/rndmresponse', responses.getRandomResponseForIntent);
 router.post('/response', responses.createIntentResponse);
 router.delete('/response/:response_id', responses.removeIntentResponse);
 
+router.get('/rndmresponse', responses.getRandomResponseForIntent);
 
 router.get('/nlu_log/:query', logs.getLogs);
 router.get('/intent_usage_by_day', logs.getIntentUsageByDay);

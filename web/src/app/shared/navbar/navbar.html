@@ -1,6 +1,12 @@
 <header class="app-header navbar" ng-controller="NavBarController">
-  <a class="navbar-brand" href="#"></a>
-  <ul class="nav navbar-nav ml-auto">
+  <button class="navbar-toggler mobile-sidebar-toggler d-lg-none" type="button">&#9776;</button>
+  <a class="navbar-brand"></a>
+  <ul class="nav navbar-nav d-md-down-none">
+    <li class="nav-item">
+      <a class="nav-link navbar-toggler layout-toggler" ng-click="toggleSidebar()">&#9776;</a>
+    </li>
+  </ul>
+  <ul class="nav navbar-nav ml-auto d-md-down-none">
     <li class="nav-item  d-md-down-none" ng-show="config.isonline == 1">
       <i class="fa fa-server"></i>
     </li>
@@ -8,7 +14,8 @@
       <i class="fa fa-server btn-danger"></i>
     </li>
     <li class="nav-item d-md-down-none">
-      <a class="nav-link navbar-toggler aside-menu-toggler" ng-click="toggleAside()">☰</a>
+      <a class="nav-link navbar-toggler aside-menu-toggler" ng-click="toggleAside()"><i class="fa fa-comment-o"></i></a>
     </li>
   </ul>
+  <button class="navbar-toggler sidebar-toggler mobile-menu-toggler d-lg-none" type="button" ng-click="toggleAside()"><i class="fa fa-comment-o"></i></button>
 </header>

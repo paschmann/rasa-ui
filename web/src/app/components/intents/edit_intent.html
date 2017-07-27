@@ -95,19 +95,12 @@
         <form>
           <div class="card">
             <div class="card-header">
-              <strong>Intent Reponses</strong>
+              <strong>Intent Reponses (Optional)</strong>
             </div>
-            <!-- Nav tabs -->
-            <ul class="nav nav-tabs" role="tablist" style="padding-left: 5px; padding-top: 5px;">
-              <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#DEFAULT" role="tab">DEFAULT</a>
-              </li>
-            </ul>
-            <!-- Tab panes -->
             <div class="tab-content">
-                <div class="tab-pane active" id="DEFAULT" role="tabpanel">
+                <div class="tab-pane active">
                   <input type="text" ng-model="formData.response_text" class="form-control" id="text" placeholder="Enter a Response Text" ng-keyup="$event.keyCode == 13 && saveNewResponse($event)" placeholder="Enter a text response" ><br>
-                  <ul class="list-group" style="max-height: 300px; overflow-y:scroll;">
+                  <ul class="list-group">
                     <li class="list-group-item" ng-repeat="response in responses track by response.response_id">
                       <span ng-bind-html="response.response_text | trusted"></span>
                       <span class="pull-right">
@@ -118,8 +111,6 @@
                     </li>
                   </ul>
                 </div>
-            </div>
-            <div class="card-footer">
             </div>
           </form>
           </div>
