@@ -186,7 +186,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
 
           if (statusdata !== undefined || statusdata.available_models !== undefined) {
             $rootScope.available_models = sortArrayByDate(getAvailableModels(statusdata.available_models), 'xdate');
-            $rootScope.trainings_under_this_process = statusdata.trainings_under_this_process;
+            $rootScope.trainings_under_this_process = statusdata.trainings_queued;
           }
         } catch (err) {
           console.log(err);

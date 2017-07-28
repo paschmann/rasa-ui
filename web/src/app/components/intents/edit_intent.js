@@ -36,7 +36,7 @@ function EditIntentController($rootScope, $scope, Agent, Intent, Expressions, Ex
       //update list
       loadResponses();
       //empty formData
-      $scope.formData={}
+      $scope.formData = {};
     });
   }
   $scope.deleteResponse = function(response_id) {

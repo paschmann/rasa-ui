@@ -52,13 +52,8 @@ function removeIntentResponse(req, res, next) {
 
 function getRandomResponseForIntent(req, res, next) {
   console.log("responses.getRandomResponseForIntent");
-  db.result('SELECT * FROM responses, intents where responses.intent_id= intents.intent_id and intents.intent_name=$1', req.query.intent_name)
+  db.any('SELECT responses.response_text FROM responses, intents where responses.intent_id = intents.intent_id and intents.intent_name = $1 order by random() LIMIT 1', req.query.intent_name)
     .then(function (data) {
-      //pick random one if there are multiple.
-      if(data.length>1){
-        //pick one
-        res.status(200).json(data[Math.random() * (data.length - 1) + 1]);
-      }
       res.status(200).json(data);
     })
     .catch(function (err) {

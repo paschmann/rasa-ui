@@ -2,6 +2,11 @@
   background-image: url("../img/logo.png");
 }
 
+.sidebar-toggler {
+  left: inherit !important;
+  right: 0px;
+}
+
 .aside-menu {
     width: 350px;
 }
@@ -61,4 +66,8 @@ tags-input .tags .tag-item .remove-button {
   top: 5px;
 }
 .alert-text{
+@media (max-width: 991px) {
+  .sidebar-hidden .sidebar {
+      margin-left: -200px;
+  }
 }

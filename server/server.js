@@ -26,36 +26,34 @@ app.use('/api/v2/rasa/', function(req, res) {
 
     console.log(req.method + ": " + request_url + " -> " + process.env.npm_package_config_rasaserver + request_url);
 
+    var path = url.parse(req.url).pathname.split('/').pop();
+
     if (req.method === 'GET') {
+      rasa_response = "";
+      response_text = "";
+
       request(process.env.npm_package_config_rasaserver + request_url, function (error, response, body) {
         try {
           if (body !== undefined) {
-            res.writeHead(200, {
-              'Access-Control-Allow-Origin': '*',
-              'Content-Type': 'application/json'
-            });
-            res.write(body);
-
+            if (path == 'parse') {
+              rasa_response = body;
+              getResponseText(JSON.parse(rasa_response).intent.name, res);
+              augmentParse(res);
+            } else {
+              sendOutput(200, res, body);
+            }
             // TODO: Check that the response includes the required fields, otherwise, return the incomplete flag? Maybe this should rather be in the backend
           } else {
-            res.writeHead(404, {
-              'Access-Control-Allow-Origin': '*',
-              'Content-Type': 'application/json'
-            });
-            res.write('{"error" : "Server Error"}');
+            sendOutput(404, res, '{"error" : "Server Error"}');
           }
-          res.end();
+          //res.end();
         } catch (err) {
           console.log(err);
         }
       });
     } else if (req.method === 'OPTIONS') {
       try {
-        res.writeHead(200, {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type'
-        });
-        res.end();
+        sendOutput(200, res);
       } catch (err) {
         console.log(err);
       }
@@ -67,18 +65,14 @@ app.use('/api/v2/rasa/', function(req, res) {
         headers: req.headers
       }, function (error, response, body) {
         try {
-          res.writeHead(200, {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Headers': 'Content-Type'
-          });
-          res.end();
+          sendOutput(200, res, "");
+          console.log(response);
         } catch (err) {
           console.log(err);
         }
       });
     }
 
-    var path = url.parse(req.url).pathname.split('/').pop();
     if (path == 'parse') {
       var model = getParameterByName('model', request_url) !== undefined ? getParameterByName('model', request_url) : "default";
       logRequest(req, path, {model: model, intent: '', query: getParameterByName('q', request_url)});
@@ -89,6 +83,41 @@ app.use('/api/v2/rasa/', function(req, res) {
     console.log("Error: " + err);
   }
 });
+
+function augmentParse(res){
+  if (rasa_response !== '' && response_text !== '') {
+    var objResponse = JSON.parse(rasa_response);
+    objResponse.response_text = response_text;
+    sendOutput(200, res, JSON.stringify(objResponse));
+  }
+}
+
+function sendOutput(http_code, res, body) {
+  res.writeHead(http_code, {
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json'
+  });
+  if (body !== "") {
+    res.write(body);
+  }
+  res.end();
+}
+
+function getResponseText(intent_name, res) {
+  db.any('SELECT responses.response_text FROM responses, intents where responses.intent_id = intents.intent_id and intents.intent_name = $1 order by random() LIMIT 1', intent_name)
+    .then(function (data) {
+      if (data.length > 0) {
+        response_text = data[0].response_text;
+      } else {
+        response_text = undefined;
+      }
+      augmentParse(res);
+    })
+    .catch(function (err) {
+      //res.write(err);
+      console.log(err);
+    });
+}
 
 function getParameterByName(name, url) {
   if (!url) url = window.location.href;
