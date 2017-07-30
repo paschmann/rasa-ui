@@ -23,9 +23,7 @@ app.use('/api/v2/rasa/', function(req, res) {
   try {
     //Strip /api off request
     var request_url = req.originalUrl.split('/rasa')[1];
-
     console.log(req.method + ": " + request_url + " -> " + process.env.npm_package_config_rasaserver + request_url);
-
     var path = url.parse(req.url).pathname.split('/').pop();
 
     if (req.method === 'GET') {
@@ -37,7 +35,7 @@ app.use('/api/v2/rasa/', function(req, res) {
           if (body !== undefined) {
             if (path == 'parse') {
               rasa_response = body;
-              getResponseText(JSON.parse(rasa_response).intent.name, res);
+              getResponseText(rasa_response,req.query.model, res);
               augmentParse(res);
             } else {
               sendOutput(200, res, body);
@@ -103,20 +101,61 @@ function sendOutput(http_code, res, body) {
   res.end();
 }
 
-function getResponseText(intent_name, res) {
-  db.any('SELECT responses.response_text FROM responses, intents where responses.intent_id = intents.intent_id and intents.intent_name = $1 order by random() LIMIT 1', intent_name)
+
+function getResponseText(rasa_response, modelName, res) {
+console.log("resp: "+rasa_response);
+db.any(
+    'select agents.endpoint_enabled as agent_endpoint, agents.endpoint_url, agents.basic_auth_username,agents.basic_auth_password, '+
+    'intents.endpoint_enabled as intent_endpoint, intents.intent_id, intents.intent_name  from agents, intents where agents.agent_name=$2 '+
+    ' and intents.intent_name=$1 and intents.agent_id=agents.agent_id', [JSON.parse(rasa_response).intent.name,modelName.split("_")[0]])
     .then(function (data) {
-      if (data.length > 0) {
-        response_text = data[0].response_text;
-      } else {
-        response_text = undefined;
+      //check if webhook is configured
+      if(data.length>0){
+        if(data[0].intent_endpoint == true){
+          //post rasa_response to configured webhook
+          //Need to add HTTP Basic Authentication
+          request.post({
+             url: data[0].endpoint_url,
+             form: JSON.parse(rasa_response)
+          },
+          function (error, response, body){
+            try {
+              //respond back to client.
+              //Expecting API.ai style response element.
+              //var response_text={
+              //   "speech": "",
+              //   "displayText": "",
+              //   "dataToClient":{}
+              //}
+              response_text = JSON.parse(body).displayText;
+            } catch (err) {
+              console.log(err);
+              response_text = undefined;
+            }
+            augmentParse(res);
+          });
+        }else{
+          //no webhook, check if there is a static response configured
+          db.any('SELECT responses.response_text FROM responses, intents where responses.intent_id = intents.intent_id and intents.intent_name = $1 order by random() LIMIT 1', JSON.parse(rasa_response).intent.name)
+            .then(function (data) {
+              if (data.length > 0) {
+                response_text = data[0].response_text;
+              } else {
+                response_text = undefined;
+              }
+              augmentParse(res);
+            })
+            .catch(function (err) {
+              //res.write(err);
+              console.log(err);
+            });
+        }
+      }else{
+        console.log("No intent Data found. Repond with a dumb message");
+        response_text="Unable to find any data";
+        augmentParse(res);
       }
-      augmentParse(res);
     })
-    .catch(function (err) {
-      //res.write(err);
-      console.log(err);
-    });
 }
 
 function getParameterByName(name, url) {
