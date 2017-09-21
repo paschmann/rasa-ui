@@ -325,7 +325,7 @@ SELECT count(*) AS count,
 to_char(nlu_log."timestamp", 'MM/DD'::text) AS to_char
 FROM nlu_log
 GROUP BY (to_char(nlu_log."timestamp", 'MM/DD'::text))
-ORDER BY (to_char(nlu_log."timestamp", 'MM/DD'::text))
+ORDER BY (to_char(nlu_log."timestamp", 'MM/DD'::text)) desc
 LIMIT 30;
 
 /* Static Data */
