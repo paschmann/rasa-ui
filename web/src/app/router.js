@@ -5,6 +5,11 @@ app.config(function($routeProvider, $locationProvider) {
       templateUrl:'/app/components/dashboard/dashboard.html',
       activePage:'dashboard'
     })
+    .when('/login', {
+      controller:'LoginController',
+      templateUrl:'/app/components/login/login.html',
+      activePage:'login'
+    })
     .when('/dashboard', {
       controller:'DashboardController as dashboard',
       templateUrl:'/app/components/dashboard/dashboard.html',

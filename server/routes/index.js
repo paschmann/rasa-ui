@@ -10,6 +10,8 @@ var synonyms = require('../db/synonyms');
 var variants = require('../db/variants');
 var settings = require('../db/settings');
 var responses = require('../db/responses');
+var middleware = require('./middleware');
+var auth = require('./auth');
 var logs = require('../db/logs');
 
 router.get('/agents', agents.getAllAgents);
@@ -78,5 +80,15 @@ router.get('/intent_usage_by_day', logs.getIntentUsageByDay);
 router.get('/intent_usage_total', logs.getIntentUsageTotal);
 router.get('/request_usage_total', logs.getRequestUsageTotal);
 router.get('/avg_intent_usage_by_day', logs.getAvgIntentUsageByDay);
+
+//rasa middleware
+router.get('/rasa/status', middleware.getRasaNluStatus);
+router.get('/rasa/config', middleware.getRasaNluConfig);
+router.get('/rasa/version', middleware.getRasaNluVersion);
+router.post('/rasa/train', middleware.trainRasaNlu);
+router.post('/rasa/parse', middleware.parseRasaNlu);
+
+//authentication js
+router.post('/auth', auth.authenticateUser);
 
 module.exports = router;

@@ -9,18 +9,20 @@
   <link rel="icon" href="assets/img/favicon.png">
 
   <title>Rasa UI</title>
-
-  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-resource.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
+  <!-- <script src="node_modules/chart.js/dist/Chart.min.js"></script> -->
+  <script src="assets/libs/Chart.js"></script>
+  <script src="node_modules/angular/angular.min.js"></script>
+  <script src="node_modules/angular-resource/angular-resource.min.js"></script>
+  <script src="node_modules/angular-route/angular-route.min.js"></script>
+  <script src="node_modules/ngstorage/ngstorage.min.js"></script>
+  <!-- <script src="node_modules/angular-chart.js/dist/angular-chart.min.js"></script> -->
+  <script src="assets/libs/angular-chart.js"></script>
+  <!-- <script src="node_modules/jsonformatter/dist/json-formatter.min.js"></script> -->
+  <script src="assets/libs/json-formatter.js"></script>
+  <script src="node_modules/ng-tags-input/build/ng-tags-input.min.js"></script>
 
   <!-- 3rd Party libs -->
-  <script src="assets/libs/Chart.js"></script>
-  <script src="assets/libs/angular-chart.js"></script>
-  <script src="assets/libs/ng-tags-input.min.js"></script>
-  <script src="assets/libs/json-formatter.js"></script>
   <script src="assets/libs/xdate.min.js"></script>
 
   <!-- core app -->
@@ -71,24 +73,65 @@
   <link href="assets/css/style.css" rel="stylesheet">
 </head>
 
-<body class="app header-fixed sidebar-fixed" ng-class="$route.current.activePage == 'agents' ? 'aside-menu-fixed' : 'aside-menu-hidden'" ng-controller="app">
+<body class="app header-fixed sidebar-fixed" ng-class="$route.current.activePage == 'agents' ? 'aside-menu-fixed' : 'aside-menu-hidden'" ng-controller="appCtrl">
   <div id="alertTextDiv" class="alert alert-warning alert-dismissible fade alert-div" role="alert">
     <button style="padding: 0px !important" type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
     <span class="alert-text"><strong>{{alert_text}}</strong></span>
   </div>
-  <div ng-include="'/app/shared/navbar/navbar.html'"></div>
-
-  <div class="app-body">
-    <div ng-include="'/app/shared/sidebar/sidebar.html'"></div>
-
-    <!-- Main content -->
-    <main class="main">
-      <span ng-view></span>
-    </main>
-
-    <div ng-include="'/app/shared/aside/aside.html'"></div>
+  <!-- if no user dont show this just login information -->
+  <div ng-if="authenticated">
+    <div ng-include="'/app/shared/navbar/navbar.html'"></div>
+    <div class="app-body">
+      <div ng-include="'/app/shared/sidebar/sidebar.html'"></div>
+      <!-- Main content -->
+      <main class="main">
+        <span ng-view></span>
+      </main>
+      <div ng-include="'/app/shared/aside/aside.html'"></div>
+    </div>
+  </div>
+  <div ng-if="!authenticated">
+      <div class="row" style="padding-top:100px;">
+        <div class= "col-sm-4"></div>
+        <div class= "col-sm-4">
+          <div class="card" style="box-shadow: 10px 10px 5px #888888;">
+            <div class="card-header">
+                <strong>Welcome to Bots-AI cosole</strong>
+                <small>Please login(admin/admin)</small>
+            </div>
+            <div class="card-block">
+              <form name="myForm" novalidate ng-submit="loginUser(user)">
+              <div class="row">
+                  <div class="col-sm-12">
+                      <div class="form-group">
+                          <label for="name">User Name</label>
+                          <input type="text" class="form-control" name="username" ng-model="user.username"  placeholder="Enter your username" required>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-sm-12">
+                      <div class="form-group">
+                          <label for="ccnumber">Password</label>
+                          <input type="password" class="form-control" name="password" ng-model="user.password" placeholder="Enter your Password" required>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="form-group col-sm-4"></div>
+                  <div class="form-group col-sm-4"></div>
+                  <div class="form-group col-sm-4">
+                    <button type="submit" class="btn btn-success" ng-disabled="myForm.$invalid">Submit</button>
+                  </div>
+              </div>
+            </form>
+            </div>
+        </div>
+      </div>
+      <div class= "col-sm-4"></div>
+    </div>
   </div>
 
   <div class="modal fade" id="modal_confirm">

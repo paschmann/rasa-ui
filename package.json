@@ -18,6 +18,7 @@
   },
   "config": {
     "rasaserver": "http://10.211.55.3:5000",
+    "jwtsecret": "th1s1sn0t0nlyths3cr3tbutth3m0st1mp0rtAntp13c30f1nf0rmAt10nf0rth1sAppl1cAt10n",
     "postgresConnectionString": "postgres://postgres:password@10.211.55.3:5432/rasaui"
   },
   "scripts": {

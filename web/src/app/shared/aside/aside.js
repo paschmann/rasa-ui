@@ -2,7 +2,7 @@ angular
 .module('app')
 .controller('AsideController', AsideController)
 
-function AsideController($scope, $rootScope, $interval, Rasa_Parse, Rasa_Config, Rasa_Version, Settings, Rasa_Status, IntentResponse) {
+function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_Config, Rasa_Version, Settings, Rasa_Status, IntentResponse) {
   $scope.test_text = 'I want italian food in new york';
   $scope.test_text_response = {};
   $rootScope.config = {}; //Initilize in case server is not online at startup
@@ -61,10 +61,18 @@ function AsideController($scope, $rootScope, $interval, Rasa_Parse, Rasa_Config,
     if ($scope.modelname !== 'Default') {
       model = $scope.modelname;
     }
-    options = {query: $scope.test_text, model: model};
-    Rasa_Parse.get(options, function(data) {
-      $scope.test_text_response = data.toJSON();
-      $scope.response_text = $scope.test_text_response.response_text;
-    });
+    options = {q: $scope.test_text, model: model};
+
+    $http.post(api_endpoint_v2 + "/rasa/parse", JSON.stringify(options))
+      .then(
+        function(response){
+          // success callback
+          $scope.test_text_response = response.data;
+          $scope.response_text = $scope.test_text_response.response_text;
+        },
+        function(errorResponse){
+          // failure callback
+        }
+      );
   }
 }
