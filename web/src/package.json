@@ -1,0 +1,15 @@
+{
+  "name": "RasaUI-Web",
+  "version": "0.2.0",
+  "description": "Rasa UI Angular node Modules.",
+  "dependencies": {
+    "angular": "1.6.4",
+    "angular-chart.js": "^1.1.1",
+    "angular-resource": "1.6.4",
+    "angular-route": "1.6.4",
+    "jquery": "3.1.1",
+    "jsonformatter": "^0.6.0",
+    "ng-tags-input": "^3.2.0",
+    "ngstorage": "^0.3.11"
+  }
+}
