@@ -7,8 +7,10 @@ var routes = require('./routes/index')
 var cors = require('cors')
 var jwt = require('jsonwebtoken');
 
+
 const db = require('./db/db')
 const url = require('url');
+
 
 app.use(cors())
 app.use(bodyParser.json());
@@ -19,7 +21,7 @@ app.use('/', express.static('web/src/'));
 app.use(function(req, res, next) {
   if(!req.headers.authorization) {
     if(req.originalUrl.endsWith('auth')){
-      console.log("Got an Auth request. Allowing it");
+      console.log("NO Token, but got an Auth request. Allowing it");
       next();
     }else{
       return  res.status(401).send({
@@ -38,6 +40,7 @@ app.use(function(req, res, next) {
             return res.json({ success: false, message: 'Failed to authenticate token.' });
           } else {
             // if everything is good, save to request for use in other routes
+            console.log("Decoded Token : " +JSON.stringify(decoded));
             req.jwt = decoded;
             next();
           }

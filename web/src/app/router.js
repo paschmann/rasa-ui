@@ -65,6 +65,11 @@ app.config(function($routeProvider, $locationProvider) {
       templateUrl:'/app/components/logs/logs.html',
       activePage:'logs'
     })
+    .when('/insights', {
+      controller:'InsightsController',
+      templateUrl:'/app/components/insights/insights.html',
+      activePage:'insights'
+    })
     .when('/training', {
       controller:'TrainingController',
       templateUrl:'/app/components/training/training.html',

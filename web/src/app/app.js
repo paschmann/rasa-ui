@@ -20,11 +20,11 @@ var app =angular.module('app', ['ngRoute', 'chart.js', 'ngResource', 'ngStorage'
     return promise.then(success, error);
   }
 })
-.run(function run($rootScope, $http, $localStorage) {
+.run(function run($rootScope, $http, $sessionStorage) {
   // keep user logged in after page refresh
-  if ($localStorage.jwt) {
+  if ($sessionStorage.jwt) {
     $rootScope.authenticated = true;
-    $http.defaults.headers.common.Authorization = 'Bearer ' + $localStorage.jwt;
+    $http.defaults.headers.common.Authorization = 'Bearer ' + $sessionStorage.jwt;
   }else{
     //show login page
     $rootScope.authenticated = false;
@@ -32,16 +32,16 @@ var app =angular.module('app', ['ngRoute', 'chart.js', 'ngResource', 'ngStorage'
   }
   $rootScope.$on('USER_AUTHENTICATED', function(event) {
     $rootScope.authenticated = true;
-    $http.defaults.headers.common.Authorization = 'Bearer ' + $localStorage.jwt;
+    $http.defaults.headers.common.Authorization = 'Bearer ' + $sessionStorage.jwt;
   });
 
    $rootScope.$on('INVALID_JWT_TOKEN', function(event) {
     $rootScope.authenticated = false;
-    $localStorage.$reset();
+    $sessionStorage.$reset();
    });
 });
 
-angular.module('app').controller('appCtrl', function($rootScope,$scope, $route, $routeParams, $location,$timeout,$http,$localStorage) {
+angular.module('app').controller('appCtrl', function($rootScope,$scope, $route, $routeParams, $location,$timeout,$http,$sessionStorage) {
      $scope.$route = $route;
      $scope.$location = $location;
      $scope.$routeParams = $routeParams;
@@ -63,12 +63,14 @@ angular.module('app').controller('appCtrl', function($rootScope,$scope, $route, 
          .then(
            function(response){
              // success callback
-             console.log("Auth Successfull!! writing it to Local Storage");
-             $localStorage.jwt = response.data.token;
+             $sessionStorage.jwt = response.data.token;
              $rootScope.$broadcast("USER_AUTHENTICATED");
            },
            function(errorResponse){
              // failure callback
+             $('#alertTextDiv').addClass('show');
+             $scope.alert_text = "Invalid Username and Password. Please try again.";
+             $timeout(function(){$('#alertTextDiv').removeClass('show')}, 10000);
            }
          );
      }

@@ -80,6 +80,13 @@ router.get('/intent_usage_by_day', logs.getIntentUsageByDay);
 router.get('/intent_usage_total', logs.getIntentUsageTotal);
 router.get('/request_usage_total', logs.getRequestUsageTotal);
 router.get('/avg_intent_usage_by_day', logs.getAvgIntentUsageByDay);
+router.get('/nlu_parse_log/:agent_id', logs.getNluParseLogByAgent);
+router.get('/agentsByIntentConfidencePct', logs.getAgentsByIntentConfidencePct);
+router.get('/intentsMostUsed', logs.getIntentsMostUsed);
+router.get('/avgNluResponseTimesLast30Days', logs.getAvgNluResponseTimesLast30Days);
+router.get('/avgUserResponseTimesLast30Days', logs.getAvgUserResponseTimesLast30Days);
+router.get('/activeUserCountLast12Months', logs.getActiveUserCountLast12Months);
+router.get('/activeUserCountLast30Days', logs.getActiveUserCountLast30Days);
 
 //rasa middleware
 router.get('/rasa/status', middleware.getRasaNluStatus);
