@@ -7,6 +7,7 @@
     "angular-chart.js": "^1.1.1",
     "angular-resource": "1.6.4",
     "angular-route": "1.6.4",
+    "angular-utils-pagination": "^0.11.1",
     "jquery": "3.1.1",
     "jsonformatter": "^0.6.0",
     "ng-tags-input": "^3.2.0",

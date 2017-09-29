@@ -34,13 +34,11 @@ app.use(function(req, res, next) {
     if (req.headers.authorization.split(' ')[0] === 'Bearer'){
         var token = req.headers.authorization.split(' ')[1];
         // verifies secret and checks exp
-        console.log("Got a token: " + token);
         jwt.verify(token, process.env.npm_package_config_jwtsecret, function(err, decoded) {
           if (err) {
             return res.json({ success: false, message: 'Failed to authenticate token.' });
           } else {
             // if everything is good, save to request for use in other routes
-            console.log("Decoded Token : " +JSON.stringify(decoded));
             req.jwt = decoded;
             next();
           }

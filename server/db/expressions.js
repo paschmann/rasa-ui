@@ -16,7 +16,7 @@ function getSingleExpression(req, res, next) {
 function getIntentExpressions(req, res, next) {
   console.log("expression.getIntentExpressions");
   var IntentId = parseInt(req.params.intent_id);
-  db.any('select * from expressions where intent_id = $1', IntentId)
+  db.any('select * from expressions where intent_id = $1 order by expression_id desc', IntentId)
     .then(function (data) {
       res.status(200)
         .json(data);

@@ -20,9 +20,9 @@
     "gulp": "^3.9.1"
   },
   "config": {
-    "rasaserver": "http://10.211.55.3:5000",
+    "rasaserver": "http://apsrd8588:5001",
     "jwtsecret": "th1s1sn0t0nlyths3cr3tbutth3m0st1mp0rtAntp13c30f1nf0rmAt10nf0rth1sAppl1cAt10n",
-    "postgresConnectionString": "postgres://postgres:password@10.211.55.3:5432/rasaui"
+    "postgresConnectionString": "postgres://postgres:rasaui@apsrd8588:5432/rasaui"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
