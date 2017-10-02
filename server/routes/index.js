@@ -19,6 +19,8 @@ router.get('/agents/:agent_id', agents.getSingleAgent);
 router.post('/agents', agents.createAgent);
 router.put('/agents/:agent_id', agents.updateAgent);
 router.delete('/agents/:agent_id', agents.removeAgent);
+router.post('/agents/upload', agents.uploadAgentFromFile);
+
 
 router.get('/agents/:agent_id/intents', intents.getAgentIntents);
 router.get('/intents/:intent_id', intents.getSingleIntent);
@@ -97,5 +99,7 @@ router.post('/rasa/parse', middleware.parseRasaNlu);
 
 //authentication js
 router.post('/auth', auth.authenticateUser);
+router.post('/authclient', auth.authenticateClient);
+
 
 module.exports = router;

@@ -25,6 +25,11 @@ app.config(function($routeProvider, $locationProvider) {
       templateUrl:'/app/components/agents/add_agent.html',
       activePage:'agents'
     })
+    .when('/agent/import', {
+      controller:'ImportAgentController as importagent',
+      templateUrl:'/app/components/agents/import_agent.html',
+      activePage:'agents'
+    })
     .when('/agent/:agent_id', {
       controller:'EditAgentController as editagent',
       templateUrl:'/app/components/agents/edit_agent.html',

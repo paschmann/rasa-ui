@@ -140,6 +140,7 @@ CREATE TABLE public.agents
   endpoint_url character varying COLLATE pg_catalog."default",
   basic_auth_username character varying COLLATE pg_catalog."default",
   basic_auth_password character varying COLLATE pg_catalog."default",
+  client_secret_key text NOT NULL default md5(random()::text),
   CONSTRAINT agent_pkey PRIMARY KEY (agent_id)
 )
 WITH (

@@ -6,6 +6,8 @@ var request = require('request');
 var routes = require('./routes/index')
 var cors = require('cors')
 var jwt = require('jsonwebtoken');
+var async = require('asyncawait/async');
+var await = require('asyncawait/await');
 
 
 const db = require('./db/db')
@@ -13,20 +15,26 @@ const url = require('url');
 
 
 app.use(cors())
-app.use(bodyParser.json());
+
+app.use(bodyParser.urlencoded({
+    parameterLimit: 10000,
+    limit: '2mb',
+    extended: true
+  }));
+  app.use(bodyParser.json());
 /** Serve static files for UI website on root / */
 app.use('/', express.static('web/src/'));
 
 // route middleware to verify a token
 app.use(function(req, res, next) {
   if(!req.headers.authorization) {
-    if(req.originalUrl.endsWith('auth')){
-      console.log("NO Token, but got an Auth request. Allowing it");
+    if(req.originalUrl.endsWith('auth') || req.originalUrl.endsWith('authclient')){
+      console.log("No Token, but got an Auth request. Allowing it");
       next();
     }else{
       return  res.status(401).send({
           success: false,
-          message: 'No Autherization header.'
+          message: 'No Authorization header.'
       });
     }
   }else {

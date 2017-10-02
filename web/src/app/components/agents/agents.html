@@ -3,8 +3,10 @@
         <!-- Breadcrumb Menu-->
         <li class="breadcrumb-menu">
             <div class="btn-group" role="group">
+                <a class="btn btn-secondary" href="#!/agent/import"><i class="fa fa-upload"></i> &nbsp;Import Agent</a>
                 <a class="btn btn-secondary" href="#!/agent/add"><i class="icon-plus"></i> &nbsp;Add Agent</a>
             </div>
+
         </li>
 </ol>
 <div class="container-fluid">
@@ -26,6 +28,10 @@
                       <div class="form-group">
                         <label class="form-control-label" for="formGroupExampleInput">Name</label>
                         <input ng-model="agent.agent_name" type="text" class="form-control" id="formGroupExampleInput" placeholder="Service Endpoint URL" value="{{ agent.agent_name }}">
+                      </div>
+                      <div class="form-group">
+                        <label class="form-control-label" for="formGroupExampleInput">Client Secret</label>
+                        <input type="text" class="form-control" disabled value="{{ agent.client_secret_key }}">
                       </div>
                       <strong>Service Fullfillment</strong>
                       &nbsp;&nbsp;&nbsp;

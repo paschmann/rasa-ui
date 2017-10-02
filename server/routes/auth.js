@@ -1,6 +1,5 @@
 var jwt = require('jsonwebtoken');
-
-var  algorithm = 'aes-256-ctr';
+const db = require('../db/db');
 
 function authenticateUser(req, res, next) {
   //authenticate user
@@ -22,6 +21,28 @@ function authenticateUser(req, res, next) {
   }
 }
 
+function authenticateClient(req, res, next) {
+  //authenticate client based on client secret key
+  //username,user_fullname,agent_name,client_secret_key should all be present in the body
+  console.log("Authenticate Client");
+  db.one('select * from agents where agent_name = $1 and client_secret_key=$2', [req.body.agent_name,req.body.client_secret_key])
+    .then(function (data) {
+      var tokenData = {username:req.body.username,name: req.body.user_fullname};
+      // if user is found and password is right
+      // create a token
+      var token = jwt.sign(tokenData, process.env.npm_package_config_jwtsecret);
+      // return the information including token as JSON
+      res.status(200).json({username:req.body.username,token: token});
+    }).catch(function (err) {
+      console.log("Client Authentication error: "+ err);
+      return res.status(401).send({
+          success: false,
+          message: 'Client Authentication failed.'
+      });
+    });
+}
+
 module.exports = {
-  authenticateUser: authenticateUser
+  authenticateUser: authenticateUser,
+  authenticateClient:authenticateClient
 };
