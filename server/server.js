@@ -6,13 +6,9 @@ var request = require('request');
 var routes = require('./routes/index')
 var cors = require('cors')
 var jwt = require('jsonwebtoken');
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
-
 
 const db = require('./db/db')
 const url = require('url');
-
 
 app.use(cors())
 
