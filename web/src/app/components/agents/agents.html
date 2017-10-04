@@ -3,18 +3,73 @@
         <!-- Breadcrumb Menu-->
         <li class="breadcrumb-menu">
             <div class="btn-group" role="group">
+                <a class="btn btn-secondary" href="#!/agent/import"><i class="fa fa-upload"></i> &nbsp;Import Agent</a>
                 <a class="btn btn-secondary" href="#!/agent/add"><i class="icon-plus"></i> &nbsp;Add Agent</a>
             </div>
+
         </li>
 </ol>
 <div class="container-fluid">
     <div class="animated fadeIn">
         <div class="row">
             <div class="col-sm-12 col-lg-12">
-              <div class="list-group">
-                <a ng-href="#!/agent/{{agent.agent_id}}" class="list-group-item" ng-repeat="agent in agentList track by agent.agent_id">{{ agent.agent_name }}</a>
+              <div id="accordion" role="tablist">
+                <div class="card" ng-repeat="agent in agentList track by agent.agent_id">
+                  <div class="card-header" role="tab" id="headingOne">
+                    <span><a ng-href="#!/agent/{{agent.agent_id}}">{{ agent.agent_name }}</a></span>
+                    <span class="pull-right">
+                      <a style="border:0;" class="btn btn-outline-secondary" data-toggle="collapse" data-target="#{{agent.agent_id}}" aria-expanded="true" aria-controls="collapseOne">
+                      <i class="fa fa-edit"></i>
+                      Edit Agent</a>
+                    </span>
+                  </div>
+                  <div id="{{agent.agent_id}}" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-block">
+                      <div class="form-group">
+                        <label class="form-control-label" for="formGroupExampleInput">Name</label>
+                        <input ng-model="agent.agent_name" type="text" class="form-control" id="formGroupExampleInput" placeholder="Service Endpoint URL" value="{{ agent.agent_name }}">
+                      </div>
+                      <div class="form-group">
+                        <label class="form-control-label" for="formGroupExampleInput">Client Secret</label>
+                        <input type="text" class="form-control" disabled value="{{ agent.client_secret_key }}">
+                      </div>
+                      <strong>Service Fullfillment</strong>
+                      &nbsp;&nbsp;&nbsp;
+                      <span class="pull-right">
+                      <label class="switch switch-default switch-pill switch-success">
+                          <input type="checkbox" class="switch-input" ng-model="agent.endpoint_enabled" ng-checked="agent.endpoint_enabled">
+                          <span class="switch-label"></span>
+                          <span class="switch-handle"></span>
+                      </label>
+                      </span>
+                      <br><br>
+
+                      <div ng-show="agent.endpoint_enabled">
+                      <div class="form-group">
+                        <label class="form-control-label" for="formGroupExampleInput">Service URL</label>
+                        <input ng-model="agent.endpoint_url" type="url" class="form-control" id="formGroupExampleInput" placeholder="Service Endpoint URL">
+                      </div>
+                      <div class="form-group">
+                        <label class="form-control-label" for="formGroupExampleInput2">Basic Auth Username</label>
+                        <input ng-model="agent.basic_auth_username" type="text" class="form-control" id="formGroupExampleInput2" placeholder="Basic Auth Username">
+                      </div>
+                      <div class="form-group">
+                        <label class="form-control-label" for="formGroupExampleInput2">Basic Auth Password</label>
+                        <input ng-model="agent.basic_auth_password" type="password" class="form-control" id="formGroupExampleInput2" placeholder="Basic Auth Password">
+                      </div>
+                    </div>
+                    <div>
+                      <span class="pull-right" style="padding:10px;">
+                        <button type="button" class="btn btn-primary" ng-click="editAgentInfo(agent)">Save</button>
+                        <button type="button" class="btn btn-danger" onclick="location.reload()">Cancel</button>
+                      </span>
+                    </div>
+                    </div>
+                  </div>
+                </div>
             </div>
           </div>
         </div>
+        <br><br>
       </div>
     </div>

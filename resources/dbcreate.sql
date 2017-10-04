@@ -73,6 +73,12 @@ MINVALUE 1
 MAXVALUE 9223372036854775807
 CACHE 1;
 
+CREATE SEQUENCE public.parse_log_parse_log_id_seq
+INCREMENT 1
+START 1
+MINVALUE 1
+MAXVALUE 9223372036854775807
+CACHE 1;
 
 CREATE SEQUENCE public.parameteridgen
 INCREMENT 1
@@ -130,6 +136,11 @@ CREATE TABLE public.agents
 (
   agent_id integer NOT NULL DEFAULT nextval('agents_agent_id_seq'::regclass),
   agent_name character varying COLLATE pg_catalog."default",
+  endpoint_enabled boolean DEFAULT FALSE,
+  endpoint_url character varying COLLATE pg_catalog."default",
+  basic_auth_username character varying COLLATE pg_catalog."default",
+  basic_auth_password character varying COLLATE pg_catalog."default",
+  client_secret_key text NOT NULL default md5(random()::text),
   CONSTRAINT agent_pkey PRIMARY KEY (agent_id)
 )
 WITH (
@@ -219,6 +230,28 @@ WITH (
 )
 TABLESPACE pg_default;
 
+CREATE TABLE public.nlu_parse_log
+(
+  parse_log_id integer NOT NULL DEFAULT nextval('parse_log_parse_log_id_seq'::regclass),
+  "timestamp" timestamp without time zone DEFAULT timezone('utc'::text, now()),
+  agent_id integer,
+  request_text character varying COLLATE pg_catalog."default",
+  intent_name character varying COLLATE pg_catalog."default",
+  entity_data jsonb,
+  response_text character varying COLLATE pg_catalog."default",
+  response_rich_data jsonb,
+  intent_confidence_pct integer,
+  user_id character varying COLLATE pg_catalog."default",
+  user_name character varying COLLATE pg_catalog."default",
+  user_response_time_ms integer,
+  nlu_response_time_ms integer,
+  CONSTRAINT parse_log_id_pkey PRIMARY KEY (parse_log_id)
+)
+WITH (
+  OIDS = FALSE
+)
+TABLESPACE pg_default;
+
 CREATE TABLE public.nlu_log
 (
   log_id integer NOT NULL DEFAULT nextval('nlu_log_log_id_seq'::regclass),
@@ -238,6 +271,7 @@ CREATE TABLE public.intents
 (
   intent_name character varying COLLATE pg_catalog."default" NOT NULL,
   agent_id integer,
+  endpoint_enabled boolean,
   intent_id integer NOT NULL DEFAULT nextval('intents_intent_id_seq'::regclass)
 )
 WITH (
@@ -258,6 +292,51 @@ TABLESPACE pg_default;
 
 
 /* Views */
+CREATE OR REPLACE VIEW public.intents_most_used AS
+select intent_name, agent_id, grouped_intents.grp_intent_count from intents
+left outer join (select count(*) as grp_intent_count, intent_name as grp_intent,agent_id as grp_agent_id from nlu_parse_log
+group by (intent_name,agent_id)) as grouped_intents
+on intent_name = grouped_intents.grp_intent order by agent_id;
+
+
+CREATE OR REPLACE VIEW public.intents_most_used AS
+select intent_name, agents.agent_id, agents.agent_name, grouped_intents.grp_intent_count from intents
+left outer join (select count(*) as grp_intent_count, intent_name as grp_intent,agent_id as grp_agent_id from nlu_parse_log
+group by (intent_name,agent_id)) as grouped_intents
+on intent_name = grouped_intents.grp_intent, agents where intents.agent_id=agents.agent_id  order by agents.agent_id;
+
+
+select count(*) as grp_intent_count, intent_name as grp_intent,nlu_parse_log.agent_id, agents.agent_name as grp_agent_id from nlu_parse_log, agents
+where nlu_parse_log.agent_id=agents.agent_id
+group by (intent_name,nlu_parse_log.agent_id,agents.agent_id)
+
+CREATE OR REPLACE VIEW public.avg_nlu_response_times_30_days AS
+select round(avg(nlu_response_time_ms)::integer,0),
+(to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) as month_date from nlu_parse_log
+GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text))
+ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) desc
+LIMIT 30;
+
+CREATE OR REPLACE VIEW public.avg_user_response_times_30_days AS
+select round(avg(user_response_time_ms)::integer,0),
+(to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) as month_date from nlu_parse_log
+GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text))
+ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) desc
+LIMIT 30;
+
+CREATE OR REPLACE VIEW public.active_user_count_12_months AS
+select count(distinct(user_id)) as count_users,
+(to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) as month_year from nlu_parse_log
+GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text))
+ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) desc
+LIMIT 12;
+
+CREATE OR REPLACE VIEW public.active_user_count_30_days AS
+SELECT count(distinct(user_id)) as user_count,
+(to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) as month_date from nlu_parse_log
+GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text))
+ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) desc
+LIMIT 30;
 
 CREATE OR REPLACE VIEW public.entity_synonym_variants AS
 SELECT synonyms.entity_id,
@@ -320,7 +399,7 @@ SELECT count(*) AS count,
 to_char(nlu_log."timestamp", 'MM/DD'::text) AS to_char
 FROM nlu_log
 GROUP BY (to_char(nlu_log."timestamp", 'MM/DD'::text))
-ORDER BY (to_char(nlu_log."timestamp", 'MM/DD'::text))
+ORDER BY (to_char(nlu_log."timestamp", 'MM/DD'::text)) desc
 LIMIT 30;
 
 /* Static Data */

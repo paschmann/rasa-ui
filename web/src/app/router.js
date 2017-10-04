@@ -5,6 +5,11 @@ app.config(function($routeProvider, $locationProvider) {
       templateUrl:'/app/components/dashboard/dashboard.html',
       activePage:'dashboard'
     })
+    .when('/login', {
+      controller:'LoginController',
+      templateUrl:'/app/components/login/login.html',
+      activePage:'login'
+    })
     .when('/dashboard', {
       controller:'DashboardController as dashboard',
       templateUrl:'/app/components/dashboard/dashboard.html',
@@ -18,6 +23,11 @@ app.config(function($routeProvider, $locationProvider) {
     .when('/agent/add', {
       controller:'AddAgentController as addagent',
       templateUrl:'/app/components/agents/add_agent.html',
+      activePage:'agents'
+    })
+    .when('/agent/import', {
+      controller:'ImportAgentController as importagent',
+      templateUrl:'/app/components/agents/import_agent.html',
       activePage:'agents'
     })
     .when('/agent/:agent_id', {
@@ -59,6 +69,11 @@ app.config(function($routeProvider, $locationProvider) {
       controller:'LogsController',
       templateUrl:'/app/components/logs/logs.html',
       activePage:'logs'
+    })
+    .when('/insights', {
+      controller:'InsightsController',
+      templateUrl:'/app/components/insights/insights.html',
+      activePage:'insights'
     })
     .when('/training', {
       controller:'TrainingController',

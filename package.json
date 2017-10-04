@@ -7,7 +7,10 @@
     "body-parser": "^1.17.1",
     "cors": "^2.8.3",
     "express": "^4.15.2",
+    "express-jwt": "^5.3.0",
     "http-proxy-middleware": "^0.17.4",
+    "jsonwebtoken": "^8.0.1",
+    "node-cache": "^4.1.1",
     "pg-promise": "^5.9.5",
     "request": "^2.81.0"
   },
@@ -17,8 +20,9 @@
     "gulp": "^3.9.1"
   },
   "config": {
-    "rasaserver": "http://10.211.55.3:5000",
-    "postgresConnectionString": "postgres://postgres:password@10.211.55.3:5432/rasaui"
+    "rasaserver": "http://10.211.55.3:5001",
+    "jwtsecret": "th1s1sn0t0nlyths3cr3tbutth3m0st1mp0rtAntp13c30f1nf0rmAt10nf0rth1sAppl1cAt10n",
+    "postgresConnectionString": "postgres://postgres:rasaui@10.211.55.3:5432/rasaui"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
