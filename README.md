@@ -11,6 +11,7 @@ Rasa UI is a web application built on top of, and for, [Rasa NLU](https://github
 - New Insights to show the frequently used intents and more drill down details on utterences to be added
 - Import Agents in rasa format
 - Docker container capabilities
+- Existing apps can migrate to this version after running the db-alters.sql under resources and updating their codebase to master.(Although a back up of the data is recommended as rasa-uui is still in Beta version)
 
 ![Screenshot1](https://github.com/paschmann/rasa-ui/blob/1.0/resources/insights.png)
 
