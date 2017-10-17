@@ -19,4 +19,7 @@ function NavBarController($scope, $rootScope) {
     }
   }
 
+  $scope.logout = function(){
+    $rootScope.$broadcast("INVALID_JWT_TOKEN");
+  }
 }

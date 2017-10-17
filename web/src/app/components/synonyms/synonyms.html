@@ -1,11 +1,12 @@
 <ol class="breadcrumb" breadcrumb="">
-        <li class="breadcrumb-item ng-scope active"><span>Entity > {{entity.entity_name }}</span></li>
+    <li class="breadcrumb-item"><a href="#!/entities">Entities</a></li>
+    <li class="breadcrumb-item ng-scope active"><span>{{entity.entity_name }}</span></li>
 
-        <li class="breadcrumb-menu">
-          <div class="btn-group" role="group">
-            <a class="btn btn-secondary" ng-click="deleteEntity()" confirm-click-title="Delete Entity" confirm-click="Are you sure? This will delete the entity and all of its synonyms."><i class="icon-trash"></i> &nbsp;Delete Entity</a>
-          </div>
-        </li>
+    <li class="breadcrumb-menu">
+      <div class="btn-group" role="group">
+        <a class="btn btn-secondary" ng-click="deleteEntity()" confirm-click-title="Delete Entity" confirm-click="Are you sure? This will delete the entity and all of its synonyms."><i class="icon-trash"></i> &nbsp;Delete Entity</a>
+      </div>
+    </li>
 </ol>
 <div class="container-fluid">
     <div class="animated fadeIn">

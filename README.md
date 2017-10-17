@@ -4,8 +4,19 @@
 
 Rasa UI is a web application built on top of, and for, [Rasa NLU](https://github.com/RasaHQ/rasa_nlu). Rasa UI provides a web application to quickly and easily be able to create agents, define intents and entities. It also provides some convenience features for Rasa NLU, like training your models, monitoring usage or viewing logs. Our goal is to replace API.ai with Rasa, so a lot of the terminology and usage concepts are similar.
 
-## Features
+## New Features in 1.0
+- Webhook option for Agents
+- Authentication module can be extended to a differnt IDP and session is handled by JWT token
+- User level Tracking of conversations
+- New Insights to show the frequently used intents and more drill down details on utterences to be added
+- Import Agents in rasa format
+- Docker container capabilities
+- Existing apps can migrate to this version after running the db-alters.sql under resources and updating their codebase to master.(Although a back up of the data is recommended as rasa-uui is still in Beta version)
 
+![Screenshot1](https://github.com/paschmann/rasa-ui/blob/1.0/resources/insights.png)
+
+
+## Features
 - Training data stored in DB
 - UI for managing training data
 - Initiate training from UI

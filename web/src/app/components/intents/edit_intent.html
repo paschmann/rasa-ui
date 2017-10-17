@@ -1,6 +1,8 @@
 <ol class="breadcrumb" breadcrumb="">
-  <li class="breadcrumb-item ng-scope active"><span>Agent > {{ agent.agent_name }} > Intent > {{ intent.intent_name }}</span></li>
-  <!-- Breadcrumb Menu-->
+  <li class="breadcrumb-item"><a href="#!/agents">Agents</a></li>
+  <li class="breadcrumb-item"><a ng-href="#!/agent/{{agent.agent_id}}">{{ agent.agent_name }} </a></li>
+  <li class="breadcrumb-item active">Intents Details</li>
+<!-- Breadcrumb Menu-->
   <li class="breadcrumb-menu">
     <div class="btn-group" role="group">
       <a class="btn btn-secondary" ng-click="deleteIntent()" confirm-click-title="Delete Intent" confirm-click="Are you sure? This will delete the intent and all its expressions, and their resolved entities."><i class="icon-trash"></i> &nbsp;Delete Intent</a>
@@ -9,6 +11,18 @@
 </ol>
 <div class="container-fluid">
   <div class="animated fadeIn">
+    <span>
+      <div class="form-group">
+        <label class="form-control-label" for="formGroupExampleInput">Intent Name</label>
+        <input ng-model="intent.intent_name" type="text" class="form-control" id="formGroupExampleInput" value="{{intent.intent_name}}" placeholder="Service Endpoint URL">
+      </div>
+    </span>
+    <span class="pull-right">
+      <button class="btn btn-primary" ng-click="updateIntentNameAndWebhook(intent)">
+        Save All
+      </button>
+    </span>
+    <br><br>
     <div class="row">
       <div class="col-sm-12 col-lg-12">
         <form>
@@ -21,14 +35,10 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="name">User Says ...</label>
-                    <input type="text" ng-model="expression_text" class="form-control" id="text" placeholder="Enter the expression">
+                    <input type="text" ng-model="expression_text" class="form-control" id="text" placeholder="Enter an expression and hit enter" ng-keyup="$event.keyCode == 13 && addExpression($event)">
                   </div>
                 </div>
               </div>
-            </div>
-
-            <div class="card-footer">
-              <button type="submit" class="btn btn-sm btn-primary" ng-click="addExpression()"><i class="fa fa-dot-circle-o"></i> Save</button>
             </div>
           </form>
 
@@ -36,7 +46,7 @@
             <div class="card-block">
               <div class="row">
                 <div class="col-sm-12">
-                  <div class="list-group" ng-repeat="expression in expressionList track by expression.expression_id">
+                  <div class="list-group" dir-paginate="expression in expressionList  | itemsPerPage: 6">
                     <div class="list-group-item">
                       <span id="expression_{{expression.expression_id}}" ng-bind-html="expression.expression_highlighted_text | trusted"></span>
                       <span class="pull-right">
@@ -82,6 +92,9 @@
                       </table>
                     </div>
                   </div>
+                  <br><div style="float:right">
+                    <dir-pagination-controls></dir-pagination-controls>
+                  </div>
                 </div>
               </div>
             </form>
@@ -97,6 +110,14 @@
             <div class="card-header">
               <strong>Intent Reponses (Optional)</strong>
             </div>
+
+            <div class="form-check" style="padding:10px;" title="{{agent.endpoint_enabled == false?'Enable Webook at Agent Level and select this Option to get response from Server API':'Select this Option to get response from API'}}">
+            <h5>  <label class="form-check-label">
+                <input ng-model="intent.endpoint_enabled" class="form-check-input" type="checkbox" ng-disabled="agent.endpoint_enabled == false">
+                <h5>Check this to use a webhook
+              </label></h5>
+            </div>
+
             <div class="tab-content">
                 <div class="tab-pane active">
                   <input type="text" ng-model="formData.response_text" class="form-control" id="text" placeholder="Enter a Response Text" ng-keyup="$event.keyCode == 13 && saveNewResponse($event)" placeholder="Enter a text response" ><br>

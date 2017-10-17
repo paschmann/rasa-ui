@@ -10,6 +10,8 @@ var synonyms = require('../db/synonyms');
 var variants = require('../db/variants');
 var settings = require('../db/settings');
 var responses = require('../db/responses');
+var middleware = require('./middleware');
+var auth = require('./auth');
 var logs = require('../db/logs');
 
 router.get('/agents', agents.getAllAgents);
@@ -17,10 +19,13 @@ router.get('/agents/:agent_id', agents.getSingleAgent);
 router.post('/agents', agents.createAgent);
 router.put('/agents/:agent_id', agents.updateAgent);
 router.delete('/agents/:agent_id', agents.removeAgent);
+router.post('/agents/upload', agents.uploadAgentFromFile);
+
 
 router.get('/agents/:agent_id/intents', intents.getAgentIntents);
 router.get('/intents/:intent_id', intents.getSingleIntent);
 router.get('/intents/:intent_id/unique_intent_entities', intents.getUniqueIntents);
+router.put('/intents/:intent_id', intents.updateIntent);
 
 router.post('/agents/:agent_id/intents', intents.createAgentIntent);
 router.post('/intents', intents.createAgentIntent);
@@ -77,5 +82,24 @@ router.get('/intent_usage_by_day', logs.getIntentUsageByDay);
 router.get('/intent_usage_total', logs.getIntentUsageTotal);
 router.get('/request_usage_total', logs.getRequestUsageTotal);
 router.get('/avg_intent_usage_by_day', logs.getAvgIntentUsageByDay);
+router.get('/nlu_parse_log/:agent_id', logs.getNluParseLogByAgent);
+router.get('/agentsByIntentConfidencePct', logs.getAgentsByIntentConfidencePct);
+router.get('/intentsMostUsed', logs.getIntentsMostUsed);
+router.get('/avgNluResponseTimesLast30Days', logs.getAvgNluResponseTimesLast30Days);
+router.get('/avgUserResponseTimesLast30Days', logs.getAvgUserResponseTimesLast30Days);
+router.get('/activeUserCountLast12Months', logs.getActiveUserCountLast12Months);
+router.get('/activeUserCountLast30Days', logs.getActiveUserCountLast30Days);
+
+//rasa middleware
+router.get('/rasa/status', middleware.getRasaNluStatus);
+router.get('/rasa/config', middleware.getRasaNluConfig);
+router.get('/rasa/version', middleware.getRasaNluVersion);
+router.post('/rasa/train', middleware.trainRasaNlu);
+router.post('/rasa/parse', middleware.parseRasaNlu);
+
+//authentication js
+router.post('/auth', auth.authenticateUser);
+router.post('/authclient', auth.authenticateClient);
+
 
 module.exports = router;

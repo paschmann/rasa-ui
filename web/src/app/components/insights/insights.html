@@ -1,0 +1,108 @@
+<ol class="breadcrumb" breadcrumb="">
+        <li class="breadcrumb-item ng-scope active"><span>Metrics</span></li>
+</ol>
+<div class="container-fluid">
+  <div class="animated fadeIn">
+    <div class="row">
+        <div class="col-sm-6 col-lg-4">
+            <div class="card card-inverse card-primary">
+                <div class="card-block">
+                    <div class="btn-group pull-right">
+                        <button type="button" class="btn btn-transparent active dropdown-toggle p-a-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-line-chart"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" ng-repeat="option in linkOptions" ng-click="updateData(option)">{{option}}</a>
+                        </div>
+                    </div>
+                    <h4 title="Average Active Users">{{avg_active_users}} avg</h4>
+                    <p>Active Users</p>
+                </div>
+                <div class="chart-wrapper p-x-1" style="height:70px;">
+                  <canvas id="chart-activeusers" class="chart chart-line" style="margin:10x"
+                   chart-data="activeusers_data" chart-labels="activeusers_labels"
+                   chart-series="activeusers_series"  chart-colors="colors" height="300" chart-options="activeusers_options"/>
+                </div>
+            </div>
+        </div>
+        <!--/col-->
+        <div class="col-sm-6 col-lg-4">
+            <div class="card card-inverse card-info">
+                <div class="card-block p-b-0">
+                    <h4 itle="Average User Response Times" class="m-b-0">{{user_avg}} ms</h4>
+                    <p>User Response Times</p>
+                </div>
+                <div class="chart-wrapper p-x-1" style="height:70px;">
+                  <canvas id="chart-use_rsp_times" class="chart chart-line" style="margin:10x"
+                   chart-data="users_response_data" chart-labels="user_response_labels"
+                   chart-series="user_response_series"  chart-colors="colors" height="300" chart-options="activeusers_options"/>
+                </div>
+            </div>
+        </div>
+        <!--/col-->
+        <div class="col-sm-6 col-lg-4">
+            <div class="card card-inverse card-warning">
+                <div class="card-block p-b-0">
+                    <h4 itle="NLU Response Times" class="m-b-0">{{nlu_avg}} ms</h4>
+                    <p>NLU Response Times</p>
+                </div>
+                <div class="chart-wrapper" style="height:70px;">
+                  <canvas id="chart-user_rsp_times" class="chart chart-line" style="margin:10x"
+                   chart-data="nlu_response_data" chart-labels="nlu_response_labels"
+                   chart-series="nlu_response_series"  chart-colors="colors" height="300" chart-options="activeusers_options"/>
+                </div>
+            </div>
+        </div>
+        <!--/col-->
+    </div>
+    <div class="row">
+      <div class="col-sm-6 col-lg-6">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6 col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <strong>Intents Classification</strong>
+        </div>
+        <div class="card-block">
+          <div class="row">
+            <label for="fader">Confidence%: &nbsp;</label> {{confidencePercent}}
+              <input ng-model="confidencePercent" type="range" min="0" max="100" value="30" id="fader" style="width:100%" ng-change="updateBarChart()">
+          </div>
+          <br><br>
+          <div class="chart-wrapper">
+            <canvas id="confidence-barchart" class="chart chart-bar" chart-data="barchar_data" chart-labels="bar_chart_labels" chart-series="bar_chart_series"  chart-colors="colors" height="200px"/>
+          </div>
+          </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-6">
+      <div class="card">
+          <div class="card-header">
+              <strong>Intents Frequency</strong>
+              <div class="btn-group pull-right">
+                <button type="button" class="btn btn-transparent active dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="icon-people"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" ng-repeat="agent_name in agents_dropdown" ng-click="updatePieChartData(agent_name)"><small>{{agent_name}}<small></a>
+                </div>
+
+              </div>
+          </div>
+          <div class="card-block">
+              <div class="chart-wrapper">
+                <canvas id="chart_pie_intents_usage" class="chart chart-doughnut" chart-data="intents_pie_data"  chart-labels="intents_pie_labels" chart-colors="colors" chart-options="piechart_options" height="267px"></canvas>
+              </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<style>
+canvas.chart {
+    display: inline-block!important;
+}
+</style>

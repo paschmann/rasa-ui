@@ -59,10 +59,15 @@ tags-input .tags .tag-item .remove-button {
 .list-group-item:hover, a.list-group-item:focus {text-decoration: none;background-color: rgb(245, 245, 245);}
 .list-group { margin-bottom:0px; }
 
+.alert-div{
+  position: fixed;
+  z-index: 9999;
+  right: 10px;
+  top: 5px;
+}
+.alert-text{
 @media (max-width: 991px) {
   .sidebar-hidden .sidebar {
       margin-left: -200px;
   }
-
-  
 }
