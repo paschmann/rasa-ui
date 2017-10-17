@@ -45,13 +45,13 @@
                     <thead>
                       <tr>
                         <th>Create Date/Time</th>
-                        <th>Path</th>
+                        <th>Name</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr ng-repeat="model in available_models track by model.folder | orderBy: datetime : true">
-                        <td>{{ model.date }}</td>
-                        <td>{{ model.folder }}</td>
+                      <tr ng-repeat="model in available_models | orderBy: datetime : true">
+                        <td>{{ model.xdate }}</td>
+                        <td>{{ model.name }}</td>
                       </tr>
                     </tbody>
                   </table>

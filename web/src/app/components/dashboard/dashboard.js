@@ -9,8 +9,11 @@ function DashboardController($scope, Rasa_Status, NLU_log_intent_usage_total, NL
 
   function getRasaStatus() {
     Rasa_Status.get(function(data) {
-        $scope.trainings_under_this_process = data.trainings_queued;
-        $scope.available_models = data.available_models;
+        //$scope.trainings_under_this_process = data.trainings_queued;
+        $scope.trainings_under_this_process = getNoOfTrainingJobs(data);
+        debugger;
+        $scope.available_models = getAvailableModels(data);
+        //$scope.available_models = data.available_models;
     });
   }
 

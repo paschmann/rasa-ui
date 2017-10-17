@@ -26,6 +26,20 @@ function parseRasaModelFolderDate(folder) {
   return new XDate(p.substring(0,4), p.substring(4,6) - 1, p.substring(6,8), p.substring(9,11), p.substring(11,13))
 }
 
+function getNoOfTrainingJobs(statusData) {
+  var count =0;
+  if(statusData === undefined)
+    return count;
+
+    for (var project in statusData.available_projects) {
+      if (!statusData.available_projects.hasOwnProperty(project)) continue;
+       var projectObj = statusData.available_projects[project];
+       if (projectObj.status != 'ready'){
+         count ++;
+       }
+    }
+    return count;
+}
 function getAvailableModels(statusData) {
   var arrModels = [];
 
