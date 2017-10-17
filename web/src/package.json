@@ -7,6 +7,7 @@
     "angular-chart.js": "^1.1.1",
     "angular-resource": "1.6.4",
     "angular-route": "1.6.4",
+    "chart.js": "2.7.0",
     "angular-utils-pagination": "^0.11.1",
     "jquery": "3.1.1",
     "jsonformatter": "^0.6.0",

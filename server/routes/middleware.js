@@ -44,21 +44,28 @@ function getRasaNluVersion(req, res, next) {
 }
 
 function trainRasaNlu(req, res, next) {
-  console.log("Rasa NLU Train Request -> " + process.env.npm_package_config_rasaserver + "/train");
+  console.log("Rasa NLU Train Request -> " + process.env.npm_package_config_rasaserver + "/train?project=" + req.query.project);
   request({
     method: "POST",
-    uri: process.env.npm_package_config_rasaserver + "/train",
-    body: JSON.stringify(req.body),
-    headers: req.headers
+    uri: process.env.npm_package_config_rasaserver + "/train?project=" + req.query.project,
+    body: JSON.stringify(req.body)
+    //commenting headers out. NLU doesnt need any headers
+    //headers: req.headers
   }, function (error, response, body) {
     if(error){
-      //check for webhook error first. log it and send it
-      console.log(error);
+      console.log("Error Occured when posting data to nlu endpoint. "+error);
       sendOutput(404, res, error);
+      return;
     }
     try {
-      console.log(response);
+      if(response.statusCode != 200){
+          console.log("Error occured while training. Response Code : "+response.statusCode+" Body"+ body);
+          sendOutput(response.statusCode, res, JSON.stringify({errorBody : body}));
+          return;
+      }
+      console.log("Training Done !! Response Code : " + response.statusCode);
       sendOutput(200, res, "");
+      return;
     } catch (err) {
       console.log(err);
       sendOutput(404, res, '{"error" : "Exception caught !!"}');
@@ -69,6 +76,7 @@ function trainRasaNlu(req, res, next) {
 function parseRasaNlu(req, res, next) {
   console.log("Rasa NLU Parse Request -> " + process.env.npm_package_config_rasaserver + "/parse");
   var modelName = req.body.model;
+  var projectName = req.body.project;
   if(modelName == ''){
     console.log("Model not found");
     sendOutput(404, res, '{"error" : "Model not found !!"}');
@@ -80,13 +88,13 @@ function parseRasaNlu(req, res, next) {
     return;
   }
   var cache_key = req.jwt.username+"_"+modelName+"_"+Date.now();
-  logRequest(req, "parse", {model: modelName, intent: '', query: req.body.q});
+  logRequest(req, "parse", {project:projectName, model: modelName, intent: '', query: req.body.q});
   createInitialCacheRequest(req,cache_key);
   request({
     method: "POST",
     uri: process.env.npm_package_config_rasaserver + "/parse",
-    body: JSON.stringify(req.body),
-    headers: req.headers
+    body: JSON.stringify(req.body)
+    //headers: req.headers
   }, function (error, response, body) {
     if(error){
       console.log(error);
@@ -95,7 +103,7 @@ function parseRasaNlu(req, res, next) {
     try {
       console.log("rasa_response:+++ "+ body);
       updateCacheWithRasaNluResponse(JSON.parse(body), cache_key);
-      updateAndSendRasaResponse(cache_key,JSON.parse(body),modelName,res);
+      updateAndSendRasaResponse(req,cache_key,JSON.parse(body),modelName,projectName,res);
     } catch (err) {
       console.log(err);
       sendOutput(404, res, '{"error" : "Exception caught !!"}');
@@ -171,7 +179,8 @@ function createInitialCacheRequest(req, cacheKey) {
   console.log("Create Initial cache");
   var nluParseReqObj = new Object();
   nluParseReqObj.request_text = req.body.q;
-  nluParseReqObj.model_name = req.body.model
+  nluParseReqObj.model_name = req.body.model;
+  nluParseReqObj.project_name = req.body.project
   nluParseReqObj.user_id=req.jwt.username;
   nluParseReqObj.user_name=req.jwt.name;
   nluParseReqObj.createTime=Date.now();
@@ -191,7 +200,7 @@ function createInitialCacheRequest(req, cacheKey) {
     }
   });
   //get agent by model
-  var agent_name=req.body.model.split("_")[0];
+  var agent_name=req.body.project;
     db.any('select * from agents where agent_name = $1', agent_name)
       .then(function (data) {
         console.log("Agent Information: " + JSON.stringify(data));
@@ -246,11 +255,11 @@ function logRequest(req, type, data) {
   }
 }
 
-function updateAndSendRasaResponse(cacheKey,rasa_response, modelName, res) {
+function updateAndSendRasaResponse(req,cacheKey,rasa_response, modelName, projectName,res) {
   db.any(
   'select agents.endpoint_enabled as agent_endpoint, agents.endpoint_url, agents.basic_auth_username,agents.basic_auth_password, '+
   'intents.endpoint_enabled as intent_endpoint, intents.intent_id, intents.intent_name  from agents, intents where agents.agent_name=$2 '+
-  ' and intents.intent_name=$1 and intents.agent_id=agents.agent_id', [rasa_response.intent.name,modelName.split("_")[0]])
+  ' and intents.intent_name=$1 and intents.agent_id=agents.agent_id', [rasa_response.intent.name,projectName])
   .then(function (data) {
     //check if webhook is configured
     if(data.length>0){
@@ -259,6 +268,9 @@ function updateAndSendRasaResponse(cacheKey,rasa_response, modelName, res) {
         //Need to add HTTP Basic Authentication
         request.post({
           url: data[0].endpoint_url,
+          headers : {
+            "Authorization" : "Bearer "+req.original_token
+          },
           form: rasa_response
         },
         function (error, response, body){

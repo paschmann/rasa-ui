@@ -22,7 +22,15 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
     var agentname = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id).agent_name;
 
     var id = new XDate().toString('yyyyMMdd-HHmmss');
-    $http.post(api_endpoint_v2 + "/rasa/train?name=" + agentname + "_" + id, JSON.stringify(exportData));
+    $http.post(api_endpoint_v2 + "/rasa/train?name=" + agentname + "_" + id +"&project="+agentname, JSON.stringify(exportData)).then(
+        function(response){
+          // success callback
+          $rootScope.$broadcast('setAlertText', "Training for the Agent: " +agentname + " is successfully completed !!");
+        },
+        function(errorResponse){
+          $rootScope.$broadcast('setAlertText', "Error occured while training agent: " +agentname + " Message: "+JSON.stringify(errorResponse.status)+"-"+ JSON.stringify(errorResponse.data.errorBody));
+        }
+      );
     //Minimize training data
     $scope.exportdata = {};
   }
@@ -177,7 +185,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
         try {
           $rootScope.config = configdata.toJSON();
           $rootScope.config.isonline = 1;
-          $rootScope.config.server_model_dirs_array = getAvailableModels(statusdata.available_models);
+          $rootScope.config.server_model_dirs_array = getAvailableModels(statusdata);
           if ($rootScope.config.server_model_dirs_array.length > 0) {
             $rootScope.modelname = $rootScope.config.server_model_dirs_array[0].name;
           } else {
@@ -185,7 +193,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
           }
 
           if (statusdata !== undefined || statusdata.available_models !== undefined) {
-            $rootScope.available_models = sortArrayByDate(getAvailableModels(statusdata.available_models), 'xdate');
+            $rootScope.available_models = sortArrayByDate(getAvailableModels(statusdata), 'xdate');
             $rootScope.trainings_under_this_process = statusdata.trainings_queued;
           }
         } catch (err) {

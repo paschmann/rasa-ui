@@ -3,7 +3,7 @@ angular
 .controller('AsideController', AsideController)
 
 function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_Config, Rasa_Version, Settings, Rasa_Status, IntentResponse) {
-  $scope.test_text = 'I want italian food in new york';
+  //$scope.test_text = 'I want italian food in new york';
   $scope.test_text_response = {};
   $rootScope.config = {}; //Initilize in case server is not online at startup
   var configcheck;
@@ -41,7 +41,7 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
       Rasa_Config.get().$promise.then(function(data) {
         $rootScope.config = data.toJSON();
         $rootScope.config.isonline = 1;
-        $rootScope.config.server_model_dirs_array = getAvailableModels(statusdata.available_models);
+        $rootScope.config.server_model_dirs_array = getAvailableModels(statusdata);
         if ($rootScope.config.server_model_dirs_array.length > 0) {
           $rootScope.modelname = $rootScope.config.server_model_dirs_array[0].name;
         } else {
@@ -56,13 +56,14 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
 
   $scope.executeTestRequest = function() {
     $scope.response_text=''
-    var options = {};
-    var model = '';
-    if ($scope.modelname !== 'Default') {
-      model = $scope.modelname;
-    }
-    options = {q: $scope.test_text, model: model};
-
+    //var options = {};
+    //var model = '';
+  //  if ($scope.modelname !== 'Default') {
+    //  $scope.modelname.split("*")
+  //    model = $scope.modelname;
+  //  }
+    var options = {q: $scope.test_text,project:$scope.modelname.split("*")[0], model: $scope.modelname.split("*")[1]};
+    debugger;
     $http.post(api_endpoint_v2 + "/rasa/parse", JSON.stringify(options))
       .then(
         function(response){

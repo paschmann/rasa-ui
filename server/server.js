@@ -44,6 +44,7 @@ app.use(function(req, res, next) {
           } else {
             // if everything is good, save to request for use in other routes
             req.jwt = decoded;
+            req.original_token=token;
             next();
           }
         });
