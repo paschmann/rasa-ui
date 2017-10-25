@@ -307,7 +307,7 @@ function updateAndSendRasaResponse(req,cacheKey,rasa_response, modelName, projec
         });
       }else{
         //no webhook, check if there is a static response configured
-        db.any('SELECT responses.response_text FROM responses, intents where responses.intent_id = intents.intent_id and intents.intent_name = $1 order by random() LIMIT 1', rasa_response.intent.name)
+        db.any('SELECT responses.response_text FROM responses, intents where responses.intent_id = intents.intent_id and intents.intent_id = $1 order by random() LIMIT 1', data[0].intent_id)
         .then(function (data) {
           if (data.length > 0) {
             rasa_response.response_text =data[0].response_text;
