@@ -7,6 +7,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
   var statuscheck = $interval(getRasaStatus, 5000);
   $scope.generateError = "";
   $scope.trainings_under_this_process = 0;
+  $scope.toLowercase=false;
 
   getRasaStatus();
 
@@ -99,8 +100,13 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
           tmpIntent = {};
           tmpExpression = {};
 
+
           tmpIntent.intent = intents[intent_i].intent_name;
-          tmpIntent.text = expressionList[expression_i].expression_text;
+          if($scope.toLowercase){
+            tmpIntent.text = expressionList[expression_i].expression_text.toLowerCase();
+          }else{
+            tmpIntent.text = expressionList[expression_i].expression_text;
+          }
           tmpIntent.entities = [];
           tmpIntent.expression_id = expressionList[expression_i].expression_id;
 

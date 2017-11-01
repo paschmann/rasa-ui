@@ -55,7 +55,8 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
   }
 
   $scope.executeTestRequest = function() {
-    $scope.response_text=''
+    $scope.response_text='';
+    $scope.test_text_response={};
     //var options = {};
     //var model = '';
   //  if ($scope.modelname !== 'Default') {
