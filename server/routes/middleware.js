@@ -269,9 +269,11 @@ function updateAndSendRasaResponse(req,cacheKey,rasa_response, modelName, projec
         request.post({
           url: data[0].endpoint_url,
           headers : {
-            "Authorization" : "Bearer "+req.original_token
-          },
-          form: rasa_response
+           "Accept": "application/json",
+           "Content-Type": "application/json",
+           "Authorization" : "Bearer "+req.original_token
+         },
+         body: JSON.stringify(rasa_response)
         },
         function (error, response, body){
           if(error){
