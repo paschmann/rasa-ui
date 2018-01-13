@@ -51,7 +51,7 @@ Clone/download the Rasa UI repository. Install npm packages foe both Server and 
 
 ```
 git clone https://github.com/paschmann/rasaui.git
-npm install
+cd rasaui && npm install
 
 cd web/src
 npm install
