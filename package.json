@@ -20,7 +20,8 @@
     "gulp": "^3.9.1"
   },
   "config": {
-    "rasaserver": "http://10.211.55.3:5001",
+    "rasanluendpoint": "http://localhost:5000",
+    "rasacoreendpoint": "http://localhost:5005",
     "jwtsecret": "th1s1sn0t0nlyths3cr3tbutth3m0st1mp0rtAntp13c30f1nf0rmAt10nf0rth1sAppl1cAt10n",
     "postgresConnectionString": "postgres://postgres:rasaui@10.211.55.3:5432/rasaui"
   },
