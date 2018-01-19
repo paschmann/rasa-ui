@@ -1,10 +1,9 @@
 <ol class="breadcrumb" breadcrumb="">
       <li class="breadcrumb-item"><a href="#!/agents">Agents</a></li>
-      <li class="breadcrumb-item active">Intents</li>
+      <li class="breadcrumb-item active">{{agent.agent_name}}</li>
         <!-- Breadcrumb Menu-->
         <li class="breadcrumb-menu">
             <div class="btn-group" role="group">
-                <a class="btn btn-secondary" href="#!/agent/{{agent.agent_id}}/intent/add"><i class="icon-plus"></i> &nbsp;Add Intent</a>
                 <a class="btn btn-secondary" ng-click="deleteAgent()" confirm-click-title="Delete Agent" confirm-click="Are you sure? This will delete the agent, all its intents, expressions, and resolved entities."><i class="icon-trash"></i> &nbsp;Delete Agent</a>
             </div>
         </li>
@@ -13,10 +12,57 @@
     <div class="animated fadeIn">
         <div class="row">
             <div class="col-sm-12 col-lg-12">
-              <div class="list-group">
-                <a href="#!/agent/{{intent.agent_id}}/intent/{{ intent.intent_id }}" class="list-group-item" ng-repeat="intent in intentList track by intent.intent_id">{{ intent.intent_name }}</a>
+              <div class="card">
+                <div class="card-header">
+                  <strong>Intents</strong>
+                  <span class="pull-right">
+                    <a class="btn btn-secondary" href="#!/agent/{{agent.agent_id}}/intent/add" data-toggle="tooltip" data-placement="top" title="Click to Add a New Intent" onmouseenter="$(this).tooltip('show')"><i class="icon-plus"></i> &nbsp;Add Intent</a>
+                  </span>
+                </div>
+                <div class="card-block">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="list-group" dir-paginate="intent in intentList  | itemsPerPage: 5" pagination-id="intentsList">
+                        <div class="list-group-item">
+                          <a href="#!/agent/{{intent.agent_id}}/intent/{{intent.intent_id}}">{{intent.intent_name}}</a>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <br/>
+                <div style="float:right">
+                  <dir-pagination-controls pagination-id="intentsList"></dir-pagination-controls>
+                </div>
               </div>
+            </div>
+          </div>
+        </div>
 
+
+        <div class="row">
+            <div class="col-sm-12 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <strong>Entities</strong>
+                  <span class="pull-right">
+                    <a class="btn btn-secondary" href="#!/agent/{{agent.agent_id}}/entity/add" data-toggle="tooltip" data-placement="top" title="Click to Add a New Entity" onmouseenter="$(this).tooltip('show')"><i class="icon-plus"></i> &nbsp;Add Entity</a>
+                  </span>
+                </div>
+                <div class="card-block">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="list-group" dir-paginate="entity in entitiesList  | itemsPerPage: 5" pagination-id="entitiesList">
+                        <div class="list-group-item">
+                          <a href="#!/agent/{{agent.agent_id}}/entity/{{entity.entity_id}}/synonyms">{{ entity.entity_name }}</a>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <br/>
+                <div style="float:right">
+                  <dir-pagination-controls pagination-id="entitiesList"></dir-pagination-controls>
+                </div>
+              </div>
             </div>
           </div>
         </div>

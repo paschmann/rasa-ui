@@ -45,9 +45,12 @@ return $resource(api_endpoint_v2 + '/parameters/:parameter_id', {parameter_id: '
     });
 }]);
 
-app.factory('Entity', function($resource) {
-  return $resource(api_endpoint_v2 + '/entities/:entity_id', {entity_id:'@id'});
-});
+app.factory('Entity', ['$resource', function($resource) {
+return $resource(api_endpoint_v2 + '/entities/:entity_id', {entity_id: '@id'},
+    {
+        'update': { method:'PUT' }
+    });
+}]);
 
 app.factory('Entities', function($resource) {
   return $resource(api_endpoint_v2 + '/entities');
@@ -56,6 +59,11 @@ app.factory('Entities', function($resource) {
 app.factory('EntitySynonyms', function($resource) {
   return $resource(api_endpoint_v2 + '/entity/:entity_id/synonyms', {entity_id:'@id'});
 });
+
+app.factory('AgentEntities', function($resource) {
+  return $resource(api_endpoint_v2 + '/entities/agent/:agent_id', {agent_id:'@id'});
+});
+
 
 app.factory('Synonym', function($resource) {
   return $resource(api_endpoint_v2 + '/synonyms/:synonym_id', {synonym_id:'@id'});

@@ -2,7 +2,7 @@ angular
 .module('app')
 .controller('EditAgentController', EditAgentController)
 
-function EditAgentController($scope, Agent, Intents) {
+function EditAgentController($scope, Agent, Intents, Entities,AgentEntities) {
   Agent.get({agent_id: $scope.$routeParams.agent_id}, function(data) {
       $scope.agent = data;
   });
@@ -11,9 +11,14 @@ function EditAgentController($scope, Agent, Intents) {
       $scope.intentList = data;
   });
 
+    AgentEntities.query({agent_id: $scope.$routeParams.agent_id},function(data) {
+        $scope.entitiesList = data;
+    });
+
   $scope.deleteAgent = function() {
     Agent.remove({agent_id: $scope.$routeParams.agent_id}).$promise.then(function(resp) {
       $scope.go('/agents');
     });
   };
+
 }

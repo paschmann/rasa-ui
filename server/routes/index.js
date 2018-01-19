@@ -48,6 +48,7 @@ router.put('/parameters/:parameter_id', parameters.updateParameter);
 router.delete('/parameters/:parameter_id', parameters.removeParameter);
 
 router.get('/entities', entities.getAllEntities);
+router.get('/entities/agent/:agent_id', entities.getAllEntitiesForAgent);
 router.get('/entities/:entity_id', entities.getSingleEntity);
 router.post('/entities', entities.createEntity);
 router.put('/entities/:entity_id', entities.updateEntity);

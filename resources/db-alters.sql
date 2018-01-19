@@ -1,3 +1,9 @@
+/*Alters after release 1.0 version*/
+Alter table public.entities ADD COLUMN slot_data_type character varying COLLATE pg_catalog."default" NOT NULL default 'NOT_USED';
+Alter table public.entities ADD COLUMN agent_id integer;
+
+
+/*Alters to release 1.0 version*/
 CREATE SEQUENCE public.parse_log_parse_log_id_seq
 INCREMENT 1
 START 1
