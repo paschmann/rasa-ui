@@ -11,7 +11,6 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
   Rasa_Version.get().$promise.then(function(data) {
     $rootScope.rasa_version = data.version;
   });
-  debugger;
   executeRefreshSettings();
 
   function executeRefreshSettings(){
@@ -71,7 +70,6 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
   //    model = $scope.modelname;
   //  }
     var options = {q: $scope.test_text,project:$scope.modelname.split("*")[0], model: $scope.modelname.split("*")[1]};
-    debugger;
     $http.post(api_endpoint_v2 + "/rasa/parse", JSON.stringify(options))
       .then(
         function(response){
