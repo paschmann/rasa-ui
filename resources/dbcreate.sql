@@ -392,3 +392,4 @@ LIMIT 30;
 
 /* Static Data */
 INSERT INTO response_type (response_type_text) VALUES ('DEFAULT'),('RICH TEXT');
+INSERT INTO settings (setting_name,setting_value) VALUES ('refresh_time',60000);

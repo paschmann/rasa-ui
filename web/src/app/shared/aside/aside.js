@@ -11,24 +11,31 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
   Rasa_Version.get().$promise.then(function(data) {
     $rootScope.rasa_version = data.version;
   });
+  debugger;
+  executeRefreshSettings();
 
-  Settings.query(function(data) {
-      $rootScope.settings = data;
-
-      for(var key in data) {
-        $rootScope.settings[data[key]['setting_name']] = data[key]['setting_value'];
-      }
-
-      if ($rootScope.settings['refresh_time'] !== "-1" && $rootScope.settings['refresh_time'] !== undefined) {
-        configcheck = $interval(getRasaConfig, parseInt($rootScope.settings['refresh_time']));
-      }
-
-      getRasaConfig();
-  });
+  function executeRefreshSettings(){
+    Settings.query(function(data) {
+        $rootScope.settings = data;
+        for(var key in data) {
+          $rootScope.settings[data[key]['setting_name']] = data[key]['setting_value'];
+        }
+        if ($rootScope.settings['refresh_time'] !== "-1" && $rootScope.settings['refresh_time'] !== undefined) {
+          configcheck = $interval(getRasaConfig, parseInt($rootScope.settings['refresh_time']));
+        }
+        getRasaConfig();
+    });
+  }
 
   $scope.$on('executeTestRequest', function(event, expression_text) {
     $scope.test_text = expression_text;
     $scope.executeTestRequest();
+  });
+
+  $scope.$on('refreshIntervelUpdate', function(event, expression_text) {
+    debugger;
+    $interval.cancel(configcheck);
+    executeRefreshSettings();
   });
 
   $scope.$on("$destroy", function(){
