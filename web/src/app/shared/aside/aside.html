@@ -2,22 +2,24 @@
 
   <!-- Tab panes -->
   <div class="tab-content">
-    <form>
+
       <div class="tab-pane active" id="dialog" role="tabpanel">
         <div class="callout m-0 py-2 text-muted text-center bg-faded text-uppercase">
           <small><b>Input</b></small>
         </div>
         <div class="callout m-0 py-3">
+        <form name="entitiesForm" novalidate>
           <div class="input-group" ng-show="modelname !== 'Default'">
-            <select ng-options="model.name as model.name for model in $root.config.server_model_dirs_array | orderBy: 'xdate' : true" ng-model="modelname" class="form-control"></select>
+            <select ng-options="model.name as model.name for model in $root.config.server_model_dirs_array | orderBy: 'xdate' : true" ng-model="modelname" class="form-control" required></select>
           </div>
           <hr class="m-x-1 m-y-0">
           <div class="input-group">
-            <input type="test_text" ng-model="test_text" class="form-control" id="test_text" placeholder="Try it now ...">
+            <input type="test_text" ng-model="test_text" class="form-control" id="test_text" placeholder="Try it now ..." required data-toggle="tooltip" data-placement="left" title="Select a Model from dropdown and Enter text to be parsed" onmouseenter="$(this).tooltip('show')">
             <span class="input-group-btn">
-              <button class="btn btn btn-outline-secondary" ng-click="executeTestRequest()">Go</button>
+              <button class="btn btn btn-outline-secondary" ng-click="executeTestRequest()" ng-disabled="entitiesForm.$invalid">Go</button>
             </span>
           </div>
+        </form>
         </div>
         <div class="callout m-0 py-2 text-muted text-center bg-faded text-uppercase" ng-hide="response_text === undefined">
           <small><b>Output</b>
@@ -34,8 +36,6 @@
           <json-formatter json="test_text_response" open="3"></json-formatter>
         </div>
         <hr class="mx-3 my-0">
-      </form>
     </div>
-
   </div>
 </aside>
