@@ -2,14 +2,15 @@ angular
 .module('app')
 .controller('EditIntentController', EditIntentController)
 
-function EditIntentController($rootScope, $scope, Agent, Intent, Expressions, Expression, Parameter, Parameters, Entities, UniqueIntentEntities,Responses, Response ) {
+function EditIntentController($rootScope, $scope, Agent, AgentEntities, Intent, Expressions, Expression, Parameter, Parameters, Entities, UniqueIntentEntities,Responses, Response ) {
   Agent.get({agent_id: $scope.$routeParams.agent_id}, function(data) {
       $scope.agent = data;
   });
 
-  Entities.query( function(data) {
+  AgentEntities.query({agent_id: $scope.$routeParams.agent_id},function(data) {
       $scope.entityList = data;
   });
+
   Intent.get({intent_id: $scope.$routeParams.intent_id}, function(data) {
       $scope.intent = data;
   });
