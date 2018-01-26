@@ -66,6 +66,13 @@ MINVALUE 1
 MAXVALUE 9223372036854775807
 CACHE 1;
 
+CREATE SEQUENCE public.actions_action_id_seq
+INCREMENT 1
+START 1
+MINVALUE 1
+MAXVALUE 9223372036854775807
+CACHE 1;
+
 CREATE SEQUENCE public.nlu_log_log_id_seq
 INCREMENT 1
 START 1
@@ -212,10 +219,13 @@ TABLESPACE pg_default;
 
 CREATE TABLE public.responses
 (
-  intent_id integer NOT NULL,
+  response_id integer NOT NULL DEFAULT nextval('responses_response_id_seq'::regclass),
+  intent_id integer,
+  action_id integer,
+  buttons_info jsonb,
+  response_image_url character varying COLLATE pg_catalog."default",
   response_text character varying COLLATE pg_catalog."default",
-  response_type integer REFERENCES response_type (response_type_id),
-  response_id integer NOT NULL DEFAULT nextval('responses_response_id_seq'::regclass)
+  response_type integer REFERENCES response_type (response_type_id)
 )
 WITH (
   OIDS = FALSE
@@ -285,6 +295,18 @@ WITH (
   OIDS = FALSE
 )
 TABLESPACE pg_default;
+
+CREATE TABLE public.actions
+(
+  action_name character varying COLLATE pg_catalog."default" NOT NULL,
+  agent_id integer,
+  action_id integer NOT NULL DEFAULT nextval('actions_action_id_seq'::regclass)
+)
+WITH (
+  OIDS = FALSE
+)
+TABLESPACE pg_default;
+
 
 CREATE TABLE public.expressions
 (
