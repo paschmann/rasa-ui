@@ -9,6 +9,7 @@ var jwt = require('jsonwebtoken');
 
 const db = require('./db/db')
 const url = require('url');
+const config = require("./config");
 
 app.use(cors())
 
@@ -38,7 +39,7 @@ app.use(function(req, res, next) {
     if (req.headers.authorization.split(' ')[0] === 'Bearer'){
         var token = req.headers.authorization.split(' ')[1];
         // verifies secret and checks exp
-        jwt.verify(token, process.env.npm_package_config_jwtsecret, function(err, decoded) {
+        jwt.verify(token, config.jwtsecret, function(err, decoded) {
           if (err) {
             return res.json({ success: false, message: 'Failed to authenticate token.' });
           } else {
