@@ -3,6 +3,7 @@ var router = express.Router();
 
 var agents = require('../db/agents');
 var intents = require('../db/intents');
+var actions = require('../db/actions');
 var expressions = require('../db/expressions');
 var parameters = require('../db/parameters');
 var entities = require('../db/entities');
@@ -21,6 +22,11 @@ router.put('/agents/:agent_id', agents.updateAgent);
 router.delete('/agents/:agent_id', agents.removeAgent);
 router.post('/agents/upload', agents.uploadAgentFromFile);
 
+router.get('/actions/:action_id', actions.getSingleAction);
+router.put('/actions/:action_id', actions.updateAction);
+router.delete('/actions/:action_id', actions.removeAction);
+router.post('/actions', actions.createAgentAction);
+router.get('/agents/:agent_id/actions', actions.getAgentActions);
 
 router.get('/agents/:agent_id/intents', intents.getAgentIntents);
 router.get('/intents/:intent_id', intents.getSingleIntent);
@@ -48,6 +54,7 @@ router.put('/parameters/:parameter_id', parameters.updateParameter);
 router.delete('/parameters/:parameter_id', parameters.removeParameter);
 
 router.get('/entities', entities.getAllEntities);
+router.get('/entities/agent/:agent_id', entities.getAllEntitiesForAgent);
 router.get('/entities/:entity_id', entities.getSingleEntity);
 router.post('/entities', entities.createEntity);
 router.put('/entities/:entity_id', entities.updateEntity);
@@ -70,10 +77,12 @@ router.get('/settings', settings.getSettings);
 router.get('/settings/:setting_name', settings.getSingleSetting);
 router.put('/settings/:setting_name', settings.updateSetting);
 
+router.get('/actionresponse/:action_id', responses.getActionResponses);
+router.post('/actionresponse', responses.createActionResponse);
 
 router.get('/response/:intent_id', responses.getIntentResponses);
 router.post('/response', responses.createIntentResponse);
-router.delete('/response/:response_id', responses.removeIntentResponse);
+router.delete('/response/:response_id', responses.removeResponse);
 
 router.get('/rndmresponse', responses.getRandomResponseForIntent);
 

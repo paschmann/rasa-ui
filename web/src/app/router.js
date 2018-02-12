@@ -50,12 +50,12 @@ app.config(function($routeProvider, $locationProvider) {
       templateUrl:'/app/components/entities/entities.html',
       activePage:'entities'
     })
-    .when('/entity/add', {
+    .when('/agent/:agent_id/entity/add', {
       controller:'AddEntityController as addentity',
       templateUrl:'/app/components/entities/add_entity.html',
       activePage:'entities'
     })
-    .when('/entity/:entity_id/synonyms', {
+    .when('/agent/:agent_id/entity/:entity_id/synonyms', {
       controller:'SynonymController',
       templateUrl:'/app/components/synonyms/synonyms.html',
       activePage:'entities'

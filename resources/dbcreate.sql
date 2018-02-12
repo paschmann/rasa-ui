@@ -66,6 +66,13 @@ MINVALUE 1
 MAXVALUE 9223372036854775807
 CACHE 1;
 
+CREATE SEQUENCE public.actions_action_id_seq
+INCREMENT 1
+START 1
+MINVALUE 1
+MAXVALUE 9223372036854775807
+CACHE 1;
+
 CREATE SEQUENCE public.nlu_log_log_id_seq
 INCREMENT 1
 START 1
@@ -150,11 +157,18 @@ TABLESPACE pg_default;
 
 CREATE TABLE public.entities
 (
-  entity_name character varying COLLATE pg_catalog."default",
-  entity_id integer NOT NULL DEFAULT nextval('entities_entity_id_seq'::regclass)
+    entity_id integer NOT NULL DEFAULT nextval('entities_entity_id_seq'::regclass),
+    entity_name character varying COLLATE pg_catalog."default",
+    agent_id integer NOT NULL,
+    slot_data_type character varying COLLATE pg_catalog."default" NOT NULL DEFAULT 'NOT_USED'::character varying,
+    CONSTRAINT entities_pkey PRIMARY KEY (entity_id),
+    CONSTRAINT agent_pk FOREIGN KEY (agent_id)
+        REFERENCES public.agents (agent_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
 )
 WITH (
-  OIDS = FALSE
+    OIDS = FALSE
 )
 TABLESPACE pg_default;
 
@@ -205,10 +219,13 @@ TABLESPACE pg_default;
 
 CREATE TABLE public.responses
 (
-  intent_id integer NOT NULL,
+  response_id integer NOT NULL DEFAULT nextval('responses_response_id_seq'::regclass),
+  intent_id integer,
+  action_id integer,
+  buttons_info jsonb,
+  response_image_url character varying COLLATE pg_catalog."default",
   response_text character varying COLLATE pg_catalog."default",
-  response_type integer REFERENCES response_type (response_type_id),
-  response_id integer NOT NULL DEFAULT nextval('responses_response_id_seq'::regclass)
+  response_type integer REFERENCES response_type (response_type_id)
 )
 WITH (
   OIDS = FALSE
@@ -278,6 +295,18 @@ WITH (
   OIDS = FALSE
 )
 TABLESPACE pg_default;
+
+CREATE TABLE public.actions
+(
+  action_name character varying COLLATE pg_catalog."default" NOT NULL,
+  agent_id integer,
+  action_id integer NOT NULL DEFAULT nextval('actions_action_id_seq'::regclass)
+)
+WITH (
+  OIDS = FALSE
+)
+TABLESPACE pg_default;
+
 
 CREATE TABLE public.expressions
 (
@@ -350,20 +379,6 @@ FROM parameters
 JOIN expressions ON parameters.expression_id = expressions.expression_id
 LEFT JOIN entities ON entities.entity_id = parameters.entity_id;
 
-
-CREATE OR REPLACE VIEW public.expression_parameters AS
-SELECT parameters.expression_id,
-parameters.parameter_required,
-parameters.parameter_value,
-parameters.parameter_start,
-parameters.parameter_end,
-parameters.entity_id,
-parameters.parameter_id,
-expressions.intent_id,
-entities.entity_name
-FROM parameters
-JOIN expressions ON parameters.expression_id = expressions.expression_id
-LEFT JOIN entities ON entities.entity_id = parameters.entity_id;
 
 CREATE OR REPLACE VIEW public.intent_usage_total AS
 SELECT count(*) AS count

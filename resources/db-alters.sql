@@ -1,3 +1,31 @@
+/*Alters after release 1.0 version*/
+Alter table public.entities ADD COLUMN slot_data_type character varying COLLATE pg_catalog."default" NOT NULL default 'NOT_USED';
+Alter table public.entities ADD COLUMN agent_id integer;
+
+CREATE SEQUENCE public.actions_action_id_seq
+INCREMENT 1
+START 1
+MINVALUE 1
+MAXVALUE 9223372036854775807
+CACHE 1;
+
+CREATE TABLE public.actions
+(
+  action_name character varying COLLATE pg_catalog."default" NOT NULL,
+  agent_id integer,
+  action_id integer NOT NULL DEFAULT nextval('actions_action_id_seq'::regclass)
+)
+WITH (
+  OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.responses ADD COLUMN action_id integer;
+ALTER TABLE public.responses ADD COLUMN buttons_info jsonb;
+ALTER TABLE public.responses ADD COLUMN response_image_url character varying COLLATE pg_catalog."default";
+ALTER TABLE public.responses ALTER COLUMN intent_id DROP NOT NULL;
+
+/*Alters to release 1.0 version*/
 CREATE SEQUENCE public.parse_log_parse_log_id_seq
 INCREMENT 1
 START 1

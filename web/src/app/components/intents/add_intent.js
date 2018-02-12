@@ -11,7 +11,7 @@ function AddIntentController($scope, Agent, Intent) {
     this.formData.agent_id = $scope.$routeParams.agent_id;
     Intent.save(this.formData).$promise.then(function(resp) {
       $scope.formData.intent_name = "";
-$scope.go('/agents')
+      $scope.go('/agents')
     });
   };
 }

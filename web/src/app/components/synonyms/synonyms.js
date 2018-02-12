@@ -2,13 +2,20 @@ angular
 .module('app')
 .controller('SynonymController', SynonymController)
 
-function SynonymController($scope, Synonym, EntitySynonymVariants, EntitySynonyms, Entity, Entities, SynonymVariant, EntitySynonymVariants) {
+function SynonymController( $rootScope,$scope, Synonym, EntitySynonymVariants,Agent, EntitySynonyms, Entity, Entities, SynonymVariant, EntitySynonymVariants) {
   $scope.tags = [{}];
 
   loadSynonyms();
 
   Entity.get({entity_id: $scope.$routeParams.entity_id}, function(data) {
       $scope.entity = data;
+  });
+  Agent.query(function(data) {
+      $scope.agentsList = data;
+  });
+
+  Agent.get({agent_id: $scope.$routeParams.agent_id}, function(data) {
+      $scope.entity.agent = data;
   });
 
   function loadSynonyms() {
@@ -26,6 +33,13 @@ function SynonymController($scope, Synonym, EntitySynonymVariants, EntitySynonym
     }
     Entity.remove({entity_id: $scope.$routeParams.entity_id}, function(data) {
         $scope.go('/entities');
+    });
+  }
+
+  $scope.updateEntity = function(entity){
+    Entity.update({ entity_id:entity.entity_id }, entity).$promise.then(function() {
+      $rootScope.$broadcast('setAlertText', "Entity information updated Sucessfully!!");
+      $scope.go('/agent/'+$scope.entity.agent.agent_id);
     });
   }
 

@@ -19,8 +19,10 @@ function getRasaNluStatus(req, res, next) {
 }
 
 function getRasaNluConfig(req, res, next) {
+
   console.log("Rasa NLU Config Request -> " + config.rasaserver + "/config");
   request(config.rasaserver + '/config', function (error, response, body) {
+
     try {
       if (body !== undefined) sendOutput(200, res, body);
       else sendOutput(404, res, '{"error" : "Server Error"}');
@@ -32,6 +34,7 @@ function getRasaNluConfig(req, res, next) {
 }
 
 function getRasaNluVersion(req, res, next) {
+
   console.log("Rasa NLU Version Request -> " + config.rasaserver + "/version");
   request(config.rasaserver + '/version', function (error, response, body) {
     try {
@@ -45,10 +48,12 @@ function getRasaNluVersion(req, res, next) {
 }
 
 function trainRasaNlu(req, res, next) {
+
   console.log("Rasa NLU Train Request -> " + config.config_rasaserver + "/train?project=" + req.query.project);
   request({
     method: "POST",
     uri: config.config_rasaserver + "/train?project=" + req.query.project,
+
     body: JSON.stringify(req.body)
     //commenting headers out. NLU doesnt need any headers
     //headers: req.headers

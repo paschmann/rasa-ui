@@ -7,6 +7,17 @@ app.factory('Agent', function($resource) {
       });
 });
 
+app.factory('Actions', function($resource) {
+  return $resource(api_endpoint_v2 + '/actions/:action_id', {action_id: '@id'},
+      {
+          'update': { method:'PUT' }
+      });
+});
+
+app.factory('AgentActions', function($resource) {
+  return $resource(api_endpoint_v2 + '/agents/:agent_id/actions', {agent_id:'@id'});
+});
+
 app.factory('Intent', function($resource) {
   return $resource(api_endpoint_v2 + '/intents/:intent_id', {intent_id: '@id'},
       {
@@ -45,9 +56,12 @@ return $resource(api_endpoint_v2 + '/parameters/:parameter_id', {parameter_id: '
     });
 }]);
 
-app.factory('Entity', function($resource) {
-  return $resource(api_endpoint_v2 + '/entities/:entity_id', {entity_id:'@id'});
-});
+app.factory('Entity', ['$resource', function($resource) {
+return $resource(api_endpoint_v2 + '/entities/:entity_id', {entity_id: '@id'},
+    {
+        'update': { method:'PUT' }
+    });
+}]);
 
 app.factory('Entities', function($resource) {
   return $resource(api_endpoint_v2 + '/entities');
@@ -56,6 +70,11 @@ app.factory('Entities', function($resource) {
 app.factory('EntitySynonyms', function($resource) {
   return $resource(api_endpoint_v2 + '/entity/:entity_id/synonyms', {entity_id:'@id'});
 });
+
+app.factory('AgentEntities', function($resource) {
+  return $resource(api_endpoint_v2 + '/entities/agent/:agent_id', {agent_id:'@id'});
+});
+
 
 app.factory('Synonym', function($resource) {
   return $resource(api_endpoint_v2 + '/synonyms/:synonym_id', {synonym_id:'@id'});
@@ -76,6 +95,10 @@ return $resource(api_endpoint_v2 + '/settings/:setting_name', {setting_name:'@se
         'update': { method:'PUT' }
     });
 }]);
+
+app.factory('ActionResponses', function($resource) {
+  return $resource(api_endpoint_v2 + '/actionresponse/:action_id', {action_id:'@id'});
+});
 //All responses for an intent
 app.factory('Responses', function($resource) {
   return $resource(api_endpoint_v2 + '/response/:intent_id', {intent_id:'@id'});

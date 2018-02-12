@@ -13,6 +13,38 @@ function getIntentResponses(req, res, next) {
     });
 }
 
+function getActionResponses(req, res, next) {
+  console.log("responses.getActionResponses");
+  var action_id = parseInt(req.params.action_id);
+  db.any('select * from responses where action_id = $1', action_id)
+    .then(function (data) {
+      res.status(200).json(data);
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function createActionResponse(req, res, next) {
+  console.log("responses.createActionResponse");
+  //using default response type
+  db.any('insert into responses(action_id, response_text, response_type, buttons_info, response_image_url)' +
+      'values(${action_id}, ${response_text},${response_type},${buttons_info},${response_image_url})',
+      //using default response type
+    req.body)
+    .then(function () {
+      res.status(200)
+        .json({
+          status: 'success',
+          message: 'Inserted'
+        });
+    })
+    .catch(function (err) {
+      console.log(err);
+      return next(err);
+    });
+}
+
 function createIntentResponse(req, res, next) {
   console.log("responses.createIntentResponse");
   //using default response type
@@ -32,9 +64,9 @@ function createIntentResponse(req, res, next) {
     });
 }
 
-function removeIntentResponse(req, res, next) {
+function removeResponse(req, res, next) {
   var responseID = parseInt(req.params.response_id);
-  console.log("responses.removeIntentResponse");
+  console.log("responses.removeResponse");
   db.result('delete from responses where response_id = $1', responseID)
     .then(function (result) {
 
@@ -63,7 +95,9 @@ function getRandomResponseForIntent(req, res, next) {
 
 module.exports = {
   getIntentResponses: getIntentResponses,
-  removeIntentResponse: removeIntentResponse,
+  removeResponse: removeResponse,
   createIntentResponse: createIntentResponse,
-  getRandomResponseForIntent:getRandomResponseForIntent
+  createActionResponse: createActionResponse,
+  getRandomResponseForIntent:getRandomResponseForIntent,
+  getActionResponses: getActionResponses
 };
