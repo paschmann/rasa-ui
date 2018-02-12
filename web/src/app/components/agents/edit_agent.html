@@ -63,14 +63,18 @@
           </div>
         </div>
         </div>
-
         <div class="row">
-            <div class="col-sm-12 col-lg-12">
+          <div class="col-sm-12 col-lg-12">
+            <div id="headerInfo" class="alert alert-info" role="alert" style="text-align:center"><b>Rasa Core Configurations.</b></div>
+          </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-lg-6">
               <div class="card border-warning">
                 <div class="card-header">
-                  <strong>Actions<small>(Only used if Rasa Core is enabled for this Agent)</small></strong>
+                  <strong>Actions</strong>
                   <span class="pull-right">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-add-actions">Add Action</button>
+                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modal-add-actions"><i class="icon-plus"></i>&nbsp;Add Action</button>
                   </span>
                 </div>
                 <div class="card-block">
@@ -81,8 +85,8 @@
                           <a href data-toggle="modal" data-target="#modal-edit-actions" ng-click="loadActionDetailsToEdit(action.action_id)">{{ action.action_name }}</a>
                           <span class="pull-right">
                             <span class="badge badge-default badge-pill mr-2" ng-hide="parameterFilterList.length == 0">{{ parameterFilterList.length }}</span>
-                            <button class="btn btn btn-outline-danger" confirm-click-title="Delete Expression" confirm-click="Are you sure? This will delete the expression and all its resolved entities." ng-click="deleteAction(action)">
-                              <span class="icon-trash"></span>
+                            <button class="btn btn-outline-danger" confirm-click-title="Delete Expression" confirm-click="Are you sure? This will delete the expression and all its resolved entities." ng-click="deleteAction(action)">
+                            <i class="fa fa-trash-o fa-xs" aria-hidden="true"></i>
                             </button>
                           </span>
                         </div>
@@ -96,6 +100,31 @@
               </div>
             </div>
           </div>
+          <div class="col-sm-6 col-lg-6">
+            <div class="card border-warning">
+              <div class="card-header">
+                <strong>Stories</strong>
+                <span class="pull-right">
+                  <a class="btn btn-secondary" href="#!/agent/{{agent.agent_id}}/stories" data-toggle="tooltip" data-placement="top" title="Click to change a story" onmouseenter="$(this).tooltip('show')"><i class="fa fa-hand-o-right"></i> &nbsp;Stories Editor</a>
+                </span>
+              </div>
+              <div class="card-block">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="list-group" dir-paginate="story in storiesList  | itemsPerPage: 5" pagination-id="storiesList">
+                      <div class="list-group-item">
+                        {{story}}
+                      </div>
+                  </div>
+                </div>
+              </div>
+              <br/>
+              <div style="float:right">
+                <dir-pagination-controls pagination-id="storiesList"></dir-pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
         </div>
       </div>
 

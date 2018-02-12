@@ -45,6 +45,11 @@ app.config(function($routeProvider, $locationProvider) {
       templateUrl:'/app/components/intents/edit_intent.html',
       activePage:'agents'
     })
+    .when('/agent/:agent_id/stories/', {
+      controller:'StoriesController as stories',
+      templateUrl:'/app/components/stories/stories.html',
+      activePage:'agents'
+    })
     .when('/entities', {
       controller:'EntitiesController as entity',
       templateUrl:'/app/components/entities/entities.html',

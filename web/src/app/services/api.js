@@ -18,6 +18,11 @@ app.factory('AgentActions', function($resource) {
   return $resource(api_endpoint_v2 + '/agents/:agent_id/actions', {agent_id:'@id'});
 });
 
+app.factory('AgentStories', function($resource) {
+  return $resource(api_endpoint_v2 + '/agentStory');
+});
+
+
 app.factory('Intent', function($resource) {
   return $resource(api_endpoint_v2 + '/intents/:intent_id', {intent_id: '@id'},
       {

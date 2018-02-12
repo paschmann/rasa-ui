@@ -199,11 +199,27 @@ function removeAgent(req, res, next) {
     });
 }
 
+function updateAgentStory(req, res, next) {
+  console.log("Agent.updateAgentStory");
+  db.none('update agents set story_details=$2 where agent_id=$1',
+    [parseInt(req.body.agent_id), req.body.story_details])
+    .then(function () {
+      res.status(200)
+        .json({
+          status: 'success',
+          message: 'Updated Story For Agent'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
 module.exports = {
   getSingleAgent: getSingleAgent,
   getAllAgents: getAllAgents,
   createAgent: createAgent,
   updateAgent: updateAgent,
   removeAgent: removeAgent,
-  uploadAgentFromFile:uploadAgentFromFile
+  uploadAgentFromFile:uploadAgentFromFile,
+  updateAgentStory: updateAgentStory
 };

@@ -24,6 +24,7 @@ ALTER TABLE public.responses ADD COLUMN action_id integer;
 ALTER TABLE public.responses ADD COLUMN buttons_info jsonb;
 ALTER TABLE public.responses ADD COLUMN response_image_url character varying COLLATE pg_catalog."default";
 ALTER TABLE public.responses ALTER COLUMN intent_id DROP NOT NULL;
+ALTER TABLE public.agents ADD COLUMN story_details text COLLATE pg_catalog."default";
 
 /*Alters to release 1.0 version*/
 CREATE SEQUENCE public.parse_log_parse_log_id_seq

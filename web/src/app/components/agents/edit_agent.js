@@ -3,9 +3,10 @@ angular
 .controller('EditAgentController', EditAgentController)
 
 function EditAgentController($rootScope,$scope, Agent, Intents, Entities,AgentEntities, Actions, AgentActions,ActionResponses, Response) {
-
+$scope.storiesList = [];
   Agent.get({agent_id: $scope.$routeParams.agent_id}, function(data) {
       $scope.agent = data;
+      parseStories(data.story_details);
   });
 
   Intents.query({agent_id: $scope.$routeParams.agent_id}, function(data) {
@@ -19,6 +20,17 @@ function EditAgentController($rootScope,$scope, Agent, Intents, Entities,AgentEn
   AgentActions.query({agent_id: $scope.$routeParams.agent_id},function(data) {
       $scope.actionsList = data;
   });
+
+  function parseStories(story_details){
+    var lines = story_details.split("\n");
+
+    for(var i=0; i<lines.length;i++){
+      var currentLine = lines[i];
+      if(currentLine.startsWith("##")){
+        $scope.storiesList.push(currentLine.substring(2,currentLine.length));
+      }
+  }
+}
 
   $scope.loadActionDetailsToEdit=function(action_id){
     $scope.readonly = true;
