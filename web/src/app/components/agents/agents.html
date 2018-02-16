@@ -33,6 +33,18 @@
                         <label class="form-control-label" for="{{agent.agent_id}}_formgroupClientSecret">Client Secret</label>
                         <input type="text" class="form-control" disabled value="{{ agent.client_secret_key }}">
                       </div>
+                      <strong data-toggle="tooltip" data-placement="top" onmouseenter="$(this).tooltip('show')" title="Enabling Rasa Core will provide Natural Language Dialogue Management capabilities. Your webhook will recieve v2 format request.More information can be found in the documents.">
+                        Rasa Core Enablement
+                      </strong>
+                      &nbsp;&nbsp;&nbsp;
+                      <span class="pull-right">
+                      <label class="switch switch-default switch-pill switch-success">
+                          <input type="checkbox" class="switch-input" ng-model="agent.rasa_core_enabled" ng-checked="agent.rasa_core_enabled">
+                          <span class="switch-label"></span>
+                          <span class="switch-handle"></span>
+                      </label>
+                      </span>
+                      <br><br>
                       <strong>Service Fullfillment</strong>
                       &nbsp;&nbsp;&nbsp;
                       <span class="pull-right">

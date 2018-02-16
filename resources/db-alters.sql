@@ -1,6 +1,4 @@
 /*Alters after release 1.0 version*/
-Alter table public.entities ADD COLUMN slot_data_type character varying COLLATE pg_catalog."default" NOT NULL default 'NOT_USED';
-Alter table public.entities ADD COLUMN agent_id integer;
 
 CREATE SEQUENCE public.actions_action_id_seq
 INCREMENT 1
@@ -24,7 +22,12 @@ ALTER TABLE public.responses ADD COLUMN action_id integer;
 ALTER TABLE public.responses ADD COLUMN buttons_info jsonb;
 ALTER TABLE public.responses ADD COLUMN response_image_url character varying COLLATE pg_catalog."default";
 ALTER TABLE public.responses ALTER COLUMN intent_id DROP NOT NULL;
+
 ALTER TABLE public.agents ADD COLUMN story_details text COLLATE pg_catalog."default";
+ALTER TABLE public.agents ADD COLUMN rasa_core_enabled boolean DEFAULT FALSE;
+
+ALTER TABLE public.entities ADD COLUMN slot_data_type character varying COLLATE pg_catalog."default" NOT NULL default 'NOT_USED';
+ALTER TABLE public.entities ADD COLUMN agent_id integer;
 
 /*Alters to release 1.0 version*/
 CREATE SEQUENCE public.parse_log_parse_log_id_seq

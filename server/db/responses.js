@@ -93,11 +93,27 @@ function getRandomResponseForIntent(req, res, next) {
     });
 }
 
+function getActionResponsesQuery(req, res, next) {
+  console.log("responses.getActionResponsesQuery");
+  var actionIds = req.query.action_ids;
+  var sql = 'select responses.*, actions.action_name  from responses,actions where actions.action_id=responses.action_id and responses.action_id in (' + actionIds + ')';
+  console.log(sql);
+  db.any(sql)
+    .then(function (data) {
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
 module.exports = {
   getIntentResponses: getIntentResponses,
   removeResponse: removeResponse,
   createIntentResponse: createIntentResponse,
   createActionResponse: createActionResponse,
   getRandomResponseForIntent:getRandomResponseForIntent,
-  getActionResponses: getActionResponses
+  getActionResponses: getActionResponses,
+  getActionResponsesQuery: getActionResponsesQuery
 };

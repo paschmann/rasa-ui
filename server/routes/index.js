@@ -87,6 +87,7 @@ router.post('/response', responses.createIntentResponse);
 router.delete('/response/:response_id', responses.removeResponse);
 
 router.get('/rndmresponse', responses.getRandomResponseForIntent);
+router.get('/action_responses', responses.getActionResponsesQuery);
 
 router.get('/nlu_log/:query', logs.getLogs);
 router.get('/intent_usage_by_day', logs.getIntentUsageByDay);

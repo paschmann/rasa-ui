@@ -2,8 +2,9 @@ angular
 .module('app')
 .controller('TrainingController', TrainingController)
 
-function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Agent, Intents, Expressions, ExpressionParameters, Rasa_Config) {
+function TrainingController($scope, $rootScope, $interval, $http, yaml, Rasa_Status, Agent, Intents, Expressions, ExpressionParameters, Rasa_Config, AgentEntities, AgentActions) {
   var exportData;
+  var core_domain_yaml, core_stories_md;
   var statuscheck = $interval(getRasaStatus, 5000);
   $scope.generateError = "";
   $scope.trainings_under_this_process = 0;
@@ -38,11 +39,24 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
 
   $scope.savetofile = function() {
       var data = new Blob([JSON.stringify($scope.exportdata, null, 2)], {type: 'text/plain'});
-
       var a = document.getElementById("a");
       a.download = "trainingdata.txt";
       a.href = URL.createObjectURL(data);
       a.click();
+  }
+
+  $scope.savecoretofiles= function() {
+      var data = new Blob([$scope.domain_yml], {type: 'text/plain'});
+      var core_domain = document.getElementById("core_domain");
+      core_domain.download = "_domain.yml";
+      core_domain.href = URL.createObjectURL(data);
+      core_domain.click();
+
+      var stories_data = new Blob([$scope.stories_md], {type: 'text/plain'});
+      var core_stories = document.getElementById("core_stories");
+      core_stories.download = "_stories.md";
+      core_stories.href = URL.createObjectURL(stories_data);
+      core_stories.click();
   }
 
   $scope.getData = function(agent_id) {
@@ -70,7 +84,8 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
           $http({method: 'GET', url: api_endpoint_v2 + '/entity_synonym_variants?entity_ids=' + entityIds}).
           then(function(data) {
             synonyms = data.data;
-            generateData(intents, expressions, params, synonyms)
+            generateData(intents, expressions, params, synonyms);
+            populateCoreDomainYaml(agent_id,intents, expressions, params, synonyms);
           }, function(error) {
             console.log(error);
           });
@@ -82,6 +97,95 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
       });
     }, function(error) {
       console.log(error);
+    });
+  }
+
+  function populateCoreDomainYaml(agent_id, intents, expressions, params, synonyms){
+    //get entities by agentid
+    var domain_yml_obj={};
+    $scope.stories_md='';
+    Agent.get({agent_id: agent_id}, function(data) {
+        $scope.stories_md = data.story_details;
+    });
+
+    AgentEntities.query({agent_id: agent_id},function(allEntities) {
+        var requiredSlots = allEntities.filter(entity => (entity.slot_data_type != 'NOT_USED' && entity.slot_data_type != '' ));
+        if(requiredSlots.length>0){
+          //build slots
+          var slots_yml_str = requiredSlots.map(function(slot) {
+            return "\""+slot['entity_name']+"\":{\"type\":\""+slot['slot_data_type']+"\"}";
+          }).join(",");
+          domain_yml_obj.slots=JSON.parse("{"+slots_yml_str+"}");
+        }
+
+        if(intents.length >0){
+          //build intents
+          domain_yml_obj.intents =intents.map(function(intent) {
+            return intent['intent_name'];
+          });
+        }
+
+        if(allEntities.length >0){
+          //build entities
+          domain_yml_obj.entities =allEntities.map(function(entity) {
+            return entity['entity_name'];
+          });
+        }
+
+        AgentActions.query({agent_id: agent_id},function(actionsList) {
+            if(actionsList!=null && actionsList.length >0){
+              //build actions
+              domain_yml_obj.actions =actionsList.map(function(action) {
+                return action['action_name'];
+              });
+
+              var action_ids = actionsList.map(function(action) {
+                return action['action_id'];
+              }).toString();
+
+              $http({method: 'GET', url: api_endpoint_v2 + '/action_responses?action_ids=' + action_ids}).
+                then(function(data) {
+                  if(data.data.length >0){
+                    var responsesArrObj ={};
+                    data.data.map(function(response) {
+                      var response_templete={};
+                      if(!responsesArrObj.hasOwnProperty(response.action_name)){
+                        responsesArrObj[response.action_name]=[];
+                      }
+                      //add response text if there is one
+                      if(response.response_text!=null && response.response_text !=''){
+                        response_templete.text=response.response_text;
+                      }
+                      //add buttons if there are any
+                      if(response.buttons_info !=null && response.buttons_info!=''){
+                        response_templete.buttons = response.buttons_info.map(function(button){
+                          var buttonObj={};
+                          buttonObj.title = button.title;
+                          buttonObj.payload= button.payload;
+                          return buttonObj;
+                        });
+                      }
+                      //add image if it is available.
+                      if(response.response_image_url !=null && response.response_image_url!=''){
+                        response_templete.image =response.response_image_url;
+                      }
+                      responsesArrObj[response.action_name].push(response_templete);
+                    });
+                    domain_yml_obj.templates = responsesArrObj;
+                  }
+                  //build templetes
+                  try {
+                    console.log("YAML: "+JSON.stringify(domain_yml_obj));
+                    if(!angular.equals(domain_yml_obj, {}))
+                      $scope.domain_yml=yaml.stringify(domain_yml_obj);
+                  } catch (e) {
+                    console.log(e);
+                  }
+                }, function(error) {
+                  console.log(error);
+              });
+            }
+        });
     });
   }
 

@@ -144,6 +144,7 @@ CREATE TABLE public.agents
   agent_id integer NOT NULL DEFAULT nextval('agents_agent_id_seq'::regclass),
   agent_name character varying COLLATE pg_catalog."default",
   endpoint_enabled boolean DEFAULT FALSE,
+  rasa_core_enabled boolean DEFAULT FALSE,
   endpoint_url character varying COLLATE pg_catalog."default",
   basic_auth_username character varying COLLATE pg_catalog."default",
   basic_auth_password character varying COLLATE pg_catalog."default",
