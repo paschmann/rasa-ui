@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "description": "Rasa UI is a web application built on top of, and for, Rasa NLU.",
   "dependencies": {
+    "asyncawait": "^1.0.6",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
     "cors": "^2.8.3",
@@ -22,6 +23,9 @@
   "config": {
     "rasanluendpoint": "http://localhost:5000",
     "rasacoreendpoint": "http://localhost:5005",
+    "coresecuritytoken": "",
+    "nlusecuritytoken": "",
+    "cacheagents": false,
     "jwtsecret": "th1s1sn0t0nlyths3cr3tbutth3m0st1mp0rtAntp13c30f1nf0rmAt10nf0rth1sAppl1cAt10n",
     "postgresConnectionString": "postgres://postgres:rasaui@10.211.55.3:5432/rasaui"
   },
