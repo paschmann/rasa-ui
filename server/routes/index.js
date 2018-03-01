@@ -12,6 +12,9 @@ var variants = require('../db/variants');
 var settings = require('../db/settings');
 var responses = require('../db/responses');
 var middleware = require('./middleware');
+var core_router = require('./mw_routes/core_router');
+var nlu_router = require('./mw_routes/nlu_router');
+var toBemiddleware = require('./tobe_middleware');
 var auth = require('./auth');
 var logs = require('../db/logs');
 
@@ -102,12 +105,14 @@ router.get('/avgUserResponseTimesLast30Days', logs.getAvgUserResponseTimesLast30
 router.get('/activeUserCountLast12Months', logs.getActiveUserCountLast12Months);
 router.get('/activeUserCountLast30Days', logs.getActiveUserCountLast30Days);
 
-//rasa middleware
+//rasa nlu middleware
 router.get('/rasa/status', middleware.getRasaNluStatus);
 router.get('/rasa/config', middleware.getRasaNluConfig);
 router.get('/rasa/version', middleware.getRasaNluVersion);
 router.post('/rasa/train', middleware.trainRasaNlu);
-router.post('/rasa/parse', middleware.parseRasaNlu);
+router.post('/rasa/parse', toBemiddleware.parseRasaRequest);
+router.post('/rasa/restart', core_router.restartRasaCoreConversation);
+
 
 //authentication js
 router.post('/auth', auth.authenticateUser);

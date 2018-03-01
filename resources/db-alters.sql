@@ -7,6 +7,13 @@ MINVALUE 1
 MAXVALUE 9223372036854775807
 CACHE 1;
 
+CREATE SEQUENCE public.core_parse_log_core_parse_log_id_seq
+INCREMENT 1
+START 1
+MINVALUE 1
+MAXVALUE 9223372036854775807
+CACHE 1;
+
 CREATE TABLE public.actions
 (
   action_name character varying COLLATE pg_catalog."default" NOT NULL,
@@ -17,6 +24,28 @@ WITH (
   OIDS = FALSE
 )
 TABLESPACE pg_default;
+
+CREATE TABLE public.core_parse_log
+(
+  core_parse_log_id integer NOT NULL DEFAULT nextval('core_parse_log_core_parse_log_id_seq'::regclass),
+  "timestamp" timestamp without time zone DEFAULT timezone('utc'::text, now()),
+  agent_id integer,
+  request_text character varying COLLATE pg_catalog."default",
+  action_data jsonb[],
+  tracker_data jsonb[],
+  response_text jsonb[],
+  response_rich_data jsonb[],
+  user_id character varying COLLATE pg_catalog."default",
+  user_name character varying COLLATE pg_catalog."default",
+  user_response_time_ms integer,
+  core_response_time_ms integer,
+  CONSTRAINT core_parse_log_id PRIMARY KEY (core_parse_log_id)
+)
+WITH (
+  OIDS = FALSE
+)
+TABLESPACE pg_default;
+
 
 ALTER TABLE public.responses ADD COLUMN action_id integer;
 ALTER TABLE public.responses ADD COLUMN buttons_info jsonb;

@@ -53,6 +53,19 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
       });
     });
   }
+  $scope.restartConversation=function(){
+    $scope.test_text_response={};
+    $http.post(api_endpoint_v2 + "/rasa/restart")
+      .then(
+        function(response){
+          // success callback
+          alert("Restarted Successfully");
+        },
+        function(errorResponse){
+          // failure callback
+        }
+      );
+  }
 
   $scope.executeTestRequest = function() {
     $scope.response_text='';
