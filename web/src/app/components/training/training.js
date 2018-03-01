@@ -81,14 +81,17 @@ function TrainingController($scope, $rootScope, $interval, $http, yaml, Rasa_Sta
         then(function(data) {
           params = data.data;
           var entityIds = params.map(function(item) { return item['entity_id']; }).toString();
-          $http({method: 'GET', url: api_endpoint_v2 + '/entity_synonym_variants?entity_ids=' + entityIds}).
-          then(function(data) {
-            synonyms = data.data;
-            generateData(intents, expressions, params, synonyms);
-            populateCoreDomainYaml(agent_id,intents, expressions, params, synonyms);
-          }, function(error) {
-            console.log(error);
-          });
+          if (entityIds.length > 0) {
+            $http({method: 'GET', url: api_endpoint_v2 + '/entity_synonym_variants?entity_ids=' + entityIds}).
+            then(function(data) {
+              synonyms = data.data;
+              generateData(intents, expressions, params, synonyms)
+            }, function(error) {
+              console.log(error);
+            });
+          } else {
+            generateData(intents, expressions, params);
+          }
         }, function(error) {
           console.log(error);
         });

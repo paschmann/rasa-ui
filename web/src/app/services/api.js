@@ -95,9 +95,9 @@ app.factory('SynonymVariant', function($resource) {
 
 
 app.factory('Settings', ['$resource', function($resource) {
-return $resource(api_endpoint_v2 + '/settings/:setting_name', {setting_id:'@id'},
+return $resource(api_endpoint_v2 + '/settings/:setting_name', {setting_name:'@setting_name'},
     {
-        'update': { method:'PATCH' }
+        'update': { method:'PUT' }
     });
 }]);
 
