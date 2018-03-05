@@ -9,11 +9,11 @@ function getRasaNluStatus(req, res, next) {
   console.log("Rasa NLU Status Request -> " + process.env.npm_package_config_rasanluendpoint + "/status");
   request(process.env.npm_package_config_rasanluendpoint + '/status', function (error, response, body) {
     try {
-      if (body !== undefined) sendOutput(200, res, body);
-      else sendOutput(404, res, '{"error" : "Server Error"}');
+      if (body !== undefined) senxdOutput(200, res, body);
+      else sendOutput(500, res, '{"error" : "Server Error"}');
     } catch (err) {
       console.log(err);
-      sendOutput(404, res, '{"error" : "Exception caught !!"}');
+      sendOutput(500, res, '{"error" : "Exception caught !!"}');
     }
   });
 }
@@ -23,10 +23,10 @@ function getRasaNluConfig(req, res, next) {
   request(process.env.npm_package_config_rasanluendpoint + '/config', function (error, response, body) {
     try {
       if (body !== undefined) sendOutput(200, res, body);
-      else sendOutput(404, res, '{"error" : "Server Error"}');
+      else sendOutput(500, res, '{"error" : "Server Error"}');
     } catch (err) {
       console.log(err);
-      sendOutput(404, res, '{"error" : "Exception caught !!"}');
+      sendOutput(500, res, '{"error" : "Exception caught !!"}');
     }
   });
 }
@@ -36,10 +36,10 @@ function getRasaNluVersion(req, res, next) {
   request(process.env.npm_package_config_rasanluendpoint + '/version', function (error, response, body) {
     try {
       if (body !== undefined) sendOutput(200, res, body);
-      else sendOutput(404, res, '{"error" : "Server Error"}');
+      else sendOutput(500, res, '{"error" : "Server Error"}');
     } catch (err) {
       console.log(err);
-      sendOutput(404, res, '{"error" : "Exception caught !!"}');
+      sendOutput(500, res, '{"error" : "Exception caught !!"}');
     }
   });
 }
@@ -55,7 +55,7 @@ function trainRasaNlu(req, res, next) {
   }, function (error, response, body) {
     if(error){
       console.log("Error Occured when posting data to nlu endpoint. "+error);
-      sendOutput(404, res, error);
+      sendOutput(500, res, error);
       return;
     }
     try {
@@ -69,7 +69,7 @@ function trainRasaNlu(req, res, next) {
       return;
     } catch (err) {
       console.log(err);
-      sendOutput(404, res, '{"error" : "Exception caught !!"}');
+      sendOutput(500, res, '{"error" : "Exception caught !!"}');
     }
   });
 }
@@ -80,12 +80,12 @@ function parseRequest(req, res, next, agentObj) {
   var projectName = req.body.project;
   if(modelName == ''){
     console.log("Model not found");
-    sendOutput(404, res, '{"error" : "Model not found !!"}');
+    sendOutput(500, res, '{"error" : "Model not found !!"}');
     return;
   }
   if(req.body.q == ''){
     console.log("Query not found");
-    sendOutput(404, res, '{"error" : "Query not found !!"}');
+    sendOutput(500, res, '{"error" : "Query not found !!"}');
     return;
   }
   var cache_key = req.jwt.username+"_"+modelName+"_"+Date.now();
@@ -99,7 +99,7 @@ function parseRequest(req, res, next, agentObj) {
   }, function (error, response, body) {
     if(error){
       console.log(error);
-      sendOutput(404, res, error);
+      sendOutput(500, res, error);
     }
     try {
       console.log("rasa_response:+++ "+ body);
@@ -107,7 +107,7 @@ function parseRequest(req, res, next, agentObj) {
       updateAndSendRasaResponse(req,cache_key,JSON.parse(body),modelName,projectName,res);
     } catch (err) {
       console.log(err);
-      sendOutput(404, res, '{"error" : "Exception caught !!"}');
+      sendOutput(500, res, '{"error" : "Exception caught !!"}');
     }
   });
 }

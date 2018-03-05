@@ -14,7 +14,6 @@ var responses = require('../db/responses');
 var middleware = require('./middleware');
 var core_router = require('./mw_routes/core_router');
 var nlu_router = require('./mw_routes/nlu_router');
-var toBemiddleware = require('./tobe_middleware');
 var auth = require('./auth');
 var logs = require('../db/logs');
 
@@ -105,12 +104,16 @@ router.get('/avgUserResponseTimesLast30Days', logs.getAvgUserResponseTimesLast30
 router.get('/activeUserCountLast12Months', logs.getActiveUserCountLast12Months);
 router.get('/activeUserCountLast30Days', logs.getActiveUserCountLast30Days);
 
-//rasa nlu middleware
-router.get('/rasa/status', middleware.getRasaNluStatus);
-router.get('/rasa/config', middleware.getRasaNluConfig);
-router.get('/rasa/version', middleware.getRasaNluVersion);
-router.post('/rasa/train', middleware.trainRasaNlu);
-router.post('/rasa/parse', toBemiddleware.parseRasaRequest);
+//rasa nlu api's
+router.get('/rasa/status', nlu_router.getRasaNluStatus);
+router.get('/rasa/config', nlu_router.getRasaNluConfig);
+router.get('/rasa/version', nlu_router.getRasaNluVersion);
+router.post('/rasa/train', nlu_router.trainRasaNlu);
+
+//common middleware for parse
+router.post('/rasa/parse', middleware.parseRasaRequest);
+
+//rasa core API
 router.post('/rasa/restart', core_router.restartRasaCoreConversation);
 
 
