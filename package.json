@@ -13,7 +13,8 @@
     "jsonwebtoken": "^8.0.1",
     "node-cache": "^4.1.1",
     "pg-promise": "^5.9.5",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "socket.io": "^2.0.4"
   },
   "devDependencies": {
     "browser-sync": "^2.16.0",

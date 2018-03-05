@@ -14,10 +14,13 @@
           </div>
           <hr class="m-x-1 m-y-0">
           <div class="input-group">
-            <input type="test_text" ng-model="test_text" class="form-control" id="test_text" placeholder="Try it now ..." required data-toggle="tooltip" data-placement="left" title="Select a Model from dropdown and Enter text to be parsed" onmouseenter="$(this).tooltip('show')">
+            <span class="input-group-addon" id="btnGroupAddon">
+              <input style="margin: 0px;" class="form-check-input position-static" type="checkbox" id="blankCheckbox" ng-model="wsEnabled" data-toggle="tooltip" data-placement="left" title="Web Socket Responses." onmouseenter="$(this).tooltip('show')">
+            </span>
+            <input type="test_text" ng-model="test_text" class="form-control" id="test_text" placeholder="Try it now ..." required data-toggle="tooltip" data-placement="top" title="Select a Model from dropdown and Enter text to be parsed" onmouseenter="$(this).tooltip('show')">
             <span class="input-group-btn">
               <button class="btn btn btn-outline-secondary" ng-click="executeTestRequest()" ng-disabled="entitiesForm.$invalid">Go</button>
-              <button class="btn btn btn-outline-secondary" ng-click="restartConversation()"><i class="fa fa-repeat" aria-hidden="true"></i></button>
+              <button class="btn btn btn-outline-secondary" ng-click="restartConversation()" data-toggle="tooltip" data-placement="left" title="Reset Rasa Core Conversation" onmouseenter="$(this).tooltip('show')"><i class="fa fa-repeat" aria-hidden="true"></i></button>
             </span>
           </div>
         </form>
@@ -27,7 +30,7 @@
           </small>
         </div>
         <div class="callout m-0 py-3" ng-hide="response_text === undefined">
-          {{response_text}}
+          <div class="clearfix" ng-repeat="resp in response_text"><div class="callout callout-info">{{resp}}</div></div>
         </div>
         <div class="callout m-0 py-2 text-muted text-center bg-faded text-uppercase">
           <small><b>JSON Data</b>

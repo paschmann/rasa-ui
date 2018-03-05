@@ -11,7 +11,6 @@ const db = require('./db/db')
 const url = require('url');
 
 app.use(cors())
-
 app.use(bodyParser.urlencoded({
     parameterLimit: 10000,
     limit: '2mb',
@@ -57,7 +56,17 @@ app.use(function(req, res, next) {
     }
   }
 });
+
+var server = require('http').createServer(app);
+var io = require('socket.io').listen(server);
+
+// Socket.io Communication
+io.sockets.on('connection', function (socket) {
+  app.set('socket', socket);
+});
+
 app.use('/api/v2/', routes);
+
 // error handlers
 // development error handler
 // will print stacktrace
@@ -81,4 +90,6 @@ app.use(function(err, req, res, next) {
   });
 });
 
-app.listen(5001);
+server.listen(5001, function () {
+  console.log('Express server listening on port ' + 5001);
+});

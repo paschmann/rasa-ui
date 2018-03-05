@@ -8,6 +8,7 @@
     "angular-resource": "1.6.4",
     "angular-route": "1.6.4",
     "angular-sanitize": "^1.6.9",
+    "angular-socket-io": "^0.7.0",
     "angular-utils-pagination": "^0.11.1",
     "chart.js": "2.7.0",
     "jquery": "3.1.1",
@@ -16,6 +17,7 @@
     "ng-jsyaml": "0.0.2",
     "ng-tags-input": "^3.2.0",
     "ngstorage": "^0.3.11",
-    "simplemde": "^1.11.2"
+    "simplemde": "^1.11.2",
+    "socket.io-client": "^2.0.4"
   }
 }

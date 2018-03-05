@@ -27,7 +27,6 @@ var await = require('asyncawait/await');
     console.log("RestartResponse" + JSON.stringify(responseBody));
   }
 
-
   function parseRequest(req, res, next, agentObj) {
     var core_url = process.env.npm_package_config_rasacoreendpoint +"/conversations/"+req.jwt.username+ "/parse";
     if(process.env.npm_package_config_coresecuritytoken !=''){
@@ -49,6 +48,11 @@ var await = require('asyncawait/await');
       if (responseBody.next_action != "action_listen"){
           console.log("Starting next actions");
           startPredictingActions(core_url, req, responseBody.next_action,cache_key,res);
+      }else{
+        //got and actionlisten
+        flushCacheToCoreDb(cache_key);
+        //if http
+        sendCacheResponse(200, res,cache_key);
       }
     } catch (err) {
       console.log(err);
@@ -93,7 +97,7 @@ var await = require('asyncawait/await');
     });
   }
 
-  function addResponseInfoToCache(cacheKey,body) {
+  function addResponseInfoToCache(req,cacheKey,body) {
     var core_parse_cache = coreParseLogCache.get(cacheKey);
     if(core_parse_cache == undefined){
       // quite logging and return
@@ -104,14 +108,18 @@ var await = require('asyncawait/await');
         if(body.response_text != undefined)core_parse_cache.response_text =body.response_text;
         if(body.response_rich != undefined)core_parse_cache.response_rich_data =body.response_rich;
         core_parse_cache.user_response_time_ms = Date.now() - core_parse_cache.createTime;
-        //check if websocket request or http request
-        //if htto accumulate all the body objects.
-        //if ws send the response.
         var allResponses = responseCache.get(cacheKey);
         if(allResponses== undefined){
           //this is the first response
           allResponses =[];
         }
+        //check if fireandforget is enabled.
+        if(req.body.fireAndForget){
+          //respond back in Websocket
+          console.log("Fire and Forget True. Will send responses in websockets.");
+          req.app.get('socket').emit('on:responseMessage', body);
+        }
+
         allResponses.push(body);
         console.log("AllReponses: "+JSON.stringify(allResponses));
         responseCache.set(cacheKey,allResponses);
@@ -145,7 +153,7 @@ var await = require('asyncawait/await');
       'Access-Control-Allow-Origin': '*',
       'Content-Type': 'application/json'
     });
-    console.log("Sending REsponse: "+JSON.stringify(responseCache.get(cache_key)));
+    console.log("Sending Response: "+JSON.stringify(responseCache.get(cache_key)));
     if (responseCache.get(cache_key) !== "") {
       res.write(JSON.stringify(responseCache.get(cache_key)));
     }
@@ -177,7 +185,7 @@ var await = require('asyncawait/await');
         rasa_core_response.buttons_info =actionRespObj.buttons_info;
         rasa_core_response.response_image_url =actionRespObj.response_image_url;
         console.log("Sending Configured Response");
-        addResponseInfoToCache(cacheKey,rasa_core_response);
+        addResponseInfoToCache(req,cacheKey,rasa_core_response);
       }else{
         console.log("Unrecognized Actions. Rasa UI can only process 'utter' type and 'webhook' type");
         sendHTTPResponse(500, res, '{"error" : "Unrecognized Actions. Rasa UI can only process \'utter\' type and \'utter_webhook\' type !!"}');
@@ -185,7 +193,7 @@ var await = require('asyncawait/await');
     }else{
       //just keep listening for next message from user
       console.log("Got an action Listen. Will Listen for next message.");
-      addResponseInfoToCache(cacheKey,rasa_core_response);
+      addResponseInfoToCache(req,cacheKey,rasa_core_response);
     }
   });
 
@@ -245,7 +253,6 @@ var await = require('asyncawait/await');
     //set it in the cache
     coreParseLogCache.set(cacheKey, coreParseReqObj);
   }
-
 
   module.exports = {
     parseRequest: parseRequest,
