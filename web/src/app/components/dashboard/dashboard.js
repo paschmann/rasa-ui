@@ -2,7 +2,7 @@ angular
 .module('app')
 .controller('DashboardController', DashboardController)
 
-function DashboardController($scope, Rasa_Status, NLU_log_intent_usage_total, NLU_log_request_usage_total) {
+function DashboardController($scope, Rasa_Status, NLU_log_stats) {
   getRasaStatus();
   getIntentUsageTotalStatus();
   getRequestUsageTotalStatus();
@@ -17,13 +17,13 @@ function DashboardController($scope, Rasa_Status, NLU_log_intent_usage_total, NL
   }
 
   function getRequestUsageTotalStatus() {
-    NLU_log_request_usage_total.query(function(data) {
+    NLU_log_stats.query({path: "request_usage_total"}, function(data) {
         $scope.request_processed = data[0].count;
     });
   }
 
   function getIntentUsageTotalStatus() {
-    NLU_log_intent_usage_total.query(function(data) {
+    NLU_log_stats.query({path: "intent_usage_total"}, function(data) {
         $scope.intents_processed = data[0].count;
     });
   }

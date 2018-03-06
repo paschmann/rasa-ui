@@ -68,3 +68,6 @@ SELECT count(distinct(user_id)) as user_count,
 GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text))
 ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) desc
 LIMIT 30;
+
+ALTER TABLE public.entities DROP CONSTRAINT agent_pk;
+ALTER TABLE public.entities DROP agent_id;

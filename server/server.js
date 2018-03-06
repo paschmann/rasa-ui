@@ -82,3 +82,60 @@ app.use(function(err, req, res, next) {
 });
 
 app.listen(5001);
+
+checkDB();
+checkRasaNLU();
+//checkRasaCore();
+
+function checkDB() {
+  db.one('select current_database(), current_schema(), inet_server_port(), inet_server_addr()')
+    .then(function (data) {
+      console.log('');
+      console.log('DB Connected');
+      console.log('Postgres Server: ' + data["inet_server_addr"] + ':' + data["inet_server_port"]);
+      console.log('Database:' + data["current_database"]);
+      console.log('Schema:' + data["current_schema"]);
+      console.log('');
+    })
+    .catch(function (err) {
+      console.log('DB Connection Error: ' + err)
+    });
+}
+
+function checkRasaNLU() {
+  request(process.env.npm_package_config_rasaserver + '/config', function (error, response, body) {
+    try {
+      if (body !== undefined) {
+        console.log('');
+        console.log('Rasa NLU Connected');
+        console.log('Rasa NLU Server: ' + process.env.npm_package_config_rasaserver);
+      }
+      if (error !== null) {
+        console.log('');
+        console.log('Rasa NLU Error: ' + error);
+      }
+      console.log('');
+    } catch (err) {
+      console.log('Rasa Connection Error: ' + err);
+    }
+  });
+}
+
+function checkRasaCore() {
+  request(process.env.npm_package_config_rasacoreendpoint + '/config', function (error, response, body) {
+    try {
+      if (body !== undefined) {
+        console.log('');
+        console.log('Rasa Core Connected');
+        console.log('Rasa Core Server: ' + process.env.npm_package_config_rasacoreendpoint);
+      }
+      if (error !== null) {
+        console.log('');
+        console.log('Rasa Core Error: ' + error);
+      }
+      console.log('');
+    } catch (err) {
+      console.log('Rasa Connection Error: ' + err);
+    }
+  });
+}

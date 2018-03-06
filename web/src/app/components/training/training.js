@@ -2,12 +2,12 @@ angular
 .module('app')
 .controller('TrainingController', TrainingController)
 
-function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Agent, Intents, Expressions, ExpressionParameters, Rasa_Config) {
+function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Agent, Intents, Expressions, ExpressionParameters, Rasa_Config, EntitySynonymVariantsByEntity, IntentExpressions) {
   var exportData;
   var statuscheck = $interval(getRasaStatus, 5000);
   $scope.generateError = "";
   $scope.trainings_under_this_process = 0;
-  $scope.toLowercase=false;
+  $scope.toLowercase = false;
 
   getRasaStatus();
 
@@ -45,6 +45,10 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
       a.click();
   }
 
+  $scope.convertToLowerCase = function() {
+    $scope.exportdata = JSON.parse(JSON.stringify($scope.exportdata).toLowerCase());
+  }
+
   $scope.getData = function(agent_id) {
     //Get Intents, Expressions, Parameters/Entities, Synonyms
     var intent_i;
@@ -54,38 +58,39 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
     var expressions;
     var params;
     var synonyms;
+    $scope.toLowercase = false;
 
-    $http({method: 'GET', url: api_endpoint_v2 + "/agents/" + agent_id + "/intents"}).
-    then(function(data) {
-      intents = data.data;
+    Agent.query({agent_id: agent_id, path: "intents"}, function(intents) {
       var intentIds = intents.map(function(item) { return item['intent_id']; }).toString();
-      $http({method: 'GET', url: api_endpoint_v2 + "/intent_expressions?intent_ids=" + intentIds }).
-      then(function(data) {
-        expressions = data.data;
-        var expressionIds = expressions.map(function(item) { return item['expression_id']; }).toString();
-        $http({method: 'GET', url: api_endpoint_v2 + "/expression_parameters?expression_ids=" + expressionIds}).
-        then(function(data) {
-          params = data.data;
-          var entityIds = params.map(function(item) { return item['entity_id']; }).toString();
-          if (entityIds.length > 0) {
-            $http({method: 'GET', url: api_endpoint_v2 + '/entity_synonym_variants?entity_ids=' + entityIds}).
-            then(function(data) {
-              synonyms = data.data;
-              generateData(intents, expressions, params, synonyms)
+      if (intentIds.length > 0) {
+        IntentExpressions.query({intent_ids: intentIds}, function(expressions) {
+          var expressionIds = expressions.map(function(item) { return item['expression_id']; }).toString();
+          if (expressionIds.length > 0) {
+            ExpressionParameters.query({expression_ids: expressionIds}, function(params) {
+              var entityIds = params.map(function(item) { return item['entity_id']; }).toString();
+              if (entityIds.length > 0) {
+                EntitySynonymVariantsByEntity.query({entity_ids: entityIds}, function(synonyms) {
+                  generateData(intents, expressions, params, synonyms)
+                }, function(error) {
+                  generateError = error;
+                });
+              } else {
+                generateData(intents, expressions, params);
+              }
             }, function(error) {
-              console.log(error);
+              generateError = error;
             });
           } else {
-            generateData(intents, expressions, params);
+            generateData(intents, expressions);
           }
         }, function(error) {
-          console.log(error);
+          generateError = error;
         });
-      }, function(error) {
-        console.log(error);
-      });
+      } else {
+        $scope.exportdata = {};
+      }
     }, function(error) {
-      console.log(error);
+      generateError = error;
     });
   }
 
@@ -106,11 +111,8 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
 
 
           tmpIntent.intent = intents[intent_i].intent_name;
-          if($scope.toLowercase){
-            tmpIntent.text = expressionList[expression_i].expression_text.toLowerCase();
-          }else{
-            tmpIntent.text = expressionList[expression_i].expression_text;
-          }
+          tmpIntent.text = expressionList[expression_i].expression_text;
+
           tmpIntent.entities = [];
           tmpIntent.expression_id = expressionList[expression_i].expression_id;
 
@@ -177,7 +179,6 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
             tmpParam.end = end;
             tmpParam.value = missingEntities[parameter_i].parameter_value;
             tmpParam.entity = missingEntities[parameter_i].entity_name;
-            //tmpParam.entity_id = missingEntities[parameter_i].entity_id;
             tmpData.rasa_nlu_data.common_examples[i].entities.push(tmpParam);
           }
       }

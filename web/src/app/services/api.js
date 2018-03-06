@@ -1,7 +1,7 @@
 
 
 app.factory('Agent', function($resource) {
-  return $resource(api_endpoint_v2 + '/agents/:agent_id', {agent_id: '@id'},
+  return $resource(api_endpoint_v2 + '/agents/:agent_id/:path', {agent_id: '@id', path: '@path'},
       {
           'update': { method:'PUT' }
       });
@@ -20,6 +20,10 @@ app.factory('Intents', function($resource) {
 
 app.factory('Expressions', function($resource) {
   return $resource(api_endpoint_v2 + '/intents/:intent_id/expressions', {intent_id:'@id'});
+});
+
+app.factory('IntentExpressions', function($resource) {
+  return $resource(api_endpoint_v2 + '/intent_expressions');
 });
 
 app.factory('Expression', function($resource) {
@@ -63,6 +67,10 @@ app.factory('Synonym', function($resource) {
 
 app.factory('EntitySynonymVariants', function($resource) {
   return $resource(api_endpoint_v2 + '/synonyms/:synonym_id/variants', {synonym_id:'@id'});
+});
+
+app.factory('EntitySynonymVariantsByEntity', function($resource) {
+  return $resource(api_endpoint_v2 + '/entity_synonym_variants');
 });
 
 app.factory('SynonymVariant', function($resource) {

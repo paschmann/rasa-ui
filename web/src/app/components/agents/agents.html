@@ -26,11 +26,11 @@
                   <div id="{{agent.agent_id}}" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
                     <div class="card-block">
                       <div class="form-group">
-                        <label class="form-control-label" for="formGroupExampleInput">Name</label>
-                        <input ng-model="agent.agent_name" type="text" class="form-control" id="formGroupExampleInput" placeholder="Service Endpoint URL" value="{{ agent.agent_name }}">
+                        <label class="form-control-label">Name</label>
+                        <input ng-model="agent.agent_name" type="text" class="form-control" placeholder="Service Endpoint URL" value="{{ agent.agent_name }}">
                       </div>
                       <div class="form-group">
-                        <label class="form-control-label" for="formGroupExampleInput">Client Secret</label>
+                        <label class="form-control-label">Client Secret</label>
                         <input type="text" class="form-control" disabled value="{{ agent.client_secret_key }}">
                       </div>
                       <strong>Service Fullfillment</strong>
@@ -46,22 +46,22 @@
 
                       <div ng-show="agent.endpoint_enabled">
                       <div class="form-group">
-                        <label class="form-control-label" for="formGroupExampleInput">Service URL</label>
-                        <input ng-model="agent.endpoint_url" type="url" class="form-control" id="formGroupExampleInput" placeholder="Service Endpoint URL">
+                        <label class="form-control-label">Service URL</label>
+                        <input ng-model="agent.endpoint_url" type="url" class="form-control"placeholder="Service Endpoint URL">
                       </div>
                       <div class="form-group">
-                        <label class="form-control-label" for="formGroupExampleInput2">Basic Auth Username</label>
-                        <input ng-model="agent.basic_auth_username" type="text" class="form-control" id="formGroupExampleInput2" placeholder="Basic Auth Username">
+                        <label class="form-control-label">Basic Auth Username</label>
+                        <input ng-model="agent.basic_auth_username" type="text" class="form-control" placeholder="Basic Auth Username">
                       </div>
                       <div class="form-group">
-                        <label class="form-control-label" for="formGroupExampleInput2">Basic Auth Password</label>
-                        <input ng-model="agent.basic_auth_password" type="password" class="form-control" id="formGroupExampleInput2" placeholder="Basic Auth Password">
+                        <label class="form-control-label">Basic Auth Password</label>
+                        <input ng-model="agent.basic_auth_password" type="password" class="form-control" placeholder="Basic Auth Password">
                       </div>
                     </div>
                     <div>
                       <span class="pull-right" style="padding:10px;">
                         <button type="button" class="btn btn-primary" ng-click="editAgentInfo(agent)">Save</button>
-                        <button type="button" class="btn btn-danger" onclick="location.reload()">Cancel</button>
+                        <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#{{agent.agent_id}}">Cancel</button>
                       </span>
                     </div>
                     </div>

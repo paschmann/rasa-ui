@@ -55,7 +55,7 @@ angular.module('app').controller('appCtrl', function($rootScope,$scope, $route, 
      $scope.$on('setAlertText', function(event, alert_text) {
        $('#alertTextDiv').addClass('show');
        $scope.alert_text = alert_text;
-       $timeout(function(){$('#alertTextDiv').removeClass('show')}, 10000);
+       $timeout(function(){$('#alertTextDiv').removeClass('show')}, 2000);
      });
 
      $scope.loginUser = function(user){
@@ -70,7 +70,7 @@ angular.module('app').controller('appCtrl', function($rootScope,$scope, $route, 
              // failure callback
              $('#alertTextDiv').addClass('show');
              $scope.alert_text = "Invalid Username and Password. Please try again.";
-             $timeout(function(){$('#alertTextDiv').removeClass('show')}, 10000);
+             $timeout(function(){$('#alertTextDiv').removeClass('show')}, 2000);
            }
          );
      }

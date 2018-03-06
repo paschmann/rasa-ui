@@ -32,7 +32,6 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
   });
 
   $scope.$on('refreshIntervelUpdate', function(event, expression_text) {
-    debugger;
     $interval.cancel(configcheck);
     executeRefreshSettings();
   });
@@ -50,8 +49,6 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
         $rootScope.config.server_model_dirs_array = getAvailableModels(statusdata);
         if ($rootScope.config.server_model_dirs_array.length > 0) {
           $rootScope.modelname = $rootScope.config.server_model_dirs_array[0].name;
-        } else {
-          $rootScope.modelname = "Default";
         }
       }, function(error) {
         // error handler
@@ -63,13 +60,13 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
   $scope.executeTestRequest = function() {
     $scope.response_text='';
     $scope.test_text_response={};
-    //var options = {};
-    //var model = '';
-  //  if ($scope.modelname !== 'Default') {
-    //  $scope.modelname.split("*")
-  //    model = $scope.modelname;
-  //  }
-    var options = {q: $scope.test_text,project:$scope.modelname.split("*")[0], model: $scope.modelname.split("*")[1]};
+    var options = {};
+    if ($scope.modelname == '') {
+      options = {q: $scope.test_text};
+    } else {
+      options = {q: $scope.test_text, project:$scope.modelname.split("*")[0], model: $scope.modelname.split("*")[1]};
+    }
+
     $http.post(api_endpoint_v2 + "/rasa/parse", JSON.stringify(options))
       .then(
         function(response){

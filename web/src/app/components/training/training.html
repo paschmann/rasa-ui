@@ -18,9 +18,7 @@
                         <label class="col-md-1 form-control-label" for="select">Agent</label>
                       </div>
                       <div class="col-sm-3">
-                        <select id="agent_name" ng-change="getData(agent.agent_id)" ng-options="agent.agent_id as agent.agent_name for agent in agentList" ng-model="agent.agent_id" class="form-control">
-                          <option value="">Please select one</option>
-                        </select>
+                        <select id="agent_name" ng-change="getData(agent.agent_id)" ng-options="agent.agent_id as agent.agent_name for agent in agentList" ng-model="agent.agent_id" class="form-control"></select>
                       </div>
                       <div class="col-sm-3">
                             <button type="button" class="btn btn-success" ng-show="exportdata !== undefined" ng-click="train()"><i class="fa fa-magic"></i>&nbsp; Start Training</button>
@@ -29,7 +27,7 @@
                       </div>
                       <div class="col-sm-3">
                         <span ng-show="exportdata !== undefined" >To Lower case  <label class="switch switch-3d switch-success" ng-show="exportdata !== undefined">
-                            <input type="checkbox" class="switch-input" ng-model="toLowercase" ng-change="getData(agent.agent_id)">
+                            <input type="checkbox" class="switch-input" ng-model="toLowercase" ng-change="convertToLowerCase()">
                             <span class="switch-label"></span>
                             <span class="switch-handle"></span>
                         </label>
@@ -40,7 +38,7 @@
                 <div class="card-block" ng-show="exportdata !== undefined">
                   <div class="col-sm-12">
                     <div class="alert alert-danger" role="alert" ng-show="generateError !== ''">
-                      <strong>Error</strong> seems some data is missing. ({{generateError}})
+                      <strong>Error</strong> {{generateError}}
                     </div>
                     <json-formatter json="exportdata" open="4"></json-formatter>
                   </div>

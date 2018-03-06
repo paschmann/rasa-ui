@@ -27,9 +27,7 @@ function getSingleEntity(req, res, next) {
 
 function createEntity(req, res, next) {
   console.log("Entities.createEntity");
-  db.none('insert into entities(entity_name)' +
-      'values(${entity_name})',
-    req.body)
+  db.none('insert into entities(entity_name) values(${entity_name})', req.body)
     .then(function () {
       res.status(200)
         .json({
@@ -38,6 +36,7 @@ function createEntity(req, res, next) {
         });
     })
     .catch(function (err) {
+      console.log(err);
       return next(err);
     });
 }

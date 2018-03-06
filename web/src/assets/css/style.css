@@ -2,6 +2,10 @@
   background-image: url("../img/logo.png");
 }
 
+.header-buttons {
+    color: #999;
+}
+
 .sidebar-toggler {
   left: inherit !important;
   right: 0px;
