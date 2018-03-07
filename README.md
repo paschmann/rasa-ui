@@ -79,7 +79,7 @@ Your web application should be available on http://localhost:5001
 
 Since Rasa UI can be used to log events/intent parsing/training etc. we would suggest changing your endpoints for your API calls to "pass through" the Rasa UI middleware layer. All API requests are simply forwarded, logged and then returned.
 
-e.g. Instead of calling: http://localhost:5000/parse?q=hello%20there rather call: http://localhost:5001/api/parse?q=hello%20there
+e.g. Instead of calling: http://localhost:5000/parse?q=hello%20there rather call: http://localhost:5001/api/v2/rasa/parse?q=hello%20there
 
 ## Contributing
 
