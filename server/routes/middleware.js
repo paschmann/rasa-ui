@@ -8,11 +8,14 @@ function getRasaNluStatus(req, res, next) {
   console.log("Rasa NLU Status Request -> " + process.env.npm_package_config_rasaserver + "/status");
   request(process.env.npm_package_config_rasaserver + '/status', function (error, response, body) {
     try {
-      if (body !== undefined) sendOutput(200, res, body);
-      else sendOutput(404, res, '{"error" : "Server Error"}');
+      if (body !== undefined) {
+        sendOutput(200, res, body);
+      } else {
+        sendOutput(404, res, '{"error" : "Server Error"}');
+      }
     } catch (err) {
       console.log(err);
-      sendOutput(404, res, '{"error" : "Exception caught !!"}');
+      sendOutput(404, res, '{"error" : ' + err + '}');
     }
   });
 }
@@ -25,7 +28,7 @@ function getRasaNluConfig(req, res, next) {
       else sendOutput(404, res, '{"error" : "Server Error"}');
     } catch (err) {
       console.log(err);
-      sendOutput(404, res, '{"error" : "Exception caught !!"}');
+      sendOutput(404, res, '{"error" : ' + err + '}');
     }
   });
 }
@@ -38,23 +41,23 @@ function getRasaNluVersion(req, res, next) {
       else sendOutput(404, res, '{"error" : "Server Error"}');
     } catch (err) {
       console.log(err);
-      sendOutput(404, res, '{"error" : "Exception caught !!"}');
+      sendOutput(404, res, '{"error" : ' + err + '}');
     }
   });
 }
 
 function trainRasaNlu(req, res, next) {
   console.log("Rasa NLU Train Request -> " + process.env.npm_package_config_rasaserver + "/train?project=" + req.query.project);
+  logRequest(req, "train", {project: req.query.project, agent: req.query.name, data: req.body});
+
   request({
     method: "POST",
     uri: process.env.npm_package_config_rasaserver + "/train?project=" + req.query.project,
     body: JSON.stringify(req.body)
-    //commenting headers out. NLU doesnt need any headers
-    //headers: req.headers
   }, function (error, response, body) {
     if(error){
-      console.log("Error Occured when posting data to nlu endpoint. "+error);
-      sendOutput(404, res, error);
+      console.log("Error Occured when posting data to nlu endpoint. " + error);
+      sendOutput(404, res, '{"error" : ' + error + '}');
       return;
     }
     try {
@@ -68,7 +71,7 @@ function trainRasaNlu(req, res, next) {
       return;
     } catch (err) {
       console.log(err);
-      sendOutput(404, res, '{"error" : "Exception caught !!"}');
+      sendOutput(404, res, '{"error" : ' + err + '}');
     }
   });
 }
@@ -94,11 +97,10 @@ function parseRasaNlu(req, res, next) {
     method: "POST",
     uri: process.env.npm_package_config_rasaserver + "/parse",
     body: JSON.stringify(req.body)
-    //headers: req.headers
   }, function (error, response, body) {
     if(error){
       console.log(error);
-      sendOutput(404, res, error);
+      sendOutput(404, res, '{"error" : ' + error + '}');
     }
     try {
       console.log("rasa_response:+++ "+ body);
@@ -106,7 +108,7 @@ function parseRasaNlu(req, res, next) {
       updateAndSendRasaResponse(req,cache_key,JSON.parse(body),modelName,projectName,res);
     } catch (err) {
       console.log(err);
-      sendOutput(404, res, '{"error" : "Exception caught !!"}');
+      sendOutput(404, res, '{"error" : ' + err + '}');
     }
   });
 }
@@ -139,7 +141,7 @@ function finalizeCacheFlushToDbAndRespond(cacheKey, http_code, res, body) {
 
       }
     }else{
-      console.log("Cache Not Found for key "+ cacheKey);
+      console.log("Cache Not Found for key " + cacheKey);
       return;
     }
   });
@@ -257,6 +259,7 @@ function logRequest(req, type, data) {
     obj.query = req.originalUrl;
     obj.event_type = type;
     obj.event_data = data;
+    console.log(obj);
 
     db.any('insert into nlu_log(ip_address, query, event_type, event_data)' +
       'values(${ip_address}, ${query}, ${event_type}, ${event_data})',

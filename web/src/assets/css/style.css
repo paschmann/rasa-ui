@@ -15,6 +15,16 @@
     width: 350px;
 }
 
+@media (max-width: 991px) {
+    .aside-menu {
+        margin-right: 0px;
+        width: 250px;
+    }
+    .aside-menu-fixed .main, .aside-menu-fixed .app-footer {
+        margin-right: 250px !important;
+    }
+}
+
 .aside-menu-hidden .aside-menu {
     margin-right: -350px;
 }

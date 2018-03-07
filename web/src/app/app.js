@@ -1,6 +1,6 @@
 var api_endpoint_v2 = '/api/v2'; //rasa UI API = location of Nodejs server.js script running, edit this if the nodejs web front end is not running on the server instance
 
-var app =angular.module('app', ['ngFileUpload', 'angularUtils.directives.dirPagination','ngRoute', 'chart.js', 'ngResource', 'ngStorage', 'ngTagsInput', 'jsonFormatter'])
+var app = angular.module('app', ['ngFileUpload', 'angularUtils.directives.dirPagination','ngRoute', 'chart.js', 'ngResource', 'ngStorage', 'ngTagsInput', 'jsonFormatter'])
 .config(function config() {
   function success(response) {
     return response;
@@ -41,7 +41,7 @@ var app =angular.module('app', ['ngFileUpload', 'angularUtils.directives.dirPagi
    });
 });
 
-angular.module('app').controller('appCtrl', function($rootScope,$scope, $route, $routeParams, $location,$timeout,$http,$sessionStorage) {
+angular.module('app').controller('appCtrl', function($rootScope, $scope, $route, $routeParams, $location, $timeout, $http, $sessionStorage) {
      $scope.$route = $route;
      $scope.$location = $location;
      $scope.$routeParams = $routeParams;

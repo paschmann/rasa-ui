@@ -14,7 +14,7 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
   executeRefreshSettings();
 
   function executeRefreshSettings(){
-    Settings.query(function(data) {
+    Settings.query().$promise.then(function(data) {
         $rootScope.settings = data;
         for(var key in data) {
           $rootScope.settings[data[key]['setting_name']] = data[key]['setting_value'];

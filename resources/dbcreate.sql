@@ -302,28 +302,28 @@ CREATE OR REPLACE VIEW public.avg_nlu_response_times_30_days AS
 select round(avg(nlu_response_time_ms)::integer,0),
 (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) as month_date from nlu_parse_log
 GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text))
-ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) desc
+ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) asc
 LIMIT 30;
 
 CREATE OR REPLACE VIEW public.avg_user_response_times_30_days AS
 select round(avg(user_response_time_ms)::integer,0),
 (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) as month_date from nlu_parse_log
 GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text))
-ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) desc
+ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) asc
 LIMIT 30;
 
 CREATE OR REPLACE VIEW public.active_user_count_12_months AS
 select count(distinct(user_id)) as count_users,
 (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) as month_year from nlu_parse_log
 GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text))
-ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) desc
+ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) asc
 LIMIT 12;
 
 CREATE OR REPLACE VIEW public.active_user_count_30_days AS
 SELECT count(distinct(user_id)) as user_count,
 (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) as month_date from nlu_parse_log
 GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text))
-ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) desc
+ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) asc
 LIMIT 30;
 
 CREATE OR REPLACE VIEW public.entity_synonym_variants AS
@@ -387,7 +387,7 @@ SELECT count(*) AS count,
 to_char(nlu_log."timestamp", 'MM/DD'::text) AS to_char
 FROM nlu_log
 GROUP BY (to_char(nlu_log."timestamp", 'MM/DD'::text))
-ORDER BY (to_char(nlu_log."timestamp", 'MM/DD'::text)) desc
+ORDER BY (to_char(nlu_log."timestamp", 'MM/DD'::text)) asc
 LIMIT 30;
 
 /* Static Data */

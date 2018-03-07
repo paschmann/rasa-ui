@@ -6,19 +6,18 @@
       <a class="nav-link navbar-toggler layout-toggler" style="color: #999;" ng-click="toggleSidebar()">&#9776;</a>
     </li>
   </ul>
-  <ul class="nav navbar-nav ml-auto d-md-down-none">
-    <li class="nav-item  d-md-down-none" ng-show="config.isonline == 1">
-      <i class="fa fa-server header-buttons"></i>
+  <ul class="nav navbar-nav ml-auto">
+    <li class="nav-item" ng-show="config.isonline == 1">
+      <i class="fa fa-server header-buttons fa-lg"></i>
     </li>
-    <li class="nav-item  d-md-down-none" ng-show="config.isonline == 0">
-      <i class="fa fa-server btn-danger"></i>
+    <li class="nav-item" ng-show="config.isonline == 0">
+      <i class="fa fa-server btn-danger fa-lg"></i>
     </li>
-    <li class="nav-item d-md-down-none">
-      <a class="nav-link navbar-toggler aside-menu-toggler" ng-click="toggleAside()"><i class="fa fa-comments header-buttons"></i></a>
+    <li class="nav-item">
+      <i class="fa fa-comments header-buttons fa-lg" ng-click="toggleAside()"></i>
     </li>
-    <li class="nav-item d-md-down-none">
-      <a class="nav-link navbar-toggler aside-menu-toggler" ng-click="logout()"><i class="fa fa-sign-out header-buttons"></i></a>
+    <li class="nav-item">
+      <i class="fa fa-sign-out header-buttons fa-lg" ng-click="logout()"></i>
     </li>
   </ul>
-  <button class="navbar-toggler sidebar-toggler mobile-menu-toggler d-lg-none" type="button" ng-click="toggleAside()"><i class="fa fa-comment-o header-buttons"></i></button>
 </header>

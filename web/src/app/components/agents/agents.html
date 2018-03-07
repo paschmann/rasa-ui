@@ -19,8 +19,7 @@
                     <span><a ng-href="#!/agent/{{agent.agent_id}}">{{ agent.agent_name }}</a></span>
                     <span class="pull-right">
                       <a style="border:0;" class="btn btn-outline-secondary" data-toggle="collapse" data-target="#{{agent.agent_id}}" aria-expanded="true" aria-controls="collapseOne">
-                      <i class="fa fa-edit"></i>
-                      Edit Agent</a>
+                      <i class="fa fa-edit"></i>  Edit Agent</a>
                     </span>
                   </div>
                   <div id="{{agent.agent_id}}" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
@@ -59,11 +58,10 @@
                       </div>
                     </div>
                     <div>
-                      <span class="pull-right" style="padding:10px;">
-                        <button type="button" class="btn btn-primary" ng-click="editAgentInfo(agent)">Save</button>
-                        <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#{{agent.agent_id}}">Cancel</button>
-                      </span>
                     </div>
+                  </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-sm btn-primary  ng-click="editAgentInfo(agent)""><i class="fa fa-dot-circle-o"></i> Save</button>
                     </div>
                   </div>
                 </div>

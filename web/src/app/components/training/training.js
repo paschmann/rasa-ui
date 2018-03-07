@@ -6,8 +6,8 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
   var exportData;
   var statuscheck = $interval(getRasaStatus, 5000);
   $scope.generateError = "";
-  $scope.trainings_under_this_process = 0;
   $scope.toLowercase = false;
+  $scope.message = "";
 
   getRasaStatus();
 
@@ -21,19 +21,17 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
 
   $scope.train = function() {
     var agentname = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id).agent_name;
-
     var id = new XDate().toString('yyyyMMdd-HHmmss');
-    $http.post(api_endpoint_v2 + "/rasa/train?name=" + agentname + "_" + id +"&project="+agentname, JSON.stringify(exportData)).then(
+    reset();
+    
+    $http.post(api_endpoint_v2 + "/rasa/train?name=" + agentname + "_" + id + "&project=" + agentname, JSON.stringify(exportData)).then(
         function(response){
-          // success callback
-          $rootScope.$broadcast('setAlertText', "Training for the Agent: " +agentname + " is successfully completed !!");
+          $scope.message = "Training for " + agentname + " completed successfully";
         },
         function(errorResponse){
-          $rootScope.$broadcast('setAlertText', "Error occured while training agent: " +agentname + " Message: "+JSON.stringify(errorResponse.status)+"-"+ JSON.stringify(errorResponse.data.errorBody));
+          $scope.generateError = JSON.stringify(errorResponse.data.errorBody);
         }
       );
-    //Minimize training data
-    $scope.exportdata = {};
   }
 
   $scope.savetofile = function() {
@@ -49,6 +47,12 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
     $scope.exportdata = JSON.parse(JSON.stringify($scope.exportdata).toLowerCase());
   }
 
+  function reset() {
+    $scope.toLowercase = false;
+    $scope.generateError = "";
+    $scope.message = "";
+  }
+
   $scope.getData = function(agent_id) {
     //Get Intents, Expressions, Parameters/Entities, Synonyms
     var intent_i;
@@ -58,8 +62,9 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
     var expressions;
     var params;
     var synonyms;
-    $scope.toLowercase = false;
 
+    reset();
+    
     Agent.query({agent_id: agent_id, path: "intents"}, function(intents) {
       var intentIds = intents.map(function(item) { return item['intent_id']; }).toString();
       if (intentIds.length > 0) {
@@ -72,25 +77,30 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
                 EntitySynonymVariantsByEntity.query({entity_ids: entityIds}, function(synonyms) {
                   generateData(intents, expressions, params, synonyms)
                 }, function(error) {
-                  generateError = error;
+                  $scope.generateError = error;
+                  $scope.exportdata = undefined;
                 });
               } else {
                 generateData(intents, expressions, params);
               }
             }, function(error) {
-              generateError = error;
+              $scope.generateError = error;
+              $scope.exportdata = undefined;
             });
           } else {
             generateData(intents, expressions);
           }
         }, function(error) {
-          generateError = error;
+          $scope.generateError = error;
+          $scope.exportdata = undefined;
         });
       } else {
-        $scope.exportdata = {};
+        $scope.generateError = "At least one intent is required to train a model";
+        $scope.exportdata = undefined;
       }
     }, function(error) {
-      generateError = error;
+      $scope.generateError = error;
+      $scope.exportdata = undefined;
     });
   }
 
@@ -205,7 +215,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
 
           if (statusdata !== undefined || statusdata.available_models !== undefined) {
             $rootScope.available_models = sortArrayByDate(getAvailableModels(statusdata), 'xdate');
-            $rootScope.trainings_under_this_process = statusdata.trainings_queued;
+            $rootScope.trainings_under_this_process = getNoOfTrainingJobs(statusdata);
           }
         } catch (err) {
           console.log(err);

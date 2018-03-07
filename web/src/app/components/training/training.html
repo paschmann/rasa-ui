@@ -1,69 +1,78 @@
 <ol class="breadcrumb" breadcrumb="">
-        <li class="breadcrumb-item ng-scope active"><span>Training</span></li>
+  <li class="breadcrumb-item ng-scope active">
+    <span>Training</span>
+  </li>
 </ol>
 <div class="container-fluid">
-    <div class="animated fadeIn">
-        <div class="row">
-          <div class="col-sm-12">
-            <div class="alert alert-info" role="alert" ng-show="$root.trainings_under_this_process > 0">
-              <strong>Training</strong> is currently running.
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="alert alert-success" role="alert" ng-show="message !== ''">
+          {{message}}
+        </div>
+        <div class="alert alert-info" role="alert" ng-show="$root.trainings_under_this_process > 0">
+          <strong>Training</strong> is currently running.
+        </div>
+        <div class="alert alert-danger" role="alert" ng-show="generateError !== ''">
+          <strong>Error</strong> {{generateError}}
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <strong>Create Model</strong>
+          </div>
+          <div class="card-block">
+            <div class="form-group row">
+              <div class="col-sm-1">
+                <label class="col-md-1 form-control-label" for="select">Agent</label>
+              </div>
+              <div class="col-sm-3">
+                <select id="agent_name" ng-change="getData(agent.agent_id)" ng-disabled="$root.trainings_under_this_process > 0" ng-options="agent.agent_id as agent.agent_name for agent in agentList"
+                  ng-model="agent.agent_id" class="form-control"></select>
+              </div>
+              <div class="col-sm-8">
+                <button type="button" class="btn btn-success" ng-disabled="$root.trainings_under_this_process > 0 || exportdata == undefined"
+                  ng-click="train()">
+                  <i class="fa fa-magic"></i>&nbsp; Start Training</button>
+                <button type="button" class="btn btn-secondary" ng-disabled="$root.trainings_under_this_process > 0 || exportdata == undefined"
+                  ng-click="savetofile()">
+                  <i class="fa fa-file"></i>&nbsp; Download File</button>
+                <a href="" id="a"></a>
+              </div>
             </div>
-            <div class="card">
-                <div class="card-header">
-                    <strong>Create Model</strong>
-                </div>
-                <div class="card-block">
-                    <div class="form-group row">
-                      <div class="col-sm-1">
-                        <label class="col-md-1 form-control-label" for="select">Agent</label>
-                      </div>
-                      <div class="col-sm-3">
-                        <select id="agent_name" ng-change="getData(agent.agent_id)" ng-options="agent.agent_id as agent.agent_name for agent in agentList" ng-model="agent.agent_id" class="form-control"></select>
-                      </div>
-                      <div class="col-sm-3">
-                            <button type="button" class="btn btn-success" ng-show="exportdata !== undefined" ng-click="train()"><i class="fa fa-magic"></i>&nbsp; Start Training</button>
-                            <button type="button" class="btn btn-secondary" ng-show="exportdata !== undefined" ng-click="savetofile()"><i class="fa fa-file"></i>&nbsp; Download File</button>
-                            <a href="" id="a"></a>
-                      </div>
-                      <div class="col-sm-3">
-                        <span ng-show="exportdata !== undefined" >To Lower case  <label class="switch switch-3d switch-success" ng-show="exportdata !== undefined">
-                            <input type="checkbox" class="switch-input" ng-model="toLowercase" ng-change="convertToLowerCase()">
-                            <span class="switch-label"></span>
-                            <span class="switch-handle"></span>
-                        </label>
-                      </span>
-                    </div>
-                    </div>
-                </div>
-                <div class="card-block" ng-show="exportdata !== undefined">
-                  <div class="col-sm-12">
-                    <div class="alert alert-danger" role="alert" ng-show="generateError !== ''">
-                      <strong>Error</strong> {{generateError}}
-                    </div>
-                    <json-formatter json="exportdata" open="4"></json-formatter>
-                  </div>
-                </div>
-                <div class="card-header">
-                    <strong>Available Models</strong>
-                </div>
-                <div class="card-block">
-                  <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>Create Date/Time</th>
-                        <th>Name</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr ng-repeat="model in available_models | orderBy: datetime : true">
-                        <td>{{ model.xdate }}</td>
-                        <td>{{ model.name }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+          </div>
+          <div class="card-block" ng-show="exportdata !== undefined">
+            <div class="col-sm-12">
+              <json-formatter json="exportdata" open="4"></json-formatter>
+              <span ng-show="exportdata !== undefined" class="pull-right">Lower case
+                <label class="switch switch-3d switch-success" style="margin-left: 20px;" ng-show="exportdata !== undefined">
+                  <input type="checkbox" class="switch-input" ng-model="toLowercase" ng-change="convertToLowerCase()">
+                  <span class="switch-label"></span>
+                  <span class="switch-handle"></span>
+                </label>
+              </span>
+            </div>
+          </div>
+          <div class="card-header">
+            <strong>Available Models</strong>
+          </div>
+          <div class="card-block">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Create Date/Time</th>
+                  <th>Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="model in available_models | orderBy: datetime : true">
+                  <td>{{ model.xdate }}</td>
+                  <td>{{ model.name }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
