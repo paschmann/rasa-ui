@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({
     limit: '2mb',
     extended: true
   }));
-  app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '2mb' }));
 /** Serve static files for UI website on root / */
 app.use('/', express.static('web/src/'));
 
