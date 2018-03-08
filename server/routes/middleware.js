@@ -90,7 +90,7 @@ function parseRasaNlu(req, res, next) {
     sendOutput(404, res, '{"error" : "Query not found !!"}');
     return;
   }
-  var cache_key = req.jwt.username+"_"+modelName+"_"+Date.now();
+  var cache_key = req.jwt.username + "_" + modelName + "_" + Date.now();
   logRequest(req, "parse", {project:projectName, model: modelName, intent: '', query: req.body.q});
   createInitialCacheRequest(req,cache_key);
   request({
@@ -103,9 +103,9 @@ function parseRasaNlu(req, res, next) {
       sendOutput(404, res, '{"error" : ' + error + '}');
     }
     try {
-      console.log("rasa_response:+++ "+ body);
+      console.log("rasa_response:+++ " + body);
       updateCacheWithRasaNluResponse(JSON.parse(body), cache_key);
-      updateAndSendRasaResponse(req,cache_key,JSON.parse(body),modelName,projectName,res);
+      updateAndSendRasaResponse(req, cache_key, JSON.parse(body), modelName, projectName, res);
     } catch (err) {
       console.log(err);
       sendOutput(404, res, '{"error" : ' + err + '}');

@@ -47,7 +47,7 @@ Rasa UI can run directly on your Rasa NLU instance, or on a separate machine. Te
 
 Please ensure prerequisites are fulfilled
 
-Clone/download the Rasa UI repository. Install npm packages foe both Server and Web.
+Clone/download the Rasa UI repository. Install npm packages for both Server and Web.
 
 ```
 git clone https://github.com/paschmann/rasaui.git
@@ -85,11 +85,10 @@ e.g. Instead of calling: http://localhost:5000/parse?q=hello%20there rather call
 
 Please read [contributing.md](https://github.com/paschmann/rasaui/contributing.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
-## Authors
+## Contributers
 
 * **Paul Aschmann**
-
-See also the list of [contributors](https://github.com/paschmann/rasaui/contributors) who participated in this project.
+* **Pradeep Mamillapalli**
 
 ## License
 
