@@ -71,3 +71,22 @@ LIMIT 30;
 
 ALTER TABLE public.entities DROP CONSTRAINT agent_pk;
 ALTER TABLE public.entities DROP agent_id;
+
+CREATE SEQUENCE public.regex_id_seq
+INCREMENT 1
+START 1
+MINVALUE 1
+MAXVALUE 9223372036854775807
+CACHE 1;
+
+CREATE TABLE public.regex
+(
+  regex_id integer NOT NULL DEFAULT nextval('regex_id_seq'::regclass),
+  regex_name character varying COLLATE pg_catalog."default",
+  regex_pattern character varying COLLATE pg_catalog."default",
+  CONSTRAINT regex_id_pk PRIMARY KEY (regex_id)
+)
+WITH (
+  OIDS = FALSE
+)
+TABLESPACE pg_default;

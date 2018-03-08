@@ -1,0 +1,22 @@
+<ol class="breadcrumb" breadcrumb="">
+  <li class="breadcrumb-item ng-scope active">
+    <span>Regex</span>
+  </li>
+  <li class="breadcrumb-menu">
+    <div class="btn-group" role="group">
+      <a class="btn btn-secondary" href="#!/regex/add">
+        <i class="icon-plus"></i> &nbsp;Add Regex</a>
+    </div>
+  </li>
+</ol>
+<div class="container-fluid">
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12 col-lg-12">
+        <div class="list-group">
+          <a class="list-group-item" ng-href="#!/regex/{{regex.regex_id}}" ng-repeat="regex in regexList track by regex.regex_id">{{ regex.regex_name }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

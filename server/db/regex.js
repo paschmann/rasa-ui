@@ -1,8 +1,8 @@
 const db = require('./db')
 
-function getAllEntities(req, res, next) {
-  console.log("Entities.getAllEntities");
-  db.any('select * from entities')
+function getAllRegex(req, res, next) {
+  console.log("regex.getAllRegex");
+  db.any('select * from regex')
     .then(function (data) {
       res.status(200)
         .json(data);
@@ -12,10 +12,10 @@ function getAllEntities(req, res, next) {
     });
 }
 
-function getSingleEntity(req, res, next) {
-  console.log("Entities.getSingleEntity");
-  var entityID = parseInt(req.params.entity_id);
-  db.one('select * from entities where entity_id = $1', entityID)
+function getSingleRegex(req, res, next) {
+  console.log("regex.getSingleRegex");
+  var regexID = parseInt(req.params.regex_id);
+  db.one('select * from regex where regex_id = $1', regexID)
     .then(function (data) {
       res.status(200)
         .json(data);
@@ -25,9 +25,9 @@ function getSingleEntity(req, res, next) {
     });
 }
 
-function createEntity(req, res, next) {
-  console.log("Entities.createEntity");
-  db.none('insert into entities(entity_name) values(${entity_name})', req.body)
+function createRegex(req, res, next) {
+  console.log("regex.createRegex");
+  db.none('insert into regex(regex_name, regex_pattern) values(${regex_name}, ${regex_pattern})', req.body)
     .then(function () {
       res.status(200)
         .json({
@@ -41,14 +41,14 @@ function createEntity(req, res, next) {
     });
 }
 
-function updateEntity(req, res, next) {
-  db.none('update entities set entity_name=$1 where entity_id=$2',
-    [req.body.entity_name, parseInt(req.params.entity_id)])
+function updateRegex(req, res, next) {
+  db.none('update regex set regex_name=$1, regex_pattern=$3 where regex_id=$2',
+    [req.body.regex_name, parseInt(req.params.regex_id), req.body.regex_pattern])
     .then(function () {
       res.status(200)
         .json({
           status: 'success',
-          message: 'Updated agent'
+          message: 'Updated regex'
         });
     })
     .catch(function (err) {
@@ -56,9 +56,9 @@ function updateEntity(req, res, next) {
     });
 }
 
-function removeEntity(req, res, next) {
-  var entityID = parseInt(req.params.entity_id);
-  db.result('delete from entities where entity_id = $1', entityID)
+function removeRegex(req, res, next) {
+  var regexID = parseInt(req.params.regex_id);
+  db.result('delete from regex where regex_id = $1', regexID)
     .then(function (result) {
       /* jshint ignore:start */
       res.status(200)
@@ -74,9 +74,9 @@ function removeEntity(req, res, next) {
 }
 
 module.exports = {
-  getAllEntities: getAllEntities,
-  getSingleEntity: getSingleEntity,
-  createEntity: createEntity,
-  updateEntity: updateEntity,
-  removeEntity: removeEntity
+  getAllRegex: getAllRegex,
+  getSingleRegex: getSingleRegex,
+  createRegex: createRegex,
+  updateRegex: updateRegex,
+  removeRegex: removeRegex
 };

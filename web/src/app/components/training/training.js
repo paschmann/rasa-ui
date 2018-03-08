@@ -2,7 +2,7 @@ angular
 .module('app')
 .controller('TrainingController', TrainingController)
 
-function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Agent, Intents, Expressions, ExpressionParameters, Rasa_Config, EntitySynonymVariantsByEntity, IntentExpressions) {
+function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Agent, Intents, Expressions, Regex, ExpressionParameters, Rasa_Config, EntitySynonymVariantsByEntity, AllSynonymVariants, IntentExpressions) {
   var exportData;
   var statuscheck = $interval(getRasaStatus, 5000);
   $scope.generateError = "";
@@ -27,9 +27,11 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
     $http.post(api_endpoint_v2 + "/rasa/train?name=" + agentname + "_" + id + "&project=" + agentname, JSON.stringify(exportData)).then(
         function(response){
           $scope.message = "Training for " + agentname + " completed successfully";
+          $rootScope.trainings_under_this_process = 0;
         },
         function(errorResponse){
           $scope.generateError = JSON.stringify(errorResponse.data.errorBody);
+          $rootScope.trainings_under_this_process = 0;
         }
       );
   }
@@ -66,51 +68,74 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
     reset();
     
     Agent.query({agent_id: agent_id, path: "intents"}, function(intents) {
-      var intentIds = intents.map(function(item) { return item['intent_id']; }).toString();
-      if (intentIds.length > 0) {
-        IntentExpressions.query({intent_ids: intentIds}, function(expressions) {
-          var expressionIds = expressions.map(function(item) { return item['expression_id']; }).toString();
-          if (expressionIds.length > 0) {
-            ExpressionParameters.query({expression_ids: expressionIds}, function(params) {
-              var entityIds = params.map(function(item) { return item['entity_id']; }).toString();
-              if (entityIds.length > 0) {
-                EntitySynonymVariantsByEntity.query({entity_ids: entityIds}, function(synonyms) {
-                  generateData(intents, expressions, params, synonyms)
+      Regex.query(function (regex) {
+        AllSynonymVariants.query(function(synonyms) { //WIP 2.3 
+          var intentIds = intents.map(function(item) { return item['intent_id']; }).toString();
+          if (intentIds.length > 0) {
+            IntentExpressions.query({intent_ids: intentIds}, function(expressions) {
+              var expressionIds = expressions.map(function(item) { return item['expression_id']; }).toString();
+              if (expressionIds.length > 0) {
+                ExpressionParameters.query({expression_ids: expressionIds}, function(params) {
+                  generateData(regex, intents, expressions, params, synonyms);
+
+                  /* WIP 2.3 - Update to latest json model for Rasa */
+                  var entityIds = params.map(function(item) { return item['entity_id']; }).toString();
+                  if (entityIds.length > 0) {
+                    EntitySynonymVariantsByEntity.query({entity_ids: entityIds}, function(entitysynonyms) {
+                      generateData(regex, intents, expressions, params, entitysynonyms)
+                    }, function(error) {
+                      $scope.generateError = error;
+                      $scope.exportdata = undefined;
+                    });
+                  } else {
+                    generateData(regex, intents, expressions, params);
+                  }
+
                 }, function(error) {
                   $scope.generateError = error;
                   $scope.exportdata = undefined;
                 });
               } else {
-                generateData(intents, expressions, params);
+                generateData(regex, intents, expressions);
               }
             }, function(error) {
               $scope.generateError = error;
               $scope.exportdata = undefined;
             });
           } else {
-            generateData(intents, expressions);
+            $scope.generateError = "At least one intent is required to train a model";
+            $scope.exportdata = undefined;
           }
-        }, function(error) {
-          $scope.generateError = error;
-          $scope.exportdata = undefined;
         });
-      } else {
-        $scope.generateError = "At least one intent is required to train a model";
-        $scope.exportdata = undefined;
-      }
+      });
     }, function(error) {
       $scope.generateError = error;
       $scope.exportdata = undefined;
     });
   }
 
-  function generateData(intents, expressions, params, synonyms) {
+  function generateData(regex, intents, expressions, params, synonyms) {
     var tmpData = {};
     var tmpIntent = {};
     var tmpExpression = {};
     var tmpParam = {};
     tmpData.rasa_nlu_data = {}
+    if (regex.length > 0) {
+      tmpData.rasa_nlu_data.regex_features = [];
+    }
+    //WIP 2.3 tmpData.rasa_nlu_data.entity_synonyms = [];
     tmpData.rasa_nlu_data.common_examples = [];
+
+    //WIP 2.3  Disabled due to this strange error: The truth value of an empty array is ambiguous. Returning False, but in future this will result in an error. Use `array.size > 0`
+    /*
+    for (var synonym_i = 0; synonym_i < synonyms.length; synonym_i++) {
+      tmpData.rasa_nlu_data.entity_synonyms.push({value: synonyms[synonym_i].value, synonyms: JSON.parse(synonyms[synonym_i].synonyms)})
+    }
+    */
+
+    for (var regex_i = 0; regex_i < regex.length; regex_i++) {
+      tmpData.rasa_nlu_data.regex_features.push({name: regex[regex_i].regex_name, pattern: regex[regex_i].regex_pattern})
+    }
 
     for (intent_i = 0; intent_i <= intents.length - 1; intent_i++) {
       var expressionList = expressions.filter(expression => expression.intent_id === intents[intent_i].intent_id);
@@ -118,7 +143,6 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
         for (expression_i = 0; expression_i <= expressionList.length - 1; expression_i++) {
           tmpIntent = {};
           tmpExpression = {};
-
 
           tmpIntent.intent = intents[intent_i].intent_name;
           tmpIntent.text = expressionList[expression_i].expression_text;
@@ -143,7 +167,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
                 $scope.generateError = "Entity is null";
               }
 
-              //Check for synonyms for this entity, and if it exists, lets also clone our current intent and replace the entity with the synonym
+              // WIP 2.3  Check for synonyms for this entity, and if it exists, lets also clone our current intent and replace the entity with the synonym
               var synonymList = synonyms.filter(synonym => synonym.entity_id === parameterList[parameter_i].entity_id);
               if (synonymList !== undefined) {
                 for (synonym_i = 0; synonym_i <= synonymList.length - 1; synonym_i++) {

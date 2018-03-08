@@ -57,6 +57,13 @@ app.factory('Entities', function($resource) {
   return $resource(api_endpoint_v2 + '/entities');
 });
 
+app.factory('Regex', ['$resource', function($resource) {
+  return $resource(api_endpoint_v2 + '/regex/:regex_id', {regex_id:'@id'},
+  {
+      'update': { method:'PUT' }
+  });
+}]);
+
 app.factory('EntitySynonyms', function($resource) {
   return $resource(api_endpoint_v2 + '/entity/:entity_id/synonyms', {entity_id:'@id'});
 });
@@ -77,6 +84,9 @@ app.factory('SynonymVariant', function($resource) {
   return $resource(api_endpoint_v2 + '/variants/:synonym_variant_id', {synonym_variant_id:'@id'});
 });
 
+app.factory('AllSynonymVariants', function($resource) {
+  return $resource(api_endpoint_v2 + '/synonymvariants');
+});
 
 app.factory('Settings', ['$resource', function($resource) {
 return $resource(api_endpoint_v2 + '/settings/:setting_name', {setting_name:'@setting_name'},
