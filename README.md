@@ -92,4 +92,4 @@ Please read [contributing.md](https://github.com/paschmann/rasaui/contributing.m
 
 ## License
 
-This project is licensed under the MIT License - see the [license.md](license.md) file for details
+This project is licensed under the MIT License - see the [license](license) file for details
