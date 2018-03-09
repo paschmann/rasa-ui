@@ -2,6 +2,10 @@
   background-image: url("../img/logo.png");
 }
 
+canvas.chart {
+    display: inline-block!important;
+}
+
 .header-buttons {
     color: #999;
 }

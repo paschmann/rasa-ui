@@ -1,47 +1,72 @@
 <ol class="breadcrumb" breadcrumb="">
-        <li class="breadcrumb-item ng-scope active"><span>Dashboard</span></li>
+    <li class="breadcrumb-item ng-scope active">
+        <span>Dashboard</span>
+    </li>
 </ol>
 <div class="container-fluid">
-
     <div class="animated fadeIn">
         <div class="row">
-          <div class="col-xxs-12 col-xs-6 col-lg-3">
-            <div class="card">
-                <div class="card-block p-a-1 clearfix">
-                    <i class="fa fa-comment bg-primary p-a-1 font-2xl m-r-1 pull-left"></i>
-                    <div class="h5 text-gray-light m-b-0 m-t-h">{{ request_processed }}</div>
-                    <div class="text-muted text-uppercase font-weight-bold font-xs">Requests Processed</div>
+            <div class="col-xxs-12 col-xs-6 col-lg-3">
+                <div class="card">
+                    <div class="card-block p-a-1 clearfix">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <i class="fa fa-comment bg-primary p-a-1 font-2xl m-r-1 pull-left"></i>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="h5 text-gray-light m-b-0 m-t-h">{{ request_processed }}</div>
+                                <div class="text-muted text-uppercase font-weight-bold font-xs">Requests Processed</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxs-12 col-xs-6 col-lg-3">
+                <div class="card">
+                    <div class="card-block p-a-1 clearfix">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <i class="fa fa-tag bg-info p-a-1 font-2xl m-r-1 pull-left"></i>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="h5 text-gray-dark m-b-0 m-t-h">{{ intents_processed }}</div>
+                                <div class="text-muted text-uppercase font-weight-bold font-xs">Intents Processed</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxs-12 col-xs-6 col-lg-3">
+                <div class="card">
+                    <div class="card-block p-a-1 clearfix">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <i class="fa fa-graduation-cap bg-info p-a-1 font-2xl m-r-1 pull-left"></i>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="h5 text-gray-dark m-b-0 m-t-h">{{ trainings_under_this_process }}</div>
+                                <div class="text-muted text-uppercase font-weight-bold font-xs">Training jobs Running</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxs-12 col-xs-6 col-lg-3">
+                <div class="card">
+                    <div class="card-block p-a-1 clearfix">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <i class="fa fa-database bg-primary p-a-1 font-2xl m-r-1 pull-left"></i>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="h5 text-gray-dark m-b-0 m-t-h">{{ available_models.length }}</div>
+                                <div class="text-muted text-uppercase font-weight-bold font-xs">Available Models</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-xxs-12 col-xs-6 col-lg-3">
-          <div class="card">
-              <div class="card-block p-a-1 clearfix">
-                  <i class="fa fa-tag bg-info p-a-1 font-2xl m-r-1 pull-left"></i>
-                  <div class="h5 text-gray-dark m-b-0 m-t-h">{{ intents_processed }}</div>
-                  <div class="text-muted text-uppercase font-weight-bold font-xs">Intents Processed</div>
-              </div>
-          </div>
-      </div>
-      <div class="col-xxs-12 col-xs-6 col-lg-3">
-        <div class="card">
-            <div class="card-block p-a-1 clearfix">
-                <i class="fa fa-graduation-cap bg-info p-a-1 font-2xl m-r-1 pull-left"></i>
-                <div class="h5 text-gray-dark m-b-0 m-t-h">{{ trainings_under_this_process }}</div>
-                <div class="text-muted text-uppercase font-weight-bold font-xs">Training jobs Running</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xxs-12 col-xs-6 col-lg-3">
-      <div class="card">
-          <div class="card-block p-a-1 clearfix">
-              <i class="fa fa-database bg-primary p-a-1 font-2xl m-r-1 pull-left"></i>
-              <div class="h5 text-gray-dark m-b-0 m-t-h">{{ available_models.length }}</div>
-              <div class="text-muted text-uppercase font-weight-bold font-xs">Available Models</div>
-          </div>
-      </div>
-  </div>
-</div>
 
 
         <div class="card" ng-controller="usageChartCtrl">
@@ -55,7 +80,8 @@
                 </div>
                 <!--/.row-->
                 <div class="chart-wrapper" style="height:300px;margin-top:40px;">
-                    <canvas class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="false" chart-series="series" chart-click="onClick" chart-options="options" chart-colors="colors" height="300"></canvas>
+                    <canvas class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="false" chart-series="series" chart-click="onClick"
+                        chart-options="options" chart-colors="colors" height="300"></canvas>
                 </div>
             </div>
         </div>

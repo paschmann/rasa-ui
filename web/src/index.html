@@ -9,23 +9,30 @@
   <link rel="icon" href="assets/img/favicon.png">
 
   <title>Rasa UI</title>
+  
+  <!-- 3rd Party libs -->
   <script src="node_modules/jquery/dist/jquery.min.js"></script>
   <script src="node_modules/chart.js/dist/Chart.min.js"></script>
-  <!--  <script src="assets/libs/Chart.js"></script>-->
   <script src="node_modules/angular/angular.min.js"></script>
   <script src="node_modules/angular-resource/angular-resource.min.js"></script>
   <script src="node_modules/angular-route/angular-route.min.js"></script>
   <script src="node_modules/ngstorage/ngStorage.min.js"></script>
   <script src="node_modules/angular-chart.js/dist/angular-chart.min.js"></script>
-  <!--<script src="assets/libs/angular-chart.js"></script>-->
   <script src="node_modules/jsonformatter/dist/json-formatter.min.js"></script>
-  <!-- <script src="assets/libs/json-formatter.js"></script> -->
   <script src="node_modules/ng-tags-input/build/ng-tags-input.min.js"></script>
   <script src="node_modules/angular-utils-pagination/dirPagination.js"></script>
   <script src="node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
-  <!-- 3rd Party libs -->
-  <script src="assets/libs/xdate.min.js"></script>
-  <script src="assets/libs/popper.min.js"></script>
+  <script src="node_modules/xdate/src/xdate.js"></script>
+  <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
+
+  <!-- 3rd Party CSS -->
+  <link href="node_modules/jsonformatter/dist/json-formatter.css" rel="stylesheet">
+  <link href="node_modules/ng-tags-input/build/ng-tags-input.min.css"  rel="stylesheet">
+  <link href="node_modules/ng-tags-input/build/ng-tags-input.bootstrap.min.css" rel="stylesheet">
+  <link href="node_modules/simple-line-icons/css/simple-line-icons.css" rel="stylesheet">
+
+  <link href="assets/css/vendor/core-ui.css" rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet">
 
   <!-- core app -->
   <script src="app/app.js"></script>
@@ -70,13 +77,6 @@
   <script src="app/services/log.js"></script>
 
   <!-- Styles -->
-  <link href="assets/css/vendor/core-ui.css" rel="stylesheet">
-  <link href="assets/css/vendor/json-formatter.css" rel="stylesheet">
-  <link href="assets/css/vendor/font-awesome.min.css" rel="stylesheet">
-  <link href="assets/css/vendor/simple-line-icons.css" rel="stylesheet">
-  <link href="assets/css/vendor/ng-tags-input.min.css"  rel="stylesheet">
-  <link href="assets/css/vendor/ng-tags-input.bootstrap.min.css" rel="stylesheet">
-
   <link href="assets/css/style.css" rel="stylesheet">
 </head>
 
@@ -162,7 +162,6 @@
   </div>
 
   <!-- Bootstrap core JavaScript -->
-  <script src="assets/libs/tether.min.js"></script>
-  <script src="assets/libs/bootstrap.min.js"></script>
+  <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

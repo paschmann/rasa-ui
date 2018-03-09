@@ -9,7 +9,7 @@
   <!-- Breadcrumb Menu-->
   <li class="breadcrumb-menu">
     <div class="btn-group" role="group">
-      <a class="btn btn-secondary" ng-click="deleteIntent()" confirm-click-title="Delete Intent" confirm-click="Are you sure? This will delete the intent and all its expressions, and their resolved entities.">
+      <a class="btn btn-outline-secondary" ng-click="deleteIntent()" confirm-click-title="Delete Intent" confirm-click="Are you sure? This will delete the intent and all its expressions, and their resolved entities.">
         <i class="icon-trash"></i> &nbsp;Delete Intent</a>
     </div>
   </li>
@@ -65,13 +65,13 @@
                     <span id="expression_{{expression.expression_id}}" ng-bind-html="expression.expression_highlighted_text | trusted"></span>
                     <span class="pull-right">
                       <span class="badge badge-default badge-pill mr-2" ng-hide="parameterFilterList.length == 0">{{ parameterFilterList.length }}</span>
-                      <button class="btn btn-secondary" ng-click="runExpression(expression.expression_text)">
+                      <button class="btn btn-outline-secondary" ng-click="runExpression(expression.expression_text)">
                         <span class="icon-energy"></span>
                       </button>
-                      <button class="btn btn-secondary" ng-click="addParameter(expression.expression_id)">
+                      <button class="btn btn-outline-secondary" ng-click="addParameter(expression.expression_id)">
                         <span class="icon-link"></span>
                       </button>
-                      <button class="btn btn-secondary mr-2" data-toggle="collapse" ng-click="toggleArrow(expression.expression_id)" data-target="#table_expression_{{expression.expression_id}}"
+                      <button class="btn btn-outline-secondary mr-2" data-toggle="collapse" ng-click="toggleArrow(expression.expression_id)" data-target="#table_expression_{{expression.expression_id}}"
                         aria-expanded="false" aria-controls="table_expression_{{expression.expression_id}}">
                         <span class="icon-arrow-down" id="icon_expression_{{expression.expression_id}}"></span>
                       </button>

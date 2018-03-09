@@ -23,7 +23,7 @@
           <div class="card-block">
             <div class="form-group row">
               <div class="col-sm-1">
-                <label class="col-md-1 form-control-label" for="select">Agent</label>
+                <label class="form-control-label" for="select">Agent</label>
               </div>
               <div class="col-sm-3">
                 <select id="agent_name" ng-change="getData(agent.agent_id)" ng-disabled="$root.trainings_under_this_process > 0" ng-options="agent.agent_id as agent.agent_name for agent in agentList"
@@ -33,7 +33,7 @@
                 <button type="button" class="btn btn-success" ng-disabled="$root.trainings_under_this_process > 0 || exportdata == undefined"
                   ng-click="train()">
                   <i class="fa fa-magic"></i>&nbsp; Start Training</button>
-                <button type="button" class="btn btn-secondary" ng-disabled="$root.trainings_under_this_process > 0 || exportdata == undefined"
+                <button type="button" class="btn btn-outline-secondary" ng-disabled="$root.trainings_under_this_process > 0 || exportdata == undefined"
                   ng-click="savetofile()">
                   <i class="fa fa-file"></i>&nbsp; Download File</button>
                 <a href="" id="a"></a>

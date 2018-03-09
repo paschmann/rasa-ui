@@ -3,7 +3,7 @@ angular
   .controller('InsightsController', InsightsController)
 
 function InsightsController($scope, $http, $sce, NLU_log_stats) {
-  //all agentnames
+  $scope.option = "Daily";
   loadDailyActiveUsers();
 
   NLU_log_stats.query({path: "avgNluResponseTimesLast30Days"}, function (data) {
@@ -212,7 +212,6 @@ function InsightsController($scope, $http, $sce, NLU_log_stats) {
     NLU_log_stats.query({path: "activeUserCountLast30Days"}, function (data) {
       var users_data = [];
       var avg_act_users = 0;
-      $scope.linkOptions = ['Monthly'];
       $scope.activeusers_labels = [];
       $scope.activeusers_series = ['Active'];
       for (var i = 0; i < data.length; i++) {
@@ -229,7 +228,6 @@ function InsightsController($scope, $http, $sce, NLU_log_stats) {
     NLU_log_stats.query({path: "activeUserCountLast12Months"}, function (data) {
       var users_data = [];
       var avg_act_users = 0;
-      $scope.linkOptions = ['Daily'];
       $scope.activeusers_labels = [];
       $scope.activeusers_series = ['Active'];
       for (var i = 0; i < data.length; i++) {
