@@ -15,7 +15,7 @@ Rasa UI is a web application built on top of, and for, [Rasa NLU](https://github
 - Existing apps can migrate to this version after running the db-alters.sql under resources and updating their codebase to master.(Although a back up of the data is recommended as rasa-uui is still in Beta version)
 - Adapted to rasa_nlu 0.10.x Projects Structure. Each Agent in UI translates to a Project on the NLU.
 
-![Screenshot1](https://github.com/paschmann/rasa-ui/blob/1.0/resources/insights.png)
+![Screenshot1](https://github.com/paschmann/rasa-ui/blob/master/resources/insights.png)
 
 
 ## Features
@@ -27,7 +27,7 @@ Rasa UI is a web application built on top of, and for, [Rasa NLU](https://github
 - Usage dashboard
 - Easily execute intent parsing using different models
 
-![Screenshot1](https://github.com/paschmann/rasaui/blob/master/resources/rasa_ui_1.png)
+![Screenshot1](https://github.com/paschmann/rasa-ui/blob/master/resources/rasa_ui_1.png)
 
 ## Getting Started
 
