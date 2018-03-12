@@ -1,3 +1,9 @@
+// Global Variables
+global.postgresserver = process.env.postgresserver || process.env.npm_package_config_postgresConnectionString;
+global.rasaserver = process.env.rasaserver || process.env.npm_package_config_rasaserver;
+global.rasacoreserver = process.env.rasacoreserver || process.env.npm_package_config_rasacoreserver;
+global.jwtsecret = process.env.jwtsecret || process.env.npm_package_config_jwtsecret;
+
 var express = require('express');
 var proxy = require('http-proxy-middleware');
 var bodyParser = require('body-parser');
@@ -38,7 +44,7 @@ app.use(function(req, res, next) {
     if (req.headers.authorization.split(' ')[0] === 'Bearer'){
         var token = req.headers.authorization.split(' ')[1];
         // verifies secret and checks exp
-        jwt.verify(token, process.env.npm_package_config_jwtsecret, function(err, decoded) {
+        jwt.verify(token, global.jwtsecret, function(err, decoded) {
           if (err) {
             return res.json({ success: false, message: 'Failed to authenticate token.' });
           } else {
@@ -81,38 +87,53 @@ app.use(function(err, req, res, next) {
   });
 });
 
-app.listen(5001);
+var listener = app.listen(5001);
 
+checkRasaUI();
 checkDB();
 checkRasaNLU();
 //checkRasaCore();
 
+function checkRasaUI() {
+  console.log('');
+  console.log('Rasa UI Server: ' + listener.address().address + ':' + listener.address().port);
+  console.log('');
+}
+
 function checkDB() {
   db.one('select current_database(), current_schema(), inet_server_port(), inet_server_addr()')
     .then(function (data) {
+      var dbconn = process.env.postgresserver != undefined ? 'process.env.postgresserver' : 'package.json';
       console.log('');
-      console.log('DB Connected');
+      console.log('Postgres DB Connected');
+      console.log('Using connection string from: ' + dbconn);
       console.log('Postgres Server: ' + data["inet_server_addr"] + ':' + data["inet_server_port"]);
       console.log('Database:' + data["current_database"]);
       console.log('Schema:' + data["current_schema"]);
       console.log('');
     })
     .catch(function (err) {
-      console.log('DB Connection Error: ' + err)
+      var dbconn = process.env.postgresserver != undefined ? 'process.env.postgresserver' : 'package.json';
+      console.log('Postgres DB Connection Error: ' + err);
+      console.log('Using connection string from: ' + dbconn);
     });
 }
 
 function checkRasaNLU() {
-  request(process.env.npm_package_config_rasaserver + '/config', function (error, response, body) {
+  request(global.rasaserver + '/config', function (error, response, body) {
     try {
       if (body !== undefined) {
+        var rasaconn = process.env.rasaserver != undefined ? 'process.env.rasaserver' : 'package.json';
         console.log('');
         console.log('Rasa NLU Connected');
-        console.log('Rasa NLU Server: ' + process.env.npm_package_config_rasaserver);
+        console.log('Using connection string from: ' + rasaconn);
+        console.log('Rasa NLU Server: ' + global.rasaserver);
       }
       if (error !== null) {
+        var rasaconn = process.env.rasaserver != undefined ? 'process.env.rasaserver' : 'package.json';
         console.log('');
         console.log('Rasa NLU Error: ' + error);
+        console.log('Using connection string from: ' + rasaconn);
       }
       console.log('');
     } catch (err) {
@@ -122,12 +143,12 @@ function checkRasaNLU() {
 }
 
 function checkRasaCore() {
-  request(process.env.npm_package_config_rasacoreendpoint + '/config', function (error, response, body) {
+  request(global.rasacoreserver + '/config', function (error, response, body) {
     try {
       if (body !== undefined) {
         console.log('');
         console.log('Rasa Core Connected');
-        console.log('Rasa Core Server: ' + process.env.npm_package_config_rasacoreendpoint);
+        console.log('Rasa Core Server: ' + global.rasacoreserver);
       }
       if (error !== null) {
         console.log('');

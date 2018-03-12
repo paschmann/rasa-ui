@@ -29,7 +29,7 @@
     "start": "node server/server.js"
   },
   "author": "Paul Aschmann",
-  "url": "http://",
+  "url": "https://github.com/paschmann/rasa-ui",
   "copyright": "Copyright 2017",
-  "license": "http://"
+  "license": "https://github.com/paschmann/rasa-ui/blob/master/license"
 }
