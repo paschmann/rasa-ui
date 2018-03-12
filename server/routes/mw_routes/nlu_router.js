@@ -13,7 +13,7 @@ function getRasaNluStatus(req, res, next) {
       else sendOutput(500, res, '{"error" : "Server Error"}');
     } catch (err) {
       console.log(err);
-      sendOutput(500, res, '{"error" : "Exception caught !!"}');
+      sendOutput(500, res, '{"error" : ' + err + '}');
     }
   });
 }
@@ -26,7 +26,7 @@ function getRasaNluConfig(req, res, next) {
       else sendOutput(500, res, '{"error" : "Server Error"}');
     } catch (err) {
       console.log(err);
-      sendOutput(500, res, '{"error" : "Exception caught !!"}');
+      sendOutput(500, res, '{"error" : ' + err + '}');
     }
   });
 }
@@ -39,23 +39,23 @@ function getRasaNluVersion(req, res, next) {
       else sendOutput(500, res, '{"error" : "Server Error"}');
     } catch (err) {
       console.log(err);
-      sendOutput(500, res, '{"error" : "Exception caught !!"}');
+      sendOutput(500, res, '{"error" : ' + err + '}');
     }
   });
 }
 
 function trainRasaNlu(req, res, next) {
   console.log("Rasa NLU Train Request -> " + process.env.npm_package_config_rasanluendpoint + "/train?project=" + req.query.project);
+  logRequest(req, "train", {project: req.query.project, agent: req.query.name, data: req.body});
+
   request({
     method: "POST",
     uri: process.env.npm_package_config_rasanluendpoint + "/train?project=" + req.query.project,
     body: JSON.stringify(req.body)
-    //commenting headers out. NLU doesnt need any headers
-    //headers: req.headers
   }, function (error, response, body) {
     if(error){
-      console.log("Error Occured when posting data to nlu endpoint. "+error);
-      sendOutput(500, res, error);
+      console.log("Error Occured when posting data to nlu endpoint. " + error);
+      sendOutput(500, res, '{"error" : ' + error + '}');
       return;
     }
     try {
@@ -69,7 +69,7 @@ function trainRasaNlu(req, res, next) {
       return;
     } catch (err) {
       console.log(err);
-      sendOutput(500, res, '{"error" : "Exception caught !!"}');
+      sendOutput(500, res, '{"error" : ' + err + '}');
     }
   });
 }
@@ -88,26 +88,25 @@ function parseRequest(req, res, next, agentObj) {
     sendOutput(500, res, '{"error" : "Query not found !!"}');
     return;
   }
-  var cache_key = req.jwt.username+"_"+modelName+"_"+Date.now();
+  var cache_key = req.jwt.username + "_" + modelName + "_" + Date.now();
   logRequest(req, "parse", {project:projectName, model: modelName, intent: '', query: req.body.q});
   createInitialCacheRequest(req,cache_key,agentObj);
   request({
     method: "POST",
     uri: process.env.npm_package_config_rasanluendpoint + "/parse",
     body: JSON.stringify(req.body)
-    //headers: req.headers
   }, function (error, response, body) {
     if(error){
       console.log(error);
-      sendOutput(500, res, error);
+      sendOutput(500, res, '{"error" : ' + error + '}');
     }
     try {
-      console.log("rasa_response:+++ "+ body);
+      console.log("rasa_response:+++ " + body);
       updateCacheWithRasaNluResponse(JSON.parse(body), cache_key);
-      updateAndSendRasaResponse(req,cache_key,JSON.parse(body),modelName,projectName,res);
+      updateAndSendRasaResponse(req, cache_key, JSON.parse(body), modelName, projectName, res);
     } catch (err) {
       console.log(err);
-      sendOutput(500, res, '{"error" : "Exception caught !!"}');
+      sendOutput(500, res, '{"error" : ' + err + '}');
     }
   });
 }
@@ -119,16 +118,16 @@ function finalizeCacheFlushToDbAndRespond(cacheKey, http_code, res, body) {
   nluParseLogCache.get(cacheKey, function( err, nlu_parse_cache ){
     if( !err ){
       if(nlu_parse_cache == undefined){
-        // quite logging and return
+        // quit logging and return
         console.log("Cache Not Found for key "+ cacheKey);
         return;
       }else{
         if(body != ""){
-          if(body.response_text != undefined)nlu_parse_cache.response_text =body.response_text;
-          if(body.response_rich != undefined)nlu_parse_cache.response_rich_data =body.response_rich;
+          if(body.response_text != undefined)nlu_parse_cache.response_text = body.response_text;
+          if(body.response_rich != undefined)nlu_parse_cache.response_rich_data = body.response_rich;
           nlu_parse_cache.user_response_time_ms = Date.now() - nlu_parse_cache.createTime;
         }
-        db.none('INSERT INTO public.nlu_parse_log(agent_id, request_text, intent_name, entity_data, response_text, response_rich_data, intent_confidence_pct, user_id, user_name,user_response_time_ms,nlu_response_time_ms) values(${agent_id}, ${request_text}, ${intent_name}, ${entity_data}, ${response_text},${response_rich_data}, ${intent_confidence_pct}, ${user_id}, ${user_name},${user_response_time_ms},${nlu_response_time_ms})',nlu_parse_cache)
+        db.none('INSERT INTO public.nlu_parse_log(agent_id, request_text, intent_name, entity_data, response_text, response_rich_data, intent_confidence_pct, user_id, user_name,user_response_time_ms,nlu_response_time_ms) values(${agent_id}, ${request_text}, ${intent_name}, ${entity_data}, ${response_text},${response_rich_data}, ${intent_confidence_pct}, ${user_id}, ${user_name},${user_response_time_ms},${nlu_response_time_ms})', nlu_parse_cache)
           .then(function () {
               console.log("Cache inserted into db. Removing it");
               nluParseLogCache.del(cacheKey);
@@ -140,7 +139,7 @@ function finalizeCacheFlushToDbAndRespond(cacheKey, http_code, res, body) {
 
       }
     }else{
-      console.log("Cache Not Found for key "+ cacheKey);
+      console.log("Cache Not Found for key " + cacheKey);
       return;
     }
   });
@@ -163,11 +162,15 @@ function updateCacheWithRasaNluResponse(rasa_response, cacheKey){
         console.log("Cache Not Found for key "+ cacheKey);
         return;
       }else{
-        nlu_parse_cache.intent_name = rasa_response.intent.name;
-        nlu_parse_cache.entity_data = JSON.stringify(rasa_response.entities);
-        nlu_parse_cache.intent_confidence_pct = rasa_response.intent.confidence.toFixed(2)*100;
-        nlu_parse_cache.nlu_response_time_ms= Date.now() - nlu_parse_cache.createTime;
-        nluParseLogCache.set(cacheKey, nlu_parse_cache);
+        try {
+          nlu_parse_cache.intent_name = rasa_response.intent.name;
+          nlu_parse_cache.entity_data = JSON.stringify(rasa_response.entities);
+          nlu_parse_cache.intent_confidence_pct = rasa_response.intent.confidence.toFixed(2)*100;
+          nlu_parse_cache.nlu_response_time_ms= Date.now() - nlu_parse_cache.createTime;
+          parseLogCache.set(cacheKey, nlu_parse_cache);
+        } catch (err) {
+          //console.log(err);
+        }
       }
     }else{
       console.log("Cache Not Found for key "+ cacheKey);
@@ -182,25 +185,59 @@ function createInitialCacheRequest(req, cacheKey, agentObj) {
   nluParseReqObj.request_text = req.body.q;
   nluParseReqObj.model_name = req.body.model;
   nluParseReqObj.project_name = req.body.project
-  nluParseReqObj.user_id=req.jwt.username;
-  nluParseReqObj.user_name=req.jwt.name;
-  nluParseReqObj.createTime=Date.now();
+  nluParseReqObj.user_id = req.jwt.username;
+  nluParseReqObj.user_name = req.jwt.name;
+  nluParseReqObj.createTime = Date.now();
   //empty object
-  nluParseReqObj.intent_name='';
-  nluParseReqObj.entity_data='{}';
-  nluParseReqObj.response_text='';
-  nluParseReqObj.response_rich_data='{}';
-  nluParseReqObj.intent_confidence_pct=0;
-  nluParseReqObj.user_response_time_ms=0;
-  nluParseReqObj.nlu_response_time_ms=0;
-  //set agent_id
-  nluParseReqObj.agent_id= agentObj.agent_id;
+  nluParseReqObj.intent_name = '';
+  nluParseReqObj.entity_data = '{}';
+  nluParseReqObj.response_text = '';
+  nluParseReqObj.response_rich_data = '{}';
+  nluParseReqObj.intent_confidence_pct = 0;
+  nluParseReqObj.user_response_time_ms = 0;
+  nluParseReqObj.nlu_response_time_ms = 0;
+  nluParseReqObj.agent_id = -1;
+
   //set it in the cache
   nluParseLogCache.set(cacheKey, nluParseReqObj, function(err, success ){
     if( !err && success ){
       console.log( "Object Inserted into Cache" );
     }
   });
+  //get agent by model
+  var agent_name;
+    if (req.body.project == undefined) { //default agent none specified
+      agent_name = req.body.project
+    } else {
+      agent_name = "";
+    }
+
+      db.any('select * from agents where agent_name = $1', agent_name)
+        .then(function (data) {
+          console.log("Agent Information: " + JSON.stringify(data));
+          //get the cache object and update with agent_id
+          parseLogCache.get(cacheKey, function( err, nlu_parse_cache ){
+            if( !err ){
+              if(nlu_parse_cache == undefined){
+                // quite logging and return
+                console.log("Cache Not Found for key "+ cacheKey);
+                return;
+              } else {
+                if (data.length == 0 ) {
+                  nlu_parse_cache.agent_id = -1;
+                } else {
+                  nlu_parse_cache.agent_id = data[0].agent_id;
+                }
+                parseLogCache.set(cacheKey, nlu_parse_cache);
+              }
+            }else{
+              console.log("Cache Not Found for key "+ cacheKey);
+              return;
+            }
+          });
+        }).catch(function (err) {
+          console.log(err);
+        });
 }
 
 function sendOutput(http_code, res, body) {
@@ -221,6 +258,7 @@ function logRequest(req, type, data) {
     obj.query = req.originalUrl;
     obj.event_type = type;
     obj.event_data = data;
+    console.log(obj);
 
     db.any('insert into nlu_log(ip_address, query, event_type, event_data)' +
       'values(${ip_address}, ${query}, ${event_type}, ${event_data})',
@@ -233,82 +271,86 @@ function logRequest(req, type, data) {
   }
 }
 
-function updateAndSendRasaResponse(req,cacheKey,rasa_response, modelName, projectName,res) {
-  db.any(
-  'select agents.endpoint_enabled as agent_endpoint, agents.endpoint_url, agents.basic_auth_username,agents.basic_auth_password, '+
-  'intents.endpoint_enabled as intent_endpoint, intents.intent_id, intents.intent_name  from agents, intents where agents.agent_name=$2 '+
-  ' and intents.intent_name=$1 and intents.agent_id=agents.agent_id', [rasa_response.intent.name,projectName])
-  .then(function (data) {
-    //check if webhook is configured
-    if(data.length>0){
-      if(data[0].intent_endpoint == true){
-        //post rasa_response to configured webhook
-        //Need to add HTTP Basic Authentication
-        request.post({
-          url: data[0].endpoint_url,
-          headers : {
-           "Accept": "application/json",
-           "Content-Type": "application/json",
-           "Authorization" : "Bearer "+req.original_token
-         },
-         body: JSON.stringify(rasa_response)
-        },
-        function (error, response, body){
-          if(error){
-            //Got error from webhook,log and and send original rasa nlu response
-            console.log(error);
-            rasa_response.response_text = "Configured Webhook threw an error. Check with the service provider.";
-            finalizeCacheFlushToDbAndRespond(cacheKey,200, res, rasa_response);
-            return;
-          }
-          try {
-              //respond back to client.
-              //Expecting API.ai style response element.
-              //var response_text={
-              //   "speech": "",
-              //   "displayText": "",
-              //   "dataToClient":{}
-              //}
-              console.log("Response from Webhook --> " +JSON.stringify(body));
-              if(body != undefined){
-                rasa_response.response_text = JSON.parse(body).displayText;
-                rasa_response.response_rich=JSON.parse(body).dataToClient;
-                console.log("Sending Rasa NLU Response + Webhook response");
-                finalizeCacheFlushToDbAndRespond(cacheKey,200, res, rasa_response);
-              }else{
-                console.log("Unknown response from webhook. Respond back with Rasa NLU only");
+function updateAndSendRasaResponse(req, cacheKey, rasa_response, modelName, projectName, res) {
+  if (rasa_response.intent == undefined) {
+    finalizeCacheFlushToDbAndRespond(cacheKey,200, res, rasa_response);
+  } else {
+    db.any(
+    'select agents.endpoint_enabled as agent_endpoint, agents.endpoint_url, agents.basic_auth_username,agents.basic_auth_password, '+
+    'intents.endpoint_enabled as intent_endpoint, intents.intent_id, intents.intent_name  from agents, intents where agents.agent_name=$2 '+
+    ' and intents.intent_name=$1 and intents.agent_id=agents.agent_id', [rasa_response.intent.name,projectName])
+    .then(function (data) {
+      //check if webhook is configured
+      if(data.length>0){
+        if(data[0].intent_endpoint == true){
+          //post rasa_response to configured webhook
+          //Need to add HTTP Basic Authentication
+          request.post({
+            url: data[0].endpoint_url,
+            headers : {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization" : "Bearer "+req.original_token
+          },
+          body: JSON.stringify(rasa_response)
+          },
+          function (error, response, body){
+            if(error){
+              //Got error from webhook,log and and send original rasa nlu response
+              console.log(error);
+              rasa_response.response_text = "Configured Webhook threw an error. Check with the service provider.";
+              finalizeCacheFlushToDbAndRespond(cacheKey,200, res, rasa_response);
+              return;
+            }
+            try {
+                //respond back to client.
+                //Expecting API.ai style response element.
+                //var response_text={
+                //   "speech": "",
+                //   "displayText": "",
+                //   "dataToClient":{}
+                //}
+                console.log("Response from Webhook --> " +JSON.stringify(body));
+                if(body != undefined){
+                  rasa_response.response_text = JSON.parse(body).displayText;
+                  rasa_response.response_rich=JSON.parse(body).dataToClient;
+                  console.log("Sending Rasa NLU Response + Webhook response");
+                  finalizeCacheFlushToDbAndRespond(cacheKey,200, res, rasa_response);
+                }else{
+                  console.log("Unknown response from webhook. Respond back with Rasa NLU only");
+                  finalizeCacheFlushToDbAndRespond(cacheKey,200, res, rasa_response);
+                }
+              } catch (err) {
+                console.log("Error from Webhook. Respond back with Rasa NLU only");
+                console.log(err);
                 finalizeCacheFlushToDbAndRespond(cacheKey,200, res, rasa_response);
               }
-            } catch (err) {
-              console.log("Error from Webhook. Respond back with Rasa NLU only");
-              console.log(err);
+          });
+        }else{
+          //no webhook, check if there is a static response configured
+          db.any('SELECT responses.response_text FROM responses, intents where responses.intent_id = intents.intent_id and intents.intent_id = $1 order by random() LIMIT 1', data[0].intent_id)
+          .then(function (data) {
+            if (data.length > 0) {
+              rasa_response.response_text =data[0].response_text;
+              console.log("Sending Rasa NLU Response + Static response configured");
               finalizeCacheFlushToDbAndRespond(cacheKey,200, res, rasa_response);
+            } else {
+                console.log("No Static response configured. Respond back with Rasa NLU only");
+                finalizeCacheFlushToDbAndRespond(cacheKey,200, res, rasa_response);
             }
-        });
-      }else{
-        //no webhook, check if there is a static response configured
-        db.any('SELECT responses.response_text FROM responses, intents where responses.intent_id = intents.intent_id and intents.intent_id = $1 order by random() LIMIT 1', data[0].intent_id)
-        .then(function (data) {
-          if (data.length > 0) {
-            rasa_response.response_text =data[0].response_text;
-            console.log("Sending Rasa NLU Response + Static response configured");
+          })
+          .catch(function (err) {
+            console.log("Error occurred. Respond back with Rasa NLU only");
+            console.log(err);
             finalizeCacheFlushToDbAndRespond(cacheKey,200, res, rasa_response);
-          } else {
-              console.log("No Static response configured. Respond back with Rasa NLU only");
-              finalizeCacheFlushToDbAndRespond(cacheKey,200, res, rasa_response);
-          }
-        })
-        .catch(function (err) {
-          console.log("Error occurred. Respond back with Rasa NLU only");
-          console.log(err);
-          finalizeCacheFlushToDbAndRespond(cacheKey,200, res, rasa_response);
-        });
+          });
+        }
+      }else{
+        console.log("No intent Data found. Respond back with Rasa NLU only");
+        finalizeCacheFlushToDbAndRespond(cacheKey,200, res, rasa_response);
       }
-    }else{
-      console.log("No intent Data found. Respond back with Rasa NLU only");
-      finalizeCacheFlushToDbAndRespond(cacheKey,200, res, rasa_response);
-    }
-  })
+    })
+  }
 }
 
 module.exports = {
