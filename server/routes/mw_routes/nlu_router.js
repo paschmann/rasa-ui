@@ -9,7 +9,7 @@ function getRasaNluStatus(req, res, next) {
   console.log("Rasa NLU Status Request -> " + process.env.npm_package_config_rasanluendpoint + "/status");
   request(process.env.npm_package_config_rasanluendpoint + '/status', function (error, response, body) {
     try {
-      if (body !== undefined) senxdOutput(200, res, body);
+      if (body !== undefined) sendOutput(200, res, body);
       else sendOutput(500, res, '{"error" : "Server Error"}');
     } catch (err) {
       console.log(err);

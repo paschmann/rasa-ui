@@ -35,24 +35,23 @@ var await = require('asyncawait/await');
     console.log("Rasa Core Parse Request -> " + core_url);
     var cache_key = req.jwt.username+"_"+agentObj.agent_id+"_"+Date.now();
     createInitialCacheRequest(req,cache_key,agentObj);
-    postRequestToRasa(core_url, req, cache_key,res);
+    postRequestToRasa(core_url, req, cache_key,res,agentObj);
   }
 
-  var postRequestToRasa = async (function (core_url, req, cache_key,res){
+  var postRequestToRasa = async (function (core_url, req, cache_key,res,agentObj){
     //Post Parse Request
     var responseBody = await (rasaCoreRequest(req,"parse",JSON.stringify(req.body)));
     try {
       console.log("Rasa Core Resonse: "+ JSON.stringify(responseBody));
       updateCacheWithRasaCoreResponse(responseBody, cache_key)
-      await( getActionResponses(req,responseBody,res,cache_key) );
+      await( getActionResponses(req,responseBody,res,cache_key,agentObj) );
       if (responseBody.next_action != "action_listen"){
           console.log("Starting next actions");
-          startPredictingActions(core_url, req, responseBody.next_action,cache_key,res);
+          startPredictingActions(core_url, req, responseBody.next_action,cache_key,res,agentObj);
       }else{
-        //got and actionlisten
-        flushCacheToCoreDb(cache_key);
-        //if http
+        //got and actionlisten. Send response and flush data.
         sendCacheResponse(200, res,cache_key);
+        flushCacheToCoreDb(cache_key);
       }
     } catch (err) {
       console.log(err);
@@ -60,20 +59,18 @@ var await = require('asyncawait/await');
     }
   });
 
-  var  startPredictingActions = async (function (core_url, req, currentAction,cache_key,res){
+  var  startPredictingActions = async (function (core_url, req, currentAction,cache_key,res,agentObj){
     while (true){
       console.log("Executed this: " + currentAction);
       var responseBody = await (rasaCoreRequest(req,"continue",JSON.stringify({"executed_action":currentAction,"events": []})));
       console.log("Rasa Core Resonse from Continue: "+ JSON.stringify(responseBody));
       updateCacheWithRasaCoreResponse(responseBody, cache_key)
-      await(getActionResponses(req,responseBody,res,cache_key));
+      await(getActionResponses(req,responseBody,res,cache_key,agentObj));
       currentAction = responseBody.next_action;
       if(currentAction === "action_listen"){
-        //last loop.
-        //done predicting all ACTIONS
-        flushCacheToCoreDb(cache_key);
-        //if http
+        //last loop. done predicting all ACTIONS
         sendCacheResponse(200, res,cache_key);
+        flushCacheToCoreDb(cache_key);
         break;
       }
     }
@@ -113,10 +110,10 @@ var await = require('asyncawait/await');
           //this is the first response
           allResponses =[];
         }
-        //check if fireandforget is enabled.
-        if(req.body.fireAndForget){
+        //check if wsstream is enabled.
+        if(req.body.wsstream){
           //respond back in Websocket
-          console.log("Fire and Forget True. Will send responses in websockets.");
+          console.log("wsstream is True. Will send responses in websockets.");
           req.app.get('socket').emit('on:responseMessage', body);
         }
 
@@ -148,7 +145,6 @@ var await = require('asyncawait/await');
   *Send the Body back to the http response.
   */
   function sendCacheResponse(http_code,res,cache_key) {
-    //check if websocket is enabled.
     res.writeHead(http_code, {
       'Access-Control-Allow-Origin': '*',
       'Content-Type': 'application/json'
@@ -160,34 +156,51 @@ var await = require('asyncawait/await');
     res.end();
   }
 
-    function sendHTTPResponse(http_code, res, body) {
-      res.writeHead(http_code, {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json'
-      });
-      if (body!=null && body !== "") {
-        res.write(body);
-      }
-      res.end();
+  //only for Error cases.
+  function sendHTTPResponse(http_code, res, body) {
+    res.writeHead(http_code, {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json'
+    });
+    if (body!=null && body !== "") {
+      res.write(body);
     }
+    res.end();
+  }
 
-  var  getActionResponses = async (function (req,rasa_core_response,res,cacheKey) {
+  var  getActionResponses = async (function (req,rasa_core_response,res,cacheKey,agentObj) {
     //inspect the rasacore response
     if(rasa_core_response.next_action !='action_listen'){
       if(rasa_core_response.next_action.startsWith("utter_webhook")){
-        //webhook type
+        //webhook type. Make a call to external webhook and append response
+        var webhookResponse =await(fetchActionDetailsFromWebhook(req,rasa_core_response, agentObj));
+        if(webhookResponse != undefined){
+          rasa_core_response.response_text = JSON.parse(webhookResponse).displayText;
+          rasa_response.response_rich=JSON.parse(webhookResponse).dataToClient;
+          console.log("Sending Rasa Core Response + Webhook response");
+          addResponseInfoToCache(req,cacheKey,rasa_core_response);
+        }else{
+          console.log("Unknown response from Webhook for action: "+rasa_core_response.next_action);
+          rasa_core_response.response_text = "Unknown response from Webhook for action: "+rasa_core_response.next_action;
+          addResponseInfoToCache(req,cacheKey,rasa_core_response);
+        }
       }else if(rasa_core_response.next_action.startsWith("utter")){
         //utter Type
         console.log("Got an action of utter type. Fetching infor from db");
-
         var actionRespObj = await( fetchActionDetailsFromDb(rasa_core_response.next_action))
-        rasa_core_response.response_text =actionRespObj.response_text;
-        rasa_core_response.buttons_info =actionRespObj.buttons_info;
-        rasa_core_response.response_image_url =actionRespObj.response_image_url;
-        console.log("Sending Configured Response");
-        addResponseInfoToCache(req,cacheKey,rasa_core_response);
+        if(actionRespObj != undefined){
+          rasa_core_response.response_text =actionRespObj.response_text;
+          rasa_core_response.buttons_info =actionRespObj.buttons_info;
+          rasa_core_response.response_image_url =actionRespObj.response_image_url;
+          console.log("Sending Configured Response");
+          addResponseInfoToCache(req,cacheKey,rasa_core_response);
+        }else{
+          console.log("Error from Webhook. Sending Core Response");
+          rasa_core_response.response_text = "Got an error response from Webhook.";
+          addResponseInfoToCache(req,cacheKey,rasa_core_response);
+        }
       }else{
-        console.log("Unrecognized Actions. Rasa UI can only process 'utter' type and 'webhook' type");
+        console.log("Unrecognized Actions. Rasa UI can only process 'utter' type and 'utter_webhook' type");
         sendHTTPResponse(500, res, '{"error" : "Unrecognized Actions. Rasa UI can only process \'utter\' type and \'utter_webhook\' type !!"}');
       }
     }else{
@@ -213,6 +226,37 @@ var await = require('asyncawait/await');
           console.log("Error occurred. Respond back with Rasa NLU only");
           reject(err); return;
         });
+    });
+  }
+
+  function fetchActionDetailsFromWebhook(req,rasa_core_response, agentObj){
+    return new Promise((resolve, reject) => {
+      request.post({
+        url: agentObj.endpoint_url,
+        headers : {
+         "Accept": "application/json",
+         "Content-Type": "application/json",
+         "Authorization" : "Bearer "+req.original_token
+       },
+       body: JSON.stringify(rasa_core_response)
+      },
+      function (error, response, body){
+        if(error){
+          console.log("Error occurred in Webhook call");
+          reject(err); return;
+        }else{
+          //respond back to client.
+          //Expecting API.ai style response element.
+          //var response_text={
+          //   "speech": "",
+          //   "displayText": "",
+          //   "dataToClient":{}
+          //}
+          resolve(body);
+          return;
+        }
+      }
+    );
     });
   }
 

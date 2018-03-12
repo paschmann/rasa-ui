@@ -3,7 +3,7 @@ angular
 .controller('StoriesController', StoriesController)
 
 
-function StoriesController($rootScope,$scope, $sce,Agent, AgentStories) {
+function StoriesController($rootScope,$scope, $sce,Agent, AgentStories,Intents,AgentEntities ,AgentActions) {
 $scope.graphData="";
  var simplemde = new SimpleMDE({
      element: $("#MyID")[0],
@@ -37,7 +37,6 @@ $scope.graphData="";
     {
 			name: "save",
 			action: function customFunction(editor){
-        debugger;
         var formdata={};
         formdata.story_details=simplemde.value();
         formdata.agent_id=$scope.agent.agent_id;
@@ -52,9 +51,19 @@ $scope.graphData="";
 	]
    });
    Agent.get({agent_id: $scope.$routeParams.agent_id}, function(data) {
-     debugger;
        $scope.agent = data;
        simplemde.value(data.story_details);
+   });
+   Intents.query({agent_id: $scope.$routeParams.agent_id}, function(data) {
+       $scope.intentList = data;
+   });
+
+   AgentEntities.query({agent_id: $scope.$routeParams.agent_id},function(data) {
+       $scope.entitiesList = data;
+   });
+
+   AgentActions.query({agent_id: $scope.$routeParams.agent_id},function(data) {
+       $scope.actionsList = data;
    });
 
    function processDataForVisual(mdData){

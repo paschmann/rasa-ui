@@ -89,8 +89,8 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
     debugger;
       mySocket.emit('send:message', {message: "hello there"});
     if($scope.wsEnabled){
-      reqMessage.fireAndForget=true;
-      //reponses will be in websockets.
+      //reponses will be streamed in websockets.
+      reqMessage.wsstream=true;
     }
     //make a httpcall
     $http.post(api_endpoint_v2 + "/rasa/parse", JSON.stringify(reqMessage))

@@ -48,7 +48,7 @@ app.config(function($routeProvider, $locationProvider) {
     .when('/agent/:agent_id/stories/', {
       controller:'StoriesController as stories',
       templateUrl:'/app/components/stories/stories.html',
-      activePage:'agents'
+      activePage:'stories'
     })
     .when('/entities', {
       controller:'EntitiesController as entity',
