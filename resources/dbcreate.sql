@@ -204,7 +204,7 @@ CREATE TABLE public.regex
   regex_id integer NOT NULL DEFAULT nextval('regex_id_seq'::regclass),
   regex_name character varying COLLATE pg_catalog."default",
   regex_pattern character varying COLLATE pg_catalog."default",
-  CONSTRAINT regex_id_pk PRIMARY KEY (response_type_id)
+  CONSTRAINT regex_id_pk PRIMARY KEY (regex_id)
 )
 WITH (
   OIDS = FALSE
@@ -226,7 +226,7 @@ CREATE TABLE public.responses
 (
   intent_id integer NOT NULL,
   response_text character varying COLLATE pg_catalog."default",
-  response_type integer REFERENCES response_type (response_type_id),
+  response_type integer,
   response_id integer NOT NULL DEFAULT nextval('responses_response_id_seq'::regclass)
 )
 WITH (
