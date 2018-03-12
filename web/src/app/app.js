@@ -44,7 +44,7 @@ var app =angular.module('app', ['btford.socket-io','ng-jsyaml','ngSanitize','ngF
    });
 });
 
-angular.module('app').controller('appCtrl', function($rootScope,$scope, $route, $routeParams, $location,$timeout,$http,$sessionStorage) {
+angular.module('app').controller('appCtrl', function($rootScope, $scope, $route, $routeParams, $location, $timeout, $http, $sessionStorage) {
      $scope.$route = $route;
      $scope.$location = $location;
      $scope.$routeParams = $routeParams;
@@ -58,7 +58,7 @@ angular.module('app').controller('appCtrl', function($rootScope,$scope, $route, 
      $scope.$on('setAlertText', function(event, alert_text) {
        $('#alertTextDiv').addClass('show');
        $scope.alert_text = alert_text;
-       $timeout(function(){$('#alertTextDiv').removeClass('show')}, 10000);
+       $timeout(function(){$('#alertTextDiv').removeClass('show')}, 2000);
      });
 
      $scope.loginUser = function(user){
@@ -73,7 +73,7 @@ angular.module('app').controller('appCtrl', function($rootScope,$scope, $route, 
              // failure callback
              $('#alertTextDiv').addClass('show');
              $scope.alert_text = "Invalid Username and Password. Please try again.";
-             $timeout(function(){$('#alertTextDiv').removeClass('show')}, 10000);
+             $timeout(function(){$('#alertTextDiv').removeClass('show')}, 2000);
            }
          );
      }

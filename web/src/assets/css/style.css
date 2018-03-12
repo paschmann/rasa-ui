@@ -2,6 +2,14 @@
   background-image: url("../img/logo.png");
 }
 
+canvas.chart {
+    display: inline-block!important;
+}
+
+.header-buttons {
+    color: #999;
+}
+
 .sidebar-toggler {
   left: inherit !important;
   right: 0px;
@@ -9,6 +17,16 @@
 
 .aside-menu {
     width: 350px;
+}
+
+@media (max-width: 991px) {
+    .aside-menu {
+        margin-right: 0px;
+        width: 250px;
+    }
+    .aside-menu-fixed .main, .aside-menu-fixed .app-footer {
+        margin-right: 250px !important;
+    }
 }
 
 .aside-menu-hidden .aside-menu {

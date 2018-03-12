@@ -1,7 +1,7 @@
 
 
 app.factory('Agent', function($resource) {
-  return $resource(api_endpoint_v2 + '/agents/:agent_id', {agent_id: '@id'},
+  return $resource(api_endpoint_v2 + '/agents/:agent_id/:path', {agent_id: '@id', path: '@path'},
       {
           'update': { method:'PUT' }
       });
@@ -38,6 +38,10 @@ app.factory('Expressions', function($resource) {
   return $resource(api_endpoint_v2 + '/intents/:intent_id/expressions', {intent_id:'@id'});
 });
 
+app.factory('IntentExpressions', function($resource) {
+  return $resource(api_endpoint_v2 + '/intent_expressions');
+});
+
 app.factory('Expression', function($resource) {
   return $resource(api_endpoint_v2 + '/expressions/:expression_id');
 });
@@ -72,6 +76,13 @@ app.factory('Entities', function($resource) {
   return $resource(api_endpoint_v2 + '/entities');
 });
 
+app.factory('Regex', ['$resource', function($resource) {
+  return $resource(api_endpoint_v2 + '/regex/:regex_id', {regex_id:'@id'},
+  {
+      'update': { method:'PUT' }
+  });
+}]);
+
 app.factory('EntitySynonyms', function($resource) {
   return $resource(api_endpoint_v2 + '/entity/:entity_id/synonyms', {entity_id:'@id'});
 });
@@ -89,10 +100,17 @@ app.factory('EntitySynonymVariants', function($resource) {
   return $resource(api_endpoint_v2 + '/synonyms/:synonym_id/variants', {synonym_id:'@id'});
 });
 
+app.factory('EntitySynonymVariantsByEntity', function($resource) {
+  return $resource(api_endpoint_v2 + '/entity_synonym_variants');
+});
+
 app.factory('SynonymVariant', function($resource) {
   return $resource(api_endpoint_v2 + '/variants/:synonym_variant_id', {synonym_variant_id:'@id'});
 });
 
+app.factory('AllSynonymVariants', function($resource) {
+  return $resource(api_endpoint_v2 + '/synonymvariants');
+});
 
 app.factory('Settings', ['$resource', function($resource) {
 return $resource(api_endpoint_v2 + '/settings/:setting_name', {setting_name:'@setting_name'},

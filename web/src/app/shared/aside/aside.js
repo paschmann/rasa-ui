@@ -23,7 +23,7 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
   executeRefreshSettings();
 
   function executeRefreshSettings(){
-    Settings.query(function(data) {
+    Settings.query().$promise.then(function(data) {
         $rootScope.settings = data;
         for(var key in data) {
           $rootScope.settings[data[key]['setting_name']] = data[key]['setting_value'];
@@ -41,7 +41,6 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
   });
 
   $scope.$on('refreshIntervelUpdate', function(event, expression_text) {
-    debugger;
     $interval.cancel(configcheck);
     executeRefreshSettings();
   });
@@ -59,8 +58,6 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
         $rootScope.config.server_model_dirs_array = getAvailableModels(statusdata);
         if ($rootScope.config.server_model_dirs_array.length > 0) {
           $rootScope.modelname = $rootScope.config.server_model_dirs_array[0].name;
-        } else {
-          $rootScope.modelname = "Default";
         }
       }, function(error) {
         // error handler
@@ -85,9 +82,13 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
   $scope.executeTestRequest = function() {
     $scope.response_text=[];
     $scope.test_text_response={};
-    var reqMessage = {q: $scope.test_text,project:$scope.modelname.split("*")[0], model: $scope.modelname.split("*")[1]};
-    debugger;
-      mySocket.emit('send:message', {message: "hello there"});
+    var reqMessage = {};
+    if ($scope.modelname == '') {
+      reqMessage = {q: $scope.test_text};
+    } else {
+      reqMessage = {q: $scope.test_text, project:$scope.modelname.split("*")[0], model: $scope.modelname.split("*")[1]};
+    }
+    //mySocket.emit('send:message', {message: "hello there"});
     if($scope.wsEnabled){
       //reponses will be streamed in websockets.
       reqMessage.wsstream=true;

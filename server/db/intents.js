@@ -41,13 +41,14 @@ function getUniqueIntents(req, res, next) {
 function createAgentIntent(req, res, next) {
   console.log("intents.createAgentIntent");
   db.any('insert into intents(agent_id, intent_name)' +
-      'values(${agent_id}, ${intent_name})',
+      'values(${agent_id}, ${intent_name}) RETURNING intent_id',
     req.body)
-    .then(function () {
+    .then(function (resp) {
       res.status(200)
         .json({
           status: 'success',
-          message: 'Inserted'
+          message: 'Inserted',
+          agent_id: req.body.agent_id
         });
     })
     .catch(function (err) {

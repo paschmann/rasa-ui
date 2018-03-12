@@ -7,6 +7,7 @@ var actions = require('../db/actions');
 var expressions = require('../db/expressions');
 var parameters = require('../db/parameters');
 var entities = require('../db/entities');
+var regex = require('../db/regex');
 var synonyms = require('../db/synonyms');
 var variants = require('../db/variants');
 var settings = require('../db/settings');
@@ -64,6 +65,12 @@ router.post('/entities', entities.createEntity);
 router.put('/entities/:entity_id', entities.updateEntity);
 router.delete('/entities/:entity_id', entities.removeEntity);
 
+router.get('/regex', regex.getAllRegex);
+router.get('/regex/:regex_id', regex.getSingleRegex);
+router.post('/regex', regex.createRegex);
+router.put('/regex/:regex_id', regex.updateRegex);
+router.delete('/regex/:regex_id', regex.removeRegex);
+
 router.get('/entity/:entity_id/synonyms', synonyms.getEntitySynonyms);
 router.get('/synonyms/:synonym_id', synonyms.getSingleSynonym);
 router.post('/synonyms', synonyms.createEntitySynonym);
@@ -73,6 +80,7 @@ router.get('/entity_synonym_variants', variants.getEntitySynonymVariantsQuery); 
 
 router.get('/synonyms/:synonym_id/variants', variants.getEntitySynonymVariants);
 router.get('/variants/:synonym_variant_id', variants.getSingleVariant);
+router.get('/synonymvariants', variants.getAllSynonymVariants);
 router.post('/variants', variants.createVariant);
 router.delete('/variants/:synonym_variant_id', variants.removeVariant);
 router.delete('/synonyms/:synonym_id/variants', variants.removeSynonymVariants);

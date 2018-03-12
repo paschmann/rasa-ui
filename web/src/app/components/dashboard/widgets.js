@@ -34,9 +34,9 @@ function random(min,max) {
 }
 
 
-function usageChartCtrl($scope, NLU_log, NLU_log_intent_usage_by_day, NLU_log_avg_intent_usage_by_day){
-  NLU_log_avg_intent_usage_by_day.query(function(avg_data) {
-    NLU_log_intent_usage_by_day.query(function(data) {
+function usageChartCtrl($scope, NLU_log, NLU_log_stats){
+  NLU_log_stats.query({path: "avg_intent_usage_by_day"}, function(avg_data) {
+    NLU_log_stats.query({path: "intent_usage_by_day"}, function(data) {
       var elements = data.length;
       var data1 = [];
       var data2 = [];

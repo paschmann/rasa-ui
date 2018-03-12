@@ -72,8 +72,13 @@ function updateEntity(req, res, next) {
 }
 
 function removeEntity(req, res, next) {
+<<<<<<< HEAD
   var entityId = parseInt(req.params.entity_id);
   db.result('delete from entities where entity_id = $1', entityId)
+=======
+  var entityID = parseInt(req.params.entity_id);
+  db.result('delete from entities where entity_id = $1', entityID)
+>>>>>>> origin/master
     .then(function (result) {
       /* jshint ignore:start */
       res.status(200)

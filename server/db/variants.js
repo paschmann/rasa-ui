@@ -30,7 +30,6 @@ function getEntitySynonymVariantsQuery(req, res, next) {
   console.log("variants.getEntitySynonymVariantsQuery");
   var entityIds = req.query.entity_ids;
   var sql = 'select * from entity_synonym_variants where entity_id in (' + entityIds + ')';
-  console.log(sql);
   db.any(sql)
     .then(function (data) {
       res.status(200)
@@ -41,9 +40,20 @@ function getEntitySynonymVariantsQuery(req, res, next) {
     });
 }
 
+function getAllSynonymVariants(req, res, next) {
+  console.log("variants.getAllSynonymVariants");
+
+  db.any('select synonym_reference as value, \'[\' || string_agg(\'"\' || synonym_value || \'"\', \', \') || \']\' as synonyms from entity_synonym_variants group by 1')
+    .then(function (data) {
+      res.status(200).json(data);
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
 function createVariant(req, res, next) {
   console.log("variants.createVariant");
-  console.log(req.body);
   db.any('insert into synonym_variant(synonym_id, synonym_value)' +
       'values(${synonym_id}, ${synonym_value})',
     req.body)
@@ -101,5 +111,6 @@ module.exports = {
   createVariant: createVariant,
   removeVariant: removeVariant,
   removeSynonymVariants: removeSynonymVariants,
-  getEntitySynonymVariantsQuery: getEntitySynonymVariantsQuery
+  getEntitySynonymVariantsQuery: getEntitySynonymVariantsQuery,
+  getAllSynonymVariants: getAllSynonymVariants
 };

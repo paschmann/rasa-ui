@@ -143,6 +143,13 @@ MINVALUE 1
 MAXVALUE 9223372036854775807
 CACHE 1;
 
+CREATE SEQUENCE public.regex_id_seq
+INCREMENT 1
+START 1
+MINVALUE 1
+MAXVALUE 9223372036854775807
+CACHE 1;
+
 
 /*  Tables */
 
@@ -209,6 +216,18 @@ CREATE TABLE public.settings
 (
   setting_name character varying COLLATE pg_catalog."default",
   setting_value character varying COLLATE pg_catalog."default"
+)
+WITH (
+  OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+CREATE TABLE public.regex
+(
+  regex_id integer NOT NULL DEFAULT nextval('regex_id_seq'::regclass),
+  regex_name character varying COLLATE pg_catalog."default",
+  regex_pattern character varying COLLATE pg_catalog."default",
+  CONSTRAINT regex_id_pk PRIMARY KEY (regex_id)
 )
 WITH (
   OIDS = FALSE
@@ -362,28 +381,28 @@ CREATE OR REPLACE VIEW public.avg_nlu_response_times_30_days AS
 select round(avg(nlu_response_time_ms)::integer,0),
 (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) as month_date from nlu_parse_log
 GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text))
-ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) desc
+ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) asc
 LIMIT 30;
 
 CREATE OR REPLACE VIEW public.avg_user_response_times_30_days AS
 select round(avg(user_response_time_ms)::integer,0),
 (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) as month_date from nlu_parse_log
 GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text))
-ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) desc
+ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) asc
 LIMIT 30;
 
 CREATE OR REPLACE VIEW public.active_user_count_12_months AS
 select count(distinct(user_id)) as count_users,
 (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) as month_year from nlu_parse_log
 GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text))
-ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) desc
+ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) asc
 LIMIT 12;
 
 CREATE OR REPLACE VIEW public.active_user_count_30_days AS
 SELECT count(distinct(user_id)) as user_count,
 (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) as month_date from nlu_parse_log
 GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text))
-ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) desc
+ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) asc
 LIMIT 30;
 
 CREATE OR REPLACE VIEW public.entity_synonym_variants AS
@@ -433,7 +452,7 @@ SELECT count(*) AS count,
 to_char(nlu_log."timestamp", 'MM/DD'::text) AS to_char
 FROM nlu_log
 GROUP BY (to_char(nlu_log."timestamp", 'MM/DD'::text))
-ORDER BY (to_char(nlu_log."timestamp", 'MM/DD'::text)) desc
+ORDER BY (to_char(nlu_log."timestamp", 'MM/DD'::text)) asc
 LIMIT 30;
 
 /* Static Data */

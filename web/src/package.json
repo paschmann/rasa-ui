@@ -7,9 +7,14 @@
     "angular-chart.js": "^1.1.1",
     "angular-resource": "1.6.4",
     "angular-route": "1.6.4",
+<<<<<<< HEAD
     "angular-sanitize": "^1.6.9",
     "angular-socket-io": "^0.7.0",
     "angular-utils-pagination": "^0.11.1",
+=======
+    "angular-utils-pagination": "^0.11.1",
+    "bootstrap": "latest",
+>>>>>>> origin/master
     "chart.js": "2.7.0",
     "jquery": "3.1.1",
     "jsonformatter": "^0.6.0",
@@ -17,7 +22,14 @@
     "ng-jsyaml": "0.0.2",
     "ng-tags-input": "^3.2.0",
     "ngstorage": "^0.3.11",
+<<<<<<< HEAD
     "simplemde": "^1.11.2",
     "socket.io-client": "^2.0.4"
+=======
+    "popper.js": "latest",
+    "simple-line-icons": "^2.4.1",
+    "tether": "latest",
+    "xdate": "latest"
+>>>>>>> origin/master
   }
 }

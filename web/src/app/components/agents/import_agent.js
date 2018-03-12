@@ -9,24 +9,22 @@ function ImportAgentController($scope, $rootScope, Agent,  $http,  $timeout,$rou
 
   $scope.importAgent = function() {
     var postRequest={"agent_name":$scope.formData.agent_name,"data":$scope.agentImportData};
-    $http.post(api_endpoint_v2 + "/agents/upload", JSON.stringify(postRequest))
-      .then(
-        function(response){
-          // success callback
+    Agent.save({agent_id: "upload"}, postRequest).$promise.then(function(resp) {
           $rootScope.$broadcast('setAlertText', "Agent uploaded successfully");
           if($location.path().endsWith("agents")){
             $route.reload();
           }
-        },
-        function(errorResponse){
-          // failure callback
-          $rootScope.$broadcast('setAlertText', "Unable to upload file. Please try again");
-          console.log(errorResponse);
-        }
-      );
-      $rootScope.$broadcast('setAlertText', "Agent upload in progress.. Notification will be sent when done!!");
-      $scope.formData.agent_name = "";
-      $scope.go('/agents');
+          /*
+          function(errorResponse){
+            // failure callback
+            $rootScope.$broadcast('setAlertText', "Unable to upload file. Please try again");
+            console.log(errorResponse);
+          }
+          */
+    });
+    $rootScope.$broadcast('setAlertText', "Agent upload in progress.. Notification will be sent when done!!");
+    $scope.formData.agent_name = "";
+    $scope.go('/agents');
   }
 
   $scope.validateAndPreviewAgent = function(file) {

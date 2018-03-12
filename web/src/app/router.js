@@ -60,6 +60,21 @@ app.config(function($routeProvider, $locationProvider) {
       templateUrl:'/app/components/entities/add_entity.html',
       activePage:'entities'
     })
+    .when('/regex', {
+      controller:'RegexController as regex',
+      templateUrl:'/app/components/regex/regex.html',
+      activePage:'regex'
+    })
+    .when('/regex/add', {
+      controller:'AddRegexController as addentity',
+      templateUrl:'/app/components/regex/add_regex.html',
+      activePage:'regex'
+    })
+    .when('/regex/:regex_id', {
+      controller:'EditRegexController as editregex',
+      templateUrl:'/app/components/regex/edit_regex.html',
+      activePage:'regex'
+    })
     .when('/agent/:agent_id/entity/:entity_id/synonyms', {
       controller:'SynonymController',
       templateUrl:'/app/components/synonyms/synonyms.html',

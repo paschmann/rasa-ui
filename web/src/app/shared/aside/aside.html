@@ -8,8 +8,8 @@
           <small><b>Input</b></small>
         </div>
         <div class="callout m-0 py-3">
-        <form name="entitiesForm" novalidate>
-          <div class="input-group" ng-show="modelname !== 'Default'">
+        <form name="entitiesForm">
+          <div class="input-group">
             <select ng-options="model.name as model.name for model in $root.config.server_model_dirs_array | orderBy: 'xdate' : true" ng-model="modelname" class="form-control" required></select>
           </div>
           <hr class="m-x-1 m-y-0">
@@ -17,9 +17,9 @@
             <span class="input-group-addon" id="btnGroupAddon">
               <input style="margin: 0px;" class="form-check-input position-static" type="checkbox" id="blankCheckbox" ng-model="wsEnabled" data-toggle="tooltip" data-placement="left" title="Web Socket Responses." onmouseenter="$(this).tooltip('show')">
             </span>
-            <input type="test_text" ng-model="test_text" class="form-control" id="test_text" placeholder="Try it now ..." required data-toggle="tooltip" data-placement="top" title="Select a Model from dropdown and Enter text to be parsed" onmouseenter="$(this).tooltip('show')">
+            <input type="test_text" ng-model="test_text" class="form-control" id="test_text" placeholder="Try it now ..." data-placement="left" title="Select a model from dropdown and enter text to be parsed">
             <span class="input-group-btn">
-              <button class="btn btn btn-outline-secondary" ng-click="executeTestRequest()" ng-disabled="entitiesForm.$invalid">Go</button>
+              <button class="btn btn btn-primary" ng-click="executeTestRequest()">Go</button>
               <button class="btn btn btn-outline-secondary" ng-click="restartConversation()" data-toggle="tooltip" data-placement="left" title="Reset Rasa Core Conversation" onmouseenter="$(this).tooltip('show')"><i class="fa fa-repeat" aria-hidden="true"></i></button>
             </span>
           </div>

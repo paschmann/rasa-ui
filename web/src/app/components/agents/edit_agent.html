@@ -4,7 +4,8 @@
         <!-- Breadcrumb Menu-->
         <li class="breadcrumb-menu">
             <div class="btn-group" role="group">
-                <a class="btn btn-secondary" ng-click="deleteAgent()" confirm-click-title="Delete Agent" confirm-click="Are you sure? This will delete the agent, all its intents, expressions, and resolved entities."><i class="icon-trash"></i> &nbsp;Delete Agent</a>
+                <a class="btn btn-outline-secondary" href="#!/agent/{{agent.agent_id}}/intent/add"><i class="icon-plus"></i> &nbsp;Add Intent</a>
+                <a class="btn btn-outline-secondary" ng-click="deleteAgent()" confirm-click-title="Delete Agent" confirm-click="Are you sure? This will delete the agent, all its intents, expressions, and resolved entities."><i class="icon-trash"></i> &nbsp;Delete Agent</a>
             </div>
         </li>
 </ol>
