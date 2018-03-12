@@ -63,7 +63,7 @@
                 <div class="list-group" dir-paginate="expression in expressionList  | itemsPerPage: 6">
                   <div class="list-group-item">
                     <span id="expression_{{expression.expression_id}}" ng-bind-html="expression.expression_highlighted_text | trusted"></span>
-                    <span class="pull-right">
+                    <span class="float-right">
                       <span class="badge badge-default badge-pill mr-2" ng-hide="parameterFilterList.length == 0">{{ parameterFilterList.length }}</span>
                       <button class="btn btn-outline-secondary" ng-click="runExpression(expression.expression_text)">
                         <span class="icon-energy"></span>
@@ -134,7 +134,7 @@
                 <div class="form-check" title="{{agent.endpoint_enabled == false?'Enable Webook at Agent Level and select this Option to get response from Server API':'Select this Option to get response from API'}}">
                     <strong>Enable webhook</strong>
                     &nbsp;&nbsp;&nbsp;
-                    <span class="pull-right">
+                    <span class="float-right">
                     <label class="switch switch-default switch-pill switch-success">
                         <input type="checkbox" class="switch-input" ng-model="intent.endpoint_enabled" ng-checked="agent.endpoint_enabled" ng-disabled="agent.endpoint_enabled == false">
                         <span class="switch-label"></span>
@@ -148,7 +148,7 @@
                 <ul class="list-group" ng-hide="responses.length == 0" style="margin-top: 20px;">
                   <li class="list-group-item" ng-repeat="response in responses track by response.response_id">
                     <span ng-bind-html="response.response_text | trusted"></span>
-                    <span class="pull-right">
+                    <span class="float-right">
                       <button class="btn btn btn-outline-danger" confirm-click-title="Delete Response" confirm-click="Are you sure? This will delete the response."
                         ng-click="deleteResponse(response.response_id)">
                         <span class="icon-trash"></span>

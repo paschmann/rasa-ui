@@ -16,7 +16,7 @@
                 <div class="card" ng-repeat="agent in agentList track by agent.agent_id">
                   <div class="card-header" role="tab" id="headingOne">
                     <span><a ng-href="#!/agent/{{agent.agent_id}}">{{ agent.agent_name }}</a></span>
-                    <span class="pull-right">
+                    <span class="float-right">
                       <a style="border:0; padding: 0.2rem;" class="btn btn-outline-secondary" data-toggle="collapse" data-target="#{{agent.agent_id}}" aria-expanded="true" aria-controls="collapseOne">
                       <i class="fa fa-edit fa-lg header-buttons"></i></a>
                     </span>
@@ -33,7 +33,7 @@
                       </div>
                       <strong>Service Fullfillment</strong>
                       &nbsp;&nbsp;&nbsp;
-                      <span class="pull-right">
+                      <span class="float-right">
                       <label class="switch switch-default switch-pill switch-success">
                           <input type="checkbox" class="switch-input" ng-model="agent.endpoint_enabled" ng-checked="agent.endpoint_enabled">
                           <span class="switch-label"></span>
