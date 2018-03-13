@@ -89,17 +89,17 @@
                     <div class="card-header">
                         <strong>Intents Frequency</strong>
                         <div class="btn-group" role="group">
-                                <button type="button" class="btn-primary dropdown-toggle" style="margin: 0px" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="icon-people"></i>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" ng-repeat="agent_name in agents_dropdown" ng-click="updatePieChartData(agent_name)">
-                                        <small>{{agent_name}}</small>
-                                    </a>
-                                </div>
+                            <button type="button" class="btn-primary dropdown-toggle" style="margin: 0px" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="icon-people"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item float-right" ng-repeat="agent_name in agents_dropdown" ng-click="updatePieChartData(agent_name)">
+                                    <small>{{agent_name}}</small>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                
+
                 <div class="card-block">
                     <div class="chart-wrapper">
                         <canvas id="chart_pie_intents_usage" class="chart chart-doughnut" chart-data="intents_pie_data" chart-labels="intents_pie_labels"

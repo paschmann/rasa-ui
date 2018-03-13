@@ -17,8 +17,8 @@
               <div class="card">
                 <div class="card-header">
                   <strong>Intents</strong>
-                  <span class="pull-right">
-                    <a class="btn btn-secondary" href="#!/agent/{{agent.agent_id}}/intent/add" data-toggle="tooltip" data-placement="top" title="Click to Add a New Intent" onmouseenter="$(this).tooltip('show')"><i class="icon-plus"></i> &nbsp;Add Intent</a>
+                  <span class="float-right">
+                    <a class="btn btn-outline-primary" href="#!/agent/{{agent.agent_id}}/intent/add" data-toggle="tooltip" data-placement="top" title="Click to Add a New Intent" onmouseenter="$(this).tooltip('show')"><i class="icon-plus"></i> &nbsp;Add Intent</a>
                   </span>
                 </div>
                 <div class="card-block">
@@ -42,8 +42,8 @@
             <div class="card">
               <div class="card-header">
                 <strong>Entities</strong>
-                <span class="pull-right">
-                  <a class="btn btn-secondary" href="#!/agent/{{agent.agent_id}}/entity/add" data-toggle="tooltip" data-placement="top" title="Click to Add a New Entity" onmouseenter="$(this).tooltip('show')"><i class="icon-plus"></i> &nbsp;Add Entity</a>
+                <span class="float-right">
+                  <a class="btn btn-outline-primary" href="#!/agent/{{agent.agent_id}}/entity/add" data-toggle="tooltip" data-placement="top" title="Click to Add a New Entity" onmouseenter="$(this).tooltip('show')"><i class="icon-plus"></i> &nbsp;Add Entity</a>
                 </span>
               </div>
               <div class="card-block">
@@ -66,7 +66,7 @@
         </div>
         <div class="row">
           <div class="col-sm-12 col-lg-12">
-            <div id="headerInfo" class="alert alert-info" role="alert" style="text-align:center"><b>Rasa Core Configurations.</b></div>
+            <div id="headerInfo" class="alert alert-warning" role="alert" style="text-align:center"><b>Rasa Core Configurations</b></div>
           </div>
         </div>
         <div class="row">
@@ -74,8 +74,8 @@
               <div class="card border-warning">
                 <div class="card-header">
                   <strong>Actions</strong>
-                  <span class="pull-right">
-                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modal-add-actions"><i class="icon-plus"></i>&nbsp;Add Action</button>
+                  <span class="float-right">
+                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal-add-actions"><i class="icon-plus"></i>&nbsp;Add Action</button>
                   </span>
                 </div>
                 <div class="card-block">
@@ -83,13 +83,7 @@
                     <div class="col-sm-12">
                       <div class="list-group" dir-paginate="action in actionsList  | itemsPerPage: 5" pagination-id="actionsList">
                         <div class="list-group-item">
-                          <a href data-toggle="modal" data-target="#modal-edit-actions" ng-click="loadActionDetailsToEdit(action.action_id)">{{ action.action_name }}</a>
-                          <span class="pull-right">
-                            <span class="badge badge-default badge-pill mr-2" ng-hide="parameterFilterList.length == 0">{{ parameterFilterList.length }}</span>
-                            <button class="btn btn-outline-danger" confirm-click-title="Delete Expression" confirm-click="Are you sure? This will delete the expression and all its resolved entities." ng-click="deleteAction(action)">
-                            <i class="fa fa-trash-o fa-xs" aria-hidden="true"></i>
-                            </button>
-                          </span>
+                          <a href="#!/agent/{{agent.agent_id}}/action/edit/{{action.action_id}}">{{ action.action_name }}</a>
                         </div>
                     </div>
                   </div>
@@ -105,8 +99,8 @@
             <div class="card border-warning">
               <div class="card-header">
                 <strong>Stories</strong>
-                <span class="pull-right">
-                  <a class="btn btn-secondary" href="#!/agent/{{agent.agent_id}}/stories" data-toggle="tooltip" data-placement="top" title="Click to change a story" onmouseenter="$(this).tooltip('show')"><i class="fa fa-hand-o-right"></i> &nbsp;Stories Editor</a>
+                <span class="float-right">
+                  <a class="btn btn-outline-primary" href="#!/agent/{{agent.agent_id}}/stories" data-toggle="tooltip" data-placement="top" title="Click to change a story" onmouseenter="$(this).tooltip('show')"><i class="fa fa-hand-o-right"></i> &nbsp;Stories Editor</a>
                 </span>
               </div>
               <div class="card-block">
@@ -128,74 +122,6 @@
         </div>
         </div>
       </div>
-
-      <div class="modal fade" id="modal-edit-actions" tabindex="-1" role="dialog" aria-labelledby="actionsModelLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="actionsModelLabel">Edit Action</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <form name="actionsForm" novalidate>
-            <div class="modal-body">
-              <div class="row">
-                <div class="col-lg-12">
-                <div class="form-group">
-                  <label for="action-name" class="form-control-label">Action Name:</label>
-                  <div class="input-group">
-                    <input type="text" class="form-control" id="action-name" ng-model="action.action_name" ng-readonly="readonly">
-                     <span class="input-group-btn">
-                       <button class="btn btn-secondary" type="button" ng-click="actionNameEdit(action)"><span id="action_editable_icon" ng-class="readonly?'fa fa-pencil':'fa fa-check'"></span></button>
-                     </span>
-                   </div>
-
-                </div>
-                <div class="form-group">
-                  <label for="action-utter" class="form-control-label">Text</label>
-                  <input type="text" class="form-control" id="action-utter" ng-model="action.response_text"  placeholder="Enter a Response Text for this Action">
-                 </div>
-                 <div class="form-group">
-                   <label for="action-utter" class="form-control-label">Buttons<small>(Button in title:payload format and hit Enter)</small></label>
-                    <div class="input-group">
-                     <input type="text" class="form-control" id="action-utter" ng-model="action.button_text" placeholder="Buttons in title:payload format" ng-keyup="$event.keyCode==13 && addButton(action)">
-                    </div>
-                    <span><button class="btn btn-primary" style="margin:2px;" ng-repeat="buttoninfo in buttonsArray">{{buttoninfo.title}}</button></span>
-                  </div>
-                  <div class="form-group">
-                    <label for="action-utter" class="form-control-label">Image URL</label>
-                    <input type="text" class="form-control" id="action-utter" ng-model="action.response_image_url" placeholder="URL for an image to be displayed">
-                  </div>
-                  <span class="pull-right">
-                    <button class="btn btn-primary" ng-click="saveActionResponse(action)">Add</button>
-                  </span>
-                  <br/>  <br/>
-                  <ul class="list-group">
-                    <li class="list-group-item" ng-repeat="response in responses track by response.response_id">
-                      <span ng-bind-html="response.response_text | trusted"></span>
-                      <br/><span title="Button in this templete"><button class="btn btn-primary btn-xs" style="margin:2px;padding: 2px;font-size: 10pt;" ng-repeat="buttoninfo in response.buttons_info">{{buttoninfo.title}}</button></span>
-                      <span class="pull-right">
-                        <button class="btn btn btn-outline-danger" confirm-click-title="Delete Response" confirm-click="Are you sure? This will delete the response." ng-click="deleteActionResponse(response.response_id,action.action_id)">
-                          <span class="icon-trash"></span>
-                        </button>
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button class="btn btn-primary" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                Done
-              </button>
-            </div>
-              </form>
-          </div>
-        </div>
-      </div>
-
-
 
       <div class="modal fade" id="modal-add-actions" tabindex="-1" role="dialog" aria-labelledby="addActionsModelLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">

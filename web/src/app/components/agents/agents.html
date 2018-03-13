@@ -35,7 +35,7 @@
                         Rasa Core Enablement
                       </strong>
                       &nbsp;&nbsp;&nbsp;
-                      <span class="pull-right">
+                      <span class="float-right">
                       <label class="switch switch-default switch-pill switch-success">
                           <input type="checkbox" class="switch-input" ng-model="agent.rasa_core_enabled" ng-checked="agent.rasa_core_enabled">
                           <span class="switch-label"></span>
@@ -56,7 +56,6 @@
 
                       <div ng-show="agent.endpoint_enabled">
                       <div class="form-group">
-<<<<<<< HEAD
                         <label class="form-control-label" for="{{agent.agent_id}}_formGroupExampleInput">Service URL</label>
                         <input ng-model="agent.endpoint_url" type="url" class="form-control" id="{{agent.agent_id}}_formGroupExampleInput" placeholder="Service Endpoint URL">
                       </div>
@@ -67,18 +66,6 @@
                       <div class="form-group">
                         <label class="form-control-label" for="{{agent.agent_id}}_formAuthPasswordId">Basic Auth Password</label>
                         <input ng-model="agent.basic_auth_password" type="password" class="form-control" id="{{agent.agent_id}}_formAuthPasswordId" placeholder="Basic Auth Password">
-=======
-                        <label class="form-control-label">Service URL</label>
-                        <input ng-model="agent.endpoint_url" type="url" class="form-control"placeholder="Service Endpoint URL">
-                      </div>
-                      <div class="form-group">
-                        <label class="form-control-label">Basic Auth Username</label>
-                        <input ng-model="agent.basic_auth_username" type="text" class="form-control" placeholder="Basic Auth Username">
-                      </div>
-                      <div class="form-group">
-                        <label class="form-control-label">Basic Auth Password</label>
-                        <input ng-model="agent.basic_auth_password" type="password" class="form-control" placeholder="Basic Auth Password">
->>>>>>> origin/master
                       </div>
                     </div>
                     <div>

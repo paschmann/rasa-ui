@@ -2,7 +2,7 @@ angular
 .module('app')
 .controller('TrainingController', TrainingController)
 
-function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Agent, Intents, Expressions, Regex, ExpressionParameters, Rasa_Config, EntitySynonymVariantsByEntity, AllSynonymVariants, IntentExpressions) {
+function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Agent, Intents, Expressions, Regex, ExpressionParameters, Rasa_Config, EntitySynonymVariantsByEntity, AllSynonymVariants, IntentExpressions,yaml) {
   var exportData;
   var core_domain_yaml, core_stories_md;
   var statuscheck = $interval(getRasaStatus, 5000);
@@ -45,7 +45,6 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
       a.click();
   }
 
-<<<<<<< HEAD
   $scope.savecoretofiles= function() {
       var data = new Blob([$scope.domain_yml], {type: 'text/plain'});
       var core_domain = document.getElementById("core_domain");
@@ -58,7 +57,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
       core_stories.download = "_stories.md";
       core_stories.href = URL.createObjectURL(stories_data);
       core_stories.click();
-=======
+      }
   $scope.convertToLowerCase = function() {
     $scope.exportdata = JSON.parse(JSON.stringify($scope.exportdata).toLowerCase());
   }
@@ -67,7 +66,6 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
     $scope.toLowercase = false;
     $scope.generateError = "";
     $scope.message = "";
->>>>>>> origin/master
   }
 
   $scope.getData = function(agent_id) {
@@ -129,7 +127,6 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
     });
   }
 
-<<<<<<< HEAD
   function populateCoreDomainYaml(agent_id, intents, expressions, params, synonyms){
     //get entities by agentid
     var domain_yml_obj={};
@@ -219,10 +216,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
     });
   }
 
-  function generateData(intents, expressions, params, synonyms) {
-=======
   function generateData(regex, intents, expressions, params, synonyms) {
->>>>>>> origin/master
     var tmpData = {};
     var tmpIntent = {};
     var tmpExpression = {};

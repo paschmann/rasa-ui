@@ -35,6 +35,11 @@ app.config(function($routeProvider, $locationProvider) {
       templateUrl:'/app/components/agents/edit_agent.html',
       activePage:'agents'
     })
+    .when('/agent/:agent_id/action/edit/:action_id', {
+      controller:'ActionsController as actionsController',
+      templateUrl:'/app/components/actions/actions.html',
+      activePage:'agents'
+    })
     .when('/agent/:agent_id/intent/add', {
       controller:'AddIntentController as addintent',
       templateUrl:'/app/components/intents/add_intent.html',

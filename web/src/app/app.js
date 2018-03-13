@@ -8,7 +8,6 @@ var app =angular.module('app', ['btford.socket-io','ng-jsyaml','ngSanitize','ngF
   function error(response) {
     var status = response.status;
     if (status == 401) {
-      //AuthFactory.clearUser();
       //window.location = "/account/login?redirectUrl=" + Base64.encode(document.URL);
       //$rootScope.$broadcast("INVALID_JWT_TOKEN");
       return;
