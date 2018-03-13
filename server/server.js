@@ -1,5 +1,5 @@
 // Global Variables
-global.postgresserver = process.env.postgresserver || process.env.npm_package_config_postgresConnectionString;
+global.postgresserver = process.env.postgresserver || process.env.npm_package_config_postgresserver;
 global.rasanluendpoint = process.env.rasanluendpoint || process.env.npm_package_config_rasanluendpoint;
 global.rasacoreendpoint = process.env.rasacoreendpoint || process.env.npm_package_config_rasacoreendpoint;
 global.jwtsecret = process.env.jwtsecret || process.env.npm_package_config_jwtsecret;
@@ -28,6 +28,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json({ limit: '2mb' }));
 /** Serve static files for UI website on root / */
 app.use('/', express.static('web/src/'));
+app.use('/scripts', express.static('node_modules/'));
 
 // route middleware to verify a token
 app.use(function(req, res, next) {

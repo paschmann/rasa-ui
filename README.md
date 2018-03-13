@@ -1,4 +1,4 @@
-##### Beta - Please keep in mind that this application is under heavy development
+[![Docker Automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/paschmann/rasa-ui/)
 
 # Rasa UI
 
@@ -52,9 +52,6 @@ Clone/download the Rasa UI repository. Install npm packages for both Server and 
 ```
 git clone https://github.com/paschmann/rasaui.git
 cd rasaui && npm install
-
-cd web/src
-npm install
 ```
 
 Please see the [wiki](https://github.com/paschmann/rasa-ui/wiki/Rasa-UI-Install-Guide) for more detailed instructions.
@@ -65,7 +62,7 @@ Please see the [wiki](https://github.com/paschmann/rasa-ui/wiki/Rasa-UI-Install-
 
 ## RasaNLU Setup
 - Update your package.json file to include the IP Addresses of your rasa_nlu server and the connection string of your postgres instance.
-- Update your web/src/app.js file to include the IP Addresses of your local middleware server (no need to change this if they are running on the same instance)
+- Optional: Update your web/src/app.js file to include the IP Addresses of your local middleware server (no need to change this if they are running on the same instance)
 
 ## Running
 Run npm start from the server folder (rasa-ui)
