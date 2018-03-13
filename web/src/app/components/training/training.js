@@ -2,7 +2,7 @@ angular
 .module('app')
 .controller('TrainingController', TrainingController)
 
-function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Agent, Intents, Expressions, Regex, ExpressionParameters, Rasa_Config, EntitySynonymVariantsByEntity, AllSynonymVariants, IntentExpressions,yaml) {
+function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Agent, Intents, Expressions, Regex, ExpressionParameters, Rasa_Config, EntitySynonymVariantsByEntity, AllSynonymVariants, IntentExpressions,yaml,AgentEntities,AgentActions) {
   var exportData;
   var core_domain_yaml, core_stories_md;
   var statuscheck = $interval(getRasaStatus, 5000);
@@ -57,7 +57,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
       core_stories.download = "_stories.md";
       core_stories.href = URL.createObjectURL(stories_data);
       core_stories.click();
-      }
+  }
   $scope.convertToLowerCase = function() {
     $scope.exportdata = JSON.parse(JSON.stringify($scope.exportdata).toLowerCase());
   }
@@ -69,6 +69,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
   }
 
   $scope.getData = function(agent_id) {
+    $scope.selectedAgent = objectFindByKey($scope.agentList, 'agent_id', agent_id);
     //Get Intents, Expressions, Parameters/Entities, Synonyms
     var intent_i;
     var expression_i;
@@ -96,6 +97,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
                   if (entityIds.length > 0) {
                     EntitySynonymVariantsByEntity.query({entity_ids: entityIds}, function(entitysynonyms) {
                       generateData(regex, intents, expressions, params, entitysynonyms)
+                      populateCoreDomainYaml(agent_id,intents, expressions, params, entitysynonyms);
                     }, function(error) {
                       $scope.generateError = error;
                       $scope.exportdata = undefined;
@@ -158,6 +160,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
             return entity['entity_name'];
           });
         }
+        domain_yml_obj.action_factory="remote";
 
         AgentActions.query({agent_id: agent_id},function(actionsList) {
             if(actionsList!=null && actionsList.length >0){
