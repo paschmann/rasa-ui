@@ -9,8 +9,8 @@ var await = require('asyncawait/await');
 
 
   function getRasaCoreVersion(req, res, next) {
-    console.log("Rasa Core Version Request -> " + process.env.npm_package_config_rasacoreendpoint + "/version");
-    request(process.env.npm_package_config_rasacoreendpoint + '/version', function (error, response, body) {
+    console.log("Rasa Core Version Request -> " + global.rasacoreendpoint + "/version");
+    request(global.rasacoreendpoint + '/version', function (error, response, body) {
       try {
         if (body !== undefined) sendHTTPResponse(200, res, body);
         else sendHTTPResponse(500, res, '{"error" : "Server Error"}');
@@ -22,15 +22,15 @@ var await = require('asyncawait/await');
   }
 
   function restartRasaCoreConversation(req, res, next) {
-    console.log("Rasa Core Version Request -> " + process.env.npm_package_config_rasacoreendpoint + "/version");
+    console.log("Rasa Core Version Request -> " + global.rasacoreendpoint + "/version");
     var responseBody =rasaCoreRequest(req,"continue",JSON.stringify({"events": [{"event": "restart"}]}));
     console.log("RestartResponse" + JSON.stringify(responseBody));
   }
 
   function parseRequest(req, res, next, agentObj) {
-    var core_url = process.env.npm_package_config_rasacoreendpoint +"/conversations/"+req.jwt.username+ "/parse";
-    if(process.env.npm_package_config_coresecuritytoken !=''){
-      core_url=core_url+"?token="+process.env.npm_package_config_coretoken;
+    var core_url = global.rasacoreendpoint +"/conversations/"+req.jwt.username+ "/parse";
+    if(global.coresecuritytoken !=''){
+      core_url=core_url+"?token="+global.coresecuritytoken;
     }
     console.log("Rasa Core Parse Request -> " + core_url);
     var cache_key = req.jwt.username+"_"+agentObj.agent_id+"_"+Date.now();
@@ -81,7 +81,7 @@ var await = require('asyncawait/await');
     return new Promise((resolve, reject) => {
         request({
           method: "POST",
-          uri: process.env.npm_package_config_rasacoreendpoint +"/conversations/"+req.jwt.username+ "/"+type,
+          uri: global.rasacoreendpoint +"/conversations/"+req.jwt.username+ "/"+type,
           body: reqBody,
           sendImmediately:false
         }, function (error, response, body) {

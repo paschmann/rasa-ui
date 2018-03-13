@@ -6,8 +6,8 @@ const NodeCache = require( "node-cache" );
 const nluParseLogCache = new NodeCache();
 
 function getRasaNluStatus(req, res, next) {
-  console.log("Rasa NLU Status Request -> " + process.env.npm_package_config_rasanluendpoint + "/status");
-  request(process.env.npm_package_config_rasanluendpoint + '/status', function (error, response, body) {
+  console.log("Rasa NLU Status Request -> " + global.rasanluendpoint + "/status");
+  request(global.rasanluendpoint + '/status', function (error, response, body) {
     try {
       if (body !== undefined) sendOutput(200, res, body);
       else sendOutput(500, res, '{"error" : "Server Error"}');
@@ -19,8 +19,8 @@ function getRasaNluStatus(req, res, next) {
 }
 
 function getRasaNluConfig(req, res, next) {
-  console.log("Rasa NLU Config Request -> " + process.env.npm_package_config_rasanluendpoint + "/config");
-  request(process.env.npm_package_config_rasanluendpoint + '/config', function (error, response, body) {
+  console.log("Rasa NLU Config Request -> " + global.rasanluendpoint + "/config");
+  request(global.rasanluendpoint + '/config', function (error, response, body) {
     try {
       if (body !== undefined) sendOutput(200, res, body);
       else sendOutput(500, res, '{"error" : "Server Error"}');
@@ -32,8 +32,8 @@ function getRasaNluConfig(req, res, next) {
 }
 
 function getRasaNluVersion(req, res, next) {
-  console.log("Rasa NLU Version Request -> " + process.env.npm_package_config_rasanluendpoint + "/version");
-  request(process.env.npm_package_config_rasanluendpoint + '/version', function (error, response, body) {
+  console.log("Rasa NLU Version Request -> " + global.rasanluendpoint + "/version");
+  request(global.rasanluendpoint + '/version', function (error, response, body) {
     try {
       if (body !== undefined) sendOutput(200, res, body);
       else sendOutput(500, res, '{"error" : "Server Error"}');
@@ -45,12 +45,12 @@ function getRasaNluVersion(req, res, next) {
 }
 
 function trainRasaNlu(req, res, next) {
-  console.log("Rasa NLU Train Request -> " + process.env.npm_package_config_rasanluendpoint + "/train?project=" + req.query.project);
+  console.log("Rasa NLU Train Request -> " + global.rasanluendpoint + "/train?project=" + req.query.project);
   logRequest(req, "train", {project: req.query.project, agent: req.query.name, data: req.body});
 
   request({
     method: "POST",
-    uri: process.env.npm_package_config_rasanluendpoint + "/train?project=" + req.query.project,
+    uri: global.rasanluendpoint + "/train?project=" + req.query.project,
     body: JSON.stringify(req.body)
   }, function (error, response, body) {
     if(error){
@@ -75,7 +75,7 @@ function trainRasaNlu(req, res, next) {
 }
 
 function parseRequest(req, res, next, agentObj) {
-  console.log("Routing to NLU Parse Request -> " + process.env.npm_package_config_rasanluendpoint + "/parse");
+  console.log("Routing to NLU Parse Request -> " + global.rasanluendpoint + "/parse");
   var modelName = req.body.model;
   var projectName = req.body.project;
   if(modelName == ''){
@@ -93,7 +93,7 @@ function parseRequest(req, res, next, agentObj) {
   createInitialCacheRequest(req,cache_key,agentObj);
   request({
     method: "POST",
-    uri: process.env.npm_package_config_rasanluendpoint + "/parse",
+    uri: global.rasanluendpoint + "/parse",
     body: JSON.stringify(req.body)
   }, function (error, response, body) {
     if(error){

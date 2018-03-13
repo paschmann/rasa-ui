@@ -25,7 +25,7 @@ function parseRasaRequest(req, res, next) {
     ' basic_auth_password, rasa_core_enabled from agents where agent_name = $1', agent_name).then(function (data) {
       console.log("Agent Information: " + JSON.stringify(data));
       //cache Agents only if Env variable is set.
-      if(process.env.npm_package_config_cacheagents){
+      if(global.cacheagents){
           //add this to the cache
           agentCache.set(agent_name, data[0]);
       }

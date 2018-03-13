@@ -9,7 +9,7 @@ function authenticateUser(req, res, next) {
     var tokenData = {username:'admin',name: 'Portal Administrator'};
     // if user is found and password is right
     // create a token
-    var token = jwt.sign(tokenData, process.env.npm_package_config_jwtsecret);
+    var token = jwt.sign(tokenData, global.jwtsecret);
     // return the information including token as JSON
     res.json({username: 'admin',token: token});
   }else{
@@ -30,7 +30,7 @@ function authenticateClient(req, res, next) {
       var tokenData = {username:req.body.username,name: req.body.user_fullname};
       // if user is found and password is right
       // create a token
-      var token = jwt.sign(tokenData, process.env.npm_package_config_jwtsecret);
+      var token = jwt.sign(tokenData, global.jwtsecret);
       // return the information including token as JSON
       res.status(200).json({username:req.body.username,token: token});
     }).catch(function (err) {

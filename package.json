@@ -22,7 +22,7 @@
     "gulp": "^3.9.1"
   },
   "config": {
-    "rasaserver": "http://localhost:5000",
+    "rasanluendpoint": "http://localhost:5000",
     "rasacoreendpoint": "http://localhost:5005",
     "coresecuritytoken": "",
     "nlusecuritytoken": "",
@@ -35,7 +35,7 @@
     "start": "node server/server.js"
   },
   "author": "Paul Aschmann",
-  "url": "http://",
+  "url": "https://github.com/paschmann/rasa-ui",
   "copyright": "Copyright 2017",
-  "license": "http://"
+  "license": "https://github.com/paschmann/rasa-ui/blob/master/license"
 }
