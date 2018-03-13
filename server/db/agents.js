@@ -168,8 +168,8 @@ function createAgent(req, res, next) {
 
 function updateAgent(req, res, next) {
   console.log("Agent.updateAgent");
-  db.none('update agents set agent_name=$2, endpoint_enabled=$3, endpoint_url=$4, basic_auth_username=$5, basic_auth_password=$6 where agent_id=$1',
-    [parseInt(req.params.agent_id), req.body.agent_name, req.body.endpoint_enabled, req.body.endpoint_url, req.body.basic_auth_username, req.body.basic_auth_password])
+  db.none('update agents set agent_name=$2, endpoint_enabled=$3, endpoint_url=$4, basic_auth_username=$5, basic_auth_password=$6, rasa_core_enabled=$7 where agent_id=$1',
+    [parseInt(req.params.agent_id), req.body.agent_name, req.body.endpoint_enabled, req.body.endpoint_url, req.body.basic_auth_username, req.body.basic_auth_password, req.body.rasa_core_enabled])
     .then(function () {
       res.status(200)
         .json({
@@ -199,11 +199,27 @@ function removeAgent(req, res, next) {
     });
 }
 
+function updateAgentStory(req, res, next) {
+  console.log("Agent.updateAgentStory");
+  db.none('update agents set story_details=$2 where agent_id=$1',
+    [parseInt(req.body.agent_id), req.body.story_details])
+    .then(function () {
+      res.status(200)
+        .json({
+          status: 'success',
+          message: 'Updated Story For Agent'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
 module.exports = {
   getSingleAgent: getSingleAgent,
   getAllAgents: getAllAgents,
   createAgent: createAgent,
   updateAgent: updateAgent,
   removeAgent: removeAgent,
-  uploadAgentFromFile: uploadAgentFromFile
+  uploadAgentFromFile:uploadAgentFromFile,
+  updateAgentStory: updateAgentStory
 };

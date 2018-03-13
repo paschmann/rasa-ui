@@ -2,11 +2,20 @@ angular
 .module('app')
 .controller('AsideController', AsideController)
 
-function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_Config, Rasa_Version, Settings, Rasa_Status, IntentResponse) {
+function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_Config, Rasa_Version, Settings, Rasa_Status, IntentResponse, mySocket) {
   //$scope.test_text = 'I want italian food in new york';
   $scope.test_text_response = {};
   $rootScope.config = {}; //Initilize in case server is not online at startup
   var configcheck;
+
+  mySocket.on('on:responseMessage', function (message) {
+    console.log("Response from socket:" +JSON.stringify(message));
+    if(message.next_action !='action_listen'){
+      $scope.response_text.push(message.response_text);
+    }else{
+      $scope.response_text.push("Listening ...");
+    }
+  });
 
   Rasa_Version.get().$promise.then(function(data) {
     $rootScope.rasa_version = data.version;
@@ -56,27 +65,50 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
       });
     });
   }
-
-  $scope.executeTestRequest = function() {
-    $scope.response_text='';
+  $scope.restartConversation=function(){
     $scope.test_text_response={};
-    var options = {};
-    if ($scope.modelname == '') {
-      options = {q: $scope.test_text};
-    } else {
-      options = {q: $scope.test_text, project:$scope.modelname.split("*")[0], model: $scope.modelname.split("*")[1]};
-    }
-
-    $http.post(api_endpoint_v2 + "/rasa/parse", JSON.stringify(options))
+    $http.post(api_endpoint_v2 + "/rasa/restart")
       .then(
         function(response){
           // success callback
-          $scope.test_text_response = response.data;
-          $scope.response_text = $scope.test_text_response.response_text;
+          alert("Restarted Successfully");
         },
         function(errorResponse){
           // failure callback
         }
       );
+  }
+
+  $scope.executeTestRequest = function() {
+    $scope.response_text=[];
+    $scope.test_text_response={};
+    var reqMessage = {};
+    if ($scope.modelname == '') {
+      reqMessage = {q: $scope.test_text};
+    } else {
+      reqMessage = {q: $scope.test_text, project:$scope.modelname.split("*")[0], model: $scope.modelname.split("*")[1]};
+    }
+    //mySocket.emit('send:message', {message: "hello there"});
+    if($scope.wsEnabled){
+      //reponses will be streamed in websockets.
+      reqMessage.wsstream=true;
+    }
+    //make a httpcall
+    $http.post(api_endpoint_v2 + "/rasa/parse", JSON.stringify(reqMessage))
+      .then(
+        function(response){
+          // success callback
+          $scope.test_text_response = response.data;
+          if(!$scope.wsEnabled){
+            $scope.test_text_response.forEach(function(response) {
+              $scope.response_text.push(response.response_text);
+            })
+          }
+        },
+        function(errorResponse){
+          // failure callback
+        }
+      );
+
   }
 }

@@ -9,7 +9,7 @@
   <link rel="icon" href="assets/img/favicon.png">
 
   <title>Rasa UI</title>
-  
+
   <!-- 3rd Party libs -->
   <script src="node_modules/jquery/dist/jquery.min.js"></script>
   <script src="node_modules/chart.js/dist/Chart.min.js"></script>
@@ -24,13 +24,19 @@
   <script src="node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
   <script src="node_modules/xdate/src/xdate.js"></script>
   <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
+  <script src="node_modules/angular-socket-io/socket.min.js"></script>
+  <script src="node_modules/socket.io-client/dist/socket.io.slim.js"></script>
+  <script src="node_modules/ng-jsyaml/angular-jsyaml.js"></script>
+  <script src="node_modules/js-yaml/dist/js-yaml.js"></script>
+  <script src="node_modules/angular-sanitize/angular-sanitize.min.js"></script>
+  <script src="node_modules/simplemde/dist/simplemde.min.js"></script>
 
   <!-- 3rd Party CSS -->
   <link href="node_modules/jsonformatter/dist/json-formatter.css" rel="stylesheet">
   <link href="node_modules/ng-tags-input/build/ng-tags-input.min.css"  rel="stylesheet">
   <link href="node_modules/ng-tags-input/build/ng-tags-input.bootstrap.min.css" rel="stylesheet">
   <link href="node_modules/simple-line-icons/css/simple-line-icons.css" rel="stylesheet">
-
+  <link href="node_modules/simplemde/dist/simplemde.min.css" rel="stylesheet">
   <link href="assets/css/vendor/core-ui.css" rel="stylesheet">
   <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet">
 
@@ -49,6 +55,7 @@
   <script src="app/components/agents/edit_agent.js"></script>
   <script src="app/components/agents/add_agent.js"></script>
   <script src="app/components/agents/import_agent.js"></script>
+  <script src="app/components/actions/actions.js"></script>
   <script src="app/components/intents/add_intent.js"></script>
   <script src="app/components/intents/edit_intent.js"></script>
   <script src="app/components/entities/entities.js"></script>
@@ -59,6 +66,7 @@
   <script src="app/components/training/training.js"></script>
   <script src="app/components/settings/settings.js"></script>
   <script src="app/components/insights/insights.js"></script>
+  <script src="app/components/stories/stories.js"></script>
   <script src="app/components/regex/regex.js"></script>
   <script src="app/components/regex/add_regex.js"></script>
   <script src="app/components/regex/edit_regex.js"></script>

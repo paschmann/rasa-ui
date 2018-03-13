@@ -53,7 +53,8 @@ WORKDIR /opt/rasaui
 
 # Setup RasaUI configuration
 RUN sed -r 's/("postgresConnectionString": )"[^"]*"(.*)/\1"\/var\/run\/postgresql"\2/' -i package.json
-ENV rasaserver=http://localhost:5000
+ENV rasanluendpoint=http://localhost:5000
+ENV rasacoreendpoint=http://localhost:5005
 
 EXPOSE 5001
 

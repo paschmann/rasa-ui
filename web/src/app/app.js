@@ -1,6 +1,6 @@
 var api_endpoint_v2 = '/api/v2'; //rasa UI API = location of Nodejs server.js script running, edit this if the nodejs web front end is not running on the server instance
 
-var app = angular.module('app', ['ngFileUpload', 'angularUtils.directives.dirPagination','ngRoute', 'chart.js', 'ngResource', 'ngStorage', 'ngTagsInput', 'jsonFormatter'])
+var app =angular.module('app', ['btford.socket-io','ng-jsyaml','ngSanitize','ngFileUpload', 'angularUtils.directives.dirPagination','ngRoute', 'chart.js', 'ngResource', 'ngStorage', 'ngTagsInput', 'jsonFormatter'])
 .config(function config() {
   function success(response) {
     return response;
@@ -8,7 +8,6 @@ var app = angular.module('app', ['ngFileUpload', 'angularUtils.directives.dirPag
   function error(response) {
     var status = response.status;
     if (status == 401) {
-      //AuthFactory.clearUser();
       //window.location = "/account/login?redirectUrl=" + Base64.encode(document.URL);
       //$rootScope.$broadcast("INVALID_JWT_TOKEN");
       return;
@@ -19,8 +18,11 @@ var app = angular.module('app', ['ngFileUpload', 'angularUtils.directives.dirPag
   return function(promise) {
     return promise.then(success, error);
   }
-})
-.run(function run($rootScope, $http, $sessionStorage) {
+}).factory('mySocket', function (socketFactory) {
+  return socketFactory({
+    ioSocket: io.connect()
+  });
+}).run(function run($rootScope, $http, $sessionStorage) {
   // keep user logged in after page refresh
   if ($sessionStorage.jwt) {
     $rootScope.authenticated = true;

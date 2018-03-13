@@ -1,6 +1,6 @@
 <ol class="breadcrumb" breadcrumb="">
       <li class="breadcrumb-item"><a href="#!/agents">Agents</a></li>
-      <li class="breadcrumb-item active">Intents</li>
+      <li class="breadcrumb-item active">{{agent.agent_name}}</li>
         <!-- Breadcrumb Menu-->
         <li class="breadcrumb-menu">
             <div class="btn-group" role="group">
@@ -9,15 +9,146 @@
             </div>
         </li>
 </ol>
+
 <div class="container-fluid">
     <div class="animated fadeIn">
         <div class="row">
-            <div class="col-sm-12 col-lg-12">
-              <div class="list-group">
-                <a href="#!/agent/{{intent.agent_id}}/intent/{{ intent.intent_id }}" class="list-group-item" ng-repeat="intent in intentList track by intent.intent_id">{{ intent.intent_name }}</a>
+            <div class="col-sm-6 col-lg-6">
+              <div class="card">
+                <div class="card-header">
+                  <strong>Intents</strong>
+                  <span class="float-right">
+                    <a class="btn btn-outline-primary" href="#!/agent/{{agent.agent_id}}/intent/add" data-toggle="tooltip" data-placement="top" title="Click to Add a New Intent" onmouseenter="$(this).tooltip('show')"><i class="icon-plus"></i> &nbsp;Add Intent</a>
+                  </span>
+                </div>
+                <div class="card-block">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="list-group" dir-paginate="intent in intentList  | itemsPerPage: 5" pagination-id="intentsList">
+                        <div class="list-group-item">
+                          <a href="#!/agent/{{intent.agent_id}}/intent/{{intent.intent_id}}">{{intent.intent_name}}</a>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <br/>
+                <div style="float:right">
+                  <dir-pagination-controls pagination-id="intentsList"></dir-pagination-controls>
+                </div>
               </div>
-
             </div>
+          </div>
+          <div class="col-sm-6 col-lg-6">
+            <div class="card">
+              <div class="card-header">
+                <strong>Entities</strong>
+                <span class="float-right">
+                  <a class="btn btn-outline-primary" href="#!/agent/{{agent.agent_id}}/entity/add" data-toggle="tooltip" data-placement="top" title="Click to Add a New Entity" onmouseenter="$(this).tooltip('show')"><i class="icon-plus"></i> &nbsp;Add Entity</a>
+                </span>
+              </div>
+              <div class="card-block">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="list-group" dir-paginate="entity in entitiesList  | itemsPerPage: 5" pagination-id="entitiesList">
+                      <div class="list-group-item">
+                        <a href="#!/agent/{{agent.agent_id}}/entity/{{entity.entity_id}}/synonyms">{{ entity.entity_name }}</a>
+                      </div>
+                  </div>
+                </div>
+              </div>
+              <br/>
+              <div style="float:right">
+                <dir-pagination-controls pagination-id="entitiesList"></dir-pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-lg-12">
+            <div id="headerInfo" class="alert alert-warning" role="alert" style="text-align:center"><b>Rasa Core Configurations</b></div>
+          </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-lg-6">
+              <div class="card border-warning">
+                <div class="card-header">
+                  <strong>Actions</strong>
+                  <span class="float-right">
+                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal-add-actions"><i class="icon-plus"></i>&nbsp;Add Action</button>
+                  </span>
+                </div>
+                <div class="card-block">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="list-group" dir-paginate="action in actionsList  | itemsPerPage: 5" pagination-id="actionsList">
+                        <div class="list-group-item">
+                          <a href="#!/agent/{{agent.agent_id}}/action/edit/{{action.action_id}}">{{ action.action_name }}</a>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <br/>
+                <div style="float:right">
+                  <dir-pagination-controls pagination-id="actionsList"></dir-pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-6">
+            <div class="card border-warning">
+              <div class="card-header">
+                <strong>Stories</strong>
+                <span class="float-right">
+                  <a class="btn btn-outline-primary" href="#!/agent/{{agent.agent_id}}/stories" data-toggle="tooltip" data-placement="top" title="Click to change a story" onmouseenter="$(this).tooltip('show')"><i class="fa fa-hand-o-right"></i> &nbsp;Stories Editor</a>
+                </span>
+              </div>
+              <div class="card-block">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="list-group" dir-paginate="story in storiesList  | itemsPerPage: 5" pagination-id="storiesList">
+                      <div class="list-group-item">
+                        {{story}}
+                      </div>
+                  </div>
+                </div>
+              </div>
+              <br/>
+              <div style="float:right">
+                <dir-pagination-controls pagination-id="storiesList"></dir-pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="modal-add-actions" tabindex="-1" role="dialog" aria-labelledby="addActionsModelLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="actionsModelLabel">Add Action</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form name="actionsForm" novalidate>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="form-group">
+                    <label for="action-name" class="form-control-label">Action Name:</label>
+                    <input type="text" class="form-control" id="action-name" ng-model="form.action_name" required>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary" ng-click="addAction(form,agent)" ng-disabled="actionsForm.$invalid">
+                Submit
+              </button>
+            </div>
+              </form>
           </div>
         </div>
       </div>

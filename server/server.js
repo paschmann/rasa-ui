@@ -1,8 +1,11 @@
 // Global Variables
 global.postgresserver = process.env.postgresserver || process.env.npm_package_config_postgresConnectionString;
-global.rasaserver = process.env.rasaserver || process.env.npm_package_config_rasaserver;
-global.rasacoreserver = process.env.rasacoreserver || process.env.npm_package_config_rasacoreserver;
+global.rasanluendpoint = process.env.rasanluendpoint || process.env.npm_package_config_rasanluendpoint;
+global.rasacoreendpoint = process.env.rasacoreendpoint || process.env.npm_package_config_rasacoreendpoint;
 global.jwtsecret = process.env.jwtsecret || process.env.npm_package_config_jwtsecret;
+global.coresecuritytoken= process.env.coresecuritytoken || process.env.npm_package_config_coresecuritytoken;
+global.nlusecuritytoken= process.env.nlusecuritytoken || process.env.npm_package_config_nlusecuritytoken;
+global.cacheagents= process.env.cacheagents || process.env.npm_package_config_cacheagents;
 
 var express = require('express');
 var proxy = require('http-proxy-middleware');
@@ -17,7 +20,6 @@ const db = require('./db/db')
 const url = require('url');
 
 app.use(cors())
-
 app.use(bodyParser.urlencoded({
     parameterLimit: 10000,
     limit: '2mb',
@@ -63,7 +65,17 @@ app.use(function(req, res, next) {
     }
   }
 });
+
+var server = require('http').createServer(app);
+var io = require('socket.io').listen(server);
+
+// Socket.io Communication
+io.sockets.on('connection', function (socket) {
+  app.set('socket', socket);
+});
+
 app.use('/api/v2/', routes);
+
 // error handlers
 // development error handler
 // will print stacktrace
@@ -87,15 +99,16 @@ app.use(function(err, req, res, next) {
   });
 });
 
-var listener = app.listen(5001);
+var listener = server.listen(5001, function () {
+  console.log('Express server listening on port ' + 5001);
+});
 
 checkRasaUI();
 checkDB();
 checkRasaNLU();
-//checkRasaCore();
+checkRasaCore();
 
 function checkRasaUI() {
-  console.log('');
   console.log('Rasa UI Server: ' + listener.address().address + ':' + listener.address().port);
   console.log('');
 }
@@ -120,17 +133,17 @@ function checkDB() {
 }
 
 function checkRasaNLU() {
-  request(global.rasaserver + '/config', function (error, response, body) {
+  request(global.rasanluendpoint + '/config', function (error, response, body) {
     try {
       if (body !== undefined) {
-        var rasaconn = process.env.rasaserver != undefined ? 'process.env.rasaserver' : 'package.json';
+        var rasaconn = process.env.rasanluendpoint != undefined ? 'process.env.rasanluendpoint' : 'package.json';
         console.log('');
         console.log('Rasa NLU Connected');
         console.log('Using connection string from: ' + rasaconn);
-        console.log('Rasa NLU Server: ' + global.rasaserver);
+        console.log('Rasa NLU Server: ' + global.rasanluendpoint);
       }
       if (error !== null) {
-        var rasaconn = process.env.rasaserver != undefined ? 'process.env.rasaserver' : 'package.json';
+        var rasaconn = process.env.rasanluendpoint != undefined ? 'process.env.rasanluendpoint' : 'package.json';
         console.log('');
         console.log('Rasa NLU Error: ' + error);
         console.log('Using connection string from: ' + rasaconn);
@@ -143,12 +156,12 @@ function checkRasaNLU() {
 }
 
 function checkRasaCore() {
-  request(global.rasacoreserver + '/config', function (error, response, body) {
+  request(global.rasacoreendpoint + '/version', function (error, response, body) {
     try {
       if (body !== undefined) {
         console.log('');
         console.log('Rasa Core Connected');
-        console.log('Rasa Core Server: ' + global.rasacoreserver);
+        console.log('Rasa Core Server: ' + global.rasacoreendpoint);
       }
       if (error !== null) {
         console.log('');

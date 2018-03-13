@@ -12,6 +12,19 @@ function getAllEntities(req, res, next) {
     });
 }
 
+function getAllEntitiesForAgent(req, res, next) {
+  console.log("Entities.getAllEntitiesForAgent");
+  var agentId = parseInt(req.params.agent_id);
+  db.any('select * from entities where agent_id=$1', agentId)
+    .then(function (data) {
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
 function getSingleEntity(req, res, next) {
   console.log("Entities.getSingleEntity");
   var entityID = parseInt(req.params.entity_id);
@@ -27,7 +40,9 @@ function getSingleEntity(req, res, next) {
 
 function createEntity(req, res, next) {
   console.log("Entities.createEntity");
-  db.none('insert into entities(entity_name) values(${entity_name})', req.body)
+  req.body.agent_id =req.body.agent.agent_id;
+  db.none('insert into entities(entity_name, agent_id, slot_data_type) values(${entity_name},${agent_id},${slot_data_type})',
+    req.body)
     .then(function () {
       res.status(200)
         .json({
@@ -42,8 +57,8 @@ function createEntity(req, res, next) {
 }
 
 function updateEntity(req, res, next) {
-  db.none('update entities set entity_name=$1 where entity_id=$2',
-    [req.body.entity_name, parseInt(req.params.entity_id)])
+  db.none('update entities set entity_name=$1, agent_id=$3, slot_data_type=$4 where entity_id=$2',
+    [req.body.entity_name, parseInt(req.params.entity_id),parseInt(req.body.agent.agent_id), req.body.slot_data_type])
     .then(function () {
       res.status(200)
         .json({
@@ -57,6 +72,8 @@ function updateEntity(req, res, next) {
 }
 
 function removeEntity(req, res, next) {
+  var entityId = parseInt(req.params.entity_id);
+  db.result('delete from entities where entity_id = $1', entityId)
   var entityID = parseInt(req.params.entity_id);
   db.result('delete from entities where entity_id = $1', entityID)
     .then(function (result) {
@@ -75,6 +92,7 @@ function removeEntity(req, res, next) {
 
 module.exports = {
   getAllEntities: getAllEntities,
+  getAllEntitiesForAgent: getAllEntitiesForAgent,
   getSingleEntity: getSingleEntity,
   createEntity: createEntity,
   updateEntity: updateEntity,

@@ -35,6 +35,11 @@ app.config(function($routeProvider, $locationProvider) {
       templateUrl:'/app/components/agents/edit_agent.html',
       activePage:'agents'
     })
+    .when('/agent/:agent_id/action/edit/:action_id', {
+      controller:'ActionsController as actionsController',
+      templateUrl:'/app/components/actions/actions.html',
+      activePage:'agents'
+    })
     .when('/agent/:agent_id/intent/add', {
       controller:'AddIntentController as addintent',
       templateUrl:'/app/components/intents/add_intent.html',
@@ -45,12 +50,17 @@ app.config(function($routeProvider, $locationProvider) {
       templateUrl:'/app/components/intents/edit_intent.html',
       activePage:'agents'
     })
+    .when('/agent/:agent_id/stories/', {
+      controller:'StoriesController as stories',
+      templateUrl:'/app/components/stories/stories.html',
+      activePage:'stories'
+    })
     .when('/entities', {
       controller:'EntitiesController as entity',
       templateUrl:'/app/components/entities/entities.html',
       activePage:'entities'
     })
-    .when('/entity/add', {
+    .when('/agent/:agent_id/entity/add', {
       controller:'AddEntityController as addentity',
       templateUrl:'/app/components/entities/add_entity.html',
       activePage:'entities'
@@ -70,7 +80,7 @@ app.config(function($routeProvider, $locationProvider) {
       templateUrl:'/app/components/regex/edit_regex.html',
       activePage:'regex'
     })
-    .when('/entity/:entity_id/synonyms', {
+    .when('/agent/:agent_id/entity/:entity_id/synonyms', {
       controller:'SynonymController',
       templateUrl:'/app/components/synonyms/synonyms.html',
       activePage:'entities'
