@@ -99,17 +99,16 @@ app.use(function(err, req, res, next) {
   });
 });
 
-server.listen(5001, function () {
+var listener = server.listen(5001, function () {
   console.log('Express server listening on port ' + 5001);
 });
 
 checkRasaUI();
 checkDB();
 checkRasaNLU();
-//checkRasaCore();
+checkRasaCore();
 
 function checkRasaUI() {
-  console.log('');
   console.log('Rasa UI Server: ' + listener.address().address + ':' + listener.address().port);
   console.log('');
 }
@@ -134,17 +133,17 @@ function checkDB() {
 }
 
 function checkRasaNLU() {
-  request(global.rasaserver + '/config', function (error, response, body) {
+  request(global.rasanluendpoint + '/config', function (error, response, body) {
     try {
       if (body !== undefined) {
-        var rasaconn = process.env.rasaserver != undefined ? 'process.env.rasaserver' : 'package.json';
+        var rasaconn = process.env.rasanluendpoint != undefined ? 'process.env.rasanluendpoint' : 'package.json';
         console.log('');
         console.log('Rasa NLU Connected');
         console.log('Using connection string from: ' + rasaconn);
-        console.log('Rasa NLU Server: ' + global.rasaserver);
+        console.log('Rasa NLU Server: ' + global.rasanluendpoint);
       }
       if (error !== null) {
-        var rasaconn = process.env.rasaserver != undefined ? 'process.env.rasaserver' : 'package.json';
+        var rasaconn = process.env.rasanluendpoint != undefined ? 'process.env.rasanluendpoint' : 'package.json';
         console.log('');
         console.log('Rasa NLU Error: ' + error);
         console.log('Using connection string from: ' + rasaconn);
@@ -157,12 +156,12 @@ function checkRasaNLU() {
 }
 
 function checkRasaCore() {
-  request(global.rasacoreserver + '/config', function (error, response, body) {
+  request(global.rasacoreendpoint + '/version', function (error, response, body) {
     try {
       if (body !== undefined) {
         console.log('');
         console.log('Rasa Core Connected');
-        console.log('Rasa Core Server: ' + global.rasacoreserver);
+        console.log('Rasa Core Server: ' + global.rasacoreendpoint);
       }
       if (error !== null) {
         console.log('');

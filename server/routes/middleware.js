@@ -10,7 +10,7 @@ const agentCache = new NodeCache();
 * Middleware for parse Request. All other requests go to specific modules.
 */
 function parseRasaRequest(req, res, next) {
-  console.log("Got tot the tobe middleware");
+  console.log("Got to parse middleware");
   if(req.body.q == ''){
     console.log("No Query in the RASA Parse Request.");
     sendOutput(500, res, '{"error" : "No Query in the Rasa Parse Request !!"}');
