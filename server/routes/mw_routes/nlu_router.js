@@ -167,7 +167,7 @@ function updateCacheWithRasaNluResponse(rasa_response, cacheKey){
           nlu_parse_cache.entity_data = JSON.stringify(rasa_response.entities);
           nlu_parse_cache.intent_confidence_pct = rasa_response.intent.confidence.toFixed(2)*100;
           nlu_parse_cache.nlu_response_time_ms= Date.now() - nlu_parse_cache.createTime;
-          parseLogCache.set(cacheKey, nlu_parse_cache);
+          nluParseLogCache.set(cacheKey, nlu_parse_cache);
         } catch (err) {
           //console.log(err);
         }
@@ -196,48 +196,14 @@ function createInitialCacheRequest(req, cacheKey, agentObj) {
   nluParseReqObj.intent_confidence_pct = 0;
   nluParseReqObj.user_response_time_ms = 0;
   nluParseReqObj.nlu_response_time_ms = 0;
-  nluParseReqObj.agent_id = -1;
-
+  //set agent_id
+  nluParseReqObj.agent_id= agentObj.agent_id;
   //set it in the cache
   nluParseLogCache.set(cacheKey, nluParseReqObj, function(err, success ){
     if( !err && success ){
       console.log( "Object Inserted into Cache" );
     }
   });
-  //get agent by model
-  var agent_name;
-    if (req.body.project == undefined) { //default agent none specified
-      agent_name = req.body.project
-    } else {
-      agent_name = "";
-    }
-
-      db.any('select * from agents where agent_name = $1', agent_name)
-        .then(function (data) {
-          console.log("Agent Information: " + JSON.stringify(data));
-          //get the cache object and update with agent_id
-          parseLogCache.get(cacheKey, function( err, nlu_parse_cache ){
-            if( !err ){
-              if(nlu_parse_cache == undefined){
-                // quite logging and return
-                console.log("Cache Not Found for key "+ cacheKey);
-                return;
-              } else {
-                if (data.length == 0 ) {
-                  nlu_parse_cache.agent_id = -1;
-                } else {
-                  nlu_parse_cache.agent_id = data[0].agent_id;
-                }
-                parseLogCache.set(cacheKey, nlu_parse_cache);
-              }
-            }else{
-              console.log("Cache Not Found for key "+ cacheKey);
-              return;
-            }
-          });
-        }).catch(function (err) {
-          console.log(err);
-        });
 }
 
 function sendOutput(http_code, res, body) {
