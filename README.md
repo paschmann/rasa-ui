@@ -43,11 +43,15 @@ Rasa UI can run directly on your Rasa NLU instance, or on a separate machine. Te
 [Node.js/npm](https://nodejs.org/en/) - Serves Rasa UI and acts as a middleware server for logging (to the PostgreSQL DB)
 
 
-### Installing
+### Docker Image
+
+The [docker image](https://hub.docker.com/r/paschmann/rasa-ui/) includes Rasa UI and Postgres already configured and setup, but does not include Rasa NLU or Rasa Core. Update the environment variables to point to these.
+
+### Installing locally
 
 Please ensure prerequisites are fulfilled
 
-Clone/download the Rasa UI repository. Install npm packages for both Server and Web.
+Clone/download the Rasa UI repository. Install npm packages and start.
 
 ```
 git clone https://github.com/paschmann/rasaui.git
