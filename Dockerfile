@@ -1,34 +1,31 @@
 FROM ubuntu:16.04
 
-RUN apt-get update
+RUN apt-get update \
 ## Install base environment
-RUN apt-get install -y wget python python-pip
+    && apt-get install -y wget postgresql postgresql-contrib
 
 ## Nodejs
 # Prepare
 WORKDIR /opt/
 # Download
-RUN wget https://nodejs.org/dist/v6.11.1/node-v6.11.1-linux-x64.tar.xz
+RUN wget https://nodejs.org/dist/v6.11.1/node-v6.11.1-linux-x64.tar.xz \
 # Unpack
-RUN tar xf node-v6.11.1-linux-x64.tar.xz
-RUN rm node-v6.11.1-linux-x64.tar.xz
-RUN mv node-v6.11.1-linux-x64 node
+    && tar xf node-v6.11.1-linux-x64.tar.xz \
+    && rm node-v6.11.1-linux-x64.tar.xz \
+    && mv node-v6.11.1-linux-x64 node
 # Install
 WORKDIR /opt/node
-RUN mv bin/* /usr/bin/
-RUN mv include/* /usr/include/
-RUN mv lib/* /usr/lib/
-RUN mv share/doc/* /usr/share/doc/
-RUN mv share/man/man1/* /usr/share/man/man1/
-RUN mv share/systemtap/* /usr/share/systemtap/
+RUN mv bin/* /usr/bin/ \
+    && mv include/* /usr/include/ \
+    && mv lib/* /usr/lib/ \
+    && mv share/doc/* /usr/share/doc/ \
+    && mv share/man/man1/* /usr/share/man/man1/ \
+    && mv share/systemtap/* /usr/share/systemtap/
 
 ## Postgres
-# Installation
-RUN apt-get install -y postgresql postgresql-contrib
-
 # Configuration
-RUN mkdir /opt/pgsql
-RUN chown postgres -R /opt/pgsql
+RUN mkdir /opt/pgsql \
+    && chown postgres -R /opt/pgsql
 WORKDIR /opt/postgresql
 
 ADD resources/dbcreate.sql dbcreate.sql
@@ -40,16 +37,10 @@ ADD . /opt/rasaui
 WORKDIR /opt/rasaui
 
 # Install server packages
-RUN npm install
-
+RUN npm install \
 # Setup user
-RUN useradd rasaui
-RUN chown rasaui -R .
-
-# Install web packages
-WORKDIR /opt/rasaui/web/src
-RUN npm install
-WORKDIR /opt/rasaui
+    && useradd rasaui \
+    && chown rasaui -R .
 
 # Setup RasaUI configuration
 RUN sed -r 's/("postgresserver": )"[^"]*"(.*)/\1"\/var\/run\/postgresql"\2/' -i package.json
