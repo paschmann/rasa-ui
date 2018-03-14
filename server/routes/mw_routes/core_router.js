@@ -126,7 +126,7 @@ var await = require('asyncawait/await');
 
   function flushCacheToCoreDb(cacheKey){
     var core_parse_cache = coreParseLogCache.get(cacheKey);
-    console.log("Obhect before insert: "+JSON.stringify(core_parse_cache));
+    console.log("Object before insert: "+JSON.stringify(core_parse_cache));
     db.none('INSERT INTO public.core_parse_log(agent_id, request_text, action_data, tracker_data, response_text, response_rich_data, '+
        ' user_id, user_name, user_response_time_ms, core_response_time_ms) values(${agent_id}, ${request_text}, '+
        ' ${action_data}::jsonb[], ${tracker_data}::jsonb[], ${response_text}::jsonb[],${response_rich_data}::jsonb[], ${user_id}, ${user_name}, '+
@@ -171,7 +171,7 @@ var await = require('asyncawait/await');
   var  getActionResponses = async (function (req,rasa_core_response,res,cacheKey,agentObj) {
     //inspect the rasacore response
     if(rasa_core_response.next_action !='action_listen'){
-      if(rasa_core_response.next_action.startsWith("utter_webhook")){
+      if(rasa_core_response.next_action.startsWith("utter_webhook_")){
         //webhook type. Make a call to external webhook and append response
         var webhookResponse =await(fetchActionDetailsFromWebhook(req,rasa_core_response, agentObj));
         if(webhookResponse != undefined){
@@ -184,11 +184,21 @@ var await = require('asyncawait/await');
           rasa_core_response.response_text = "Unknown response from Webhook for action: "+rasa_core_response.next_action;
           addResponseInfoToCache(req,cacheKey,rasa_core_response);
         }
-      }else if(rasa_core_response.next_action.startsWith("utter")){
+      }else if(rasa_core_response.next_action.startsWith("utter_")){
         //utter Type
-        console.log("Got an action of utter type. Fetching infor from db");
+        console.log("Got an action of utter type. Fetching info from db");
         var actionRespObj = await( fetchActionDetailsFromDb(rasa_core_response.next_action))
         if(actionRespObj != undefined){
+          var slot_to_fill=  actionRespObj.response_text.match(/{(.*)}/ig);
+          if(slot_to_fill!=null && slot_to_fill.length>0){
+            for(var i=0; i<slot_to_fill.length;i++){
+              console.log("Found a slot to fill: "+slot_to_fill[i]);
+              var stringForRasa =slot_to_fill[i].substring(1,slot_to_fill[i].length-1);
+              var slotVal =rasa_core_response.tracker.slots[stringForRasa];
+              console.log("Filling: "+stringForRasa +" with: "+slotVal);
+              actionRespObj.response_text = actionRespObj.response_text.replace(slot_to_fill[i], rasa_core_response.tracker.slots[stringForRasa]);
+            }
+          }
           rasa_core_response.response_text =actionRespObj.response_text;
           rasa_core_response.buttons_info =actionRespObj.buttons_info;
           rasa_core_response.response_image_url =actionRespObj.response_image_url;
