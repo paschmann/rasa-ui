@@ -115,9 +115,9 @@ function checkRasaUI() {
 }
 
 function checkDB() {
+  var dbconn = process.env.postgresserver != undefined ? 'process.env.postgresserver' : 'package.json';
   db.one('select current_database(), current_schema(), inet_server_port(), inet_server_addr()')
     .then(function (data) {
-      var dbconn = process.env.postgresserver != undefined ? 'process.env.postgresserver' : 'package.json';
       console.log('');
       console.log('Postgres DB Connected');
       console.log('Using connection string from: ' + dbconn);
@@ -127,24 +127,22 @@ function checkDB() {
       console.log('');
     })
     .catch(function (err) {
-      var dbconn = process.env.postgresserver != undefined ? 'process.env.postgresserver' : 'package.json';
       console.log('Postgres DB Connection Error: ' + err);
       console.log('Using connection string from: ' + dbconn);
     });
 }
 
 function checkRasaNLU() {
+  var rasaconn = process.env.rasanluendpoint != undefined ? 'process.env.rasanluendpoint' : 'package.json';
   request(global.rasanluendpoint + '/config', function (error, response, body) {
     try {
       if (body !== undefined) {
-        var rasaconn = process.env.rasanluendpoint != undefined ? 'process.env.rasanluendpoint' : 'package.json';
         console.log('');
         console.log('Rasa NLU Connected');
         console.log('Using connection string from: ' + rasaconn);
         console.log('Rasa NLU Server: ' + global.rasanluendpoint);
       }
       if (error !== null) {
-        var rasaconn = process.env.rasanluendpoint != undefined ? 'process.env.rasanluendpoint' : 'package.json';
         console.log('');
         console.log('Rasa NLU Error: ' + error);
         console.log('Using connection string from: ' + rasaconn);
@@ -157,16 +155,19 @@ function checkRasaNLU() {
 }
 
 function checkRasaCore() {
+  var rasacoreconn = process.env.rasacoreendpoint != undefined ? 'process.env.rasanluendpoint' : 'package.json';
   request(global.rasacoreendpoint + '/version', function (error, response, body) {
     try {
       if (body !== undefined) {
         console.log('');
         console.log('Rasa Core Connected');
+        console.log('Using connection string from: ' + rasacoreconn);
         console.log('Rasa Core Server: ' + global.rasacoreendpoint);
       }
       if (error !== null) {
         console.log('');
         console.log('Rasa Core Error: ' + error);
+        console.log('Using connection string from: ' + rasacoreconn);
       }
       console.log('');
     } catch (err) {
