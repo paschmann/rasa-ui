@@ -56,6 +56,23 @@ cd rasaui && npm install
 
 Please see the [wiki](https://github.com/paschmann/rasa-ui/wiki/Rasa-UI-Install-Guide) for more detailed instructions.
 
+#### Docker Setup
+In order to run this setup in docker you need to run the following command to build out the image:
+
+`docker build -t rasa-ui .` - Make sure to perform this from the location where the Dockerfile is.
+
+Now we can spin up our docker instance with the following command:
+
+**Use Your External Rasa Server**
+In this command we are setting the env variables rasanluendpoint and rasacoreendpoint to our own specific values, you can supply only 1 or both of these depending on if you want to use NLU or Core or both externally.
+
+`docker run -e "rasanluendpoint=http://youripaddress:5000" -e "rasacoreendpoint=http://youripaddress:5005" -itd -p 5001:5001` 
+
+**Use Built In Rasa**
+This command will use the built in Rasa NLU and Core
+
+`docker run -itd -p 5001:5001 rasa-ui`
+
 ## DB Setup
 - Execute `dbcreate.sql` on postgreSQL. (If migrating from an older version of rasa-ui, execute `db-alters.sql`)
 - All the Tables and views should be setup
