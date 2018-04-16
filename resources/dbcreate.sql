@@ -373,8 +373,8 @@ TABLESPACE pg_default;
 /* Views */
 CREATE OR REPLACE VIEW public.intents_most_used AS
 select intent_name, agents.agent_id, agents.agent_name, grouped_intents.grp_intent_count from intents
-left outer join (select count(*) as grp_intent_count, intent_name as grp_intent,agent_id as grp_agent_id from nlu_parse_log
-group by (intent_name,agent_id)) as grouped_intents
+left outer join (select count(*) as grp_intent_count, nlu_parse_log.intent_name as grp_intent,agent_id as grp_agent_id from nlu_parse_log
+group by nlu_parse_log.intent_name,agent_id) as grouped_intents
 on intent_name = grouped_intents.grp_intent, agents where intents.agent_id=agents.agent_id  order by agents.agent_id;
 
 CREATE OR REPLACE VIEW public.avg_nlu_response_times_30_days AS
