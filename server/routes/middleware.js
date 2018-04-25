@@ -47,6 +47,16 @@ function routeRequest(req, res, next, agentObj){
     }
 }
 
+function sendOutput(http_code, res, body) {
+  res.writeHead(http_code, {
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json'
+  });
+  if (body !== "") {
+    res.write(body);
+  }
+  res.end();
+}
 module.exports = {
   parseRasaRequest: parseRasaRequest
 };

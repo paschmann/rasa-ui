@@ -22,9 +22,25 @@ var await = require('asyncawait/await');
   }
 
   function restartRasaCoreConversation(req, res, next) {
-    console.log("Rasa Core Version Request -> " + global.rasacoreendpoint + "/version");
-    var responseBody =rasaCoreRequest(req,"continue",JSON.stringify({"events": [{"event": "restart"}]}));
-    console.log("RestartResponse" + JSON.stringify(responseBody));
+    console.log("Rasa Core Restart Request -> " + global.rasacoreendpoint);
+    try {
+      request({method: "POST",
+        uri: global.rasacoreendpoint +"/conversations/"+req.jwt.username+ "/continue",
+        body: JSON.stringify({"events": [{"event": "restart"}]})
+      }, function (error, response, body) {
+        if(error){
+          console.log(error);
+          sendHTTPResponse(500, res, '{"error" : "Exception caught !!"}');
+          return;
+        }
+        console.log("Restart Response" + JSON.stringify(body));
+        sendHTTPResponse(200, res, body);
+      });
+    }catch (err) {
+      console.log(err);
+      sendHTTPResponse(500, res, '{"error" : "Exception caught !!"}');
+      return;
+    }
   }
 
   function parseRequest(req, res, next, agentObj) {
@@ -89,6 +105,7 @@ var await = require('asyncawait/await');
             console.log(error);
             reject(err); return;
           }
+          console.log("After request:"+body);
           resolve(JSON.parse(body));
         });
     });
@@ -176,7 +193,7 @@ var await = require('asyncawait/await');
         var webhookResponse =await(fetchActionDetailsFromWebhook(req,rasa_core_response, agentObj));
         if(webhookResponse != undefined){
           rasa_core_response.response_text = JSON.parse(webhookResponse).displayText;
-          rasa_response.response_rich=JSON.parse(webhookResponse).dataToClient;
+          rasa_core_response.response_rich=JSON.parse(webhookResponse).dataToClient;
           console.log("Sending Rasa Core Response + Webhook response");
           addResponseInfoToCache(req,cacheKey,rasa_core_response);
         }else{

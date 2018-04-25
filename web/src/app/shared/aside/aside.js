@@ -67,16 +67,11 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
   }
   $scope.restartConversation=function(){
     $scope.test_text_response={};
-    $http.post(api_endpoint_v2 + "/rasa/restart")
-      .then(
-        function(response){
-          // success callback
-          alert("Restarted Successfully");
-        },
-        function(errorResponse){
-          // failure callback
-        }
-      );
+    $http.post(api_endpoint_v2 + "/rasa/restart");
+    $scope.response_text=[];
+    $scope.test_text_response={};
+    $scope.test_text='';
+    $rootScope.$broadcast('setAlertText', "Conversation restarted!!");
   }
 
   $scope.executeTestRequest = function() {
@@ -104,11 +99,11 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
               $scope.response_text.push(response.response_text);
             })
           }
+          $scope.test_text='';
         },
         function(errorResponse){
           // failure callback
         }
       );
-
   }
 }
