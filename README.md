@@ -97,7 +97,7 @@ e.g. Instead of calling: http://localhost:5000/parse?q=hello%20there rather call
 
 ## Contributing
 
-Please read [contributing.md](https://github.com/paschmann/rasaui/contributing.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [contributing.md](contributing.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Contributers
 
