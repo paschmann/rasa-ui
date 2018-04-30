@@ -82,6 +82,9 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
     reset();
 
     Agent.query({agent_id: agent_id, path: "intents"}, function(intents) {
+      //Fetch rasa core data only if its enabled.
+      if($scope.selectedAgent.rasa_core_enabled==true)
+        populateCoreDomainYaml(agent_id,intents);
       Regex.query(function (regex) {
         AllSynonymVariants.query(function(synonyms) { //WIP 2.3
           var intentIds = intents.map(function(item) { return item['intent_id']; }).toString();
@@ -91,13 +94,11 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
               if (expressionIds.length > 0) {
                 ExpressionParameters.query({expression_ids: expressionIds}, function(params) {
                   generateData(regex, intents, expressions, params, synonyms);
-
                   /* WIP 2.3 - Update to latest json model for Rasa */
                   var entityIds = params.map(function(item) { return item['entity_id']; }).toString();
                   if (entityIds.length > 0) {
                     EntitySynonymVariantsByEntity.query({entity_ids: entityIds}, function(entitysynonyms) {
                       generateData(regex, intents, expressions, params, entitysynonyms)
-                      populateCoreDomainYaml(agent_id,intents, expressions, params, entitysynonyms);
                     }, function(error) {
                       $scope.generateError = error;
                       $scope.exportdata = undefined;
@@ -129,7 +130,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
     });
   }
 
-  function populateCoreDomainYaml(agent_id, intents, expressions, params, synonyms){
+  function populateCoreDomainYaml(agent_id, intents){
     //get entities by agentid
     var domain_yml_obj={};
     $scope.stories_md='';
