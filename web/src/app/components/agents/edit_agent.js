@@ -23,6 +23,7 @@ function EditAgentController($rootScope,$scope, Agent, Intents, Entities,AgentEn
   });
 
   function parseStories(story_details){
+    if(angular.isUndefined(story_details) || story_details === null) return;
     var lines = story_details.split("\n");
 
     for(var i=0; i<lines.length;i++){
