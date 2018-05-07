@@ -34,7 +34,9 @@ function ActionsController($rootScope,$scope, $http,Actions, Response, ActionRes
       actionResponse.response_type=1;
       ActionResponses.save(actionResponse).$promise.then(function() {
         $rootScope.$broadcast('setAlertText', "Response Added Sucessfully!!");
-        actionResponse.response_text,actionResponse.button_text,actionResponse.response_image_url='';
+        $scope.action.response_text='';
+        $scope.action.response_image_url='';
+        $scope.buttonsArray=[];
         loadActionResponses(actionResponse.action_id);
       });
     };
@@ -48,7 +50,7 @@ function ActionsController($rootScope,$scope, $http,Actions, Response, ActionRes
       $scope.addButton = function(action){
         if(action.button_text.indexOf(':') ==-1 )return;
         var seq =$scope.buttonsArray.length;
-        $scope.buttonsArray.push({"seq":seq,"title":action.button_text.split(":")[0], "payload":action.button_text.split(":")[1]});
+        $scope.buttonsArray.push({"seq":seq,"title":action.button_text.split(":")[0], "payload":action.button_text.substring(action.button_text.indexOf(":")+1)});
         action.button_text='';
       }
       function loadActionResponses(action_id){

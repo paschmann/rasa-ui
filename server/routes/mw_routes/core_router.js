@@ -58,11 +58,10 @@ var await = require('asyncawait/await');
     //Post Parse Request
     var responseBody = await (rasaCoreRequest(req,"parse",JSON.stringify(req.body)));
     try {
-      console.log("Rasa Core Resonse: "+ JSON.stringify(responseBody));
+      console.log("First request to Rasa Core. Resonse: "+ JSON.stringify(responseBody));
       updateCacheWithRasaCoreResponse(responseBody, cache_key)
       await( getActionResponses(req,responseBody,res,cache_key,agentObj) );
       if (responseBody.next_action != "action_listen"){
-          console.log("Starting next actions");
           startPredictingActions(core_url, req, responseBody.next_action,cache_key,res,agentObj);
       }else{
         //got and actionlisten. Send response and flush data.
@@ -77,7 +76,7 @@ var await = require('asyncawait/await');
 
   var  startPredictingActions = async (function (core_url, req, currentAction,cache_key,res,agentObj){
     while (true){
-      console.log("Executed this: " + currentAction);
+      console.log("*********** Executed this ***********: " + currentAction);
       var responseBody = await (rasaCoreRequest(req,"continue",JSON.stringify({"executed_action":currentAction,"events": []})));
       console.log("Rasa Core Resonse from Continue: "+ JSON.stringify(responseBody));
       updateCacheWithRasaCoreResponse(responseBody, cache_key)
@@ -103,7 +102,7 @@ var await = require('asyncawait/await');
         }, function (error, response, body) {
           if(error){
             console.log(error);
-            reject(err); return;
+            reject(error); return;
           }
           console.log("After request:"+body);
           resolve(JSON.parse(body));
@@ -143,7 +142,9 @@ var await = require('asyncawait/await');
 
   function flushCacheToCoreDb(cacheKey){
     var core_parse_cache = coreParseLogCache.get(cacheKey);
-    console.log("Object before insert: "+JSON.stringify(core_parse_cache));
+    console.log("------ Flushing Cache to DB with below details ------");
+    console.log(JSON.stringify(core_parse_cache));
+    console.log("------------------------------------------------------------");
     db.none('INSERT INTO public.core_parse_log(agent_id, request_text, action_data, tracker_data, response_text, response_rich_data, '+
        ' user_id, user_name, user_response_time_ms, core_response_time_ms) values(${agent_id}, ${request_text}, '+
        ' ${action_data}::jsonb[], ${tracker_data}::jsonb[], ${response_text}::jsonb[],${response_rich_data}::jsonb[], ${user_id}, ${user_name}, '+
@@ -159,14 +160,16 @@ var await = require('asyncawait/await');
   }
 
   /**
-  *Send the Body back to the http response.
+  *Send the Body back to the http response if any one is waiting for it.
   */
   function sendCacheResponse(http_code,res,cache_key) {
     res.writeHead(http_code, {
       'Access-Control-Allow-Origin': '*',
       'Content-Type': 'application/json'
     });
-    console.log("Sending Response: "+JSON.stringify(responseCache.get(cache_key)));
+    console.log("------ Responding in HTTP with below body ------");
+    console.log(JSON.stringify(responseCache.get(cache_key)));
+    console.log("------------------------------------------------------");
     if (responseCache.get(cache_key) !== "") {
       res.write(JSON.stringify(responseCache.get(cache_key)));
     }
@@ -191,11 +194,21 @@ var await = require('asyncawait/await');
       if(rasa_core_response.next_action.startsWith("utter_webhook_")){
         //webhook type. Make a call to external webhook and append response
         var webhookResponse =await(fetchActionDetailsFromWebhook(req,rasa_core_response, agentObj));
+        console.log("------ Webhook Response for action : " +rasa_core_response.next_action+ "------------");
+        console.log(webhookResponse);
+        console.log("------------------------------------------------------------");
+
         if(webhookResponse != undefined){
-          rasa_core_response.response_text = JSON.parse(webhookResponse).displayText;
-          rasa_core_response.response_rich=JSON.parse(webhookResponse).dataToClient;
-          console.log("Sending Rasa Core Response + Webhook response");
-          addResponseInfoToCache(req,cacheKey,rasa_core_response);
+          try {
+            rasa_core_response.response_text = JSON.parse(webhookResponse).displayText;
+            rasa_core_response.response_rich=JSON.parse(webhookResponse).dataToClient;
+            addResponseInfoToCache(req,cacheKey,rasa_core_response);
+          } catch (e) {
+            console.log("Unknown response from Webhook for action: "+rasa_core_response.next_action);
+            console.log("Webhook Response" + webhookResponse);
+            rasa_core_response.response_text = "Please check your Webhook Conenction. Got an error response.";
+            addResponseInfoToCache(req,cacheKey,rasa_core_response);
+          }
         }else{
           console.log("Unknown response from Webhook for action: "+rasa_core_response.next_action);
           rasa_core_response.response_text = "Unknown response from Webhook for action: "+rasa_core_response.next_action;
@@ -203,8 +216,10 @@ var await = require('asyncawait/await');
         }
       }else if(rasa_core_response.next_action.startsWith("utter_")){
         //utter Type
-        console.log("Got an action of utter type. Fetching info from db");
-        var actionRespObj = await( fetchActionDetailsFromDb(rasa_core_response.next_action))
+        var actionRespObj = await( fetchActionDetailsFromDb(rasa_core_response.next_action));
+        console.log("------ Utter Response for action : " +rasa_core_response.next_action+ "------------");
+        console.log(actionRespObj);
+        console.log("------------------------------------------------------------");
         if(actionRespObj != undefined){
           var slot_to_fill=  actionRespObj.response_text.match(/{(.*)}/ig);
           if(slot_to_fill!=null && slot_to_fill.length>0){
@@ -219,7 +234,6 @@ var await = require('asyncawait/await');
           rasa_core_response.response_text =actionRespObj.response_text;
           rasa_core_response.buttons_info =actionRespObj.buttons_info;
           rasa_core_response.response_image_url =actionRespObj.response_image_url;
-          console.log("Sending Configured Response");
           addResponseInfoToCache(req,cacheKey,rasa_core_response);
         }else{
           console.log("Error from Webhook. Sending Core Response");
