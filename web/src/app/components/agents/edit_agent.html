@@ -14,10 +14,10 @@
   <div class="row">
       <div class="col-sm-6 col-lg-6">
         <div class="card">
-          <div class="card-header" data-toggle="tooltip" data-placement="top" title="Click to Add a New Intent" onmouseenter="$(this).tooltip('show')">
+          <div class="card-header">
             <strong>Intents</strong>
             <span class="float-right">
-              <a class="btn btn-outline-primary" href="#!/agent/{{agent.agent_id}}/intent/add"><i class="icon-plus"></i> &nbsp;Add Intent</a>
+              <a class="btn btn-outline-primary" href="#!/agent/{{agent.agent_id}}/intent/add"  data-toggle="tooltip" data-placement="top" title="Click to Add a New Intent" tooltip><i class="icon-plus"></i> &nbsp;Add Intent</a>
             </span>
           </div>
           <div class="card-block">
@@ -42,7 +42,7 @@
         <div class="card-header">
           <strong>Entities</strong>
           <span class="float-right">
-            <a class="btn btn-outline-primary" href="#!/agent/{{agent.agent_id}}/entity/add" data-toggle="tooltip" data-placement="top" title="Click to Add a New Entity" onmouseenter="$(this).tooltip('show')"><i class="icon-plus"></i> &nbsp;Add Entity</a>
+            <a class="btn btn-outline-primary" href="#!/agent/{{agent.agent_id}}/entity/add" data-toggle="tooltip" data-placement="top" title="Click to Add a New Entity" tooltip><i class="icon-plus"></i> &nbsp;Add Entity</a>
           </span>
         </div>
         <div class="card-block">
@@ -71,7 +71,7 @@
   <div class="row">
       <div class="col-sm-6 col-lg-6">
         <div class="card border-warning">
-          <div class="card-header" data-toggle="tooltip" data-placement="top" title="Actions are the things your bot can actually do. They can have predefined response templetes." onmouseenter="$(this).tooltip('show')">
+          <div class="card-header" data-toggle="tooltip" data-placement="top" title="Actions are the things your bot can actually do. They can have predefined response templetes." tooltip>
             <strong>Actions</strong>
             <span class="float-right">
               <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal-add-actions"><i class="icon-plus"></i>&nbsp;Add Action</button>
@@ -99,7 +99,7 @@
         <div class="card-header">
           <strong>Stories</strong>
           <span class="float-right">
-            <a class="btn btn-outline-primary" href="#!/agent/{{agent.agent_id}}/stories" data-toggle="tooltip" data-placement="top" title="Click to change a story" onmouseenter="$(this).tooltip('show')"><i class="fa fa-hand-o-right"></i> &nbsp;Stories Editor</a>
+            <a class="btn btn-outline-primary" href="#!/agent/{{agent.agent_id}}/stories" data-toggle="tooltip" data-placement="top" title="Click to change a story" tooltip><i class="fa fa-hand-o-right"></i> &nbsp;Stories Editor</a>
           </span>
         </div>
         <div class="card-block">
@@ -138,7 +138,7 @@
             <div class="form-group">
               <label for="action-name" class="form-control-label">Action Name:</label>
               <div class="input-group">
-                <span class="input-group-btn" data-toggle="tooltip" data-placement="top" title="Action name prefix" onmouseenter="$(this).tooltip('show')">
+                <span class="input-group-btn" data-toggle="tooltip" data-placement="top" title="Action name prefix" tooltip>
                   <select class="form-control form-control" ng-model="form.action_name_prefix" required ng-init="form.action_name_prefix='utter_'">
                     <option value="utter_">utter_</option>
                     <option value="utter_webhook_">utter_webhook_</option>

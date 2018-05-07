@@ -5,7 +5,26 @@ module("app")
 .directive('a', navigationDirective)
 .directive('button', layoutToggleDirective)
 .directive('button', collapseMenuTogglerDirective)
-.filter('trusted',
+.directive('tooltip', function(){
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs){
+            element.hover(
+              function(){
+                element.tooltip('show');
+              },
+              function(){
+                element.tooltip('hide');
+              }
+            );
+            element.click(
+              function(){
+                element.tooltip('hide');
+              }
+            );
+        }
+    };
+}).filter('trusted',
    function($sce) {
      return function(ss) {
        return $sce.trustAsHtml(ss)
