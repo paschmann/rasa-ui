@@ -95,6 +95,11 @@ app.config(function($routeProvider, $locationProvider) {
       templateUrl:'/app/components/logs/logs.html',
       activePage:'logs'
     })
+    .when('/history', {
+      controller:'HistoryController',
+      templateUrl:'/app/components/history/history.html',
+      activePage:'history'
+    })
     .when('/insights', {
       controller:'InsightsController',
       templateUrl:'/app/components/insights/insights.html',

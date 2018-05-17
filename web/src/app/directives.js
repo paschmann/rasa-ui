@@ -1,10 +1,18 @@
-angular.
-module("app")
+angular.module("app")
 .directive('a', navigationDirective)
 .directive('confirmClick', confirmClickDirective)
 .directive('a', navigationDirective)
 .directive('button', layoutToggleDirective)
 .directive('button', collapseMenuTogglerDirective)
+.directive("scrollBottom", function(){
+    return {
+        link: function(scope, element, attr){
+          scope.$watch(function() {
+            element.scrollTop(element[0].scrollHeight);
+            });
+        }
+    }
+})
 .directive('tooltip', function(){
     return {
         restrict: 'A',

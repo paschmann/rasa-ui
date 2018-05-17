@@ -71,9 +71,9 @@ function getIntentsMostUsed(req, res, next){
 }
 
 function getAgentsByIntentConfidencePct(req, res, next){
-  db.any('select count(*),intent_confidence_pct, agents.agent_id, agents.agent_name from nlu_parse_log, agents '
-          +' where nlu_parse_log.agent_id = agents.agent_id'
-          +' group by intent_confidence_pct, agents.agent_id, agents.agent_name')
+  db.any('select count(*),intent_confidence_pct, agents.agent_id, agents.agent_name from nlu_parse_log, agents, messages '
+         +' where messages.agent_id = agents.agent_id and messages.messages_id=nlu_parse_log.messages_id '
+         +' group by intent_confidence_pct, agents.agent_id, agents.agent_name ')
     .then(function (data) {
       res.status(200)
         .json(data);

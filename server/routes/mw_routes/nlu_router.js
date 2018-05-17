@@ -124,17 +124,29 @@ function finalizeCacheFlushToDbAndRespond(cacheKey, http_code, res, body) {
       }else{
         if(body != ""){
           if(body.response_text != undefined)nlu_parse_cache.response_text = body.response_text;
-          if(body.response_rich != undefined)nlu_parse_cache.response_rich_data = body.response_rich;
+          if(body.response_rich != undefined)nlu_parse_cache.message_rich = body.response_rich;
           nlu_parse_cache.user_response_time_ms = Date.now() - nlu_parse_cache.createTime;
         }
-        db.none('INSERT INTO public.nlu_parse_log(agent_id, request_text, intent_name, entity_data, response_text, response_rich_data, intent_confidence_pct, user_id, user_name,user_response_time_ms,nlu_response_time_ms) values(${agent_id}, ${request_text}, ${intent_name}, ${entity_data}, ${response_text},${response_rich_data}, ${intent_confidence_pct}, ${user_id}, ${user_name},${user_response_time_ms},${nlu_response_time_ms})', nlu_parse_cache)
-          .then(function () {
-              console.log("Cache inserted into db. Removing it");
-              nluParseLogCache.del(cacheKey);
+        //insert message and use that id to insert nlu_parse_log
+        nlu_parse_cache.message_text= nlu_parse_cache.response_text;
+        nlu_parse_cache.user_message_ind=false;
+        db.any('insert into messages(agent_id, user_id, user_name, message_text, user_message_ind)' +
+            ' values(${agent_id}, ${user_id},${user_name}, ${message_text}, ${message_rich}, ${user_message_ind}) RETURNING messages_id', nlu_parse_cache)
+          .then(function (messages_id) {
+            nlu_parse_cache.messages_id=messages_id;
+            db.none('INSERT INTO public.nlu_parse_log(intent_name, entity_data, messages_id,intent_confidence_pct, user_response_time_ms,nlu_response_time_ms) '+
+            +' values(${intent_name}, ${entity_data}, ${messages_id}, ${intent_confidence_pct},${user_response_time_ms},${nlu_response_time_ms})', nlu_parse_cache)
+              .then(function () {
+                  console.log("Cache inserted into db. Removing it");
+                  nluParseLogCache.del(cacheKey);
+              })
+              .catch(function (err) {
+                console.log("Exception while inserting Parse log");
+                console.log(err);
+              });
           })
           .catch(function (err) {
-            console.log("Exception while inserting Parse log");
-            console.log(err);
+            return next(err);
           });
 
       }
@@ -192,7 +204,7 @@ function createInitialCacheRequest(req, cacheKey, agentObj) {
   nluParseReqObj.intent_name = '';
   nluParseReqObj.entity_data = '{}';
   nluParseReqObj.response_text = '';
-  nluParseReqObj.response_rich_data = '{}';
+  nluParseReqObj.message_rich = '{}';
   nluParseReqObj.intent_confidence_pct = 0;
   nluParseReqObj.user_response_time_ms = 0;
   nluParseReqObj.nlu_response_time_ms = 0;

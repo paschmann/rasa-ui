@@ -1,11 +1,6 @@
-CREATE SCHEMA public
-AUTHORIZATION postgres;
-
-COMMENT ON SCHEMA public
-IS 'standard public schema';
+COMMENT ON SCHEMA public IS 'standard public schema';
 
 GRANT ALL ON SCHEMA public TO postgres;
-
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 /* Sequences */
@@ -88,6 +83,13 @@ MAXVALUE 9223372036854775807
 CACHE 1;
 
 CREATE SEQUENCE public.core_parse_log_core_parse_log_id_seq
+INCREMENT 1
+START 1
+MINVALUE 1
+MAXVALUE 9223372036854775807
+CACHE 1;
+
+CREATE SEQUENCE public.messages_messages_id_seq
 INCREMENT 1
 START 1
 MINVALUE 1
@@ -275,22 +277,37 @@ WITH (
 )
 TABLESPACE pg_default;
 
+
+CREATE TABLE public.messages
+(
+  messages_id integer NOT NULL DEFAULT nextval('messages_messages_id_seq'::regclass),
+  "timestamp" timestamp without time zone DEFAULT timezone('utc'::text, now()),
+  agent_id integer,
+  user_id character varying COLLATE pg_catalog."default",
+  user_name character varying COLLATE pg_catalog."default",
+  message_text character varying COLLATE pg_catalog."default",
+  message_rich jsonb,
+  user_message_ind boolean,
+  CONSTRAINT messages_id_pkey PRIMARY KEY (messages_id)
+)
+WITH (
+  OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+
 CREATE TABLE public.nlu_parse_log
 (
   parse_log_id integer NOT NULL DEFAULT nextval('parse_log_parse_log_id_seq'::regclass),
+  messages_id integer NOT NULL,
   "timestamp" timestamp without time zone DEFAULT timezone('utc'::text, now()),
-  agent_id integer,
-  request_text character varying COLLATE pg_catalog."default",
   intent_name character varying COLLATE pg_catalog."default",
   entity_data jsonb,
-  response_text character varying COLLATE pg_catalog."default",
-  response_rich_data jsonb,
   intent_confidence_pct integer,
-  user_id character varying COLLATE pg_catalog."default",
-  user_name character varying COLLATE pg_catalog."default",
   user_response_time_ms integer,
   nlu_response_time_ms integer,
-  CONSTRAINT parse_log_id_pkey PRIMARY KEY (parse_log_id)
+  CONSTRAINT parse_log_id_pkey PRIMARY KEY (parse_log_id),
+  CONSTRAINT messages_id_pk FOREIGN KEY (messages_id) REFERENCES public.messages (messages_id) MATCH FULL
 )
 WITH (
   OIDS = FALSE
@@ -300,24 +317,19 @@ TABLESPACE pg_default;
 CREATE TABLE public.core_parse_log
 (
   core_parse_log_id integer NOT NULL DEFAULT nextval('core_parse_log_core_parse_log_id_seq'::regclass),
+  messages_id integer NOT NULL,
   "timestamp" timestamp without time zone DEFAULT timezone('utc'::text, now()),
-  agent_id integer,
-  request_text character varying COLLATE pg_catalog."default",
-  action_data jsonb[],
-  tracker_data jsonb[],
-  response_text jsonb[],
-  response_rich_data jsonb[],
-  user_id character varying COLLATE pg_catalog."default",
-  user_name character varying COLLATE pg_catalog."default",
+  action_name character varying COLLATE pg_catalog."default",
+  slots_data jsonb,
   user_response_time_ms integer,
   core_response_time_ms integer,
-  CONSTRAINT core_parse_log_id PRIMARY KEY (core_parse_log_id)
+  CONSTRAINT core_parse_log_id PRIMARY KEY (core_parse_log_id),
+  CONSTRAINT messages_id_pk FOREIGN KEY (messages_id) REFERENCES public.messages (messages_id) MATCH FULL
 )
 WITH (
   OIDS = FALSE
 )
 TABLESPACE pg_default;
-
 
 CREATE TABLE public.nlu_log
 (
@@ -373,8 +385,8 @@ TABLESPACE pg_default;
 /* Views */
 CREATE OR REPLACE VIEW public.intents_most_used AS
 select intent_name, agents.agent_id, agents.agent_name, grouped_intents.grp_intent_count from intents
-left outer join (select count(*) as grp_intent_count, nlu_parse_log.intent_name as grp_intent,agent_id as grp_agent_id from nlu_parse_log
-group by nlu_parse_log.intent_name,agent_id) as grouped_intents
+left outer join (select count(*) as grp_intent_count, nlu_parse_log.intent_name as grp_intent,messages.agent_id as grp_agent_id from nlu_parse_log, messages
+where nlu_parse_log.messages_id=messages.messages_id group by nlu_parse_log.intent_name,grp_agent_id) as grouped_intents
 on intent_name = grouped_intents.grp_intent, agents where intents.agent_id=agents.agent_id  order by agents.agent_id;
 
 CREATE OR REPLACE VIEW public.avg_nlu_response_times_30_days AS
@@ -392,15 +404,13 @@ ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) asc
 LIMIT 30;
 
 CREATE OR REPLACE VIEW public.active_user_count_12_months AS
-select count(distinct(user_id)) as count_users,
-(to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) as month_year from nlu_parse_log
-GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text))
-ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) asc
-LIMIT 12;
+select count(distinct(messages.user_id)) as count_users,
+(to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) as month_year from nlu_parse_log, messages where nlu_parse_log.messages_id=messages.messages_id
+GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) asc LIMIT 12;
 
 CREATE OR REPLACE VIEW public.active_user_count_30_days AS
-SELECT count(distinct(user_id)) as user_count,
-(to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) as month_date from nlu_parse_log
+SELECT count(distinct(messages.user_id)) as user_count,
+(to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) as month_date from nlu_parse_log, messages where nlu_parse_log.messages_id=messages.messages_id
 GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text))
 ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) asc
 LIMIT 30;

@@ -1,5 +1,6 @@
 var request = require('request');
 const db = require('../db/db')
+const messages = require('../db/messages')
 const NodeCache = require( "node-cache" );
 const core_router = require( "./mw_routes/core_router" );
 const nlu_router = require( "./mw_routes/nlu_router" );
@@ -19,22 +20,35 @@ function parseRasaRequest(req, res, next) {
   //attempt to get it from the cache: Sync call
   var agent_name=req.body.project;
   agentObj = agentCache.get(agent_name);
+  var messageObj =new Object();
+  messageObj.user_id = req.jwt.username;
+  messageObj.user_name = req.jwt.name;
+  messageObj.message_text = req.body.q;
+  messageObj.message_rich = null
+  messageObj.user_message_ind = true;
   if(agentObj == undefined ){
     console.log("Cache Not Found for Agent. Making a DB call for: "+ agent_name);
     db.any('SELECT agent_id, agent_name, endpoint_enabled, endpoint_url, basic_auth_username, '+
     ' basic_auth_password, rasa_core_enabled from agents where agent_name = $1', agent_name).then(function (data) {
       console.log("Agent Information: " + JSON.stringify(data));
       //cache Agents only if Env variable is set.
-      if(global.cacheagents){
+      if(global.cacheagents == "true"){
           //add this to the cache
+          console.log("global.cacheagents is true. Setting Agent in cache");
           agentCache.set(agent_name, data[0]);
       }
+      //insert user_message into message table.
+      messageObj.agent_id = data[0].agent_id;
+      messages.createMessage(messageObj);
+      //route the req to appropriate router.
       routeRequest(req, res, next, data[0]);
     }).catch(function(err){
       console.log("DB Error while getting agent details." );
       console.log(err);
     });
   }else{
+    //insert user_message into message table.
+    messageObj.agent_id = agentObj.agent_id;
     routeRequest(req, res, next, agentObj);
   }
 }

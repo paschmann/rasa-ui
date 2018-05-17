@@ -12,6 +12,7 @@ var synonyms = require('../db/synonyms');
 var variants = require('../db/variants');
 var settings = require('../db/settings');
 var responses = require('../db/responses');
+var messages = require('../db/messages');
 var middleware = require('./middleware');
 var core_router = require('./mw_routes/core_router');
 var nlu_router = require('./mw_routes/nlu_router');
@@ -124,6 +125,11 @@ router.post('/rasa/parse', middleware.parseRasaRequest);
 //rasa core API
 router.post('/rasa/restart', core_router.restartRasaCoreConversation);
 
+//messages api
+router.get('/agent/:agent_id/messages', messages.getUniqueUsersList);
+router.get('/agent/:agent_id/recent9UniqueUsersList', messages.getRecent9UniqueUsersList);
+router.post('/messages/list', messages.getMessagesListByUser);
+router.get('/messages/:messages_id', messages.getMessageDetails);
 
 //authentication js
 router.post('/auth', auth.authenticateUser);

@@ -71,7 +71,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <label for="fader">Confidence%: &nbsp;</label> {{confidencePercent}}
-                                <input ng-model="confidencePercent" type="range" min="0" max="100" value="30" id="fader" style="width:100%" ng-change="updateBarChart()"
+                                <input ng-init="confidencePercent=30" ng-model="confidencePercent" type="range" min="0" max="100" id="fader" style="width:100%" ng-change="updateBarChart()"
                                 />
                             </div>
                         </div>

@@ -3,10 +3,8 @@ const db = require('../../db/db')
 const NodeCache = require( "node-cache" );
 //https://github.com/mpneuried/nodecache
 const coreParseLogCache = new NodeCache();
-const responseCache = new NodeCache();
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
-
 
   function getRasaCoreVersion(req, res, next) {
     console.log("Rasa Core Version Request -> " + global.rasacoreendpoint + "/version");
@@ -59,7 +57,8 @@ var await = require('asyncawait/await');
     var responseBody = await (rasaCoreRequest(req,"parse",JSON.stringify(req.body)));
     try {
       console.log("First request to Rasa Core. Resonse: "+ JSON.stringify(responseBody));
-      updateCacheWithRasaCoreResponse(responseBody, cache_key)
+      //updateCacheWithRasaCoreResponse(responseBody, cache_key)
+      responseBody.actionTimestamp=Date.now();
       await( getActionResponses(req,responseBody,res,cache_key,agentObj) );
       if (responseBody.next_action != "action_listen"){
           startPredictingActions(core_url, req, responseBody.next_action,cache_key,res,agentObj);
@@ -79,7 +78,8 @@ var await = require('asyncawait/await');
       console.log("*********** Executed this ***********: " + currentAction);
       var responseBody = await (rasaCoreRequest(req,"continue",JSON.stringify({"executed_action":currentAction,"events": []})));
       console.log("Rasa Core Resonse from Continue: "+ JSON.stringify(responseBody));
-      updateCacheWithRasaCoreResponse(responseBody, cache_key)
+      //updateCacheWithRasaCoreResponse(responseBody, cache_key)
+      responseBody.actionTimestamp=Date.now();
       await(getActionResponses(req,responseBody,res,cache_key,agentObj));
       currentAction = responseBody.next_action;
       if(currentAction === "action_listen"){
@@ -118,46 +118,89 @@ var await = require('asyncawait/await');
       return;
     }else{
       if(body != ""){
-        if(body.response_text != undefined)core_parse_cache.response_text =body.response_text;
-        if(body.response_rich != undefined)core_parse_cache.response_rich_data =body.response_rich;
-        core_parse_cache.user_response_time_ms = Date.now() - core_parse_cache.createTime;
-        var allResponses = responseCache.get(cacheKey);
-        if(allResponses== undefined){
-          //this is the first response
-          allResponses =[];
-        }
+        body.user_response_time_ms = Date.now() - core_parse_cache.createTime;
+        core_parse_cache.allResponses.push(body);
         //check if wsstream is enabled.
         if(req.body.wsstream){
           //respond back in Websocket
           console.log("wsstream is True. Will send responses in websockets.");
           req.app.get('socket').emit('on:responseMessage', body);
         }
-
-        allResponses.push(body);
-        console.log("AllReponses: "+JSON.stringify(allResponses));
-        responseCache.set(cacheKey,allResponses);
+        coreParseLogCache.set(cacheKey,core_parse_cache);
       }
     }
   }
 
-  function flushCacheToCoreDb(cacheKey){
-    var core_parse_cache = coreParseLogCache.get(cacheKey);
-    console.log("------ Flushing Cache to DB with below details ------");
-    console.log(JSON.stringify(core_parse_cache));
-    console.log("------------------------------------------------------------");
-    db.none('INSERT INTO public.core_parse_log(agent_id, request_text, action_data, tracker_data, response_text, response_rich_data, '+
-       ' user_id, user_name, user_response_time_ms, core_response_time_ms) values(${agent_id}, ${request_text}, '+
-       ' ${action_data}::jsonb[], ${tracker_data}::jsonb[], ${response_text}::jsonb[],${response_rich_data}::jsonb[], ${user_id}, ${user_name}, '+
-       ' ${user_response_time_ms},${core_response_time_ms})',core_parse_cache)
+  var  insertMessageToDB = async(function (message, corelogData, nlulogData){
+    db.any('insert into public.messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
+        ' values(${agent_id}, ${user_id},${user_name}, ${message_text}, ${message_rich}, ${user_message_ind}) RETURNING messages_id', message)
+      .then(function (response) {
+        console.log("Message Inserted with Id: " + response[0].messages_id);
+        corelogData.messages_id = response[0].messages_id;
+        nlulogData.messages_id = response[0].messages_id;
+        insertCoreParseLogDB(corelogData);
+        insertNLUParseLogDB(nlulogData);
+      }).catch(function (err) {
+          console.log("Exception while inserting inserting to DB");
+          console.log(err);
+        });
+
+  });
+
+  var  insertCoreParseLogDB = async(function (corelogData){
+    db.none('INSERT INTO public.core_parse_log(messages_id,action_name, slots_data, user_response_time_ms, core_response_time_ms) values( '+
+       ' ${messages_id}, ${action_name}, ${slots_data}, ${user_response_time_ms},${core_response_time_ms})',corelogData)
       .then(function () {
-          console.log("Cache inserted into db. Removing it");
-          coreParseLogCache.del(cacheKey);
+          console.log("Cache inserted into Core db.");
       })
       .catch(function (err) {
-        console.log("Exception while inserting Parse log");
+        console.log("Exception while inserting Core Parse log");
         console.log(err);
       });
-  }
+  });
+
+  var insertNLUParseLogDB = async(function (nlulogData){
+    db.none('INSERT INTO public.nlu_parse_log(messages_id,intent_name, entity_data, intent_confidence_pct, user_response_time_ms, nlu_response_time_ms) VALUES (${messages_id}, ${intent_name}, ${entity_data}, ${intent_confidence_pct},${user_response_time_ms},${nlu_response_time_ms})', nlulogData)
+      .then(function () {
+          console.log("Cache inserted into NLU db");
+      })
+      .catch(function (err) {
+        console.log("Exception while inserting NLU Parse log");
+        console.log(err);
+      });
+  });
+
+  var  flushCacheToCoreDb = async(function (cacheKey){
+    var core_parse_cache = coreParseLogCache.get(cacheKey);
+    if(core_parse_cache ==null || core_parse_cache.allResponses ==null) return;
+    for(var i=0;i<core_parse_cache.allResponses.length;i++){
+      //insert a message
+      var responseObj = core_parse_cache.allResponses[i];
+
+      var message =new Object();
+      message.agent_id=core_parse_cache.agent_id;
+      message.user_id= core_parse_cache.user_id;
+      message.user_name= core_parse_cache.user_name;
+      message.message_text= responseObj.response_text;
+      message.message_rich = responseObj.response_rich;
+      message.user_message_ind=false;
+
+      var corelogData =new Object();
+      corelogData.action_name=responseObj.next_action;
+      corelogData.slots_data= responseObj.tracker.slots;
+      corelogData.user_response_time_ms=responseObj.user_response_time_ms;
+      corelogData.core_response_time_ms =responseObj.actionTimestamp-core_parse_cache.createTime;
+
+      var nluLogData =new Object();
+      nluLogData.intent_name=responseObj.tracker.latest_message.intent.name;
+      nluLogData.entity_data= JSON.stringify(responseObj.tracker.latest_message.entities);
+      nluLogData.intent_confidence_pct=responseObj.tracker.latest_message.intent.confidence.toFixed(2)*100;
+      nluLogData.user_response_time_ms=responseObj.user_response_time_ms;
+      nluLogData.nlu_response_time_ms= responseObj.actionTimestamp-core_parse_cache.createTime;
+
+      await(insertMessageToDB(message,corelogData,nluLogData));
+    }
+  });
 
   /**
   *Send the Body back to the http response if any one is waiting for it.
@@ -168,10 +211,10 @@ var await = require('asyncawait/await');
       'Content-Type': 'application/json'
     });
     console.log("------ Responding in HTTP with below body ------");
-    console.log(JSON.stringify(responseCache.get(cache_key)));
+    console.log(JSON.stringify(coreParseLogCache.get(cache_key)));
     console.log("------------------------------------------------------");
-    if (responseCache.get(cache_key) !== "") {
-      res.write(JSON.stringify(responseCache.get(cache_key)));
+    if (coreParseLogCache.get(cache_key) !== "") {
+      res.write(JSON.stringify(coreParseLogCache.get(cache_key)));
     }
     res.end();
   }
@@ -197,7 +240,6 @@ var await = require('asyncawait/await');
         console.log("------ Webhook Response for action : " +rasa_core_response.next_action+ "------------");
         console.log(webhookResponse);
         console.log("------------------------------------------------------------");
-
         if(webhookResponse != undefined){
           try {
             rasa_core_response.response_text = JSON.parse(webhookResponse).displayText;
@@ -236,13 +278,12 @@ var await = require('asyncawait/await');
           rasa_core_response.response_image_url =actionRespObj.response_image_url;
           addResponseInfoToCache(req,cacheKey,rasa_core_response);
         }else{
-          console.log("Error from Webhook. Sending Core Response");
-          rasa_core_response.response_text = "Got an error response from Webhook.";
+          console.log("Error while Fetching templete for Action.");
+          rasa_core_response.response_text = "No templete configured for this action";
           addResponseInfoToCache(req,cacheKey,rasa_core_response);
         }
       }else{
-        console.log("Unrecognized Actions. Rasa UI can only process 'utter' type and 'utter_webhook' type");
-        sendHTTPResponse(500, res, '{"error" : "Unrecognized Actions. Rasa UI can only process \'utter\' type and \'utter_webhook\' type !!"}');
+        console.log("Unrecognized Actions. Rasa UI can only process 'utter' type and 'utter_webhook' type. Got: "+rasa_core_response.next_action +" . Logging and skipping it.");
       }
     }else{
       //just keep listening for next message from user
@@ -322,19 +363,25 @@ var await = require('asyncawait/await');
 
   function createInitialCacheRequest(req, cacheKey, agentObj) {
     console.log("Create Initial cache for rasa Core Parse Request");
+
     var coreParseReqObj = new Object();
     coreParseReqObj.request_text = req.body.q;
     coreParseReqObj.user_id=req.jwt.username;
     coreParseReqObj.user_name=req.jwt.name;
     coreParseReqObj.createTime=Date.now();
+    coreParseReqObj.agent_id= agentObj.agent_id;
+
     //empty object
-    coreParseReqObj.action_data=[];
+    // allresponses. push(response with action and tracker details.)
+    coreParseReqObj.allResponses=[];
+
+  /*  coreParseReqObj.action_data=[];
     coreParseReqObj.tracker_data=[];
     coreParseReqObj.response_text=[];
     coreParseReqObj.response_rich_data=[];
     coreParseReqObj.user_response_time_ms=0;
     coreParseReqObj.core_response_time_ms=0;
-    coreParseReqObj.agent_id= agentObj.agent_id;
+*/
     //set it in the cache
     coreParseLogCache.set(cacheKey, coreParseReqObj);
   }
