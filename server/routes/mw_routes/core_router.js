@@ -299,9 +299,8 @@ var await = require('asyncawait/await');
         .then(function (data) {
           if (data.length > 0) {
             resolve(data[0]);
-          }else{
-            console.log("Error occurred. Respond back with Rasa NLU only");
-            reject(err); return;
+          } else {
+            reject("Didn't find action for action_name=" + action_name); return;
           }
         })
         .catch(function (err) {
