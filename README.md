@@ -36,7 +36,9 @@ Rasa UI can run directly on your Rasa NLU instance, or on a separate machine. Te
 
 ### Prerequisites
 
-[Rasa NLU](https://github.com/golastmile/rasa_nlu) - Version 8.2.?+
+[Rasa NLU](https://github.com/golastmile/rasa_nlu) - Used for Intent Classification and Entity Extraction. Version 0.8.2 or above
+
+[Rasa Core](https://github.com/RasaHQ/rasa_core) - Used for Dialogue Management (stories, Actions)
 
 [PostgreSQL](https://www.postgresql.org/) - Used for storing training data (entities, intents, synonyms, etc.)
 
