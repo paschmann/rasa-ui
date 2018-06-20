@@ -7,6 +7,7 @@ global.coresecuritytoken= process.env.coresecuritytoken || process.env.npm_packa
 global.nlusecuritytoken= process.env.nlusecuritytoken || process.env.npm_package_config_nlusecuritytoken;
 global.cacheagents= process.env.cacheagents || process.env.npm_package_config_cacheagents;
 
+var path = require('path');
 var express = require('express');
 var proxy = require('http-proxy-middleware');
 var bodyParser = require('body-parser');
@@ -27,8 +28,8 @@ app.use(bodyParser.urlencoded({
   }));
 app.use(bodyParser.json({ limit: '2mb' }));
 /** Serve static files for UI website on root / */
-app.use('/', express.static('web/src/'));
-app.use('/scripts', express.static('node_modules/'));
+app.use('/', express.static(path.join(__dirname, '../web/src/')));
+app.use('/scripts', express.static(path.join(__dirname, '../node_modules/')));
 
 // route middleware to verify a token
 app.use(function(req, res, next) {
