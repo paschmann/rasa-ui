@@ -325,7 +325,7 @@ var await = require('asyncawait/await');
       function (error, response, body){
         if(error){
           console.log("Error occurred in Webhook call");
-          reject(err); return;
+          reject(error); return;
         }else{
           //respond back to client.
           //Expecting API.ai style response element.

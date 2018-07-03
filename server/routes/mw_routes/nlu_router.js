@@ -146,7 +146,8 @@ function finalizeCacheFlushToDbAndRespond(cacheKey, http_code, res, body) {
               });
           })
           .catch(function (err) {
-            return next(err);
+            console.log("Exception in the DB log");
+            console.log(err);
           });
 
       }

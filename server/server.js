@@ -143,7 +143,7 @@ function checkRasaNLU() {
         console.log('Rasa NLU Server: ' + global.rasanluendpoint);
       }
       if (error !== null) {
-        
+
         console.log('');
         console.log('Rasa NLU Error: ' + error);
         console.log('Using connection string from: ' + rasaconn);
@@ -156,7 +156,7 @@ function checkRasaNLU() {
 }
 
 function checkRasaCore() {
-  var rasacoreconn = process.env.rasanluendpoint != undefined ? 'process.env.rasanluendpoint' : 'package.json';
+  var rasacoreconn = process.env.rasacoreendpoint != undefined ? 'process.env.rasacoreendpoint' : 'package.json';
   request(global.rasacoreendpoint + '/version', function (error, response, body) {
     try {
       if (body !== undefined) {
