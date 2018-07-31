@@ -130,7 +130,7 @@ function finalizeCacheFlushToDbAndRespond(cacheKey, http_code, res, body) {
         //insert message and use that id to insert nlu_parse_log
         nlu_parse_cache.message_text= nlu_parse_cache.response_text;
         nlu_parse_cache.user_message_ind=false;
-        db.any('insert into messages(agent_id, user_id, user_name, message_text, user_message_ind)' +
+        db.any('insert into messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
             ' values(${agent_id}, ${user_id},${user_name}, ${message_text}, ${message_rich}, ${user_message_ind}) RETURNING messages_id', nlu_parse_cache)
           .then(function (messages_id) {
             nlu_parse_cache.messages_id=messages_id;
