@@ -10,7 +10,7 @@
                 <form name="importagentform" novalidate ng-submit="importAgent()">
                     <div class="card">
                         <div class="card-header">
-                            <strong>Import New Agent</strong>
+                            <strong>Import New Agent (Rasa NLU only)</strong>
                         </div>
                         <div class="card-block">
                             <div class="row">
@@ -20,7 +20,7 @@
                                         <input type="text" ng-model="formData.agent_name" class="form-control" id="name" placeholder="Enter the agent name" required>
                                     </div>
                                     <div class="form-group">
-                                      <label for="agentFile">File <small>(rasa format)</small></label>
+                                      <label for="agentFile">File <small>(rasa_nlu: json format)</small></label>
                                       <input type="file"  ngf-select="validateAndPreviewAgent($file)" class="form-control"  ng-model="formData.file" name="file" ngf-max-size="2MB" ngf-pattern="'.txt,.json'" ngf-accept="'text/plain,application/json'" id="agentFile" required>
                                     </div>
                                 </div>
