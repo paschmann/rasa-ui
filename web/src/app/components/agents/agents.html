@@ -13,15 +13,15 @@
         <div class="row">
             <div class="col-sm-12 col-lg-12">
               <div id="accordion" role="tablist">
-                <div class="card" ng-repeat="agent in agentList track by agent.agent_id">
+                <div class="card" dir-paginate="agent in agentList  | itemsPerPage: 7" pagination-id="agentsList">
                   <div class="card-header" role="tab" id="headingOne">
                     <span><a ng-href="#!/agent/{{agent.agent_id}}">{{ agent.agent_name }}</a></span>
                     <span class="float-right">
-                      <a style="border:0; padding: 0.2rem;" class="btn btn-outline-secondary" data-toggle="collapse" data-target="#{{agent.agent_id}}" aria-expanded="true" aria-controls="collapseOne">
-                      <i class="fa fa-edit fa-lg header-buttons"></i></a>
+                      <a style="border:0; padding: 0.2rem;" class="btn btn-outline-secondary" data-toggle="collapse" data-target="#agent_{{agent.agent_id}}" aria-expanded="true" aria-controls="collapseOne">
+                      <i class="fa fa-cog fa-lg header-buttons"></i></a>
                     </span>
                   </div>
-                  <div id="{{agent.agent_id}}" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+                  <div id="agent_{{agent.agent_id}}" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
                     <div class="card-block">
                       <div class="form-group">
                         <label class="form-control-label" for="{{agent.agent_id}}_formGroupExampleInput1">Name</label>
@@ -75,6 +75,9 @@
                         <button type="submit" class="btn btn-sm btn-primary"  ng-click="editAgentInfo(agent)"><i class="fa fa-dot-circle-o"></i> Save</button>
                     </div>
                   </div>
+                </div>
+                <div style="float:right">
+                  <dir-pagination-controls pagination-id="agentsList"></dir-pagination-controls>
                 </div>
             </div>
           </div>
