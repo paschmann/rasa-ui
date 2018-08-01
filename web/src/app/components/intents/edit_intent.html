@@ -130,33 +130,33 @@
             </div>
 
             <div class="card-block">
-              <!-- TODO: Not implemented correctly/not working
-                <div class="form-check" title="{{agent.endpoint_enabled == false?'Enable Webook at Agent Level and select this Option to get response from Server API':'Select this Option to get response from API'}}">
-                    <strong>Enable webhook</strong>
+                <div class="form-check">
+                    <strong data-toggle="tooltip" data-placement="top" title="Ability to fetch data from External Server API." tooltip>Enable webhook</strong>
                     &nbsp;&nbsp;&nbsp;
                     <span class="float-right">
-                    <label class="switch switch-default switch-pill switch-success">
-                        <input type="checkbox" class="switch-input" ng-model="intent.endpoint_enabled" ng-checked="agent.endpoint_enabled" ng-disabled="agent.endpoint_enabled == false">
+                    <label class="switch switch-default switch-pill switch-success" data-toggle="tooltip" data-placement="top" title="{{agent.endpoint_enabled == false?'Webhook Not Enabled At Agent. Please enable it to select this Option':'Select this Option to get response from an External API'}}" tooltip>
+                        <input id="endpoint_switch" type="checkbox" class="switch-input" ng-model="intent.endpoint_enabled" ng-checked="agent.endpoint_enabled" ng-disabled="agent.endpoint_enabled == false">
                         <span class="switch-label"></span>
                         <span class="switch-handle"></span>
                     </label>
                     </span>
                 </div>
-              -->
-
-                <input type="text" ng-model="formData.response_text" class="form-control" id="text" placeholder="Enter a response text and press enter" ng-keyup="$event.keyCode == 13 && saveNewResponse($event)">
-                <ul class="list-group" ng-hide="responses.length == 0" style="margin-top: 20px;">
-                  <li class="list-group-item" ng-repeat="response in responses track by response.response_id">
-                    <span ng-bind-html="response.response_text | trusted"></span>
-                    <span class="float-right">
-                      <button class="btn btn btn-outline-danger" confirm-click-title="Delete Response" confirm-click="Are you sure? This will delete the response."
-                        ng-click="deleteResponse(response.response_id)">
-                        <span class="icon-trash"></span>
-                      </button>
-                    </span>
-                  </li>
-                </ul>
-
+                <hr>
+                <div class="form-check">
+                    <strong data-toggle="tooltip" data-placement="top" title="Send one of the Random Static response. If webhook is enabled, these will be ignored." tooltip>Static Responses</strong>
+                    <br><br>
+                    <input type="text" ng-model="formData.response_text" class="form-control" id="response_text" placeholder="Enter a response text and press enter" ng-keyup="$event.keyCode == 13 && saveNewResponse($event)">
+                    <ul class="list-group" ng-hide="responses.length == 0" style="margin-top: 20px;">
+                      <li class="list-group-item" ng-repeat="response in responses track by response.response_id">
+                        <span ng-bind-html="response.response_text | trusted"></span>
+                        <span class="float-right">
+                          <button type="button" class="btn btn btn-outline-danger" confirm-click-title="Delete Response" confirm-click="Are you sure? This will delete the response." ng-click="deleteResponse(response.response_id)">
+                            <span class="icon-trash"></span>
+                          </button>
+                        </span>
+                      </li>
+                    </ul>
+                </div>
             </div>
           </div>
         </form>
