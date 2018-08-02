@@ -70,9 +70,36 @@ app.use(function(req, res, next) {
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
+const NodeCache = require( "node-cache" );
+//https://github.com/mpneuried/nodecache
+const socketCache = new NodeCache();
+app.set("socketCache",socketCache);
 // Socket.io Communication
 io.sockets.on('connection', function (socket) {
-  app.set('socket', socket);
+  var jwt='';
+  var cookieArr =socket.request.headers.cookie.split(";");
+  for (var i=0;i<cookieArr.length;i++){
+    if(cookieArr[i].split("=")[0].trim()==='loggedinjwt'){
+      jwt=(cookieArr[i].split("=")[1]).split(".")[0];
+      break;
+    }
+  }
+  console.log("Adding to Sockets List: "+ JSON.stringify(app.get("socketCache").keys()));
+  app.get("socketCache").set(jwt, socket.id);
+  socket.on('disconnect', function(){
+    console.log('Socket disconnected');
+    var discjwt='';
+    var cookieArr =socket.request.headers.cookie.split(";");
+    for (var i=0;i<cookieArr.length;i++){
+      if(cookieArr[i].split("=")[0].trim()==='loggedinjwt'){
+        discjwt=(cookieArr[i].split("=")[1]).split(".")[0];
+        break;
+      }
+    }
+    console.log("Removing from Sockets List: "+ JSON.stringify(app.get("socketCache").keys()));
+    app.get("socketCache").del(jwt);
+  });
+
 });
 
 app.use('/api/v2/', routes);

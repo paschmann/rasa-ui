@@ -132,10 +132,10 @@ function finalizeCacheFlushToDbAndRespond(cacheKey, http_code, res, body) {
         nlu_parse_cache.user_message_ind=false;
         db.any('insert into messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
             ' values(${agent_id}, ${user_id},${user_name}, ${message_text}, ${message_rich}, ${user_message_ind}) RETURNING messages_id', nlu_parse_cache)
-          .then(function (messages_id) {
-            nlu_parse_cache.messages_id=messages_id;
+          .then(function (returnData) {
+            nlu_parse_cache.messages_id=returnData[0].messages_id;
             db.none('INSERT INTO public.nlu_parse_log(intent_name, entity_data, messages_id,intent_confidence_pct, user_response_time_ms,nlu_response_time_ms) '+
-            +' values(${intent_name}, ${entity_data}, ${messages_id}, ${intent_confidence_pct},${user_response_time_ms},${nlu_response_time_ms})', nlu_parse_cache)
+            ' values(${intent_name}, ${entity_data}, ${messages_id}, ${intent_confidence_pct},${user_response_time_ms},${nlu_response_time_ms})', nlu_parse_cache)
               .then(function () {
                   console.log("Cache inserted into db. Removing it");
                   nluParseLogCache.del(cacheKey);
