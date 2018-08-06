@@ -126,7 +126,7 @@ var io = require('socket.io');
           //respond back in Websocket
           console.log("wsstream is True. Will send responses in websockets.");
           try{
-            io.to((req.app.get("socketCache").get(req.original_token)).split(".")[0]).emit('on:responseMessage', body);
+            io.to(req.app.get("socketCache").get(req.original_token).split(".")[0]).emit('on:responseMessage', body);
           }catch (err) {
             console.log("Exception while Sending message in WS: ");
             console.log(err);
