@@ -5,7 +5,6 @@ const NodeCache = require( "node-cache" );
 const coreParseLogCache = new NodeCache();
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
-var io = require('socket.io');
 
   function getRasaCoreVersion(req, res, next) {
     console.log("Rasa Core Version Request -> " + global.rasacoreendpoint + "/version");
@@ -126,7 +125,10 @@ var io = require('socket.io');
           //respond back in Websocket
           console.log("wsstream is True. Will send responses in websockets.");
           try{
-            io.to(req.app.get("socketCache").get(req.original_token.split(".")[0])).emit('on:responseMessage', body);
+            var jwt0 = req.original_token.split(".")[0];
+            console.log("Sending to Token : " +jwt0);
+            req.app.get("socketCache").get(jwt0).emit('on:responseMessage', body);
+            console.log("Done Sending response via websocket.");
           }catch (err) {
             console.log("Exception while Sending message in WS: ");
             console.log(err);
