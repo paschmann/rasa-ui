@@ -77,29 +77,37 @@ app.set("socketCache",socketCache);
 // Socket.io Communication
 io.sockets.on('connection', function (socket) {
   var jwt='';
-  var cookieArr =socket.request.headers.cookie.split(";");
-  for (var i=0;i<cookieArr.length;i++){
-    if(cookieArr[i].split("=")[0].trim()==='loggedinjwt'){
-      jwt=(cookieArr[i].split("=")[1]).split(".")[0];
-      break;
-    }
-  }
-  console.log("Adding to Sockets List: "+ JSON.stringify(app.get("socketCache").keys()));
-  app.get("socketCache").set(jwt, socket.id);
-  socket.on('disconnect', function(){
-    console.log('Socket disconnected');
-    var discjwt='';
+  try{
     var cookieArr =socket.request.headers.cookie.split(";");
     for (var i=0;i<cookieArr.length;i++){
       if(cookieArr[i].split("=")[0].trim()==='loggedinjwt'){
-        discjwt=(cookieArr[i].split("=")[1]).split(".")[0];
+        jwt=(cookieArr[i].split("=")[1]).split(".")[0];
         break;
       }
     }
-    console.log("Removing from Sockets List: "+ JSON.stringify(app.get("socketCache").keys()));
-    app.get("socketCache").del(jwt);
-  });
+  console.log("Adding Socket to Sockets List");
+  app.get("socketCache").set(jwt, socket.id);
+  }catch (err) {
+    console.log('Problem when parsing the cookies. Ignoring socket' + err);
+  }
 
+  socket.on('disconnect', function(){
+    console.log('Socket disconnected');
+    var discjwt='';
+    try{
+      var cookieArr =socket.request.headers.cookie.split(";");
+      for (var i=0;i<cookieArr.length;i++){
+        if(cookieArr[i].split("=")[0].trim()==='loggedinjwt'){
+          discjwt=(cookieArr[i].split("=")[1]).split(".")[0];
+          break;
+        }
+      }
+      console.log("Removing SOCKET: "+discjwt+" from List: "+ JSON.stringify(app.get("socketCache").keys()));
+      app.get("socketCache").del(jwt);
+    }catch (err) {
+      console.log('Problem when parsing the cookies. Unable to delete socket' + err);
+    }
+  });
 });
 
 app.use('/api/v2/', routes);
