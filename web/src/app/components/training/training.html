@@ -68,10 +68,10 @@
               <div class="card-block" style="min-height:400px;max-height:400px;overflow-y:scroll" ng-show="selectedAgent.rasa_core_enabled!=true">
                 Rasa Core is not enabled for this Agent.
               </div>
-              <div class="card-block" style="min-height:400px;max-height:400px;overflow-y:scroll" ng-show="selectedAgent.rasa_core_enabled==true">
+              <div id="accordion" class="card-block" style="min-height:400px;max-height:400px;overflow-y:scroll" ng-show="selectedAgent.rasa_core_enabled==true">
                 <div class="card-header" role="tab" id="heading1">
                     <h5 class="mb-0">
-                      <a data-parent="#accordion" data-target="#collapseOne" data-toggle="collapse">
+                      <a data-target="#collapseOne" data-toggle="collapse">
                         _domain.yml
                       </a>
                     </h5>
@@ -84,7 +84,7 @@
                   </div><br>
                   <div class="card-header" role="tab" id="heading2">
                     <h5 class="mb-0">
-                      <a data-parent="#accordion" data-target="#collapse2" data-toggle="collapse">
+                      <a data-target="#collapse2" data-toggle="collapse">
                         _stories.md
                       </a>
                     </h5>
@@ -97,7 +97,7 @@
                   <br>
                   <div class="card-header" role="tab" id="heading3">
                     <h5 class="mb-0">
-                      <a data-parent="#accordion" data-target="#collapse3" data-toggle="collapse">
+                      <a data-target="#collapse3" data-toggle="collapse">
                         Instructions
                       </a>
                     </h5>
@@ -129,7 +129,7 @@
                   <br>
                   <div class="card-header" role="tab" id="heading4">
                     <h5 class="mb-0">
-                      <a data-parent="#accordion" data-target="#collapse4" data-toggle="collapse">
+                      <a data-target="#collapse4" data-toggle="collapse">
                         Python Script
                       </a>
                     </h5>
