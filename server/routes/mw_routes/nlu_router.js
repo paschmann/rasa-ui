@@ -51,7 +51,7 @@ function trainRasaNlu(req, res, next) {
   request({
     method: "POST",
     uri: global.rasanluendpoint + "/train?project=" + req.query.project,
-    json: req.body
+    body: JSON.stringify(req.body)
   }, function (error, response, body) {
     if(error){
       console.log("Error Occured when posting data to nlu endpoint. " + error);
