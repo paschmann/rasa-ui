@@ -50,7 +50,7 @@ function trainRasaNlu(req, res, next) {
 
   request({
     method: "POST",
-    uri: global.rasanluendpoint + "/train?project=" + req.query.project,
+    uri: global.rasanluendpoint + "/train?project=" + req.query.project + "&agent=" + req.query.name,
     json: req.body
   }, function (error, response, body) {
     if(error){
