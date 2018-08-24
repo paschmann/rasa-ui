@@ -46,11 +46,11 @@ function getRasaNluVersion(req, res, next) {
 
 function trainRasaNlu(req, res, next) {
   console.log("Rasa NLU Train Request -> " + global.rasanluendpoint + "/train?project=" + req.query.project);
-  logRequest(req, "train", {project: req.query.project, agent: req.query.name, data: req.body});
+  logRequest(req, "train", {project: req.query.project, model: req.query.name, data: req.body});
 
   request({
     method: "POST",
-    uri: global.rasanluendpoint + "/train?project=" + req.query.project,
+    uri: global.rasanluendpoint + "/train?project=" + req.query.project + "&model=" + req.query.name,
     json: req.body
   }, function (error, response, body) {
     if(error){
