@@ -309,7 +309,7 @@ var await = require('asyncawait/await');
             resolve(data[0]);
           }else{
             console.log("Error occurred. Respond back with Rasa NLU only");
-            reject(err); return;
+            return;
           }
         })
         .catch(function (err) {
