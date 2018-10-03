@@ -46,7 +46,14 @@ function getMessagesListByUser(req, res, next) {
 //messages/:messages_id
 function getMessageDetails(req, res, next) {
   console.log("messages.getMessageDetails"+ req.params.messages_id);
-  db.any('select * from core_parse_log FULL JOIN nlu_parse_log ON core_parse_log.messages_id=nlu_parse_log.messages_id where core_parse_log.messages_id=$1', parseInt(req.params.messages_id))
+  db.task('get-message-details', async t => {
+    const msgDetails = await t.any('select * from core_parse_log FULL JOIN nlu_parse_log ON core_parse_log.messages_id=nlu_parse_log.messages_id where core_parse_log.messages_id=$1', parseInt(req.params.messages_id));
+    if(msgDetails.length < 1) {
+        const msgDetails = await t.any('select * from nlu_parse_log where nlu_parse_log.messages_id=$1', parseInt(req.params.messages_id))
+        return msgDetails;
+    }
+    return msgDetails;
+  })
     .then(function (data) {
       res.status(200).json(data);
     })
