@@ -253,7 +253,10 @@ var await = require('asyncawait/await');
             try {
               rasa_core_response.response_text = JSON.parse(webhookResponse).displayText;
               rasa_core_response.response_rich=JSON.parse(webhookResponse).dataToClient;
-              events = JSON.parse(webhookResponse).events;
+              if("undefined" !== typeof(JSON.parse(webhookResponse).events)){
+                  events = JSON.parse(webhookResponse).events;
+                  console.log("-******************---------------" +events+ "-------**************-----------");
+              }
               addResponseInfoToCache(req,cacheKey,rasa_core_response);
               resolve(events);
             } catch (e) {
