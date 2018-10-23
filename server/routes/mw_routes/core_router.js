@@ -300,7 +300,25 @@ var await = require('asyncawait/await');
             addResponseInfoToCache(req,cacheKey,rasa_core_response);
           }
           resolve(events);
-        }else{
+        }else if (rasa_core_response.next_action.startsWith("action_restart")){
+          console.log("Got an action_restart. Restarting conversation!! ");
+          try {
+            request({method: "POST",
+              uri: global.rasacoreendpoint +"/conversations/"+req.jwt.username+ "/continue",
+              body: JSON.stringify({"events": [{"event": "restart"}]})
+            }, function (error, response, body) {
+              if(error){
+                console.log("Restart Error: "+ error);
+              }
+              console.log("Restarted Successfully!! ");
+            });
+          }catch (err) {
+            console.log(err);
+            sendHTTPResponse(500, res, '{"error" : "Exception caught !!"}');
+            return;
+          }
+        }
+        else{
           console.log("Unrecognized Actions. Rasa UI can only process 'utter' type and 'utter_webhook' type. Got: "+rasa_core_response.next_action +" . Logging and skipping it.");
           resolve(events);
         }
