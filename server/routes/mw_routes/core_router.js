@@ -275,7 +275,7 @@ var await = require('asyncawait/await');
           }
         }else if(rasa_core_response.next_action.startsWith("utter_")){
           //utter Type
-          var actionRespObj = await( fetchActionDetailsFromDb(rasa_core_response.next_action));
+          var actionRespObj = await( fetchActionDetailsFromDb(rasa_core_response.next_action,agentObj.agent_id));
           console.log("------ Utter Response for action : " +rasa_core_response.next_action+ "------------");
           console.log(actionRespObj);
           console.log("------------------------------------------------------------");
@@ -313,10 +313,10 @@ var await = require('asyncawait/await');
     });
   });
 
-  function fetchActionDetailsFromDb(action_name){
+  function fetchActionDetailsFromDb(action_name, agent_id){
     return new Promise((resolve, reject) => {
-        db.any('SELECT * FROM ACTIONS, responses where actions.action_id = responses.action_id and actions.action_name=$1 '+
-                'order by random() LIMIT 1', action_name)
+        db.any('SELECT * FROM ACTIONS, responses where actions.action_id = responses.action_id and actions.action_name=$1 and actions.agent_id=$2 '+
+                ' order by random() LIMIT 1', [action_name, agent_id])
         .then(function (data) {
           if (data.length > 0) {
             resolve(data[0]);
