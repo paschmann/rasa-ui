@@ -317,6 +317,7 @@ var await = require('asyncawait/await');
             sendHTTPResponse(500, res, '{"error" : "Exception caught !!"}');
             return;
           }
+          resolve(events);
         }
         else{
           console.log("Unrecognized Actions. Rasa UI can only process 'utter' type and 'utter_webhook' type. Got: "+rasa_core_response.next_action +" . Logging and skipping it.");
