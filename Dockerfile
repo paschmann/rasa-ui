@@ -1,29 +1,27 @@
-FROM node:10
+FROM mhart/alpine-node:10 as builder
 
-## Install base environment
-RUN apt-get update \
-    && apt-get install -y postgresql postgresql-contrib
+RUN apk add --no-cache make gcc g++ python
+COPY ./package*.json ./
+RUN npm install --production
 
-## Postgres Configuration
-RUN mkdir /opt/pgsql && chown postgres -R /opt/pgsql
-WORKDIR /opt/postgresql
-ADD resources/dbcreate.sql dbcreate.sql
-RUN service postgresql start && su postgres -c "createuser rasaui && echo \"create database rasaui; \c rasaui; \i dbcreate.sql\" | psql && echo \"grant all on database rasaui to rasaui; grant all privileges on all tables in schema public to rasaui; grant all privileges on all sequences in schema public to rasaui \"|psql rasaui" && service postgresql stop
+FROM mhart/alpine-node:10
 
-## RasaUI Installation
-ADD . /opt/rasaui
+ENV rasanluendpoint "http://localhost:5000"
+ENV rasacoreendpoint "http://localhost:5005"
+ENV postgresserver "postgres://postgres:rasaui@localhost:5432/rasa"
+
 WORKDIR /opt/rasaui
+COPY --from=builder /node_modules ./node_modules
+COPY ./package*.json ./
+COPY ./resources ./resources
+COPY ./server ./server
+COPY ./web ./web
 
-# Install server packages
-RUN npm install \
-# Setup user
-    && useradd rasaui \
-    && chown rasaui -R .
 
-# Setup RasaUI configuration
-RUN sed -r 's/("postgresserver": )"[^"]*"(.*)/\1"\/var\/run\/postgresql"\2/' -i package.json
-ENV rasanluendpoint=http://localhost:5000
-ENV rasacoreendpoint=http://localhost:5005
+RUN adduser -S rasaui \
+    && chown -R rasaui .
 
 EXPOSE 5001
-ENTRYPOINT bash -c 'hostname -I; service postgresql start && su rasaui -c "npm start"'
+USER rasaui
+
+ENTRYPOINT sh -c "hostname -i; npm start"
