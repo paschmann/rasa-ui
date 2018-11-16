@@ -1,12 +1,30 @@
 version: '3'
 
 services:
+
+  action_server:
+    image: rasa/rasa_core_sdk:latest
+    networks: ['rasa-network']
+    ports:
+      - "5055:5055"
+    volumes:
+      - "./rasa-app-data/actions:/app/actions"
+
+  rasa_nlu:
+    image: rasa/rasa_nlu:0.13.7-full
+    networks: ['rasa-network']
+    ports:
+      - "5000:5000"
+    volumes:
+      - "./rasa-app-data/models/:/app/projects"
+      - "./rasa-app-data/logs:/app/logs"
+
   rasa_core:
     image: rasa/rasa_core:0.12.1
     networks: ['rasa-network']
     ports:
       - "5005:5005"
-    depends-on:
+    depends_on:
       - "rasa_nlu"
       - "action_server"
     volumes:
@@ -24,23 +42,6 @@ services:
       - --endpoints
       - config/endpoints.yml
 
-  action_server:
-    image: rasa/rasa_core_sdk:latest
-    networks: ['rasa-network']
-    ports:
-      - "5055:5055"
-    volumes:
-      - "./rasa-app-data/actions:/app/actions"
-
-  rasa_nlu:
-    image: rasa/rasa_nlu:latest-full
-    networks: ['rasa-network']
-    ports:
-      - "5000:5000"
-    volumes:
-      - "./rasa-app-data/models/:/app/projects"
-      - "./rasa-app-data/logs:/app/logs"
-
   postgres:
     image: postgres:11
     networks: ['rasa-network']
@@ -54,7 +55,8 @@ services:
       POSTGRES_DB: "rasaui"
 
   rasa_ui:       
-    image: testui:latest
+    build: ./
+    image: rasa-ui:compose
     networks: ['rasa-network']
     ports:
       - "5001:5001"

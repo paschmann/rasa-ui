@@ -18,8 +18,9 @@ COPY ./server ./server
 COPY ./web ./web
 
 
-RUN adduser -S rasaui \
-    && chown -R rasaui .
+RUN addgroup -S rasaui \
+    && adduser -G rasaui -S rasaui \
+    && chown -R rasaui:rasaui .
 
 EXPOSE 5001
 USER rasaui
