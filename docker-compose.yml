@@ -1,0 +1,68 @@
+version: '3'
+
+services:
+  rasa_core:
+    image: rasa/rasa_core:0.12.1
+    networks: ['rasa-network']
+    ports:
+      - "5005:5005"
+    volumes:
+      - "./rasa-app-data/models/current/dialogue:/app/model"
+      - "./rasa-app-data/config:/app/config"
+      - "./rasa-app-data/project:/app/project"
+    command:
+      - start
+      - -d
+      - ./model
+      - -c
+      - rest
+      - -u
+      - current/nlu
+      - --endpoints
+      - config/endpoints.yml
+
+  action_server:
+    image: rasa/rasa_core_sdk:latest
+    networks: ['rasa-network']
+    ports:
+      - "5055:5055"
+    volumes:
+      - "./rasa-app-data/actions:/app/actions"
+
+  rasa_nlu:
+    image: rasa/rasa_nlu:latest-full
+    networks: ['rasa-network']
+    ports:
+      - "5000:5000"
+    volumes:
+      - "./rasa-app-data/models/:/app/projects"
+      - "./rasa-app-data/logs:/app/logs"
+
+  postgres:
+    image: postgres:11
+    networks: ['rasa-network']
+    ports:
+      - "5432:5432"
+    volumes:
+      - "rasauidata:/var/lib/postgresql/data"
+    environment:
+      POSTGRES_USER: "rasaui"
+      POSTGRES_PASSWORD: "rasaui"
+      POSTGRES_DB: "rasaui"
+
+  rasa_ui:       
+    image: testui:latest
+    networks: ['rasa-network']
+    ports:
+      - "5001:5001"
+    depends_on:
+      - "rasa_core"
+      - "rasa_nlu"
+      - "postgres"
+    environment:
+      rasanluendpoint: "http://rasa_nlu:5000"
+      rasacoreendpoint: "http://rasa_core:5005"
+      postgresserver: "postgres://rasaui:rasaui@postgres:5432/rasaui"
+
+networks: {rasa-network: {}}
+volumes: {rasauidata:{}}
