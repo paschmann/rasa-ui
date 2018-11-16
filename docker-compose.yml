@@ -6,6 +6,9 @@ services:
     networks: ['rasa-network']
     ports:
       - "5005:5005"
+    depends-on:
+      - "rasa_nlu"
+      - "action_server"
     volumes:
       - "./rasa-app-data/models/current/dialogue:/app/model"
       - "./rasa-app-data/config:/app/config"
@@ -46,7 +49,7 @@ services:
     volumes:
       - "rasauidata:/var/lib/postgresql/data"
     environment:
-      POSTGRES_USER: "rasaui"
+      POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "rasaui"
       POSTGRES_DB: "rasaui"
 
@@ -62,7 +65,7 @@ services:
     environment:
       rasanluendpoint: "http://rasa_nlu:5000"
       rasacoreendpoint: "http://rasa_core:5005"
-      postgresserver: "postgres://rasaui:rasaui@postgres:5432/rasaui"
+      postgresserver: "postgres://postgres:rasaui@postgres:5432/rasaui"
 
 networks: {rasa-network: {}}
 volumes: {rasauidata:{}}
