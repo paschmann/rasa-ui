@@ -3,4 +3,6 @@ npm-debug.log
 node_modules
 rasa-app-data/
 
+# editors
+.idea
 *.swp
