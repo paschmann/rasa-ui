@@ -1,11 +1,17 @@
-CREATE SCHEMA IF NOT EXISTS rasaui;
+SELECT current_database();
 
-COMMENT ON SCHEMA rasaui IS 'standard rasaui schema';
+CREATE SCHEMA IF NOT EXISTS "rasa_ui";
 
-GRANT ALL ON SCHEMA rasaui TO rasauiadmin;
-GRANT ALL ON SCHEMA rasaui TO PUBLIC;
+COMMENT ON SCHEMA "rasa_ui" IS 'standard rasaui schema';
 
-SET search_path TO rasaui,public;
+GRANT ALL ON SCHEMA "rasa_ui" TO :postgres_user;
+GRANT ALL ON SCHEMA "rasa_ui" TO PUBLIC;
+
+
+DO $$
+BEGIN
+  EXECUTE 'ALTER DATABASE '|| current_database()||' set search_path = ''rasa_ui'', ''$user'', ''public''';
+END $$;
 
 /* Sequences */
 
