@@ -30,7 +30,7 @@
     "node-cache": "^4.1.1",
     "pg-promise": "^5.9.5",
     "popper.js": "latest",
-    "request": "^2.81.0",
+    "request": "^2.88.0",
     "simple-line-icons": "^2.4.1",
     "simplemde": "^1.11.2",
     "socket.io": "^2.0.4",
