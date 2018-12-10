@@ -56,8 +56,11 @@ function getAvailableModels(statusData) {
         arrModels.push({name : project + "*" + modelName, xdate: xdate});
       };
   }
-  var defaultDate = new Date()
-  arrModels.push({name: "default*fallback", xdate: defaultDate.setDate(defaultDate.getFullYear - 10)});
+  if (statusData.available_projects.length == 0) {
+    var defaultDate = new Date()
+    arrModels.push({name: "default*fallback", xdate: defaultDate.setDate(defaultDate.getFullYear - 10)});
+  }
+  
   arrModels.sort(function(a, b){
     return a.xdate[0] < b.xdate[0];
   });

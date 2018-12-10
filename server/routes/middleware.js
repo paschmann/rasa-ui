@@ -69,6 +69,9 @@ function parseRasaRequest(req, res, next) {
     routeRequest(req, res, next, agentObj);
   }
 }
+
+function routeRequest(req, res, next, agentObj){
+    console.log("routeRequest");
     if(agentObj != undefined && agentObj.rasa_core_enabled){
       core_router.parseRequest(req, res, next, agentObj);
     }else{
