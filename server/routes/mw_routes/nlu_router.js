@@ -76,21 +76,24 @@ function trainRasaNlu(req, res, next) {
 
 function parseRequest(req, res, next, agentObj) {
   console.log("Routing to NLU Parse Request -> " + global.rasanluendpoint + "/parse");
-  var modelName = req.body.model;
-  var projectName = req.body.project;
-  if(modelName == ''){
-    console.log("Model not found");
-    sendOutput(500, res, '{"error" : "Model not found !!"}');
-    return;
-  }
-  if(req.body.q == ''){
+
+  if(req.body.q == ''){ 
     console.log("Query not found");
     sendOutput(500, res, '{"error" : "Query not found !!"}');
     return;
   }
-  var cache_key = req.jwt.username + "_" + modelName + "_" + Date.now();
-  logRequest(req, "parse", {project:projectName, model: modelName, intent: '', query: req.body.q});
-  createInitialCacheRequest(req,cache_key,agentObj);
+
+  var modelName;
+  var projectName;
+
+  if(req.body.model != undefined){
+    projectName = req.body.project;
+    modelName = req.body.model;
+    var cache_key = req.jwt.username + "_" + modelName + "_" + Date.now();
+    logRequest(req, "parse", {project:projectName, model: modelName, intent: '', query: req.body.q});
+    createInitialCacheRequest(req,cache_key,agentObj);
+  }
+
   request({
     method: "POST",
     uri: global.rasanluendpoint + "/parse",

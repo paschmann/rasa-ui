@@ -78,7 +78,7 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
     $scope.response_text=[];
     $scope.test_text_response={};
     var reqMessage = {};
-    if ($scope.modelname == '') {
+    if ($scope.modelname == 'default*fallback') {
       reqMessage = {q: $scope.test_text};
     } else {
       reqMessage = {q: $scope.test_text, project:$scope.modelname.split("*")[0], model: $scope.modelname.split("*")[1]};

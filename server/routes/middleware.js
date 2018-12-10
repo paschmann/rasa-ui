@@ -12,21 +12,29 @@ const agentCache = new NodeCache();
 */
 function parseRasaRequest(req, res, next) {
   console.log("Got to parse middleware");
+  var agentObj;
   if(req.body.q == ''){
     console.log("No Query in the RASA Parse Request.");
     sendOutput(500, res, '{"error" : "No Query in the Rasa Parse Request !!"}');
     return;
   }
   //attempt to get it from the cache: Sync call
-  var agent_name=req.body.project;
-  agentObj = agentCache.get(agent_name);
-  var messageObj =new Object();
+  var agent_name = req.body.project;
+  console.log(agent_name);
+  if (agent_name != undefined) {
+    agentObj = agentCache.get(agent_name);
+  }
+
+  var messageObj = new Object();
   messageObj.user_id = req.jwt.username;
   messageObj.user_name = req.jwt.name;
   messageObj.message_text = req.body.q;
   messageObj.message_rich = null
   messageObj.user_message_ind = true;
-  if(agentObj == undefined ){
+
+  if (agentObj == undefined && agent_name == undefined) {
+    routeRequest(req, res, next, messageObj);
+  } else if (agentObj == undefined) {
     console.log("Cache Not Found for Agent. Making a DB call for: "+ agent_name);
     db.any('SELECT agent_id, agent_name, endpoint_enabled, endpoint_url, basic_auth_username, '+
     ' basic_auth_password, rasa_core_enabled from agents where agent_name = $1', agent_name).then(function (data) {
@@ -46,15 +54,17 @@ function parseRasaRequest(req, res, next) {
       console.log("DB Error while getting agent details." );
       console.log(err);
     });
-  }else{
+  } else {
     //insert user_message into message table.
+    console.log("parseRasaRequest");
     messageObj.agent_id = agentObj.agent_id;
     routeRequest(req, res, next, agentObj);
   }
 }
 
 function routeRequest(req, res, next, agentObj){
-    if(agentObj.rasa_core_enabled){
+    console.log("routeRequest");
+    if(agentObj != undefined && agentObj.rasa_core_enabled){
       core_router.parseRequest(req, res, next, agentObj);
     }else{
       nlu_router.parseRequest(req, res, next, agentObj);
