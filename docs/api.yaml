@@ -51,7 +51,7 @@ paths:
                 type: string
                 description: Error message
                 example: Username and password didnt match
-  /live:
+  /health:
     get:
       description: Check if the application is up and running
       responses:

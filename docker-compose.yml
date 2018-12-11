@@ -55,13 +55,11 @@ services:
       POSTGRES_DB: "rasaui"
 
   rasa_ui:       
-    build: ./
-    image: rasa-ui:compose
+    image: paschmann/rasa-ui:latest
     networks: ['rasa-network']
     ports:
       - "5001:5001"
     depends_on:
-      - "rasa_core"
       - "rasa_nlu"
       - "postgres"
     environment:
