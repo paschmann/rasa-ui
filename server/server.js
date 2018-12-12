@@ -79,7 +79,7 @@ app.set("socketCache",socketCache);
 // Socket.io Communication
 io.sockets.on('connection', function (socket) {
   var jwt0='';
-  console.log("All Cookies for Socket Connection: " + socket.request.headers.cookie);
+  //console.log("All Cookies: " + socket.request.headers.cookie);
   try{
     var cookieArr =socket.request.headers.cookie.split(";");
     for (var i=0;i<cookieArr.length;i++){
@@ -88,13 +88,15 @@ io.sockets.on('connection', function (socket) {
         break;
       }
     }
-  console.log("Socket Connection Request for jwt0: " +jwt0);
+  //console.log("Adding Socket to Sockets List");
   app.get("socketCache").set(jwt0, socket);
   }catch (err) {
     console.log('Problem when parsing the cookies. Ignoring socket' + err);
   }
+
   socket.on('disconnect', function(){
-    console.log("All Cookies for Socket disconnect: " + socket.request.headers.cookie);
+    //console.log("Disconnecting All Cookies: "); // + socket.request.headers.cookie);
+    //console.log('Socket disconnected');
     var discjwt0='';
     try{
       var cookieArr =socket.request.headers.cookie.split(";");
@@ -104,8 +106,8 @@ io.sockets.on('connection', function (socket) {
           break;
         }
       }
-      console.log("Socket Disconnect Request. Removing: "+discjwt0+" from List: "+ JSON.stringify(app.get("socketCache").keys()));
-      app.get("socketCache").del(discjwt0);
+      //console.log("Removing SOCKET: " + discjwt0 + " from List: "+ JSON.stringify(app.get("socketCache").keys()));
+      app.get("socketCache").del(jwt0);
     }catch (err) {
       console.log('Problem when parsing the cookies. Unable to delete socket' + err);
     }
@@ -137,9 +139,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
-var listener = server.listen(5001, function () {
-  console.log('Express server listening on port ' + 5001);
-});
+var listener = server.listen(5001);
 
 checkRasaUI();
 checkDB();
