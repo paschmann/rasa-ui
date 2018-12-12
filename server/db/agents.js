@@ -163,7 +163,7 @@ function updateAgent(req, res, next) {
 
 function removeAgent(req, res, next) {
   var agentID = parseInt(req.params.agent_id);
-  db.result('delete from intents where agent_id = $1; delete from actions where agent_id = $1; delete from entities where agent_id = $1; delete from agents where agent_id = $1;', agentID)
+  db.result('delete from agents where agent_id = $1', agentID)
     .then(function (result) {
       res.status(200)
         .json({
@@ -172,8 +172,7 @@ function removeAgent(req, res, next) {
         });
     })
     .catch(function (err) {
-      console.log("Error removeAgent:  " + err);
-      return res.status(500).json({ "Error removeAgent": err });
+      return next(err);
     });
 }
 

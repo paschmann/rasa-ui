@@ -9,7 +9,7 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
   var configcheck;
 
   mySocket.on('on:responseMessage', function (message) {
-    console.log("Response from socket:" + JSON.stringify(message));
+    console.log("Response from socket:" +JSON.stringify(message));
     if(message.next_action !='action_listen'){
       $scope.response_text.push(message.response_text);
     }else{
@@ -74,53 +74,36 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
     $rootScope.$broadcast('setAlertText', "Conversation restarted!!");
   }
 
-  function addOverlay() {
-    $(".aside-menu").addClass("dimmed");
-  }
-
-  function removeOverlay() {
-    $(".aside-menu").removeClass("dimmed");
-  }
-
   $scope.executeTestRequest = function() {
     $scope.response_text=[];
     $scope.test_text_response={};
     var reqMessage = {};
-    if ($scope.modelname == 'default*fallback') {
+    if ($scope.modelname == '') {
       reqMessage = {q: $scope.test_text};
     } else {
       reqMessage = {q: $scope.test_text, project:$scope.modelname.split("*")[0], model: $scope.modelname.split("*")[1]};
     }
-    
     //mySocket.emit('send:message', {message: "hello there"});
     if($scope.wsEnabled){
       //reponses will be streamed in websockets.
       reqMessage.wsstream=true;
     }
-
-    if ($scope.test_text) {
-      //make a httpcall
-      addOverlay();
-      $http.post(api_endpoint_v2 + "/rasa/parse", JSON.stringify(reqMessage))
-        .then(
-          function(response){
-            // success callback
-            removeOverlay();
-            $scope.test_text_response = response.data;
-            if(!$scope.wsEnabled){
-              if ($scope.test_text_response > 0) {
-                $scope.test_text_response.forEach(function(response) {
-                  $scope.response_text.push(response.response_text);
-                })
-              }
-            }
-            //$scope.test_text='';
-          },
-          function(errorResponse){
-            // failure callback
-            removeOverlay();
+    //make a httpcall
+    $http.post(api_endpoint_v2 + "/rasa/parse", JSON.stringify(reqMessage))
+      .then(
+        function(response){
+          // success callback
+          $scope.test_text_response = response.data;
+          if(!$scope.wsEnabled){
+            $scope.test_text_response.forEach(function(response) {
+              $scope.response_text.push(response.response_text);
+            })
           }
-        );
-    }
+          $scope.test_text='';
+        },
+        function(errorResponse){
+          // failure callback
+        }
+      );
   }
 }

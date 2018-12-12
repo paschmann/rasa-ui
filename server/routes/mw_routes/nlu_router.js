@@ -76,24 +76,21 @@ function trainRasaNlu(req, res, next) {
 
 function parseRequest(req, res, next, agentObj) {
   console.log("Routing to NLU Parse Request -> " + global.rasanluendpoint + "/parse");
-
-  if(req.body.q == ''){ 
+  var modelName = req.body.model;
+  var projectName = req.body.project;
+  if(modelName == ''){
+    console.log("Model not found");
+    sendOutput(500, res, '{"error" : "Model not found !!"}');
+    return;
+  }
+  if(req.body.q == ''){
     console.log("Query not found");
     sendOutput(500, res, '{"error" : "Query not found !!"}');
     return;
   }
-
-  var modelName;
-  var projectName;
-
-  if(req.body.model != undefined){
-    projectName = req.body.project;
-    modelName = req.body.model;
-    var cache_key = req.jwt.username + "_" + modelName + "_" + Date.now();
-    logRequest(req, "parse", {project:projectName, model: modelName, intent: '', query: req.body.q});
-    createInitialCacheRequest(req,cache_key,agentObj);
-  }
-
+  var cache_key = req.jwt.username + "_" + modelName + "_" + Date.now();
+  logRequest(req, "parse", {project:projectName, model: modelName, intent: '', query: req.body.q});
+  createInitialCacheRequest(req,cache_key,agentObj);
   request({
     method: "POST",
     uri: global.rasanluendpoint + "/parse",
@@ -133,28 +130,26 @@ function finalizeCacheFlushToDbAndRespond(cacheKey, http_code, res, body) {
         //insert message and use that id to insert nlu_parse_log
         nlu_parse_cache.message_text= nlu_parse_cache.response_text;
         nlu_parse_cache.user_message_ind=false;
+        db.any('insert into messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
+            ' values(${agent_id}, ${user_id},${user_name}, ${message_text}, ${message_rich}, ${user_message_ind}) RETURNING messages_id', nlu_parse_cache)
+          .then(function (returnData) {
+            nlu_parse_cache.messages_id=returnData[0].messages_id;
+            db.none('INSERT INTO public.nlu_parse_log(intent_name, entity_data, messages_id,intent_confidence_pct, user_response_time_ms,nlu_response_time_ms) '+
+            ' values(${intent_name}, ${entity_data}, ${messages_id}, ${intent_confidence_pct},${user_response_time_ms},${nlu_response_time_ms})', nlu_parse_cache)
+              .then(function () {
+                  console.log("Cache inserted into db. Removing it");
+                  nluParseLogCache.del(cacheKey);
+              })
+              .catch(function (err) {
+                console.log("Exception while inserting Parse log");
+                console.log(err);
+              });
+          })
+          .catch(function (err) {
+            console.log("Exception in the DB log");
+            console.log(err);
+          });
 
-        if (nlu_parse_cache.agent_id != undefined) {
-          db.any('insert into messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
-              ' values(${agent_id}, ${user_id},${user_name}, ${message_text}, ${message_rich}, ${user_message_ind}) RETURNING messages_id', nlu_parse_cache)
-            .then(function (returnData) {
-              nlu_parse_cache.messages_id=returnData[0].messages_id;
-              db.none('INSERT INTO public.nlu_parse_log(intent_name, entity_data, messages_id,intent_confidence_pct, user_response_time_ms,nlu_response_time_ms) '+
-              ' values(${intent_name}, ${entity_data}, ${messages_id}, ${intent_confidence_pct},${user_response_time_ms},${nlu_response_time_ms})', nlu_parse_cache)
-                .then(function () {
-                    console.log("Cache inserted into db. Removing it");
-                    nluParseLogCache.del(cacheKey);
-                })
-                .catch(function (err) {
-                  console.log("Exception while inserting Parse log");
-                  console.log(err);
-                });
-            })
-            .catch(function (err) {
-              console.log("Exception in the DB log");
-              console.log(err);
-            });
-          }
       }
     }else{
       console.log("Cache Not Found for key " + cacheKey);
@@ -215,9 +210,7 @@ function createInitialCacheRequest(req, cacheKey, agentObj) {
   nluParseReqObj.user_response_time_ms = 0;
   nluParseReqObj.nlu_response_time_ms = 0;
   //set agent_id
-  if (agentObj != undefined) {
-    nluParseReqObj.agent_id= agentObj.agent_id;
-  }
+  nluParseReqObj.agent_id= agentObj.agent_id;
   //set it in the cache
   nluParseLogCache.set(cacheKey, nluParseReqObj, function(err, success ){
     if( !err && success ){

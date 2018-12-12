@@ -64,22 +64,17 @@ function getMessageDetails(req, res, next) {
 }
 
 function createMessage(messageObj) {
-  if (messageObj != undefined && messageObj.agent_id != undefined) {
-    console.log("Messages.createUserMessage");
-    db.any('insert into messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
-        ' values(${agent_id}, ${user_id},${user_name}, ${message_text},${message_rich}, ${user_message_ind})', messageObj)
-      .then(function (messages_id) {
-        console.log("Message created successfully!!!");
-        return;
-      })
-      .catch(function (err) {
-        console.log("Error in createMessage" + err);
-        //res.status(500).json(err);
-        return;
-      });
-    } else {
+  console.log("Messages.createUserMessage");
+  db.any('insert into messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
+      ' values(${agent_id}, ${user_id},${user_name}, ${message_text},${message_rich}, ${user_message_ind})', messageObj)
+    .then(function (messages_id) {
+      console.log("Message created successfully!!!");
       return;
-    }
+    })
+    .catch(function (err) {
+      console.log("Error in DB Call" + err);
+      return next(err);
+    });
 }
 
 module.exports = {
