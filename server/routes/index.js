@@ -14,6 +14,7 @@ var settings = require('../db/settings');
 var responses = require('../db/responses');
 var messages = require('../db/messages');
 var middleware = require('./middleware');
+var health = require('./health');
 var core_router = require('./mw_routes/core_router');
 var nlu_router = require('./mw_routes/nlu_router');
 var auth = require('./auth');
@@ -135,5 +136,5 @@ router.get('/messages/:messages_id', messages.getMessageDetails);
 router.post('/auth', auth.authenticateUser);
 router.post('/authclient', auth.authenticateClient);
 
-
+router.get('/health', health.liveness);
 module.exports = router;

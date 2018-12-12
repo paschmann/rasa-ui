@@ -57,6 +57,7 @@ cd rasaui && npm install
 Please see the [wiki](https://github.com/paschmann/rasa-ui/wiki/Rasa-UI-Install-Guide) for more detailed instructions.
 
 #### Docker Setup
+The Docker file uses Multi Stage Build feature, ensure that your docker version is greater or equals to 17.05.
 In order to run this setup in docker you need to run the following command to build out the image:
 
 `docker build -t rasa-ui .` - Make sure to perform this from the location where the Dockerfile is.
@@ -66,12 +67,39 @@ Now we can spin up our docker instance with the following command:
 **Use Your External Rasa Server**
 In this command we are setting the env variables rasanluendpoint and rasacoreendpoint to our own specific values, you can supply only 1 or both of these depending on if you want to use NLU or Core or both externally.
 
-`docker run -e "rasanluendpoint=http://youripaddress:5000" -e "rasacoreendpoint=http://youripaddress:5005" -itd -p 5001:5001 rasa-ui` 
+`docker run -e "rasanluendpoint=http://youripaddress:5000" -e "rasacoreendpoint=http://youripaddress:5005" -e "postgresserver=postgres://login:password@serveraddress:5432/rasa" -itd -p 5001:5001 rasa-ui` 
 
-**Use Built In Rasa**
-This command will use the built in Rasa NLU and Core
+## Docker compose
+If you want to quickly load all the stack locally you can use the docker-compose file
 
-`docker run -itd -p 5001:5001 rasa-ui`
+`docker-compose up`
+
+On the first launch, you have to add add your rasa configurations and training files in this filetree:
+
+```
+rasa-app-data
+├── actions
+│   ├── __pycache__
+│   │   └── actions.cpython-36.pyc
+│   └── actions.py
+├── config
+│   └── endpoints.yml
+├── logs
+├── models
+│   └── current
+│       └── dialogue
+│           ├── domain.json
+│           ├── domain.yml
+└── project
+    ├── domain.yml
+    └── stories.md
+```
+
+Then launch the model training if it's not already done:
+
+`docker-compose run rasa_core train`
+
+And setup SQL database schema.
 
 ## DB Setup
 - Execute `dbcreate.sql` on postgreSQL. (If migrating from an older version of rasa-ui, execute `db-alters.sql`)

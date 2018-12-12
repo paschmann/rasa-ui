@@ -32,7 +32,9 @@ app.use('/scripts', express.static('node_modules/'));
 
 // route middleware to verify a token
 app.use(function(req, res, next) {
-  if(!req.headers.authorization) {
+  if(req.originalUrl.endsWith('health')) {
+    next();
+  } else if(!req.headers.authorization) {
     if(req.originalUrl.endsWith('auth') || req.originalUrl.endsWith('authclient')){
       console.log("No Token, but got an Auth request. Allowing it");
       next();
