@@ -14,7 +14,7 @@
           </div>
           <hr class="m-x-1 m-y-0">
           <div class="input-group">
-            <input type="test_text" ng-model="test_text" class="form-control" id="test_text" placeholder="Try it now ..." data-placement="left" title="Select a model from dropdown and enter text to be parsed" tooltip>
+            <input type="test_text" ng-model="test_text" class="form-control" id="test_text" placeholder="Try it now ..." data-placement="left" title="Select a model from dropdown and enter text to be parsed">
             <span class="input-group-btn">
               <button class="btn btn btn-primary" ng-click="executeTestRequest()">Go</button>
               <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -22,21 +22,20 @@
               </button>
               <div class="dropdown-menu dropdown-menu-right">
                 <h6 class="dropdown-header">Rasa Core Options</h6>
-                <span class="dropdown-item" id="btnGroupAddon" style="margin: 2px;" data-toggle="tooltip" data-placement="top" title="Use Websocket to get realtime responses from RasaUI." tooltip>
+                <span class="dropdown-item" id="btnGroupAddon" style="margin: 2px;" data-placement="top" title="Use Websocket to get realtime responses from RasaUI.">
                   <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" ng-model="wsEnabled"> Enable Web Socket
                 </span>
                 <a class="dropdown-item" style="cursor: pointer" ng-click="restartConversation()">Reset Conversation</a>
               </div>
-
             </span>
           </div>
         </form>
         </div>
-        <div class="callout m-0 py-2 text-muted text-center bg-light text-uppercase" ng-hide="response_text === undefined">
+        <div class="callout m-0 py-2 text-muted text-center bg-light text-uppercase" ng-show="response_text.length > 0">
           <small><b>Output</b>
           </small>
         </div>
-        <div class="callout m-0 py-3" ng-hide="response_text === undefined">
+        <div class="callout m-0 py-3" ng-show="response_text.length > 0">
           <div class="clearfix" ng-repeat="resp in response_text"><div class="callout callout-info">{{resp}}</div></div>
         </div>
         <div class="callout m-0 py-2 text-muted text-center bg-light text-uppercase">

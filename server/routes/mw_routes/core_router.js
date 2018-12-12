@@ -59,9 +59,9 @@ var await = require('asyncawait/await');
       console.log("First request to Rasa Core. Resonse: "+ JSON.stringify(responseBody));
       //updateCacheWithRasaCoreResponse(responseBody, cache_key)
       responseBody.actionTimestamp=Date.now();
-      var events = await( getActionResponses(req,responseBody,res,cache_key,agentObj));
+      await( getActionResponses(req,responseBody,res,cache_key,agentObj) );
       if (responseBody.next_action != "action_listen"){
-          startPredictingActions(core_url, req, responseBody.next_action,cache_key,res,agentObj, events);
+          startPredictingActions(core_url, req, responseBody.next_action,cache_key,res,agentObj);
       }else{
         //got and actionlisten. Send response and flush data.
         sendCacheResponse(200, res,cache_key);
@@ -73,14 +73,14 @@ var await = require('asyncawait/await');
     }
   });
 
-  var  startPredictingActions = async (function (core_url, req, currentAction,cache_key,res,agentObj, events){
+  var  startPredictingActions = async (function (core_url, req, currentAction,cache_key,res,agentObj){
     while (true){
       console.log("*********** Executed this ***********: " + currentAction);
-      var responseBody = await (rasaCoreRequest(req,"continue",JSON.stringify({"executed_action":currentAction,"events": events})));
+      var responseBody = await (rasaCoreRequest(req,"continue",JSON.stringify({"executed_action":currentAction,"events": []})));
       console.log("Rasa Core Resonse from Continue: "+ JSON.stringify(responseBody));
       //updateCacheWithRasaCoreResponse(responseBody, cache_key)
       responseBody.actionTimestamp=Date.now();
-      events =await(getActionResponses(req,responseBody,res,cache_key,agentObj));
+      await(getActionResponses(req,responseBody,res,cache_key,agentObj));
       currentAction = responseBody.next_action;
       if(currentAction === "action_listen"){
         //last loop. done predicting all ACTIONS
@@ -104,8 +104,12 @@ var await = require('asyncawait/await');
             console.log(error);
             reject(error); return;
           }
-          console.log("After request:"+body);
-          resolve(JSON.parse(body));
+          console.log("After request:" + body);
+          try {
+            resolve(JSON.parse(body));
+          } catch (err) {
+            console.log(err);
+          }
         });
     });
   }
@@ -240,108 +244,76 @@ var await = require('asyncawait/await');
   }
 
   var  getActionResponses = async (function (req,rasa_core_response,res,cacheKey,agentObj) {
-    var events=[];
-    return new Promise((resolve, reject) => {
-      if(rasa_core_response.next_action !='action_listen'){
-        if(rasa_core_response.next_action.startsWith("utter_webhook_")){
-          //webhook type. Make a call to external webhook and append response
-          var webhookResponse =await(fetchActionDetailsFromWebhook(req,rasa_core_response, agentObj));
-          console.log("------ Webhook Response for action : " +rasa_core_response.next_action+ "------------");
-          console.log(webhookResponse);
-          console.log("------------------------------------------------------------");
-          if(webhookResponse != undefined){
-            try {
-              rasa_core_response.response_text = JSON.parse(webhookResponse).displayText;
-              rasa_core_response.response_rich=JSON.parse(webhookResponse).dataToClient;
-              if("undefined" !== typeof(JSON.parse(webhookResponse).events)){
-                  events = JSON.parse(webhookResponse).events;
-                  console.log("-******************---------------" +events+ "-------**************-----------");
-              }
-              addResponseInfoToCache(req,cacheKey,rasa_core_response);
-              resolve(events);
-            } catch (e) {
-              console.log("Unknown response from Webhook for action: "+rasa_core_response.next_action);
-              console.log("Webhook Response" + webhookResponse);
-              rasa_core_response.response_text = "Please check your Webhook Conenction. Got an error response.";
-              addResponseInfoToCache(req,cacheKey,rasa_core_response);
-              reject(e);
-              return;
-            }
-          }else{
-            console.log("Unknown response from Webhook for action: "+rasa_core_response.next_action);
-            rasa_core_response.response_text = "Unknown response from Webhook for action: "+rasa_core_response.next_action;
-            addResponseInfoToCache(req,cacheKey,rasa_core_response);
-            resolve(events);
-          }
-        }else if(rasa_core_response.next_action.startsWith("utter_")){
-          //utter Type
-          var actionRespObj = await( fetchActionDetailsFromDb(rasa_core_response.next_action,agentObj.agent_id));
-          console.log("------ Utter Response for action : " +rasa_core_response.next_action+ "------------");
-          console.log(actionRespObj);
-          console.log("------------------------------------------------------------");
-          if(actionRespObj != undefined){
-            var slot_to_fill=  actionRespObj.response_text.match(/{(.*)}/ig);
-            if(slot_to_fill!=null && slot_to_fill.length>0){
-              for(var i=0; i<slot_to_fill.length;i++){
-                console.log("Found a slot to fill: "+slot_to_fill[i]);
-                var stringForRasa =slot_to_fill[i].substring(1,slot_to_fill[i].length-1);
-                var slotVal =rasa_core_response.tracker.slots[stringForRasa];
-                console.log("Filling: "+stringForRasa +" with: "+slotVal);
-                actionRespObj.response_text = actionRespObj.response_text.replace(slot_to_fill[i], rasa_core_response.tracker.slots[stringForRasa]);
-              }
-            }
-            rasa_core_response.response_text =actionRespObj.response_text;
-            rasa_core_response.buttons_info =actionRespObj.buttons_info;
-            rasa_core_response.response_image_url =actionRespObj.response_image_url;
-            addResponseInfoToCache(req,cacheKey,rasa_core_response);
-          }else{
-            console.log("Error while Fetching templete for Action.");
-            rasa_core_response.response_text = "No templete configured for this action";
-            addResponseInfoToCache(req,cacheKey,rasa_core_response);
-          }
-          resolve(events);
-        }else if (rasa_core_response.next_action.startsWith("action_restart")){
-          console.log("Got an action_restart. Restarting conversation!! ");
+    //inspect the rasacore response
+    if(rasa_core_response.next_action !='action_listen'){
+      if(rasa_core_response.next_action.startsWith("utter_webhook_")){
+        //webhook type. Make a call to external webhook and append response
+        var webhookResponse =await(fetchActionDetailsFromWebhook(req,rasa_core_response, agentObj));
+        console.log("------ Webhook Response for action : " +rasa_core_response.next_action+ "------------");
+        console.log(webhookResponse);
+        console.log("------------------------------------------------------------");
+        if(webhookResponse != undefined){
           try {
-            request({method: "POST",
-              uri: global.rasacoreendpoint +"/conversations/"+req.jwt.username+ "/continue",
-              body: JSON.stringify({"events": [{"event": "restart"}]})
-            }, function (error, response, body) {
-              if(error){
-                console.log("Restart Error: "+ error);
-              }
-              console.log("Restarted Successfully!! ");
-            });
-          }catch (err) {
-            console.log(err);
-            sendHTTPResponse(500, res, '{"error" : "Exception caught !!"}');
-            return;
+            rasa_core_response.response_text = JSON.parse(webhookResponse).displayText;
+            rasa_core_response.response_rich=JSON.parse(webhookResponse).dataToClient;
+            addResponseInfoToCache(req,cacheKey,rasa_core_response);
+          } catch (e) {
+            console.log("Unknown response from Webhook for action: "+rasa_core_response.next_action);
+            console.log("Webhook Response" + webhookResponse);
+            rasa_core_response.response_text = "Please check your Webhook Conenction. Got an error response.";
+            addResponseInfoToCache(req,cacheKey,rasa_core_response);
           }
-          resolve(events);
+        }else{
+          console.log("Unknown response from Webhook for action: "+rasa_core_response.next_action);
+          rasa_core_response.response_text = "Unknown response from Webhook for action: "+rasa_core_response.next_action;
+          addResponseInfoToCache(req,cacheKey,rasa_core_response);
         }
-        else{
-          console.log("Unrecognized Actions. Rasa UI can only process 'utter' type and 'utter_webhook' type. Got: "+rasa_core_response.next_action +" . Logging and skipping it.");
-          resolve(events);
+      }else if(rasa_core_response.next_action.startsWith("utter_")){
+        //utter Type
+        var actionRespObj = await( fetchActionDetailsFromDb(rasa_core_response.next_action));
+        console.log("------ Utter Response for action : " +rasa_core_response.next_action+ "------------");
+        console.log(actionRespObj);
+        console.log("------------------------------------------------------------");
+        if(actionRespObj != undefined){
+          var slot_to_fill=  actionRespObj.response_text.match(/{(.*)}/ig);
+          if(slot_to_fill!=null && slot_to_fill.length>0){
+            for(var i=0; i<slot_to_fill.length;i++){
+              console.log("Found a slot to fill: "+slot_to_fill[i]);
+              var stringForRasa =slot_to_fill[i].substring(1,slot_to_fill[i].length-1);
+              var slotVal =rasa_core_response.tracker.slots[stringForRasa];
+              console.log("Filling: "+stringForRasa +" with: "+slotVal);
+              actionRespObj.response_text = actionRespObj.response_text.replace(slot_to_fill[i], rasa_core_response.tracker.slots[stringForRasa]);
+            }
+          }
+          rasa_core_response.response_text =actionRespObj.response_text;
+          rasa_core_response.buttons_info =actionRespObj.buttons_info;
+          rasa_core_response.response_image_url =actionRespObj.response_image_url;
+          addResponseInfoToCache(req,cacheKey,rasa_core_response);
+        }else{
+          console.log("Error while Fetching templete for Action.");
+          rasa_core_response.response_text = "No templete configured for this action";
+          addResponseInfoToCache(req,cacheKey,rasa_core_response);
         }
       }else{
-        //just keep listening for next message from user
-        console.log("Got an action Listen. Will Listen for next message.");
-        addResponseInfoToCache(req,cacheKey,rasa_core_response);
-        resolve(events);
+        console.log("Unrecognized Actions. Rasa UI can only process 'utter' type and 'utter_webhook' type. Got: "+rasa_core_response.next_action +" . Logging and skipping it.");
       }
-    });
+    }else{
+      //just keep listening for next message from user
+      console.log("Got an action Listen. Will Listen for next message.");
+      addResponseInfoToCache(req,cacheKey,rasa_core_response);
+    }
   });
 
-  function fetchActionDetailsFromDb(action_name, agent_id){
+  function fetchActionDetailsFromDb(action_name){
     return new Promise((resolve, reject) => {
-        db.any('SELECT * FROM ACTIONS, responses where actions.action_id = responses.action_id and actions.action_name=$1 and actions.agent_id=$2 '+
-                ' order by random() LIMIT 1', [action_name, agent_id])
+        db.any('SELECT * FROM ACTIONS, responses where actions.action_id = responses.action_id and actions.action_name=$1 '+
+                'order by random() LIMIT 1', action_name)
         .then(function (data) {
           if (data.length > 0) {
             resolve(data[0]);
           }else{
             console.log("Error occurred. Respond back with Rasa NLU only");
-            return;
+            reject(err); return;
           }
         })
         .catch(function (err) {
@@ -372,8 +344,7 @@ var await = require('asyncawait/await');
           //var response_text={
           //   "speech": "",
           //   "displayText": "",
-          //   "dataToClient":{},
-          //   "events":[]
+          //   "dataToClient":{}
           //}
           resolve(body);
           return;
