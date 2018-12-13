@@ -1,0 +1,61 @@
+openapi: 3.0.1
+info: 
+  title: Rasa UI Server API
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/mit-license.php
+  version: 2.3
+components:
+  requestBodies:
+    UserAuthentication:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+                description: user login
+              password:
+                type: string
+                description: user password
+  schemas:
+    UserAuthentication:
+      type: object
+      properties:
+        username:
+          type: string
+          description: user name
+        token:
+          type: string
+          description: JWT token containing the user name and role
+
+paths:
+  /auth:
+    post:
+      description: Authenticate a user
+      requestBody:
+        $ref: '#/components/requestBodies/UserAuthentication'
+      responses:
+        '200':
+          description: the username and the user token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAuthentication'
+        '401':
+          description: Authentication failed
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Error message
+                example: Username and password didnt match
+  /health:
+    get:
+      description: Check if the application is up and running
+      responses:
+        '200':
+          description: The application is running
+        '404':
+          description: The application is unavailable

@@ -14,13 +14,6 @@ function ImportAgentController($scope, $rootScope, Agent,  $http,  $timeout,$rou
           if($location.path().endsWith("agents")){
             $route.reload();
           }
-          /*
-          function(errorResponse){
-            // failure callback
-            $rootScope.$broadcast('setAlertText', "Unable to upload file. Please try again");
-            console.log(errorResponse);
-          }
-          */
     });
     $rootScope.$broadcast('setAlertText', "Agent upload in progress.. Notification will be sent when done!!");
     $scope.formData.agent_name = "";
@@ -28,7 +21,7 @@ function ImportAgentController($scope, $rootScope, Agent,  $http,  $timeout,$rou
   }
 
   $scope.validateAndPreviewAgent = function(file) {
-    $scope.filesize = file.size +"bytes";
+    $scope.filesize = file.size + " bytes";
     $scope.show_preview = true;
     $scope.show_progress = true;
     $scope.agentImportData="Loading ..."
@@ -37,7 +30,7 @@ function ImportAgentController($scope, $rootScope, Agent,  $http,  $timeout,$rou
       $scope.show_progress = false;
         try {
           $scope.agentImportData = JSON.parse(reader.result);
-          $scope.fileInvalid=false;
+          $scope.fileInvalid = false;
         } catch (e) {
             $scope.agentImportData = "Invalid JSON";
             console.log("Unknown Format");

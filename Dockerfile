@@ -6,6 +6,9 @@ RUN npm install --production
 
 FROM mhart/alpine-node:10
 
+ENV http_port=5001
+ARG HEALTHCHECK_CMD="curl --silent http://localhost:${http_port}/api/v2/health 2>&1 | grep '\"Rasa UI is running\"'"
+
 ENV rasanluendpoint "http://localhost:5000"
 ENV rasacoreendpoint "http://localhost:5005"
 ENV postgresserver "postgres://postgres:rasaui@localhost:5432/rasa"
@@ -22,7 +25,9 @@ RUN addgroup -S rasaui \
     && adduser -G rasaui -S rasaui \
     && chown -R rasaui:rasaui .
 
-EXPOSE 5001
+HEALTHCHECK CMD ${HEALTHCHECK_CMD}
+
+EXPOSE ${http_port}
 USER rasaui
 
 ENTRYPOINT sh -c "hostname -i; npm start"
