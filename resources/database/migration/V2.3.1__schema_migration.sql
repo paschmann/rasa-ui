@@ -56,7 +56,6 @@ ALTER VIEW IF EXISTS request_usage_total SET SCHEMA rasa_ui;
 ALTER VIEW IF EXISTS unique_intent_entities SET SCHEMA rasa_ui;
 ALTER VIEW IF EXISTS intent_usage_by_day SET SCHEMA rasa_ui;
 
-
 DO $$
 BEGIN
   EXECUTE 'ALTER DATABASE '|| current_database()||' set search_path TO rasa_ui,''$user'',public';

@@ -1,5 +1,3 @@
-SELECT current_database();
-
 CREATE SCHEMA IF NOT EXISTS "rasa_ui";
 
 COMMENT ON SCHEMA "rasa_ui" IS 'standard rasaui schema';
@@ -183,17 +181,31 @@ WITH (
 )
 TABLESPACE pg_default;
 
+CREATE TABLE intents
+(
+  intent_name character varying COLLATE pg_catalog."default" NOT NULL,
+  agent_id integer,
+  endpoint_enabled boolean,
+  intent_id integer NOT NULL DEFAULT nextval('intents_intent_id_seq'::regclass),
+  CONSTRAINT intent_pkey PRIMARY KEY (intent_id),
+  CONSTRAINT agent_fkey FOREIGN KEY (agent_id) REFERENCES agents (agent_id) ON DELETE CASCADE
+)
+WITH (
+  OIDS = FALSE
+)
+TABLESPACE pg_default;
+
 CREATE TABLE entities
 (
     entity_id integer NOT NULL DEFAULT nextval('entities_entity_id_seq'::regclass),
     entity_name character varying COLLATE pg_catalog."default",
     agent_id integer NOT NULL,
     slot_data_type character varying COLLATE pg_catalog."default" NOT NULL DEFAULT 'NOT_USED'::character varying,
-    CONSTRAINT entities_pkey PRIMARY KEY (entity_id),
-    CONSTRAINT agent_pk FOREIGN KEY (agent_id)
+    CONSTRAINT entity_pkey PRIMARY KEY (entity_id),
+    CONSTRAINT agent_fkey FOREIGN KEY (agent_id)
         REFERENCES agents (agent_id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
 )
 WITH (
     OIDS = FALSE
@@ -205,7 +217,10 @@ CREATE TABLE synonyms
   synonym_id integer NOT NULL DEFAULT nextval('synonyms_synonym_id_seq'::regclass),
   entity_id integer NOT NULL,
   synonym_reference character varying COLLATE pg_catalog."default" NOT NULL,
-  CONSTRAINT synonyms_pkey PRIMARY KEY (synonym_id)
+  CONSTRAINT synonyms_pkey PRIMARY KEY (synonym_id),
+  CONSTRAINT entity_fkey FOREIGN KEY (entity_id) 
+      REFERENCES entities (entity_id) 
+      ON DELETE CASCADE
 )
 WITH (
   OIDS = FALSE
@@ -217,7 +232,10 @@ CREATE TABLE synonym_variant
   synonym_variant_id integer NOT NULL DEFAULT nextval('synonym_variant_synonym_id_seq'::regclass),
   synonym_value character varying COLLATE pg_catalog."default",
   synonym_id integer,
-  CONSTRAINT synonym_variant_pkey PRIMARY KEY (synonym_variant_id)
+  CONSTRAINT synonym_variant_pkey PRIMARY KEY (synonym_variant_id),
+  CONSTRAINT synonym_fkey FOREIGN KEY (synonym_id) 
+      REFERENCES synonyms (synonym_id) 
+      ON DELETE CASCADE
 )
 WITH (
   OIDS = FALSE
@@ -257,6 +275,19 @@ WITH (
 )
 TABLESPACE pg_default;
 
+CREATE TABLE actions
+(
+  action_name character varying COLLATE pg_catalog."default" NOT NULL,
+  agent_id integer,
+  action_id integer NOT NULL DEFAULT nextval('actions_action_id_seq'::regclass),
+  CONSTRAINT action_pkey PRIMARY KEY (action_id),
+  CONSTRAINT agent_fkey FOREIGN KEY (agent_id) REFERENCES agents (agent_id) ON DELETE CASCADE
+)
+WITH (
+  OIDS = FALSE
+)
+TABLESPACE pg_default;
+
 CREATE TABLE responses
 (
   response_id integer NOT NULL DEFAULT nextval('responses_response_id_seq'::regclass),
@@ -265,7 +296,24 @@ CREATE TABLE responses
   buttons_info jsonb,
   response_image_url character varying COLLATE pg_catalog."default",
   response_text character varying COLLATE pg_catalog."default",
-  response_type integer REFERENCES response_type (response_type_id)
+  response_type integer,
+  CONSTRAINT response_pkey PRIMARY KEY (response_id),
+  CONSTRAINT intent_fkey FOREIGN KEY (intent_id) REFERENCES intents (intent_id) ON DELETE CASCADE,
+  CONSTRAINT action_fkey FOREIGN KEY (action_id) REFERENCES actions (action_id) ON DELETE CASCADE,
+  CONSTRAINT responses_response_type_fkey FOREIGN KEY (response_type) REFERENCES rasa_ui.response_type (response_type_id) ON DELETE CASCADE
+)
+WITH (
+  OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+CREATE TABLE expressions
+(
+  intent_id integer NOT NULL,
+  expression_text character varying COLLATE pg_catalog."default" NOT NULL,
+  expression_id integer NOT NULL DEFAULT nextval('expressions_expression_id_seq'::regclass),
+  CONSTRAINT expression_pkey PRIMARY KEY (expression_id),
+  CONSTRAINT intent_fkey FOREIGN KEY (intent_id) REFERENCES intents (intent_id) ON DELETE CASCADE
 )
 WITH (
   OIDS = FALSE
@@ -280,7 +328,10 @@ CREATE TABLE parameters
   parameter_start integer NOT NULL,
   parameter_end integer NOT NULL,
   entity_id integer,
-  parameter_id integer NOT NULL DEFAULT nextval('parameters_parameter_id_seq'::regclass)
+  parameter_id integer NOT NULL DEFAULT nextval('parameters_parameter_id_seq'::regclass),
+  CONSTRAINT parameter_pkey PRIMARY KEY (parameter_id),
+  CONSTRAINT expression_fkey FOREIGN KEY (expression_id) REFERENCES expressions (expression_id) ON DELETE CASCADE,
+  CONSTRAINT entity_fkey FOREIGN KEY (entity_id) REFERENCES entities (entity_id) ON DELETE CASCADE
 )
 WITH (
   OIDS = FALSE
@@ -298,7 +349,8 @@ CREATE TABLE messages
   message_text character varying COLLATE pg_catalog."default",
   message_rich jsonb,
   user_message_ind boolean,
-  CONSTRAINT messages_id_pkey PRIMARY KEY (messages_id)
+  CONSTRAINT messages_id_pkey PRIMARY KEY (messages_id),
+  CONSTRAINT agent_fkey FOREIGN KEY (agent_id) REFERENCES agents (agent_id) ON DELETE CASCADE
 )
 WITH (
   OIDS = FALSE
@@ -317,7 +369,7 @@ CREATE TABLE nlu_parse_log
   user_response_time_ms integer,
   nlu_response_time_ms integer,
   CONSTRAINT parse_log_id_pkey PRIMARY KEY (parse_log_id),
-  CONSTRAINT messages_id_pk FOREIGN KEY (messages_id) REFERENCES messages (messages_id) MATCH FULL
+  CONSTRAINT messages_id_pk FOREIGN KEY (messages_id) REFERENCES messages (messages_id) MATCH FULL ON DELETE CASCADE
 )
 WITH (
   OIDS = FALSE
@@ -334,7 +386,7 @@ CREATE TABLE core_parse_log
   user_response_time_ms integer,
   core_response_time_ms integer,
   CONSTRAINT core_parse_log_id PRIMARY KEY (core_parse_log_id),
-  CONSTRAINT messages_id_pk FOREIGN KEY (messages_id) REFERENCES messages (messages_id) MATCH FULL
+  CONSTRAINT messages_id_pk FOREIGN KEY (messages_id) REFERENCES messages (messages_id) MATCH FULL ON DELETE CASCADE
 )
 WITH (
   OIDS = FALSE
@@ -356,40 +408,6 @@ WITH (
 )
 TABLESPACE pg_default;
 
-CREATE TABLE intents
-(
-  intent_name character varying COLLATE pg_catalog."default" NOT NULL,
-  agent_id integer,
-  endpoint_enabled boolean,
-  intent_id integer NOT NULL DEFAULT nextval('intents_intent_id_seq'::regclass)
-)
-WITH (
-  OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-CREATE TABLE actions
-(
-  action_name character varying COLLATE pg_catalog."default" NOT NULL,
-  agent_id integer,
-  action_id integer NOT NULL DEFAULT nextval('actions_action_id_seq'::regclass)
-)
-WITH (
-  OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-
-CREATE TABLE expressions
-(
-  intent_id integer NOT NULL,
-  expression_text character varying COLLATE pg_catalog."default" NOT NULL,
-  expression_id integer NOT NULL DEFAULT nextval('expressions_expression_id_seq'::regclass)
-)
-WITH (
-  OIDS = FALSE
-)
-TABLESPACE pg_default;
 
 
 /* Views */
