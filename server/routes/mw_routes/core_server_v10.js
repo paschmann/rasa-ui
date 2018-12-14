@@ -350,7 +350,7 @@ class CoreServerV10 extends CoreServer {
 
     async insertMessageToDB(message, corelogData, nlulogData) {
         let context = this;
-        db.any('insert into public.messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
+        db.any('insert into messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
             ' values(${agent_id}, ${user_id},${user_name}, ${message_text}, ${message_rich}, ${user_message_ind}) RETURNING messages_id', message)
             .then(function (response) {
                 console.log("Message Inserted with Id: " + response[0].messages_id);
@@ -366,7 +366,7 @@ class CoreServerV10 extends CoreServer {
     };
 
     async insertCoreParseLogDB(corelogData) {
-        db.none('INSERT INTO public.core_parse_log(messages_id,action_name, slots_data, user_response_time_ms, core_response_time_ms) values( ' +
+        db.none('INSERT INTO core_parse_log(messages_id,action_name, slots_data, user_response_time_ms, core_response_time_ms) values( ' +
             ' ${messages_id}, ${action_name}, ${slots_data}, ${user_response_time_ms},${core_response_time_ms})', corelogData)
             .then(function () {
                 console.log("Cache inserted into Core db.");
@@ -378,7 +378,7 @@ class CoreServerV10 extends CoreServer {
     };
 
     async insertNLUParseLogDB(nlulogData) {
-        db.none('INSERT INTO public.nlu_parse_log(messages_id,intent_name, entity_data, intent_confidence_pct, user_response_time_ms, nlu_response_time_ms) VALUES (${messages_id}, ${intent_name}, ${entity_data}, ${intent_confidence_pct},${user_response_time_ms},${nlu_response_time_ms})', nlulogData)
+        db.none('INSERT INTO nlu_parse_log(messages_id,intent_name, entity_data, intent_confidence_pct, user_response_time_ms, nlu_response_time_ms) VALUES (${messages_id}, ${intent_name}, ${entity_data}, ${intent_confidence_pct},${user_response_time_ms},${nlu_response_time_ms})', nlulogData)
             .then(function () {
                 console.log("Cache inserted into NLU db");
             })

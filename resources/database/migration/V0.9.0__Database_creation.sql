@@ -1,6 +1,11 @@
-COMMENT ON SCHEMA public IS 'standard public schema';
+CREATE SCHEMA IF NOT EXISTS public
+AUTHORIZATION ${postgres_user};
 
-GRANT ALL ON SCHEMA public TO postgres;
+COMMENT ON SCHEMA public
+IS 'standard public schema';
+
+GRANT ALL ON SCHEMA public TO ${postgres_user};
+
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 /* Sequences */
@@ -61,13 +66,6 @@ MINVALUE 1
 MAXVALUE 9223372036854775807
 CACHE 1;
 
-CREATE SEQUENCE public.actions_action_id_seq
-INCREMENT 1
-START 1
-MINVALUE 1
-MAXVALUE 9223372036854775807
-CACHE 1;
-
 CREATE SEQUENCE public.nlu_log_log_id_seq
 INCREMENT 1
 START 1
@@ -75,26 +73,6 @@ MINVALUE 1
 MAXVALUE 9223372036854775807
 CACHE 1;
 
-CREATE SEQUENCE public.parse_log_parse_log_id_seq
-INCREMENT 1
-START 1
-MINVALUE 1
-MAXVALUE 9223372036854775807
-CACHE 1;
-
-CREATE SEQUENCE public.core_parse_log_core_parse_log_id_seq
-INCREMENT 1
-START 1
-MINVALUE 1
-MAXVALUE 9223372036854775807
-CACHE 1;
-
-CREATE SEQUENCE public.messages_messages_id_seq
-INCREMENT 1
-START 1
-MINVALUE 1
-MAXVALUE 9223372036854775807
-CACHE 1;
 
 CREATE SEQUENCE public.parameteridgen
 INCREMENT 1
@@ -145,13 +123,6 @@ MINVALUE 1
 MAXVALUE 9223372036854775807
 CACHE 1;
 
-CREATE SEQUENCE public.regex_id_seq
-INCREMENT 1
-START 1
-MINVALUE 1
-MAXVALUE 9223372036854775807
-CACHE 1;
-
 
 /*  Tables */
 
@@ -159,13 +130,6 @@ CREATE TABLE public.agents
 (
   agent_id integer NOT NULL DEFAULT nextval('agents_agent_id_seq'::regclass),
   agent_name character varying COLLATE pg_catalog."default",
-  endpoint_enabled boolean DEFAULT FALSE,
-  rasa_core_enabled boolean DEFAULT FALSE,
-  endpoint_url character varying COLLATE pg_catalog."default",
-  basic_auth_username character varying COLLATE pg_catalog."default",
-  basic_auth_password character varying COLLATE pg_catalog."default",
-  client_secret_key text NOT NULL default md5(random()::text),
-  story_details text COLLATE pg_catalog."default",
   CONSTRAINT agent_pkey PRIMARY KEY (agent_id)
 )
 WITH (
@@ -175,18 +139,11 @@ TABLESPACE pg_default;
 
 CREATE TABLE public.entities
 (
-    entity_id integer NOT NULL DEFAULT nextval('entities_entity_id_seq'::regclass),
-    entity_name character varying COLLATE pg_catalog."default",
-    agent_id integer NOT NULL,
-    slot_data_type character varying COLLATE pg_catalog."default" NOT NULL DEFAULT 'NOT_USED'::character varying,
-    CONSTRAINT entities_pkey PRIMARY KEY (entity_id),
-    CONSTRAINT agent_pk FOREIGN KEY (agent_id)
-        REFERENCES public.agents (agent_id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+  entity_name character varying COLLATE pg_catalog."default",
+  entity_id integer NOT NULL DEFAULT nextval('entities_entity_id_seq'::regclass)
 )
 WITH (
-    OIDS = FALSE
+  OIDS = FALSE
 )
 TABLESPACE pg_default;
 
@@ -224,18 +181,6 @@ WITH (
 )
 TABLESPACE pg_default;
 
-CREATE TABLE public.regex
-(
-  regex_id integer NOT NULL DEFAULT nextval('regex_id_seq'::regclass),
-  regex_name character varying COLLATE pg_catalog."default",
-  regex_pattern character varying COLLATE pg_catalog."default",
-  CONSTRAINT regex_id_pk PRIMARY KEY (regex_id)
-)
-WITH (
-  OIDS = FALSE
-)
-TABLESPACE pg_default;
-
 CREATE TABLE public.response_type
 (
   response_type_id integer NOT NULL DEFAULT nextval('response_type_response_type_id_seq'::regclass),
@@ -249,13 +194,10 @@ TABLESPACE pg_default;
 
 CREATE TABLE public.responses
 (
-  response_id integer NOT NULL DEFAULT nextval('responses_response_id_seq'::regclass),
-  intent_id integer,
-  action_id integer,
-  buttons_info jsonb,
-  response_image_url character varying COLLATE pg_catalog."default",
+  intent_id integer NOT NULL,
   response_text character varying COLLATE pg_catalog."default",
-  response_type integer REFERENCES response_type (response_type_id)
+  response_type integer REFERENCES response_type (response_type_id),
+  response_id integer NOT NULL DEFAULT nextval('responses_response_id_seq'::regclass)
 )
 WITH (
   OIDS = FALSE
@@ -271,60 +213,6 @@ CREATE TABLE public.parameters
   parameter_end integer NOT NULL,
   entity_id integer,
   parameter_id integer NOT NULL DEFAULT nextval('parameters_parameter_id_seq'::regclass)
-)
-WITH (
-  OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-
-CREATE TABLE public.messages
-(
-  messages_id integer NOT NULL DEFAULT nextval('messages_messages_id_seq'::regclass),
-  "timestamp" timestamp without time zone DEFAULT timezone('utc'::text, now()),
-  agent_id integer,
-  user_id character varying COLLATE pg_catalog."default",
-  user_name character varying COLLATE pg_catalog."default",
-  message_text character varying COLLATE pg_catalog."default",
-  message_rich jsonb,
-  user_message_ind boolean,
-  CONSTRAINT messages_id_pkey PRIMARY KEY (messages_id)
-)
-WITH (
-  OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-
-CREATE TABLE public.nlu_parse_log
-(
-  parse_log_id integer NOT NULL DEFAULT nextval('parse_log_parse_log_id_seq'::regclass),
-  messages_id integer NOT NULL,
-  "timestamp" timestamp without time zone DEFAULT timezone('utc'::text, now()),
-  intent_name character varying COLLATE pg_catalog."default",
-  entity_data jsonb,
-  intent_confidence_pct integer,
-  user_response_time_ms integer,
-  nlu_response_time_ms integer,
-  CONSTRAINT parse_log_id_pkey PRIMARY KEY (parse_log_id),
-  CONSTRAINT messages_id_pk FOREIGN KEY (messages_id) REFERENCES public.messages (messages_id) MATCH FULL
-)
-WITH (
-  OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-CREATE TABLE public.core_parse_log
-(
-  core_parse_log_id integer NOT NULL DEFAULT nextval('core_parse_log_core_parse_log_id_seq'::regclass),
-  messages_id integer NOT NULL,
-  "timestamp" timestamp without time zone DEFAULT timezone('utc'::text, now()),
-  action_name character varying COLLATE pg_catalog."default",
-  slots_data jsonb,
-  user_response_time_ms integer,
-  core_response_time_ms integer,
-  CONSTRAINT core_parse_log_id PRIMARY KEY (core_parse_log_id),
-  CONSTRAINT messages_id_pk FOREIGN KEY (messages_id) REFERENCES public.messages (messages_id) MATCH FULL
 )
 WITH (
   OIDS = FALSE
@@ -350,25 +238,12 @@ CREATE TABLE public.intents
 (
   intent_name character varying COLLATE pg_catalog."default" NOT NULL,
   agent_id integer,
-  endpoint_enabled boolean,
   intent_id integer NOT NULL DEFAULT nextval('intents_intent_id_seq'::regclass)
 )
 WITH (
   OIDS = FALSE
 )
 TABLESPACE pg_default;
-
-CREATE TABLE public.actions
-(
-  action_name character varying COLLATE pg_catalog."default" NOT NULL,
-  agent_id integer,
-  action_id integer NOT NULL DEFAULT nextval('actions_action_id_seq'::regclass)
-)
-WITH (
-  OIDS = FALSE
-)
-TABLESPACE pg_default;
-
 
 CREATE TABLE public.expressions
 (
@@ -383,37 +258,6 @@ TABLESPACE pg_default;
 
 
 /* Views */
-CREATE OR REPLACE VIEW public.intents_most_used AS
-select intent_name, agents.agent_id, agents.agent_name, grouped_intents.grp_intent_count from intents
-left outer join (select count(*) as grp_intent_count, nlu_parse_log.intent_name as grp_intent,messages.agent_id as grp_agent_id from nlu_parse_log, messages
-where nlu_parse_log.messages_id=messages.messages_id group by nlu_parse_log.intent_name,grp_agent_id) as grouped_intents
-on intent_name = grouped_intents.grp_intent, agents where intents.agent_id=agents.agent_id  order by agents.agent_id;
-
-CREATE OR REPLACE VIEW public.avg_nlu_response_times_30_days AS
-select round(avg(nlu_response_time_ms)::integer,0),
-(to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) as month_date from nlu_parse_log
-GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text))
-ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) asc
-LIMIT 30;
-
-CREATE OR REPLACE VIEW public.avg_user_response_times_30_days AS
-select round(avg(user_response_time_ms)::integer,0),
-(to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) as month_date from nlu_parse_log
-GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text))
-ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) asc
-LIMIT 30;
-
-CREATE OR REPLACE VIEW public.active_user_count_12_months AS
-select count(distinct(messages.user_id)) as count_users,
-(to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) as month_year from nlu_parse_log, messages where nlu_parse_log.messages_id=messages.messages_id
-GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) asc LIMIT 12;
-
-CREATE OR REPLACE VIEW public.active_user_count_30_days AS
-SELECT count(distinct(messages.user_id)) as user_count,
-(to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) as month_date from nlu_parse_log, messages where nlu_parse_log.messages_id=messages.messages_id
-GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text))
-ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) asc
-LIMIT 30;
 
 CREATE OR REPLACE VIEW public.entity_synonym_variants AS
 SELECT synonyms.entity_id,
@@ -440,6 +284,20 @@ JOIN expressions ON parameters.expression_id = expressions.expression_id
 LEFT JOIN entities ON entities.entity_id = parameters.entity_id;
 
 
+CREATE OR REPLACE VIEW public.expression_parameters AS
+SELECT parameters.expression_id,
+parameters.parameter_required,
+parameters.parameter_value,
+parameters.parameter_start,
+parameters.parameter_end,
+parameters.entity_id,
+parameters.parameter_id,
+expressions.intent_id,
+entities.entity_name
+FROM parameters
+JOIN expressions ON parameters.expression_id = expressions.expression_id
+LEFT JOIN entities ON entities.entity_id = parameters.entity_id;
+
 CREATE OR REPLACE VIEW public.intent_usage_total AS
 SELECT count(*) AS count
 FROM nlu_log
@@ -462,7 +320,7 @@ SELECT count(*) AS count,
 to_char(nlu_log."timestamp", 'MM/DD'::text) AS to_char
 FROM nlu_log
 GROUP BY (to_char(nlu_log."timestamp", 'MM/DD'::text))
-ORDER BY (to_char(nlu_log."timestamp", 'MM/DD'::text)) asc
+ORDER BY (to_char(nlu_log."timestamp", 'MM/DD'::text))
 LIMIT 30;
 
 /* Static Data */

@@ -22,7 +22,7 @@ function uploadAgentFromFile(req, res, next) {
     var expressionObj = new Object();
     expressionObj.text = nlu_data_arr[i].text;
     expressionObj.paramArray = [];
-    var intentEntities = nlu_data_arr[i].entities;
+    var intentEntities = nlu_data_arr[i].entities || [];
     var entities_query_arr = [];
     for (j = 0; j < intentEntities.length; j++) {
       var entityObj = intentEntities[j];

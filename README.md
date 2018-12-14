@@ -102,8 +102,17 @@ Then launch the model training if it's not already done:
 And setup SQL database schema.
 
 ## DB Setup
-- Execute `dbcreate.sql` on postgreSQL. (If migrating from an older version of rasa-ui, execute `db-alters.sql`)
-- All the Tables and views should be setup
+### Flyway install
+You can install the RASA UI database using Flyway - simply run a docker container with these options.
+```
+docker run --rm --mount type=bind,source=<PATH_TO_MIGRATION_FOLDER>,target=/flyway/sql \
+ boxfuse/flyway -url=jdbc:postgresql://<POSTGRES_SERVER_URL>/<RASA_UI_DB> -user=<RASA_UI_USER_LOGIN> -password=<RASA_UI_USER_PASSWORD> -schemas=public,rasa_ui -placeholders.postgres_user=<RASA_UI_USER_LOGIN>  migrate
+```
+This will create a `flyway_schema_history` table which will track the database state, and allow you to simplify database model migrations.
+
+### Manual install
+Please specify the value of the `postgres_user` parameter with your Rasa Postgres User, using psql : `psql -v postgres_user=XXX -h <POSTGRES_SERVER_URL> -U <RASA_UI_USER_LOGIN> -d <RASA_UI_DB> -a -f dbcreate.sql`.
+If this is a clean install, simply execute `dbcreate.sql` on postgreSQL. If you are upgrading from a previous version, please execute the migration scripts sequentially to bring your DB model up to date.
 
 ## RasaNLU Setup
 - Update your package.json file to include the IP Addresses of your rasa_nlu server and the connection string of your postgres instance.
