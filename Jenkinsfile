@@ -11,7 +11,8 @@ def label = "${clientName}-${componentName}-${env.BUILD_NUMBER}"
 timestamps {
   podTemplate(label: label, serviceAccount: 'jenkins', slaveConnectTimeout: 120, name: label,
       containers: [
-      containerTemplate(name: 'nodejs', image: 'node:8.9.4', ttyEnabled: true, command: 'cat'),
+      containerTemplate(name: 'nodejs', image: 'node:8.11.4', ttyEnabled: true, command: 'cat'),
+      containerTemplate(name: 'node8-jre', image: 'nexus-hub.factory.prod.cacd2.io/cacd2/build-images/node8-jre:1.0.0', ttyEnabled: true, command: 'cat'),
       containerTemplate(name: 'docker', image: 'docker:stable', ttyEnabled: true, command: 'cat')
       ],
       volumes: [
@@ -37,8 +38,13 @@ timestamps {
           }
           container('nodejs') {
             componentVersion = cacd2GetComponentVersion("nodejs")
-            stage("Tests and Analysis") {
-              cacd2ScanSonarqube("javascript")
+          }
+          stage("Tests and Analysis") {
+            withSonarQubeEnv('SonarQubeServer') {
+              def scannerHome = tool 'SonarQubeScanner3'
+                container('node8-jre') {
+                  sh "${scannerHome}/bin/sonar-scanner"
+                }
             }
           }
           stage("Tagging") {
