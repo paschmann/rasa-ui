@@ -35,10 +35,11 @@ timestamps {
               componentHash = scmRet[1]
               commitMessage = scmRet[2]
           }
-
           container('nodejs') {
-              componentVersion = cacd2GetComponentVersion("nodejs")
-
+            componentVersion = cacd2GetComponentVersion("nodejs")
+            stage("Tests and Analysis") {
+              cacd2ScanSonarqube("javascript")
+            }
           }
           stage("Tagging") {
             cacd2GitTagComponent(branchName, componentVersion)
@@ -52,11 +53,9 @@ timestamps {
                   env.DOCKER_BUILD_ARGS = ""
                   sh "docker build --label 'image.source.version=${componentHash}' ${DOCKER_BUILD_ARGS} -t $DOCKER_REGISTRY_IMAGE_TAG_HASH ."
               }
-
               stage("Push Docker Image") {
                 cacd2DockerPushImages(DOCKER_REGISTRY_IMAGE_TAG_HASH)
               }
-
               stage("Scan Docker Image") {
                 cacd2DockerScanImage(env.DOCKER_REGISTRY_IMAGE_TAG_HASH, componentHash)
               }
