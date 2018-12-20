@@ -42,42 +42,39 @@ var await = require('asyncawait/await');
   RasaCore user message contains project name field with which we can retrieve the agentId
   If not found or undefined, set it to default 0
 */
-function getAgentIdFromName(agentName) {
+var getAgentIdFromName  = async(function (message) {
     console.log("getAgentIdFromName");
-    db.any('select agent_id from agents where agent_name=$1', agentName)
+    message.agent_id = 0;
+    db.any('SELECT agent_id FROM agents WHERE agent_name=${agent_name}', message)
       .then(function (data) {
+        console.log(data);
         if (data[0] != undefined) {
-            return data[0].agent_id;
-        } else {
-            return 0;
+            message.agent_id = data[0].agent_id;
         }
       })
       .catch(function (err) {
         console.log("Error in DB call" + err);
-        return 0;
       });
-}
+});
 
 /*
   RasaCore bot message does not contain "project" field and has no field to retrieve it
   The common information with the sender is the sender_id
 */
-function getAgentIdFromBotMessage(senderId) {
-    var agentId = 0;
+var getAgentIdFromBotMessage = async(function (message) {
     console.log("getAgentIdFromBotMessage");
-    db.any("select agent_id from messages where user_id=$1 and user_name='user' order by timestamp desc limit 1", senderId)
+    message.agent_id = 0;
+    db.any("SELECT agent_id FROM messages WHERE user_id=${user_id} and user_name='user' ORDER BY timestamp DESC LIMIT 1", message)
       .then(function (data) {
+        console.log(data);
         if (data[0] != undefined) {
-            return data[0].agent_id;
-        } else {
-            return 0;
+            message.agent_id = data[0].agent_id;
         }
       })
       .catch(function (err) {
         console.log("Error in DB call" + err);
-        return 0;
       });
-}
+});
 
 var insertNLUParseLogDB = async(function (nlulogData){
     db.none('INSERT INTO nlu_parse_log(messages_id, intent_name, entity_data, intent_confidence_pct, user_response_time_ms, nlu_response_time_ms) VALUES (${messages_id}, ${intent_name}, ${entity_data}, ${intent_confidence_pct},${user_response_time_ms},${nlu_response_time_ms})', nlulogData)
@@ -104,7 +101,7 @@ insertMessagesEntitiesDB = async(function (messagesEntitiesDataItem){
 var processAllEntitiesFromExpressionId = async(function (messagesEntitiesData) {
     console.log("processAllEntitiesFromExpressionId");
     console.log(messagesEntitiesData);
-    db.any("select entity_id, parameter_start, parameter_end from parameters where expression_id=${expression_id}", messagesEntitiesData)
+    db.any("SELECT entity_id, parameter_start, parameter_end FROM parameters WHERE expression_id=${expression_id}", messagesEntitiesData)
       .then(function (data) {
         console.log(data);
         for (var i = 0; i < data.length; i++) {
@@ -127,7 +124,7 @@ var processAllEntitiesFromExpressionId = async(function (messagesEntitiesData) {
 processInsertMessagesEntitiesDB = async(function (messagesEntitiesData){
     console.log("processInsertMessagesEntitiesDB");
     console.log(messagesEntitiesData);
-    db.any("select expression_id from expressions where expression_text=${message_text}", messagesEntitiesData)
+    db.any("SELECT expression_id FROM expressions WHERE LOWER(expression_text)=LOWER(${message_text})", messagesEntitiesData)
       .then(function (data) {
         console.log(data);
         if (data[0] != undefined) {
@@ -144,20 +141,20 @@ processInsertMessagesEntitiesDB = async(function (messagesEntitiesData){
 });
 
 async function insertlogEventMessageToDB(message, corelogData, nlulogData, messagesEntitiesData) {
-    db.any('insert into messages(timestamp, agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
-    ' values(${timestamp}, ${agent_id}, ${user_id},${user_name}, ${message_text}, ${message_rich}, ${user_message_ind}) RETURNING messages_id', message)
+    db.any('INSERT INTO messages(timestamp, agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
+    ' VALUES(${timestamp}, ${agent_id}, ${user_id},${user_name}, ${message_text}, ${message_rich}, ${user_message_ind}) RETURNING messages_id', message)
 
       .then(function (response) {
         console.log("Message Inserted with Id: " + response[0].messages_id);
 
         //corelogData.messages_id = response[0].messages_id;
-        if (nlulogData !== null) {
+        if ((nlulogData != undefined) && (nlulogData !== null)) {
             nlulogData.messages_id = response[0].messages_id;
             //insertCoreParseLogDB(corelogData);
             insertNLUParseLogDB(nlulogData);
         }
 
-        if (messagesEntitiesData !== null) {
+        if ((messagesEntitiesData !== undefined) && (messagesEntitiesData !== null)) {
             messagesEntitiesData.message_id = response[0].messages_id;
             messagesEntitiesData.message_text = message.message_text;
             processInsertMessagesEntitiesDB(messagesEntitiesData)
@@ -202,11 +199,12 @@ async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
         if (rasaCoreEvent.event == 'user') {
             message.user_message_ind = true;
             message.message_rich = rasaCoreEvent.parse_data;
-            message.agent_id = getAgentIdFromName(rasaCoreEvent.parse_data.project);
+            message.agent_name = rasaCoreEvent.parse_data.project;
+            await(getAgentIdFromName(message));
         } else {
             message.user_message_ind = false;
             message.message_rich = rasaCoreEvent.data;
-            message.agent_id = getAgentIdFromBotMessage(rasaCoreEvent.sender_id);
+            await(getAgentIdFromBotMessage(message));
 
             if ((rasaCoreEvent.data.elements) && (rasaCoreEvent.data.elements[0].text)) {
                 // RasaCore logs for custom message has the text inside that field
@@ -227,6 +225,9 @@ async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
             //console.log(nluLogData);
             messagesEntitiesData = new Object();
 
+        } else {
+            nluLogData = null;
+            messagesEntitiesData = null;
         }
 
         try {
