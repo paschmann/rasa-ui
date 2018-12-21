@@ -15,3 +15,5 @@ ALTER TABLE public.responses ADD CONSTRAINT intent_fkey FOREIGN KEY (intent_id) 
 ALTER TABLE public.responses ADD CONSTRAINT action_fkey FOREIGN KEY (action_id) REFERENCES public.actions (action_id) ON DELETE CASCADE;
 ALTER TABLE public.synonym_variant ADD CONSTRAINT synonym_fkey FOREIGN KEY (synonym_id) REFERENCES public.synonyms (synonym_id) ON DELETE CASCADE;
 ALTER TABLE public.synonyms ADD CONSTRAINT entity_fkey FOREIGN KEY (entity_id) REFERENCES public.entities (entity_id) ON DELETE CASCADE;
+ALTER TABLE public.nlu_parse_log ADD CONSTRAINT messages_id_pk FOREIGN KEY (messages_id) REFERENCES messages (messages_id) MATCH FULL ON DELETE CASCADE;
+ALTER TABLE public.core_parse_log ADD CONSTRAINT messages_id_pk FOREIGN KEY (messages_id) REFERENCES messages (messages_id) MATCH FULL ON DELETE CASCADE;
