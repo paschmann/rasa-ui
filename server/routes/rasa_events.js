@@ -88,7 +88,7 @@ var insertNLUParseLogDB = async(function (nlulogData){
 });
 
 insertMessagesEntitiesDB = async(function (messagesEntitiesDataItem){
-    db.none('INSERT INTO messages_entities(message_id, entity_id, entity_start, entity_end, entity_confidence) VALUES (${message_id}, ${entity_id}, ${entity_start}, ${entity_end},${entity_confidence})', messagesEntitiesDataItem)
+    db.none('INSERT INTO messages_entities(message_id, entity_id, entity_start, entity_end, entity_value, entity_confidence) VALUES (${message_id}, ${entity_id}, ${entity_start}, ${entity_end}, ${entity_value}, ${entity_confidence})', messagesEntitiesDataItem)
       .then(function () {
           console.log("Cache inserted into MessagesEntities db");
       })
@@ -101,7 +101,7 @@ insertMessagesEntitiesDB = async(function (messagesEntitiesDataItem){
 var processAllEntitiesFromExpressionId = async(function (messagesEntitiesData) {
     console.log("processAllEntitiesFromExpressionId");
     console.log(messagesEntitiesData);
-    db.any("SELECT entity_id, parameter_start, parameter_end FROM parameters WHERE expression_id=${expression_id}", messagesEntitiesData)
+    db.any("SELECT entity_id, parameter_start, parameter_end, parameter_value FROM parameters WHERE expression_id=${expression_id}", messagesEntitiesData)
       .then(function (data) {
         console.log(data);
         for (var i = 0; i < data.length; i++) {
@@ -110,6 +110,7 @@ var processAllEntitiesFromExpressionId = async(function (messagesEntitiesData) {
             messagesEntitiesDataItem.entity_id = data[i].entity_id;
             messagesEntitiesDataItem.entity_start = data[i].parameter_start;
             messagesEntitiesDataItem.entity_end = data[i].parameter_end;
+            messagesEntitiesDataItem.entity_value = data[i].parameter_value;
             messagesEntitiesDataItem.entity_confidence = 0;
 
             insertMessagesEntitiesDB(messagesEntitiesDataItem);
