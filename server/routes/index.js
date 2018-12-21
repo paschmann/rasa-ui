@@ -15,6 +15,7 @@ var responses = require('../db/responses');
 var messages = require('../db/messages');
 var middleware = require('./middleware');
 var health = require('./health');
+var rasa_events = require('./rasa_events');
 var core_router = require('./mw_routes/core_router');
 var nlu_router = require('./mw_routes/nlu_router');
 var auth = require('./auth');
@@ -125,6 +126,9 @@ router.post('/rasa/parse', middleware.parseRasaRequest);
 
 //rasa core API
 router.post('/rasa/restart', core_router.restartRasaCoreConversation);
+
+//rasa core events logging API
+router.post('/rasa/logEvents', rasa_events.logEventsRoute);
 
 //messages api
 router.get('/agent/:agent_id/messages', messages.getUniqueUsersList);
