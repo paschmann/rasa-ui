@@ -17,6 +17,8 @@ WITH (
 )
 TABLESPACE pg_default;  
 
+GRANT ALL ON TABLE messages_entities TO ${postgres_user};
+
 ALTER TABLE IF EXISTS messages ADD COLUMN intent_id integer;
 ALTER TABLE IF EXISTS messages ADD CONSTRAINT intent_fkey FOREIGN KEY (intent_id) REFERENCES intents (intent_id) ON DELETE SET NULL;
 
