@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS messages_entities
   entity_id integer,
   entity_start integer NOT NULL,
   entity_end integer NOT NULL,
+  entity_value varchar,
   entity_confidence integer NOT NULL,
   CONSTRAINT message_entity_pkey PRIMARY KEY (message_id, entity_id, entity_start, entity_end),
   CONSTRAINT message_fkey FOREIGN KEY (message_id) REFERENCES messages (messages_id) ON DELETE CASCADE,
@@ -31,7 +32,7 @@ FROM messages AS msg
 INNER JOIN agents ON msg.agent_id = agents.agent_id
 LEFT OUTER JOIN intents ON msg.intent_id = intents.intent_id
 LEFT JOIN expressions ON (intents.intent_id = expressions.intent_id) AND (msg.message_text = expressions.expression_text)
-ORDER BY user_id, timestamp;
+ORDER BY timestamp, user_id;
 
 CREATE OR REPLACE VIEW entities_parameters AS 
 SELECT
@@ -44,5 +45,5 @@ FROM messages AS msg
 INNER JOIN agents ON msg.agent_id = agents.agent_id
 LEFT OUTER JOIN messages_entities AS msgEnt ON msg.messages_id = msgEnt.message_id 
 LEFT OUTER JOIN entities ON msgEnt.entity_id = entities.entity_id 
-LEFT OUTER JOIN parameters AS param ON msgEnt.entity_id = param.entity_id
-ORDER BY user_id, timestamp;
+LEFT OUTER JOIN parameters AS param ON (msgEnt.entity_id = param.entity_id) AND (msgEnt.entity_value = param.parameter_value)
+ORDER BY timestamp, user_id;
