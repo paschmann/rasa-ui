@@ -42,9 +42,9 @@ var await = require('asyncawait/await');
   RasaCore user message contains project name field with which we can retrieve the agentId
   If not found or undefined, set it to default 0
 */
-var getAgentIdFromName  = async(function (message) {
+var getAgentIdFromName = async(function (message) {
     console.log("getAgentIdFromName");
-    message.agent_id = 0;
+
     db.any('SELECT agent_id FROM agents WHERE agent_name=${agent_name}', message)
       .then(function (data) {
         console.log(data);
@@ -63,7 +63,7 @@ var getAgentIdFromName  = async(function (message) {
 */
 var getAgentIdFromBotMessage = async(function (message) {
     console.log("getAgentIdFromBotMessage");
-    message.agent_id = 0;
+
     db.any("SELECT agent_id FROM messages WHERE user_id=${user_id} and user_name='user' ORDER BY timestamp DESC LIMIT 1", message)
       .then(function (data) {
         console.log(data);
@@ -141,8 +141,8 @@ processInsertMessagesEntitiesDB = async(function (messagesEntitiesData){
 });
 
 async function insertlogEventMessageToDB(message, corelogData, nlulogData, messagesEntitiesData) {
-    db.any('INSERT INTO messages(timestamp, agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
-    ' VALUES(${timestamp}, ${agent_id}, ${user_id},${user_name}, ${message_text}, ${message_rich}, ${user_message_ind}) RETURNING messages_id', message)
+    db.any('INSERT INTO messages(timestamp, agent_id, user_id, user_name, message_text, message_rich, user_message_ind, intent_id)' +
+    ' VALUES(${timestamp}, ${agent_id}, ${user_id},${user_name}, ${message_text}, ${message_rich}, ${user_message_ind}, (SELECT intent_id FROM intents WHERE intent_name=${intent_name})) RETURNING messages_id', message)
 
       .then(function (response) {
         console.log("Message Inserted with Id: " + response[0].messages_id);
@@ -165,6 +165,31 @@ async function insertlogEventMessageToDB(message, corelogData, nlulogData, messa
           console.log(err);
         });
 };
+
+async function processLogEventsToDBs(message, corelogData, nlulogData, messagesEntitiesData) {
+    console.log("processLogEventsToDBs");
+    sqlCommand = "";
+
+    if (message.event == "user") {
+        sqlCommand = 'SELECT agent_id FROM agents WHERE agent_name=${agent_name}';
+    } else if (message.event == "bot") {
+        sqlCommand = "SELECT agent_id FROM messages WHERE user_id=${user_id} and user_name='user' ORDER BY timestamp DESC LIMIT 1";
+    }
+
+    db.any(sqlCommand, message)
+      .then(function (data) {
+        console.log(data);
+        if (data[0] != undefined) {
+            message.agent_id = data[0].agent_id;
+
+            insertlogEventMessageToDB(message, corelogData, nlulogData, messagesEntitiesData);
+        }
+      })
+      .catch(function (err) {
+        console.log("Error in DB call" + err);
+      });
+}
+
 
 async function logEventsRoute(req, res, next) {
     var rasaCoreEvent = req.body;
@@ -195,16 +220,20 @@ async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
 
         message.user_name = rasaCoreEvent.event;
         message.message_text = rasaCoreEvent.text;
+        message.agent_id = 0;
 
         if (rasaCoreEvent.event == 'user') {
+            message.event = rasaCoreEvent.event;
             message.user_message_ind = true;
             message.message_rich = rasaCoreEvent.parse_data;
             message.agent_name = rasaCoreEvent.parse_data.project;
-            await(getAgentIdFromName(message));
+            message.intent_name = rasaCoreEvent.parse_data.intent.name;
         } else {
+            message.event = rasaCoreEvent.event;
             message.user_message_ind = false;
             message.message_rich = rasaCoreEvent.data;
-            await(getAgentIdFromBotMessage(message));
+            message.agent_name = "";
+            message.intent_name = "";
 
             if ((rasaCoreEvent.data.elements) && (rasaCoreEvent.data.elements[0].text)) {
                 // RasaCore logs for custom message has the text inside that field
@@ -231,7 +260,7 @@ async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
         }
 
         try {
-            await(insertlogEventMessageToDB(message, null, nluLogData, messagesEntitiesData));
+            await(processLogEventsToDBs(message, null, nluLogData, messagesEntitiesData));
             success_callback();
 
       } catch(err) {
