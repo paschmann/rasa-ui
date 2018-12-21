@@ -41,7 +41,9 @@
   "config": {
     "rasanluendpoint": "http://localhost:5000",
     "rasacoreendpoint": "http://localhost:5005",
+    "rasacorerequestpath": "/conversations/{id}/parse",
     "coresecuritytoken": "",
+    "corejwttoken": "",
     "nlusecuritytoken": "",
     "cacheagents": false,
     "jwtsecret": "th1s1sn0t0nlyths3cr3tbutth3m0st1mp0rtAntp13c30f1nf0rmAt10nf0rth1sAppl1cAt10n",

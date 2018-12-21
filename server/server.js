@@ -4,8 +4,10 @@ global.rasanluendpoint = process.env.rasanluendpoint || process.env.npm_package_
 global.rasacoreendpoint = process.env.rasacoreendpoint || process.env.npm_package_config_rasacoreendpoint;
 global.jwtsecret = process.env.jwtsecret || process.env.npm_package_config_jwtsecret;
 global.coresecuritytoken= process.env.coresecuritytoken || process.env.npm_package_config_coresecuritytoken;
+global.corejwttoken= process.env.corejwttoken || process.env.npm_package_config_corejwttoken;
 global.nlusecuritytoken= process.env.nlusecuritytoken || process.env.npm_package_config_nlusecuritytoken;
 global.cacheagents= process.env.cacheagents || process.env.npm_package_config_cacheagents;
+global.rasacorerequestpath = process.env.rasacorerequestpath || process.env.npm_package_config_rasacorerequestpath;
 
 var express = require('express');
 var proxy = require('http-proxy-middleware');
