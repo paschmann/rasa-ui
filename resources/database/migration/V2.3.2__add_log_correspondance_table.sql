@@ -28,7 +28,7 @@ expressions.expression_id
 FROM messages AS msg
 INNER JOIN agents ON msg.agent_id = agents.agent_id
 LEFT OUTER JOIN intents ON msg.intent_id = intents.intent_id
-LEFT OUTER JOIN expressions ON intents.intent_id = expressions.intent_id
+LEFT JOIN expressions ON (intents.intent_id = expressions.intent_id) AND (msg.message_text = expressions.expression_text)
 ORDER BY user_id, timestamp;
 
 CREATE OR REPLACE VIEW entities_parameters AS 
