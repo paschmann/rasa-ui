@@ -426,7 +426,7 @@ CREATE TABLE messages_entities
 WITH (
   OIDS = FALSE
 )
-TABLESPACE pg_catalog;  
+TABLESPACE pg_default;  
 
 /* Views */
 CREATE OR REPLACE VIEW intents_most_used AS
@@ -513,7 +513,7 @@ LIMIT 30;
 
 CREATE OR REPLACE VIEW messages_expressions AS 
 SELECT agents.agent_id, agents.agent_name, 
-msg.timestamp, msg.user_id, msg.user_name, msg.message_text, msg.message_rich, msg.user_message_ind, 
+msg.messages_id, msg.timestamp, msg.user_id, msg.user_name, msg.message_text, msg.message_rich, msg.user_message_ind, 
 intents.intent_id, intents.intent_name,
 expressions.expression_id
 FROM messages AS msg
@@ -525,7 +525,7 @@ ORDER BY timestamp, user_id;
 CREATE OR REPLACE VIEW entities_parameters AS 
 SELECT
 agents.agent_id, agents.agent_name,
-msg.timestamp, msg.user_id, msg.user_name, msg.message_text, msg.user_message_ind, 
+msg.messages_id, msg.timestamp, msg.user_id, msg.user_name, msg.message_text, msg.user_message_ind, 
 entities.entity_id, entities.entity_name, entities.slot_data_type,
 msgEnt.entity_start, msgEnt.entity_end,
 param.parameter_value, param.parameter_id
