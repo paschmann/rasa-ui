@@ -7,12 +7,16 @@ MINVALUE 1
 MAXVALUE 9223372036854775807
 CACHE 1;
 
+GRANT ALL ON SEQUENCE public.actions_action_id_seq TO ${postgres_user};
+
 CREATE SEQUENCE public.core_parse_log_core_parse_log_id_seq
 INCREMENT 1
 START 1
 MINVALUE 1
 MAXVALUE 9223372036854775807
 CACHE 1;
+
+GRANT ALL ON SEQUENCE public.core_parse_log_core_parse_log_id_seq TO ${postgres_user};
 
 CREATE TABLE public.actions
 (
@@ -24,6 +28,8 @@ WITH (
   OIDS = FALSE
 )
 TABLESPACE pg_default;
+
+GRANT ALL ON TABLE public.actions TO ${postgres_user};
 
 CREATE TABLE public.core_parse_log
 (
@@ -46,6 +52,7 @@ WITH (
 )
 TABLESPACE pg_default;
 
+GRANT ALL ON TABLE public.core_parse_log TO ${postgres_user};
 
 ALTER TABLE public.responses ADD COLUMN action_id integer;
 ALTER TABLE public.responses ADD COLUMN buttons_info jsonb;
