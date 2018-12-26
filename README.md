@@ -102,7 +102,7 @@ Then launch the model training if it's not already done:
 And setup SQL database schema.
 
 ## DB Setup
-**If the rasa UI Postgres user is different from the postgres database admin used for database creation, ensure it is created before the execution of the script `CREATE USER <RASA_UI_DATABASE_USER> WITH PASSWORD '<RASA_UI_DATABASE_PWD>`**
+**If the rasa UI Postgres user is different from the postgres database admin used for database creation, ensure it is created before the execution of the script `CREATE USER <RASA_UI_DATABASE_USER> WITH PASSWORD '<RASA_UI_DATABASE_PWD>'`**
 
 ### Flyway install
 You can install the RASA UI database using Flyway - simply run a docker container with these options.
