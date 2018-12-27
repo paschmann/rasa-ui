@@ -46,7 +46,7 @@ function getRasaNluVersion(req, res, next) {
 
 function trainRasaNlu(req, res, next) {
   let modelName = req.query.name;
-  if(global.rasanlufixedmodelname !== "") {
+  if(global.rasanlufixedmodelname !== undefined && global.rasanlufixedmodelname !== "") {
     modelName = global.rasanlufixedmodelname
   }
 
