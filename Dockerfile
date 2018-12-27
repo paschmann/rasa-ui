@@ -12,6 +12,7 @@ ARG HEALTHCHECK_CMD="curl --silent http://localhost:${http_port}/api/v2/health 2
 ENV rasanluendpoint "http://localhost:5000"
 ENV rasacoreendpoint "http://localhost:5005"
 ENV postgresserver "postgres://postgres:rasaui@localhost:5432/rasa"
+ENV rasanlufixedmodelname ""
 
 WORKDIR /opt/rasaui
 COPY --from=builder /node_modules ./node_modules

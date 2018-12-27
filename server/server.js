@@ -6,6 +6,7 @@ global.jwtsecret = process.env.jwtsecret || process.env.npm_package_config_jwtse
 global.coresecuritytoken= process.env.coresecuritytoken || process.env.npm_package_config_coresecuritytoken;
 global.nlusecuritytoken= process.env.nlusecuritytoken || process.env.npm_package_config_nlusecuritytoken;
 global.cacheagents= process.env.cacheagents || process.env.npm_package_config_cacheagents;
+global.rasanlufixedmodelname= process.env.rasanlufixedmodelname || process.env.npm_package_config_rasanlufixedmodelname;
 
 var express = require('express');
 var proxy = require('http-proxy-middleware');
