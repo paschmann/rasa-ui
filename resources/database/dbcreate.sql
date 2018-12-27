@@ -11,6 +11,8 @@ BEGIN
   EXECUTE 'ALTER DATABASE '|| current_database()||' set search_path = ''rasa_ui'', ''$user'', ''public''';
 END $$;
 
+SET search_path TO rasa_ui;
+
 /* Sequences */
 
 CREATE SEQUENCE agentidgen
@@ -300,7 +302,7 @@ CREATE TABLE responses
   CONSTRAINT response_pkey PRIMARY KEY (response_id),
   CONSTRAINT intent_fkey FOREIGN KEY (intent_id) REFERENCES intents (intent_id) ON DELETE CASCADE,
   CONSTRAINT action_fkey FOREIGN KEY (action_id) REFERENCES actions (action_id) ON DELETE CASCADE,
-  CONSTRAINT responses_response_type_fkey FOREIGN KEY (response_type) REFERENCES rasa_ui.response_type (response_type_id) ON DELETE CASCADE
+  CONSTRAINT responses_response_type_fkey FOREIGN KEY (response_type) REFERENCES response_type (response_type_id) ON DELETE CASCADE
 )
 WITH (
   OIDS = FALSE
@@ -492,6 +494,9 @@ FROM nlu_log
 GROUP BY (to_char(nlu_log."timestamp", 'MM/DD'::text))
 ORDER BY (to_char(nlu_log."timestamp", 'MM/DD'::text)) asc
 LIMIT 30;
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA rasa_ui TO :postgres_user;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA rasa_ui TO :postgres_user;
 
 /* Static Data */
 INSERT INTO response_type (response_type_text) VALUES ('DEFAULT'),('RICH TEXT');
