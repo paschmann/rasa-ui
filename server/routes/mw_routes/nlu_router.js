@@ -45,12 +45,17 @@ function getRasaNluVersion(req, res, next) {
 }
 
 function trainRasaNlu(req, res, next) {
-  console.log("Rasa NLU Train Request -> " + global.rasanluendpoint + "/train?project=" + req.query.project);
-  logRequest(req, "train", {project: req.query.project, model: req.query.name, data: req.body});
+  let modelName = req.query.name;
+  if(global.rasanlufixedmodelname !== "") {
+    modelName = global.rasanlufixedmodelname
+  }
+
+  console.log("Rasa NLU Train Request -> " + global.rasanluendpoint + "/train?project=" + req.query.project + "&model=" + modelName);
+  logRequest(req, "train", {project: req.query.project, model: modelName, data: req.body});
 
   request({
     method: "POST",
-    uri: global.rasanluendpoint + "/train?project=" + req.query.project + "&model=" + req.query.name,
+    uri: global.rasanluendpoint + "/train?project=" + req.query.project + "&model=" + modelName,
     json: req.body
   }, function (error, response, body) {
     if(error){

@@ -69,6 +69,10 @@ In this command we are setting the env variables rasanluendpoint and rasacoreend
 
 `docker run -e "rasanluendpoint=http://youripaddress:5000" -e "rasacoreendpoint=http://youripaddress:5005" -e "postgresserver=postgres://login:password@serveraddress:5432/rasa" -itd -p 5001:5001 rasa-ui` 
 
+It's possible to fix the nlu model name for the training by passing "rasanlufixedmodelname" as an argument :
+
+`docker run -e "rasanluendpoint=http://youripaddress:5000" -e "rasacoreendpoint=http://youripaddress:5005" -e "postgresserver=postgres://login:password@serveraddress:5432/rasa" -e "rasanlufixedmodelname=nlu" -itd -p 5001:5001 rasa-ui` 
+
 ## Docker compose
 If you want to quickly load all the stack locally you can use the docker-compose file
 
