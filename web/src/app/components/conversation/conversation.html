@@ -1,0 +1,112 @@
+<link rel="stylesheet" href="./app/components/conversation/conversation.css" />
+<link rel="stylesheet" href="./app/components/conversation/modal/modal.css" />
+<ol class="breadcrumb" breadcrumb="">
+  <li class="breadcrumb-item ng-scope active">
+    <span
+      ><a ng-href="#!/history">History & Training</a> / Session ID:
+      {{ userId }}</span
+    >
+  </li>
+</ol>
+
+<div class="container-fluid">
+  <div class="card" id="info">
+    <span>{{ chatlog.timestamp | date: "dd/MM/yyyy HH:mm" }}</span>
+    <span><strong>No Match: </strong>{{ chatlog.noMatchNumber }}</span>
+    <span><strong>Intents: </strong>{{ chatlog.intentsNumber }}</span>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-6 col-lg-6">
+      <div class="card">
+        <div class="card-header"><strong>Conversation</strong></div>
+        <div class="card-block" id="chatlog">
+          <div id="entityAdd" selection>
+            <div ng-click="addEntity()">add</div>
+          </div>
+          <div id="entityEdit">
+            <img src="assets/img/edit.svg" class="icon" title="Edit" />
+            <div class="separator"></div>
+            <img src="assets/img/delete.svg" class="icon" title="Delete" />
+          </div>
+
+          <div
+            class="message-wrapper"
+            ng-class="{bot: message.user_name === 'bot', user: message.user_name === 'user'}"
+            ng-repeat="message in chatlog"
+          >
+            <div class="message-username">{{ message.user_name }}:</div>
+
+            <div
+              class="message"
+              id="message-{{ message.messages_id }}"
+              ng-mouseover="highlightMessageEntites(message)"
+              ng-mouseleave="highlightMessageEntites(undefined)"
+            >
+              <div
+                class="intent"
+                ng-if="message.user_name === 'user'"
+                ng-class="{'no-match': !message.intent_name }"
+                ng-click="editIntent(message)"
+              >
+                <span ng-if="message.intent_name"
+                  >{{ message.intent_name }}
+                  <img src="assets/img/edit.svg" class="icon" />
+                </span>
+                <span ng-if="!message.intent_name"
+                  >No Match<img src="assets/img/add.svg" class="icon"
+                /></span>
+              </div>
+
+              <p
+                ng-if="message.message_text_highlight"
+                compile="message.message_text_highlight"
+              ></p>
+              <p ng-if="!message.message_text_highlight">
+                {{ message.message_text }}
+              </p>
+            </div>
+          </div>
+          <!-- </div> -->
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3 col-lg-3">
+      <div class="card">
+        <div class="card-header"><strong>Entities</strong></div>
+        <div class="card-block" id="entities">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Tags</th>
+                <th>Entities</th>
+                <th>Remove</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                ng-repeat="entity in conversationEntities "
+                ng-if="conversationEntities.length > 0"
+                ng-class="{highlight: isMessageEntityHighlighted(entity), selected: isEntitySelected(entity)}"
+                id="entity-{{ entity.messages_id }}-{{ entity.parameter_id }}"
+                ensure-element-in-view
+                element-id="{{ 'message-' + entity.messages_id }}"
+                container-id="chatlog"
+              >
+                <td class="parameter">{{ entity.parameter_value }}</td>
+                <td>{{ entity.entity_name }}</td>
+                <td>
+                  <img
+                    src="assets/img/delete.svg"
+                    class="icon"
+                    ng-click="deleteEntity(entity, $index)"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

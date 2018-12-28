@@ -37,8 +37,7 @@ function HistoryController($scope, $http, Agent) {
               )
               .then(
                 function(response) {
-                  console.log("loading for " + $scope.users[i].user_id);
-                  $scope.users[i].chatlog = response.data;
+                  $scope.users[i].chatlog = getFormattedChatlog(response.data);
                 },
                 function(errorResponse) {}
               );
@@ -49,62 +48,39 @@ function HistoryController($scope, $http, Agent) {
     );
   };
 
-  $scope.updateModalInfo = function(message) {
-    $http({
-      method: "GET",
-      url: api_endpoint_v2 + "/messages/" + message.messages_id
-    }).then(
-      function(response) {
-        $scope.messageDetails = response.data[0];
-      },
-      function(errorResponse) {
-        console.log("Error Message while Getting Messages." + errorResponse);
-      }
-    );
+  getFormattedChatlog = function(chatlog) {
+    chatlog.timestamp = getConversationTimestamp(chatlog);
+    var intentsAndNoMatch = getConversationIntentsAndNoMatch(chatlog);
+    chatlog.intentsNumber = intentsAndNoMatch.intents;
+    chatlog.noMatchNumber = intentsAndNoMatch.noMatch;
+    return chatlog;
   };
 
-  $scope.getConversationNomatch = function(chatlog) {
+  function getConversationIntentsAndNoMatch(chatlog) {
     var noMatch = 0;
+    var intents = 0;
     if (chatlog) {
       for (let index = 0; index < chatlog.length; index++) {
         const message = chatlog[index];
-        if (message && message.message_rich && message.message_rich.intent) {
-          if (message.message_rich.intent.confidence === 0) {
+        if (message.user_name === "user") {
+          if (
+            message &&
+            message.intent_name &&
+            message.intent_name.length > 0
+          ) {
+            intents++;
+          } else {
             noMatch++;
           }
         }
       }
     }
+    return { intents, noMatch };
+  }
 
-    return noMatch;
-  };
-
-  $scope.getConversationIntents = function(chatlog) {
-    var noMatch = 0;
-    if (chatlog) {
-      for (let index = 0; index < chatlog.length; index++) {
-        const message = chatlog[index];
-        if (message && message.message_rich && message.message_rich.intent) {
-          if (message.message_rich.intent.confidence > 0) {
-            noMatch++;
-          }
-        }
-      }
-    }
-
-    return noMatch;
-  };
-  $scope.getConversationTimestamp = function(chatlog) {
-    var timestamp = "";
-    if (chatlog) {
-      for (let index = 0; index < chatlog.length; index++) {
-        const message = chatlog[index];
-        if (message) {
-          return message.timestamp;
-        }
-      }
-    }
-
-    return timestamp;
+  getConversationTimestamp = function(chatlog) {
+    return chatlog && chatlog[0] && chatlog[0].timestamp
+      ? chatlog[0].timestamp
+      : null;
   };
 }
