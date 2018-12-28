@@ -1,0 +1,49 @@
+<div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="close"
+          ng-click="close(false)"
+          data-dismiss="modal"
+          aria-hidden="true"
+        >
+          &times;
+        </button>
+        <h4 class="modal-title">Define entity for: {{ entity }}</h4>
+      </div>
+      <div class="modal-body">
+        <div id="tagList">
+          <div
+            class="tag"
+            ng-repeat="entity in entitiesList"
+            ng-click="selectEntity(entity)"
+            ng-class="{active: isEntitySelected(entity)}"
+          >
+            {{ entity.entity_name }}
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          ng-click="close(false)"
+          class="btn btn-default"
+          data-dismiss="modal"
+        >
+          Close
+        </button>
+        <button
+          type="button"
+          ng-click="close(true)"
+          class="btn btn-primary"
+          data-dismiss="modal"
+          ng-disabled="!selectedEntity"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
