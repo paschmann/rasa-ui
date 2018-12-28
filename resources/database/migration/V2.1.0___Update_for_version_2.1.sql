@@ -6,6 +6,8 @@ MINVALUE 1
 MAXVALUE 9223372036854775807
 CACHE 1;
 
+GRANT ALL ON SEQUENCE public.messages_messages_id_seq TO ${postgres_user};
+
 CREATE TABLE public.messages
 (
   messages_id integer NOT NULL DEFAULT nextval('messages_messages_id_seq'::regclass),
@@ -22,6 +24,8 @@ WITH (
   OIDS = FALSE
 )
 TABLESPACE pg_default;
+
+GRANT ALL ON TABLE public.messages TO ${postgres_user};
 
 DROP VIEW public.intents_most_used;
 DROP VIEW public.active_user_count_12_months;
@@ -56,10 +60,14 @@ left outer join (select count(*) as grp_intent_count, nlu_parse_log.intent_name 
 where nlu_parse_log.messages_id=messages.messages_id group by nlu_parse_log.intent_name,grp_agent_id) as grouped_intents
 on intent_name = grouped_intents.grp_intent, agents where intents.agent_id=agents.agent_id  order by agents.agent_id;
 
+GRANT ALL ON TABLE public.intents_most_used TO ${postgres_user};
+
 CREATE OR REPLACE VIEW public.active_user_count_12_months AS
 select count(distinct(messages.user_id)) as count_users,
 (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) as month_year from nlu_parse_log, messages where nlu_parse_log.messages_id=messages.messages_id
 GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/YYYY'::text)) asc LIMIT 12;
+
+GRANT ALL ON TABLE public.active_user_count_12_months TO ${postgres_user};
 
 CREATE OR REPLACE VIEW public.active_user_count_30_days AS
 SELECT count(distinct(messages.user_id)) as user_count,
@@ -67,3 +75,5 @@ SELECT count(distinct(messages.user_id)) as user_count,
 GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text))
 ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) asc
 LIMIT 30;
+
+GRANT ALL ON TABLE public.active_user_count_30_days TO ${postgres_user};

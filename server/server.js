@@ -8,6 +8,7 @@ global.corejwttoken= process.env.corejwttoken || process.env.npm_package_config_
 global.nlusecuritytoken= process.env.nlusecuritytoken || process.env.npm_package_config_nlusecuritytoken;
 global.cacheagents= process.env.cacheagents || process.env.npm_package_config_cacheagents;
 global.rasacorerequestpath = process.env.rasacorerequestpath || process.env.npm_package_config_rasacorerequestpath;
+global.rasanlufixedmodelname= process.env.rasanlufixedmodelname || process.env.npm_package_config_rasanlufixedmodelname;
 
 var express = require('express');
 var proxy = require('http-proxy-middleware');

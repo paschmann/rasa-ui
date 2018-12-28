@@ -323,6 +323,10 @@ GROUP BY (to_char(nlu_log."timestamp", 'MM/DD'::text))
 ORDER BY (to_char(nlu_log."timestamp", 'MM/DD'::text))
 LIMIT 30;
 
+GRANT ALL ON ALL TABLES IN SCHEMA public TO ${postgres_user};
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO ${postgres_user};
+
+
 /* Static Data */
 INSERT INTO response_type (response_type_text) VALUES ('DEFAULT'),('RICH TEXT');
 INSERT INTO settings (setting_name,setting_value) VALUES ('refresh_time',60000);

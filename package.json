@@ -1,6 +1,6 @@
 {
   "name": "RasaUI",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "Rasa UI is a web application built on top of, and for, Rasa NLU.",
   "dependencies": {
     "angular": "1.7.2",
@@ -47,7 +47,8 @@
     "nlusecuritytoken": "",
     "cacheagents": false,
     "jwtsecret": "th1s1sn0t0nlyths3cr3tbutth3m0st1mp0rtAntp13c30f1nf0rmAt10nf0rth1sAppl1cAt10n",
-    "postgresserver": "postgres://postgres:rasaui@localhost:5432/rasaui_local"
+    "postgresserver": "postgres://postgres:rasaui@localhost:5432/rasaui",
+    "rasanlufixedmodelname": ""
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
