@@ -88,6 +88,9 @@ var insertNLUParseLogDB = async(function (nlulogData){
 });
 
 insertMessagesEntitiesDB = async(function (messagesEntitiesDataItem){
+    console.log("insertMessagesEntitiesDB");
+    console.log(messagesEntitiesDataItem);
+
     db.none('INSERT INTO messages_entities(message_id, entity_id, entity_start, entity_end, entity_value, entity_confidence) VALUES (${message_id}, ${entity_id}, ${entity_start}, ${entity_end}, ${entity_value}, ${entity_confidence})', messagesEntitiesDataItem)
       .then(function () {
           console.log("Cache inserted into MessagesEntities db");
@@ -101,39 +104,69 @@ insertMessagesEntitiesDB = async(function (messagesEntitiesDataItem){
 var processAllEntitiesFromExpressionId = async(function (messagesEntitiesData) {
     console.log("processAllEntitiesFromExpressionId");
     console.log(messagesEntitiesData);
-    db.any("SELECT entity_id, parameter_start, parameter_end, parameter_value FROM parameters WHERE expression_id=${expression_id}", messagesEntitiesData)
-      .then(function (data) {
-        console.log(data);
-        for (var i = 0; i < data.length; i++) {
-            messagesEntitiesDataItem = new Object();
-            messagesEntitiesDataItem.message_id = messagesEntitiesData.message_id;
-            messagesEntitiesDataItem.entity_id = data[i].entity_id;
-            messagesEntitiesDataItem.entity_start = data[i].parameter_start;
-            messagesEntitiesDataItem.entity_end = data[i].parameter_end;
-            messagesEntitiesDataItem.entity_value = data[i].parameter_value;
-            messagesEntitiesDataItem.entity_confidence = 0;
 
-            insertMessagesEntitiesDB(messagesEntitiesDataItem);
+    if (messagesEntitiesData.expression_id != null) {
+        db.any("SELECT entity_id, parameter_start, parameter_end, parameter_value FROM parameters WHERE expression_id=${expression_id}", messagesEntitiesData)
+        .then(function (data) {
+            console.log(data);
+            for (var i = 0; i < data.length; i++) {
+                messagesEntitiesDataItem = new Object();
+                messagesEntitiesDataItem.message_id = messagesEntitiesData.message_id;
+                messagesEntitiesDataItem.entity_id = data[i].entity_id;
+                messagesEntitiesDataItem.entity_start = data[i].parameter_start;
+                messagesEntitiesDataItem.entity_end = data[i].parameter_end;
+                messagesEntitiesDataItem.entity_value = data[i].parameter_value;
+                messagesEntitiesDataItem.entity_confidence = 0;
+
+                insertMessagesEntitiesDB(messagesEntitiesDataItem);
+            }
+        })
+        .catch(function (err) {
+            console.log("Error in DB call" + err);
+        });
+    } else {
+        // Just insert detected entities
+        var entities = messagesEntitiesData.entities;
+        for (var i = 0; i < entities.length; i++) {
+            messagesEntitiesData.current_entity = entities[i];
+            // Find entity_id
+            db.any("SELECT entity_id FROM entities WHERE entity_name=${entity}", entities[i])
+            .then(function (data) {
+                console.log(data);
+                if (data[0] != undefined) {
+                    var entities = messagesEntitiesData.entities;
+
+                    messagesEntitiesDataItem = new Object();
+                    messagesEntitiesDataItem.message_id = messagesEntitiesData.message_id;
+                    messagesEntitiesDataItem.entity_id = data[0].entity_id;
+                    messagesEntitiesDataItem.entity_start = messagesEntitiesData.current_entity.start;
+                    messagesEntitiesDataItem.entity_end = messagesEntitiesData.current_entity.end;
+                    messagesEntitiesDataItem.entity_value = messagesEntitiesData.current_entity.value;
+                    messagesEntitiesDataItem.entity_confidence = messagesEntitiesData.current_entity.confidence;
+        
+                    insertMessagesEntitiesDB(messagesEntitiesDataItem);
+                }
+            })
+            .catch(function (err) {
+                console.log("Error in DB call" + err);
+            });
         }
-      })
-      .catch(function (err) {
-        console.log("Error in DB call" + err);
-        messagesEntitiesData.expression_id = null;
-      });
+    }
 });
 
 processInsertMessagesEntitiesDB = async(function (messagesEntitiesData){
-    console.log("processInsertMessagesEntitiesDB");
+    console.log("processInsertMessagesEntitiesDB 0");
     console.log(messagesEntitiesData);
     db.any("SELECT expression_id FROM expressions WHERE LOWER(expression_text)=LOWER(${message_text})", messagesEntitiesData)
       .then(function (data) {
         console.log(data);
         if (data[0] != undefined) {
+            console.log("processInsertMessagesEntitiesDB 1");
+            // If expression_id is found, get it
+            // If expression_id is not found, just insert the detected intents
             messagesEntitiesData.expression_id = data[0].expression_id;
-            processAllEntitiesFromExpressionId(messagesEntitiesData);
-        } else {
-            messagesEntitiesData.expression_id = null;
         }
+        processAllEntitiesFromExpressionId(messagesEntitiesData);
       })
       .catch(function (err) {
         console.log("Error in DB call" + err);
@@ -149,7 +182,7 @@ async function insertlogEventMessageToDB(message, corelogData, nlulogData, messa
         console.log("Message Inserted with Id: " + response[0].messages_id);
 
         //corelogData.messages_id = response[0].messages_id;
-        if ((nlulogData != undefined) && (nlulogData !== null)) {
+        if ((nlulogData !== undefined) && (nlulogData !== null)) {
             nlulogData.messages_id = response[0].messages_id;
             //insertCoreParseLogDB(corelogData);
             insertNLUParseLogDB(nlulogData);
@@ -158,6 +191,7 @@ async function insertlogEventMessageToDB(message, corelogData, nlulogData, messa
         if ((messagesEntitiesData !== undefined) && (messagesEntitiesData !== null)) {
             messagesEntitiesData.message_id = response[0].messages_id;
             messagesEntitiesData.message_text = message.message_text;
+            messagesEntitiesData.expression_id = null;
             processInsertMessagesEntitiesDB(messagesEntitiesData)
         }
 
@@ -254,6 +288,7 @@ async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
 
             //console.log(nluLogData);
             messagesEntitiesData = new Object();
+            messagesEntitiesData.entities = rasaCoreEvent.parse_data.entities;
 
         } else {
             nluLogData = null;
