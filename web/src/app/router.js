@@ -2,7 +2,8 @@ app.config(function(
   $routeProvider,
   adalAuthenticationServiceProvider,
   appConfig,
-  $httpProvider
+  $httpProvider,
+  $locationProvider
 ) {
   adalAuthenticationServiceProvider.init(
     {
@@ -15,6 +16,12 @@ app.config(function(
     },
     $httpProvider
   );
+
+  $locationProvider.html5Mode({
+    enabled: false,
+    //requireBase: false
+  }).hashPrefix('');
+
 
   $routeProvider
     .when("/", {
