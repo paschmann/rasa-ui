@@ -65,7 +65,6 @@ function ConversationController(
   }
 
   $scope.editIntent = function(message) {
-    console.log("editIntent", message);
     ModalService.showModal({
       templateUrl: "/app/components/conversation/modal/edit_intent.html",
       controller: "EditIntentModalController",
