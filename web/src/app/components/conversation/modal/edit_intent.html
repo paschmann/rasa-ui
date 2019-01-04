@@ -1,0 +1,67 @@
+<div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="card">
+        <div class="card-header">
+          <strong>Intention</strong>
+          <span class="float-right">
+            <button
+              type="button"
+              class="close"
+              ng-click="close(false)"
+              data-dismiss="modal"
+              aria-hidden="true"
+            >
+              &times;
+            </button>
+          </span>
+        </div>
+        <div class="card-block">
+          <p>
+            Define intention for:
+            <strong>« {{ message.message_text }} »</strong>
+          </p>
+          <div id="tagList">
+            <div
+              class="tag"
+              ng-repeat="intent in intentList"
+              ng-click="selectIntent(intent)"
+              ng-class="{active: isIntentSelected(intent)}"
+            >
+              <img
+                ng-if="!isIntentSelected(intent)"
+                src="assets/img/plus.svg"
+                class="icon"
+              />
+              <img
+                ng-if="isIntentSelected(intent)"
+                src="assets/img/check.svg"
+                class="icon"
+              />
+              <span class="intent_name">{{ intent.intent_name }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            ng-click="close(false)"
+            class="btn btn-default"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            ng-click="close(true)"
+            class="btn btn-primary"
+            data-dismiss="modal"
+            ng-disabled="!selectedIntent"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

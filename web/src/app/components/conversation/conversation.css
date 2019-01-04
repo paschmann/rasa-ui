@@ -1,0 +1,141 @@
+#info {
+  display: inline-block;
+  padding: 15px;
+}
+
+#info span {
+  margin-right: 15px;
+}
+
+#chatlog-legend {
+  display: flex;
+  justify-content: space-between;
+}
+#chatlog,
+#entities {
+  max-height: 60vh;
+  overflow: auto;
+  position: relative;
+}
+#chatlog .icon {
+  height: 16px;
+  margin-left: 8px;
+}
+
+#entityEdit,
+#entityAdd {
+  z-index: 9;
+  background-color: white;
+  padding: 8px;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  visibility: hidden;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+#entityEdit .icon,
+#entityAdd .icon {
+  margin-left: 0px;
+  height: 20px;
+  cursor: pointer;
+}
+#entityEdit .separator {
+  border-left: 1px solid #1ea8d8;
+  height: 25px;
+  margin: 0px 10px;
+}
+.message-wrapper {
+  display: flex;
+  padding: 5px;
+  flex-direction: column;
+}
+.message-wrapper .message-username {
+  text-transform: capitalize;
+  opacity: 0.5;
+  margin-bottom: 5px;
+}
+.message-wrapper.bot {
+  align-items: flex-start;
+}
+.message-wrapper.user {
+  align-items: flex-end;
+}
+.message-wrapper .no-match {
+  color: #b60000;
+}
+.message-wrapper .intent {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.message-wrapper .intent span {
+  display: flex;
+  align-items: center;
+}
+.message {
+  padding: 10px 20px;
+  max-width: 75%;
+  font-size: 18px;
+}
+.message p {
+  margin-bottom: 0;
+}
+.message .entity {
+  border-bottom: 2px solid black;
+  cursor: pointer;
+}
+.message .entity:hover {
+  font-weight: bold;
+}
+
+.bot .message {
+  background-color: #f2f2f2;
+  border: 1px solid #c2cfd6;
+}
+
+.user .message {
+  background-color: white;
+  border: 1px solid #979797;
+}
+.user .message:hover {
+  background-color: rgba(30, 168, 216, 0.3);
+  border: 1px solid #979797;
+}
+.user .message.active {
+  background-color: rgba(30, 168, 216, 0.3);
+  border: 1px solid #979797;
+}
+
+#entities table th,
+td {
+  text-align: center;
+}
+
+#entities table td {
+  border: none;
+}
+#entities table tbody tr {
+  border: none;
+  border-left: 1px solid #a4b7c1;
+  border-right: 1px solid #a4b7c1;
+  border-bottom: 1px solid #a4b7c1;
+}
+#entities table tbody tr.highlight {
+  background-color: rgba(30, 168, 216, 0.3);
+}
+#entities table tbody tr.selected {
+  font-weight: bold;
+}
+#entities table tbody tr:hover {
+  background-color: rgba(30, 168, 216, 0.3);
+}
+#entities table tbody tr.active {
+  background-color: rgba(30, 168, 216, 0.3);
+}
+#entities table tbody tr.highlight .parameter {
+  text-decoration: underline;
+}
+#entities .icon {
+  cursor: pointer;
+}
