@@ -16,12 +16,14 @@ function HistoryController($scope, $http, Agent) {
     console.log("Loading agent history:" + $scope.selectedAgentId);
     $http({
       method: "GET",
-      url: api_endpoint_v2 + "/agent/" + $scope.selectedAgentId + "/messages"
+      url:
+        api_endpoint_v2 +
+        "/agent/" +
+        $scope.selectedAgentId +
+        "/messages?limit=20"
     }).then(
-      // $http({method: 'GET', url: api_endpoint_v2 + '/agent/'+$scope.selectedAgentId+'/recent9UniqueUsersList'}).then(
       function(response) {
         $scope.users = response.data;
-        console.log("$scope.users", $scope.users);
 
         //load chat history for them
         for (var i = 0; i < $scope.users.length; i++) {
