@@ -22,7 +22,11 @@ function EditIntentModalController(
   }
 
   $scope.close = function() {
-    if ($scope.message.messages_id && $scope.selectedIntent.intent_id) {
+    if (
+      $scope.message.messages_id &&
+      $scope.selectedIntent &&
+      $scope.selectedIntent.intent_id
+    ) {
       $http
         .put(
           api_endpoint_v2 + `/messages/${$scope.message.messages_id}`,
