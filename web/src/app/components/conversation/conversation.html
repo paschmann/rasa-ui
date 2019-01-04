@@ -9,6 +9,15 @@
   </li>
 </ol>
 
+<div id="entityAdd" selection>
+  <img
+    src="assets/img/add.svg"
+    class="icon"
+    title="Add"
+    ng-click="addEntity()"
+  />
+</div>
+
 <div class="container-fluid">
   <div class="card" id="info">
     <span>{{ chatlog.timestamp | date: "dd/MM/yyyy HH:mm" }}</span>
@@ -21,13 +30,20 @@
       <div class="card">
         <div class="card-header"><strong>Conversation</strong></div>
         <div class="card-block" id="chatlog">
-          <div id="entityAdd" selection>
-            <div ng-click="addEntity()">add</div>
-          </div>
           <div id="entityEdit">
-            <img src="assets/img/edit.svg" class="icon" title="Edit" />
+            <img
+              src="assets/img/edit.svg"
+              class="icon"
+              title="Edit"
+              ng-click="editEntity(selectedEntity)"
+            />
             <div class="separator"></div>
-            <img src="assets/img/delete.svg" class="icon" title="Delete" />
+            <img
+              src="assets/img/delete.svg"
+              class="icon"
+              title="Delete"
+              ng-click="deleteEntity(selectedEntity)"
+            />
           </div>
 
           <div
