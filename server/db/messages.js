@@ -93,6 +93,66 @@ function deleteMessageEntities(req, res, next) {
     where message_id=$1 and entity_value=$2`,
     [req.params.message_id, req.body.parameter_value]
   )
+    .then(data => {
+      res.status(200).json(data);
+    })
+    .catch(err => {
+      console.log("Error in DB Call" + err);
+      return next(err);
+    });
+}
+function updateMessageEntities(req, res, next) {
+  console.log("messages.updateMessageEntities");
+  db.any(
+    `select *
+    from entities_parameters
+    where agent_id=$1 and parameter_id=$2`,
+    [req.body.agent_id, req.body.parameter_id]
+  )
+    .then(entitiesParameters => {
+      let messageIds = [];
+      entitiesParameters.forEach(entitiyParameter => {
+        messageIds.push(entitiyParameter.messages_id);
+      });
+
+      db.any(
+        `update messages_entities
+        set entity_id=$4, entity_value=$3
+        where message_id IN ($1:list) and entity_id=$2`,
+        [
+          messageIds,
+          req.params.entity_id,
+          req.body.parameter_value,
+          req.body.entity_id
+        ]
+      )
+        .then(data => {
+          res.status(200).json(data);
+        })
+        .catch(err => {
+          console.log("Error in DB Call" + err);
+          return next(err);
+        });
+    })
+    .catch(function(err) {
+      console.log("Error in DB Call" + err);
+      return next(err);
+    });
+}
+
+function addMessageEntities(req, res, next) {
+  console.log("messages.addMessageEntities");
+  db.any(
+    "insert into messages_entities(message_id, entity_id, entity_start, entity_end, entity_value, entity_confidence)" +
+      " values($1, $2, $3, $4, $5, 0)",
+    [
+      req.params.message_id,
+      req.body.entity_id,
+      req.body.entity_start,
+      req.body.entity_end,
+      req.body.entity_value
+    ]
+  )
     .then(function(data) {
       res.status(200).json(data);
     })
@@ -179,5 +239,7 @@ module.exports = {
   updateMessage: updateMessage,
   getRecent9UniqueUsersList: getRecent9UniqueUsersList,
   getMessageEntities: getMessageEntities,
-  deleteMessageEntities: deleteMessageEntities
+  deleteMessageEntities: deleteMessageEntities,
+  updateMessageEntities: updateMessageEntities,
+  addMessageEntities: addMessageEntities
 };

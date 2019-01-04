@@ -29,7 +29,7 @@
     "ng-tags-input": "^3.2.0",
     "ngstorage": "^0.3.11",
     "node-cache": "^4.1.1",
-    "pg-promise": "^5.9.5",
+    "pg-promise": "^8.5.4",
     "popper.js": "latest",
     "request": "^2.88.0",
     "simple-line-icons": "^2.4.1",

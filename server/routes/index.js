@@ -151,6 +151,11 @@ router.post("/messages/list", messages.getMessagesListByUser);
 router.put("/messages/:messages_id", messages.updateMessage);
 router.get("/messages/:messages_id", messages.getMessageDetails);
 router.delete("/messages/:message_id/entities", messages.deleteMessageEntities);
+router.put(
+  "/messages/:message_id/entities/:entity_id",
+  messages.updateMessageEntities
+);
+router.post("/messages/:message_id/entities", messages.addMessageEntities);
 
 //authentication js
 router.post("/auth", auth.authenticateUser);
