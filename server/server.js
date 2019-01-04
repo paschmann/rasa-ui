@@ -8,6 +8,9 @@ global.corejwttoken= process.env.corejwttoken || process.env.npm_package_config_
 global.nlusecuritytoken= process.env.nlusecuritytoken || process.env.npm_package_config_nlusecuritytoken;
 global.cacheagents= process.env.cacheagents || process.env.npm_package_config_cacheagents;
 global.rasacorerequestpath = process.env.rasacorerequestpath || process.env.npm_package_config_rasacorerequestpath;
+global.azureadauthentication = process.env.azureadauthentication || process.env.npm_package_config_azureadauthentication;
+global.azureadtenantid = process.env.azureadtenantid || process.env.npm_package_config_azureadtenantid;
+global.azureddclientid = process.env.azureddclientid || process.env.npm_package_config_azureddclientid;
 
 var express = require('express');
 var proxy = require('http-proxy-middleware');
@@ -20,6 +23,38 @@ var jwt = require('jsonwebtoken');
 
 const db = require('./db/db')
 const url = require('url');
+
+if (global.azureadauthentication == "true") {
+  // Passport for Azure AD
+  var passport = require('passport');
+  var OIDCBearerStrategy = require('passport-azure-ad').BearerStrategy;
+
+  var options = {
+      // Metadata/Azure AD tenantID/clientID
+      identityMetadata: 'https://login.microsoftonline.com/' + global.azureadtenantid + '/.well-known/openid-configuration',
+      clientID: global.azureddclientid,
+      // Validate issuer
+      validateIssuer: true,
+      issuer: 'https://sts.windows.net/' + global.azureadtenantid + "/",
+      //passReqToCallback: false,
+      loggingLevel: 'error'
+  };
+
+  var bearerStrategy = new OIDCBearerStrategy(options,
+    function(token, done) {
+        console.log(token, 'was the token retrieved');
+        if (!token.oid)
+            done(new Error('oid is not found in token'));
+        else {
+            owner = token.oid;
+            done(null, token);
+        }
+    }
+  );
+
+  app.use(passport.initialize());
+  passport.use(bearerStrategy);
+}
 
 app.use(cors())
 app.use(bodyParser.urlencoded({
@@ -36,37 +71,70 @@ app.use('/scripts', express.static('node_modules/'));
 app.use(function(req, res, next) {
   if(req.originalUrl.endsWith('health')) {
     next();
-  } else if(!req.headers.authorization) {
-    if(req.originalUrl.endsWith('auth') || req.originalUrl.endsWith('authclient')){
-      console.log("No Token, but got an Auth request. Allowing it");
-      next();
-    }else{
-      return  res.status(401).send({
-          success: false,
-          message: 'No Authorization header.'
-      });
-    }
-  }else {
-    // read token and check it
-    if (req.headers.authorization.split(' ')[0] === 'Bearer'){
-        var token = req.headers.authorization.split(' ')[1];
-        // verifies secret and checks exp
-        jwt.verify(token, global.jwtsecret, function(err, decoded) {
-          if (err) {
-            return res.json({ success: false, message: 'Failed to authenticate token.' });
-          } else {
-            // if everything is good, save to request for use in other routes
-            req.jwt = decoded;
-            req.original_token=token;
-            next();
-          }
-        });
-    }else{
-      // if there is no token send error..angularjs/ chat clients  will figure how to create the token.
-      return res.status(401).send({
-          success: false,
-          message: 'No token provided.'
-      });
+  } else {
+
+    if ((global.azureadauthentication == "true") && (!req.originalUrl.endsWith('logEvents'))) {
+
+      // Azure AD authentication
+      passport.authenticate('oauth-bearer', function(err, user, info) {
+        console.log("passport.authenticate oauth-bearer");
+        if (err) {
+          console.error('ERROR passport.authenticate oauth-bearer');
+          return res.status(401).send({
+            success: false,
+            message: 'No token provided.'
+          });
+          // return next(err); 
+        }
+
+        if (!user) {
+          console.error("ERROR JWT token verify failed");
+          return res.status(401).send({
+            success: false,
+            message: 'No token provided.'
+          });
+        }
+        next();
+  
+      }) (req, res, next);
+
+    } else {
+
+      // Basic Authentication
+      if(!req.headers.authorization) {
+        if(req.originalUrl.endsWith('auth') || req.originalUrl.endsWith('authclient')){
+          console.log("No Token, but got an Auth request. Allowing it");
+          next();
+        }else{
+          return  res.status(401).send({
+              success: false,
+              message: 'No Authorization header.'
+          });
+        }
+      } else {
+        // read token and check it
+        if (req.headers.authorization.split(' ')[0] === 'Bearer') {
+          var token = req.headers.authorization.split(' ')[1];
+          // verifies secret and checks exp
+          jwt.verify(token, global.jwtsecret, function(err, decoded) {
+            if (err) {
+              return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+              // if everything is good, save to request for use in other routes
+              req.jwt = decoded;
+              req.original_token=token;
+              next();
+            }
+          });
+        } else {
+          // if there is no token send error..angularjs/ chat clients  will figure how to create the token.
+          return res.status(401).send({
+              success: false,
+              message: 'No token provided.'
+          });
+        }
+      }
+
     }
   }
 });
