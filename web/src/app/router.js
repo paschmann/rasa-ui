@@ -13,10 +13,11 @@ app.config(function(
       clientId: appConfig.azureddclientid,
       //cacheLocation: 'localStorage',
       postLogoutRedirectUri: window.location.origin
-    },
-    $httpProvider
+    }
+    //,$httpProvider
   );
 
+  // Avoid AAD login loop
   $locationProvider.html5Mode({
     enabled: false,
     //requireBase: false

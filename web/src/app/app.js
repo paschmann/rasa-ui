@@ -120,7 +120,7 @@ angular
     };
 
     // ADAL
-    //if (appConfig.azureadauthentication === "true") {
+    if (appConfig.azureadauthentication) {
       // this is referencing adal module to do login
       //userInfo is defined at the $rootscope with adalAngular module
       $scope.testMessage = "";
@@ -157,5 +157,5 @@ angular
       $scope.$on("adal:notAuthorized", function (event, rejection, forResource) {
           $scope.testMessage = "It is not Authorized for resource:" + forResource;
       });
-    //}
+    }
   });

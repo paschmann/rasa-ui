@@ -24,7 +24,8 @@ var jwt = require('jsonwebtoken');
 const db = require('./db/db')
 const url = require('url');
 
-if (global.azureadauthentication == "true") {
+
+if (global.azureadauthentication) {
   // Passport for Azure AD
   var passport = require('passport');
   var OIDCBearerStrategy = require('passport-azure-ad').BearerStrategy;
@@ -42,7 +43,7 @@ if (global.azureadauthentication == "true") {
 
   var bearerStrategy = new OIDCBearerStrategy(options,
     function(token, done) {
-        console.log(token, 'was the token retrieved');
+        //console.log(token, 'was the token retrieved');
         if (!token.oid)
             done(new Error('oid is not found in token'));
         else {
@@ -77,7 +78,7 @@ app.use(function(req, res, next) {
 
       // Azure AD authentication
       passport.authenticate('oauth-bearer', function(err, user, info) {
-        console.log("passport.authenticate oauth-bearer");
+
         if (err) {
           console.error('ERROR passport.authenticate oauth-bearer');
           return res.status(401).send({
