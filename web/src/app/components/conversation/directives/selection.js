@@ -10,12 +10,20 @@ angular.module("app").directive("selection", [
           const entityAddElemHeight = entityAddElem.offsetHeight;
 
           const selection = window.getSelection();
+          let intent;
+          if (selection.baseNode) {
+            intent = selection.baseNode.parentElement.parentElement.querySelector(
+              ".intent"
+            );
+          }
 
           if (
             selection.baseNode &&
             selection.baseNode.parentElement.parentElement.classList.contains(
               "message"
-            )
+            ) &&
+            intent &&
+            !intent.classList.contains("no-match")
           ) {
             selectionRange = selection.getRangeAt(0); //get the text range
             selectionRect = selectionRange.getBoundingClientRect();

@@ -69,6 +69,10 @@ In this command we are setting the env variables rasanluendpoint and rasacoreend
 
 `docker run -e "rasanluendpoint=http://youripaddress:5000" -e "rasacoreendpoint=http://youripaddress:5005" -e "postgresserver=postgres://login:password@serveraddress:5432/rasa" -itd -p 5001:5001 rasa-ui` 
 
+It's possible to fix the nlu model name for the training by passing "rasanlufixedmodelname" as an argument :
+
+`docker run -e "rasanluendpoint=http://youripaddress:5000" -e "rasacoreendpoint=http://youripaddress:5005" -e "postgresserver=postgres://login:password@serveraddress:5432/rasa" -e "rasanlufixedmodelname=nlu" -itd -p 5001:5001 rasa-ui` 
+
 ## Docker compose
 If you want to quickly load all the stack locally you can use the docker-compose file
 
@@ -102,16 +106,18 @@ Then launch the model training if it's not already done:
 And setup SQL database schema.
 
 ## DB Setup
+**If the rasa UI Postgres user is different from the postgres database admin used for database creation, ensure it is created before the execution of the script `CREATE USER <RASA_UI_DATABASE_USER> WITH PASSWORD '<RASA_UI_DATABASE_PWD>'`**
+
 ### Flyway install
 You can install the RASA UI database using Flyway - simply run a docker container with these options.
 ```
 docker run --rm --mount type=bind,source=<PATH_TO_MIGRATION_FOLDER>,target=/flyway/sql \
- boxfuse/flyway -url=jdbc:postgresql://<POSTGRES_SERVER_URL>/<RASA_UI_DB> -user=<RASA_UI_USER_LOGIN> -password=<RASA_UI_USER_PASSWORD> -schemas=public,rasa_ui -placeholders.postgres_user=<RASA_UI_USER_LOGIN>  migrate
+ boxfuse/flyway -url=jdbc:postgresql://<POSTGRES_SERVER_URL>/<RASA_UI_DB> -user=<POSTGRES_ADMIN_USER> -password=<POSTGRES_ADMIN_PASSWORD> -schemas=rasa_ui,public -placeholders.postgres_user=<RASA_UI_DATABASE_USER>  migrate
 ```
 This will create a `flyway_schema_history` table which will track the database state, and allow you to simplify database model migrations.
 
 ### Manual install
-Please specify the value of the `postgres_user` parameter with your Rasa Postgres User, using psql : `psql -v postgres_user=XXX -h <POSTGRES_SERVER_URL> -U <RASA_UI_USER_LOGIN> -d <RASA_UI_DB> -a -f dbcreate.sql`.
+Please specify the value of the `postgres_user` parameter with your Rasa Postgres User, using psql : `psql -v postgres_user=<RASA_UI_DATABASE_USER> -h <POSTGRES_SERVER_URL> -U <POSTGRES_ADMIN_USER> -d <RASA_UI_DB> -a -f dbcreate.sql`.
 If this is a clean install, simply execute `dbcreate.sql` on postgreSQL. If you are upgrading from a previous version, please execute the migration scripts sequentially to bring your DB model up to date.
 
 ## RasaNLU Setup

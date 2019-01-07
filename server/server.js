@@ -11,6 +11,7 @@ global.rasacorerequestpath = process.env.rasacorerequestpath || process.env.npm_
 global.azureadauthentication = process.env.azureadauthentication || process.env.npm_package_config_azureadauthentication;
 global.azureadtenantid = process.env.azureadtenantid || process.env.npm_package_config_azureadtenantid;
 global.azureddclientid = process.env.azureddclientid || process.env.npm_package_config_azureddclientid;
+global.rasanlufixedmodelname= process.env.rasanlufixedmodelname || process.env.npm_package_config_rasanlufixedmodelname;
 
 var express = require('express');
 var proxy = require('http-proxy-middleware');
