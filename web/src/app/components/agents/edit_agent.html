@@ -1,5 +1,5 @@
 <ol class="breadcrumb" breadcrumb="">
-<li class="breadcrumb-item"><a href="#!/agents">Agents</a></li>
+<li class="breadcrumb-item"><a href="#/agents">Agents</a></li>
 <li class="breadcrumb-item active">{{agent.agent_name}}</li>
   <!-- Breadcrumb Menu-->
   <li class="breadcrumb-menu">
@@ -17,7 +17,7 @@
           <div class="card-header">
             <strong>Intents</strong>
             <span class="float-right">
-              <a class="btn btn-outline-primary" href="#!/agent/{{agent.agent_id}}/intent/add"  data-toggle="tooltip" data-placement="top" title="Click to Add a New Intent" tooltip><i class="icon-plus"></i> &nbsp;Add Intent</a>
+              <a class="btn btn-outline-primary" href="#/agent/{{agent.agent_id}}/intent/add"  data-toggle="tooltip" data-placement="top" title="Click to Add a New Intent" tooltip><i class="icon-plus"></i> &nbsp;Add Intent</a>
             </span>
           </div>
           <div class="card-block">
@@ -25,7 +25,7 @@
               <div class="col-sm-12">
                 <div class="list-group" dir-paginate="intent in intentList  | itemsPerPage: 5" pagination-id="intentsList">
                   <div class="list-group-item">
-                    <a href="#!/agent/{{intent.agent_id}}/intent/{{intent.intent_id}}">{{intent.intent_name}}</a>
+                    <a href="#/agent/{{intent.agent_id}}/intent/{{intent.intent_id}}">{{intent.intent_name}}</a>
                   </div>
               </div>
             </div>
@@ -42,7 +42,7 @@
         <div class="card-header">
           <strong>Entities</strong>
           <span class="float-right">
-            <a class="btn btn-outline-primary" href="#!/agent/{{agent.agent_id}}/entity/add" data-toggle="tooltip" data-placement="top" title="Click to Add a New Entity" tooltip><i class="icon-plus"></i> &nbsp;Add Entity</a>
+            <a class="btn btn-outline-primary" href="#/agent/{{agent.agent_id}}/entity/add" data-toggle="tooltip" data-placement="top" title="Click to Add a New Entity" tooltip><i class="icon-plus"></i> &nbsp;Add Entity</a>
           </span>
         </div>
         <div class="card-block">
@@ -50,7 +50,7 @@
             <div class="col-sm-12">
               <div class="list-group" dir-paginate="entity in entitiesList  | itemsPerPage: 5" pagination-id="entitiesList">
                 <div class="list-group-item">
-                  <a href="#!/agent/{{agent.agent_id}}/entity/{{entity.entity_id}}/synonyms">{{ entity.entity_name }}</a>
+                  <a href="#/agent/{{agent.agent_id}}/entity/{{entity.entity_id}}/synonyms">{{ entity.entity_name }}</a>
                 </div>
             </div>
           </div>
@@ -82,7 +82,7 @@
               <div class="col-sm-12">
                 <div class="list-group" dir-paginate="action in actionsList  | itemsPerPage: 5" pagination-id="actionsList">
                   <div class="list-group-item">
-                    <a href="#!/agent/{{agent.agent_id}}/action/edit/{{action.action_id}}">{{ action.action_name }}</a>
+                    <a href="#/agent/{{agent.agent_id}}/action/edit/{{action.action_id}}">{{ action.action_name }}</a>
                   </div>
               </div>
             </div>
@@ -99,7 +99,7 @@
         <div class="card-header">
           <strong>Stories</strong>
           <span class="float-right">
-            <a class="btn btn-outline-primary" href="#!/agent/{{agent.agent_id}}/stories" data-toggle="tooltip" data-placement="top" title="Click to change a story" tooltip><i class="fa fa-hand-o-right"></i> &nbsp;Stories Editor</a>
+            <a class="btn btn-outline-primary" href="#/agent/{{agent.agent_id}}/stories" data-toggle="tooltip" data-placement="top" title="Click to change a story" tooltip><i class="fa fa-hand-o-right"></i> &nbsp;Stories Editor</a>
           </span>
         </div>
         <div class="card-block">

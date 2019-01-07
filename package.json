@@ -3,6 +3,7 @@
   "version": "2.3.2",
   "description": "Rasa UI is a web application built on top of, and for, Rasa NLU.",
   "dependencies": {
+    "adal-angular": "^1.0.17",
     "angular": "1.7.2",
     "angular-chart.js": "^1.1.1",
     "angular-cookies": "1.7.2",
@@ -29,6 +30,7 @@
     "ng-tags-input": "^3.2.0",
     "ngstorage": "^0.3.11",
     "node-cache": "^4.1.1",
+    "passport-azure-ad": "^4.0.0",
     "pg-promise": "^8.5.4",
     "popper.js": "latest",
     "request": "^2.88.0",
@@ -49,7 +51,10 @@
     "cacheagents": false,
     "jwtsecret": "th1s1sn0t0nlyths3cr3tbutth3m0st1mp0rtAntp13c30f1nf0rmAt10nf0rth1sAppl1cAt10n",
     "postgresserver": "postgres://postgres:rasaui@localhost:5432/rasaui",
-    "rasanlufixedmodelname": ""
+    "rasanlufixedmodelname": "",
+    "azureadauthentication": false,
+    "azureadtenantid": "91f15101-0cac-45c1-8710-cd08874eebab",
+    "azureddclientid": "3836863c-92af-4d2d-a3e1-8b9276ab3f5e"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

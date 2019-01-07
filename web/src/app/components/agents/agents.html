@@ -3,8 +3,8 @@
         <!-- Breadcrumb Menu-->
         <li class="breadcrumb-menu">
             <div class="btn-group" role="group">
-                <a class="btn btn-outline-secondary" href="#!/agent/import"><i class="fa fa-upload"></i> &nbsp;Import Agent</a>
-                <a class="btn btn-outline-secondary" href="#!/agent/add"><i class="icon-plus"></i> &nbsp;Add Agent</a>
+                <a class="btn btn-outline-secondary" href="#/agent/import"><i class="fa fa-upload"></i> &nbsp;Import Agent</a>
+                <a class="btn btn-outline-secondary" href="#/agent/add"><i class="icon-plus"></i> &nbsp;Add Agent</a>
             </div>
         </li>
 </ol>
@@ -15,7 +15,7 @@
               <div id="accordion" role="tablist">
                 <div class="card" dir-paginate="agent in agentList  | itemsPerPage: 7" pagination-id="agentsList">
                   <div class="card-header" role="tab" id="headingOne">
-                    <span><a ng-href="#!/agent/{{agent.agent_id}}">{{ agent.agent_name }}</a></span>
+                    <span><a ng-href="#/agent/{{agent.agent_id}}">{{ agent.agent_name }}</a></span>
                     <span class="float-right">
                       <a style="border:0; padding: 0.2rem;" class="btn btn-outline-secondary" data-toggle="collapse" data-target="#agent_{{agent.agent_id}}" aria-expanded="true" aria-controls="collapseOne">
                       <i class="fa fa-cog fa-lg header-buttons"></i></a>

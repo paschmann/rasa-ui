@@ -35,6 +35,10 @@
     <script src="scripts/simplemde/dist/simplemde.min.js"></script>
     <script src="scripts/angular-modal-service/dst/angular-modal-service.min.js"></script>
 
+    <!-- ADAL -->
+    <script src="scripts/adal-angular/dist//adal.min.js"></script>
+    <script src="scripts/adal-angular/dist//adal-angular.min.js"></script>
+
     <!-- 3rd Party CSS -->
     <link
       href="scripts/jsonformatter/dist/json-formatter.css"
@@ -66,6 +70,7 @@
 
     <!-- general js scripts -->
     <script src="app/utils.js"></script>
+    <script src="app/config/app.config.js"></script>
 
     <!-- Components/pages -->
     <script src="app/components/dashboard/dashboard.js"></script>
@@ -148,7 +153,7 @@
         <div ng-include="'/app/shared/aside/aside.html'"></div>
       </div>
     </div>
-    <div ng-if="!authenticated">
+    <div ng-if="!authenticated && !azureadauthentication" ng-cloak>
       <div class="row" style="padding-top:100px;">
         <div class="col-sm-4"></div>
         <div class="col-sm-4">

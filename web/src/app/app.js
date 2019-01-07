@@ -14,7 +14,8 @@ var app = angular
     "ngStorage",
     "ngTagsInput",
     "jsonFormatter",
-    "angularModalService"
+    "angularModalService",
+    "AdalAngular"
   ])
   .config(function config() {
     function success(response) {
@@ -39,7 +40,10 @@ var app = angular
       ioSocket: io.connect()
     });
   })
-  .run(function run($rootScope, $http, $sessionStorage) {
+  .run(function run($rootScope, $http, $sessionStorage, appConfig) {
+
+    $rootScope.azureadauthentication = appConfig.azureadauthentication;
+
     // keep user logged in after page refresh
     if ($sessionStorage.jwt) {
       $rootScope.authenticated = true;
@@ -73,7 +77,9 @@ angular
     $timeout,
     $http,
     $sessionStorage,
-    $cookies
+    $cookies,
+    adalAuthenticationService,
+    appConfig
   ) {
     $scope.$route = $route;
     $scope.$location = $location;
@@ -112,4 +118,44 @@ angular
         }
       );
     };
+
+    // ADAL
+    if (appConfig.azureadauthentication) {
+      // this is referencing adal module to do login
+      //userInfo is defined at the $rootscope with adalAngular module
+      $scope.testMessage = "";
+      $scope.init = function () {
+          $scope.testMessage = "";
+      };
+
+      $scope.logout = function () {
+          adalAuthenticationService.logOut();
+      };
+
+      $scope.login = function () {
+          adalAuthenticationService.login();
+      };
+
+      // optional
+      $scope.$on("adal:loginSuccess", function () {
+          $scope.testMessage = "loginSuccess";
+
+          // Inject Azure Token_ID as JWT Token
+          var clientID = appConfig.azureddclientid;
+          $sessionStorage.jwt = adalAuthenticationService.getCachedToken(clientID);
+          $cookies.put('loggedinjwt', $sessionStorage.jwt);
+          $rootScope.$broadcast("USER_AUTHENTICATED");
+      });
+
+      // optional
+      $scope.$on("adal:loginFailure", function () {
+          $scope.testMessage = "loginFailure";
+          $location.path("/login");
+      });
+
+      // optional
+      $scope.$on("adal:notAuthorized", function (event, rejection, forResource) {
+          $scope.testMessage = "It is not Authorized for resource:" + forResource;
+      });
+    }
   });
