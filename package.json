@@ -50,7 +50,7 @@
     "nlusecuritytoken": "",
     "cacheagents": false,
     "jwtsecret": "th1s1sn0t0nlyths3cr3tbutth3m0st1mp0rtAntp13c30f1nf0rmAt10nf0rth1sAppl1cAt10n",
-    "postgresserver": "postgres://postgres:rasaui@localhost:5432/rasaui",
+    "postgresserver": "postgres://rasaui:compose@localhost:5432/rasaui",
     "rasanlufixedmodelname": "",
     "azureadauthentication": false,
     "azureadtenantid": "91f15101-0cac-45c1-8710-cd08874eebab",
@@ -58,7 +58,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/server.js"
+    "start": "node server/server.js",
+    "start:local": "node server/server.js --inspect"
   },
   "author": "Paul Aschmann",
   "url": "https://github.com/paschmann/rasa-ui",

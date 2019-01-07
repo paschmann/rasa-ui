@@ -36,7 +36,7 @@ function parseRasaRequest(req, res, next) {
   messageObj.message_rich = null
   messageObj.user_message_ind = true;
 
-  if (agentObj == undefined && agent_name == undefined) {
+  if (agentObj == undefined && agent_name == undefined) {;
     routeRequest(req, res, next, messageObj);
   } else if (agentObj == undefined) {
     console.log("Cache Not Found for Agent. Making a DB call for: "+ agent_name);

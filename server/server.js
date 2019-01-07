@@ -96,6 +96,10 @@ app.use(function(req, res, next) {
             message: 'No token provided.'
           });
         }
+
+        // if everything is good, save to request for use in other routes
+        req.jwt = user;
+        //req.original_token=user;
         next();
   
       }) (req, res, next);
