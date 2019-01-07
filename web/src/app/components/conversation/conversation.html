@@ -66,7 +66,7 @@
                 ng-click="editIntent(message)"
               >
                 <span ng-if="message.intent_name"
-                  >{{ message.intent_name }}
+                  >{{ message.intent_name | noUnderscore }}
                   <img src="assets/img/edit.svg" class="icon" />
                 </span>
                 <span ng-if="!message.intent_name"
@@ -87,7 +87,7 @@
         </div>
       </div>
     </div>
-    <div class="col-sm-3 col-lg-3">
+    <div class="col-sm-6 col-lg-6">
       <div class="card">
         <div class="card-header"><strong>Entities</strong></div>
         <div class="card-block" id="entities">
