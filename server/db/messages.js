@@ -23,7 +23,7 @@ function getUniqueUsersList(req, res, next) {
   var agent_id = parseInt(req.params.agent_id);
   var limit = req.query.limit ? parseInt(req.query.limit) : 10;
   db.any(
-    "select user_id, MAX(timestamp) as recent_active  from messages_expressions where agent_id=$1 group by user_id order by recent_active desc limit $2",
+    "select user_id, MAX(timestamp) as recent_active from messages_expressions where agent_id=$1 and user_id IS NOT NULL group by user_id order by recent_active desc limit $2",
     [agent_id, limit]
   )
     .then(function(data) {
