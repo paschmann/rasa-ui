@@ -130,6 +130,7 @@ angular
 
       $scope.logout = function () {
           adalAuthenticationService.logOut();
+          $rootScope.$broadcast("INVALID_JWT_TOKEN");
       };
 
       $scope.login = function () {
