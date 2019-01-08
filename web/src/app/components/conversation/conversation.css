@@ -111,6 +111,9 @@
 td {
   text-align: center;
 }
+#entities table thead {
+  background-color: #f0f3f5;
+}
 
 #entities table td {
   border: none;
@@ -138,4 +141,8 @@ td {
 }
 #entities .icon {
   cursor: pointer;
+}
+#entity-add-help {
+  height: 16px;
+  cursor: help;
 }

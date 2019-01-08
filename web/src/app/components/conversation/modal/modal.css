@@ -2,9 +2,6 @@
   max-width: 750px;
   width: 40%;
   min-width: 400px;
-  -webkit-transform: translate(0, 50%) !important;
-  transform: translate(0, 50%) !important;
-  margin: 0 auto;
 }
 .modal .card {
   border: 0;

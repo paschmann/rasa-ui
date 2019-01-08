@@ -89,14 +89,20 @@
     </div>
     <div class="col-sm-6 col-lg-6">
       <div class="card">
-        <div class="card-header"><strong>Entities</strong></div>
+        <div class="card-header"><strong>Entities</strong>
+          <img
+          src="assets/img/info.svg"
+          class="icon"
+          id="entity-add-help"
+          title="Select text in a message with an intent to add an entity"
+        /></div>
         <div class="card-block" id="entities">
           <table class="table table-bordered">
             <thead>
               <tr>
                 <th>Tags</th>
                 <th>Entities</th>
-                <th>Remove</th>
+                <th>Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -117,6 +123,16 @@
                     class="icon"
                     ng-click="deleteEntity(entity, $index)"
                   />
+                </td>
+              </tr>
+              <tr
+                ng-if="conversationEntities.length === 0"
+                ensure-element-in-view
+              >
+                <td class="parameter">No entities in this conversation</td>
+                </td>
+                <td></td>
+                <td>
                 </td>
               </tr>
             </tbody>
