@@ -8,18 +8,18 @@ angular.module("app").directive("selection", [
 
         document.addEventListener("selectionchange", function(event) {
           const entityAddElemHeight = entityAddElem.offsetHeight;
-
           const selection = window.getSelection();
+
           let intent;
-          if (selection.baseNode) {
-            intent = selection.baseNode.parentElement.parentElement.querySelector(
+          if (selection.anchorNode) {
+            intent = selection.anchorNode.parentElement.parentElement.querySelector(
               ".intent"
             );
           }
 
           if (
-            selection.baseNode &&
-            selection.baseNode.parentElement.parentElement.classList.contains(
+            selection.anchorNode &&
+            selection.anchorNode.parentElement.parentElement.classList.contains(
               "message"
             ) &&
             intent &&
@@ -41,7 +41,7 @@ angular.module("app").directive("selection", [
 
             $rootScope.$broadcast("entitySelected", {
               selectedText,
-              messageId: selection.baseNode.parentElement.parentElement.id
+              messageId: selection.anchorNode.parentElement.parentElement.id
             });
           } else {
             entityAddElem.style.visibility = "hidden";
