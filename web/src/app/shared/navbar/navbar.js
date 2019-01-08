@@ -1,8 +1,8 @@
 angular
-.module('app')
-.controller('NavBarController', NavBarController)
+  .module('app')
+  .controller('NavBarController', NavBarController)
 
-function NavBarController($scope, $rootScope) {
+function NavBarController($scope, $rootScope, adalAuthenticationService, appConfig) {
   $scope.toggleAside = function () {
     if (angular.element('body').hasClass('aside-menu-hidden')) {
       angular.element('body').removeClass('aside-menu-hidden').addClass('aside-menu-fixed');
@@ -20,6 +20,9 @@ function NavBarController($scope, $rootScope) {
   }
 
   $scope.logout = function(){
+    if (appConfig.azureadauthentication) {
+        adalAuthenticationService.logOut();
+    }
     $rootScope.$broadcast("INVALID_JWT_TOKEN");
   }
 }
