@@ -91,6 +91,8 @@ app.use("/scripts", express.static("node_modules/"));
 
 // route middleware to verify a token
 app.use(function(req, res, next) {
+  console.log("route middleware to verify a token");
+
   if (req.originalUrl.endsWith("health")) {
     next();
   } else {
@@ -99,7 +101,7 @@ app.use(function(req, res, next) {
       !req.originalUrl.endsWith("logEvents")
     ) {
       // Azure AD authentication
-      passport.authenticate("oauth-bearer", function(err, user, info) {
+      passport.authenticate("oauth-bearer", (err, user, info) => {
         console.log("passport.authenticate err", err);
         console.log("passport.authenticate user", user);
         console.log("passport.authenticate info", info);
@@ -110,23 +112,22 @@ app.use(function(req, res, next) {
             success: false,
             message: "No token provided."
           });
-          // next(err);
-        }
-
-        if (!user) {
-          console.error("ERROR JWT token verify failed");
-          res.status(401).send({
-            success: false,
-            message: "No token provided."
-          });
         } else {
-          // if everything is good, save to request for use in other routes
-          req.jwt = user;
-          //req.original_token=user;
+          if (!user) {
+            console.error("ERROR JWT token verify failed");
+            res.status(401).send({
+              success: false,
+              message: "No token provided."
+            });
+          } else {
+            // if everything is good, save to request for use in other routes
+            req.jwt = user;
+            //req.original_token=user;
 
-          // Azure AD token has no username field;Propagate sessionId
-          req.jwt.username = "admin";
-          next();
+            // Azure AD token has no username field;Propagate sessionId
+            req.jwt.username = "admin";
+            next();
+          }
         }
       })(req, res, next);
     } else {
