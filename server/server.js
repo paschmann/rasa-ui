@@ -110,7 +110,7 @@ app.use(function(req, res, next) {
             success: false,
             message: "No token provided."
           });
-          // return next(err);
+          // next(err);
         }
 
         if (!user) {
@@ -119,15 +119,15 @@ app.use(function(req, res, next) {
             success: false,
             message: "No token provided."
           });
+        } else {
+          // if everything is good, save to request for use in other routes
+          req.jwt = user;
+          //req.original_token=user;
+
+          // Azure AD token has no username field;Propagate sessionId
+          req.jwt.username = "admin";
+          next();
         }
-
-        // if everything is good, save to request for use in other routes
-        req.jwt = user;
-        //req.original_token=user;
-
-        // Azure AD token has no username field;Propagate sessionId
-        req.jwt.username = "admin";
-        next();
       })(req, res, next);
     } else {
       // Basic Authentication
