@@ -116,9 +116,9 @@ app.factory("Regex", [
   }
 ]);
 
-app.factory("EntitySynonyms", function($resource) {
-  return $resource(api_endpoint_v2 + "/entity/:entity_id/synonyms", {
-    entity_id: "@id"
+app.factory("AgentSynonyms", function($resource) {
+  return $resource(api_endpoint_v2 + "/agent/:agent_id/synonyms", {
+    agent_id: "@id"
   });
 });
 
@@ -129,9 +129,15 @@ app.factory("AgentEntities", function($resource) {
 });
 
 app.factory("Synonym", function($resource) {
-  return $resource(api_endpoint_v2 + "/synonyms/:synonym_id", {
-    synonym_id: "@id"
-  });
+  return $resource(
+    api_endpoint_v2 + "/synonyms/:synonym_id",
+    {
+      synonym_id: "@id"
+    },
+    {
+      query: { method: "GET", isArray: false }
+    }
+  );
 });
 
 app.factory("EntitySynonymVariants", function($resource) {

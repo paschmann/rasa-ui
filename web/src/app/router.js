@@ -18,11 +18,12 @@ app.config(function(
   );
 
   // Avoid AAD login loop
-  $locationProvider.html5Mode({
-    enabled: false,
-    //requireBase: false
-  }).hashPrefix('');
-
+  $locationProvider
+    .html5Mode({
+      enabled: false
+      //requireBase: false
+    })
+    .hashPrefix("");
 
   $routeProvider
     .when("/", {
@@ -121,11 +122,17 @@ app.config(function(
       templateUrl: "/app/components/regex/edit_regex.html",
       activePage: "regex"
     })
-    .when("/agent/:agent_id/entity/:entity_id/synonyms", {
+    .when("/agent/:agent_id/synonym/:synonym_id", {
       requireADLogin: appConfig.azureadauthentication,
       controller: "SynonymController",
       templateUrl: "/app/components/synonyms/synonyms.html",
-      activePage: "entities"
+      activePage: "agents"
+    })
+    .when("/agent/:agent_id/synonyms/add", {
+      requireADLogin: appConfig.azureadauthentication,
+      controller: "SynonymController",
+      templateUrl: "/app/components/synonyms/synonyms.html",
+      activePage: "agents"
     })
     .when("/rasaconfig", {
       requireADLogin: appConfig.azureadauthentication,

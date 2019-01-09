@@ -79,14 +79,14 @@ router.post("/regex", regex.createRegex);
 router.put("/regex/:regex_id", regex.updateRegex);
 router.delete("/regex/:regex_id", regex.removeRegex);
 
-router.get("/entity/:entity_id/synonyms", synonyms.getEntitySynonyms);
+router.get("/agent/:agent_id/synonyms", synonyms.getAgentSynonyms);
 router.get("/synonyms/:synonym_id", synonyms.getSingleSynonym);
-router.post("/synonyms", synonyms.createEntitySynonym);
+router.post("/synonyms", synonyms.createAgentSynonym);
 router.delete("/synonyms/:synonym_id", synonyms.removeSynonym);
 
 router.get("/entity_synonym_variants", variants.getEntitySynonymVariantsQuery); //Used for training
 
-router.get("/synonyms/:synonym_id/variants", variants.getEntitySynonymVariants);
+router.get("/synonyms/:synonym_id/variants", variants.getSynonymVariants);
 router.get("/variants/:synonym_variant_id", variants.getSingleVariant);
 router.get("/synonymvariants", variants.getAllSynonymVariants);
 router.post("/variants", variants.createVariant);
