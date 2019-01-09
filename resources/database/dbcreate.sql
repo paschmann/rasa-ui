@@ -217,11 +217,11 @@ TABLESPACE pg_default;
 CREATE TABLE synonyms
 (
   synonym_id integer NOT NULL DEFAULT nextval('synonyms_synonym_id_seq'::regclass),
-  entity_id integer NOT NULL,
+  agent_id integer NOT NULL,
   synonym_reference character varying COLLATE pg_catalog."default" NOT NULL,
   CONSTRAINT synonyms_pkey PRIMARY KEY (synonym_id),
-  CONSTRAINT entity_fkey FOREIGN KEY (entity_id) 
-      REFERENCES entities (entity_id) 
+  CONSTRAINT agent_fkey FOREIGN KEY (agent_id) 
+      REFERENCES agents (agent_id) 
       ON DELETE CASCADE
 )
 WITH (
@@ -463,16 +463,6 @@ GROUP BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text))
 ORDER BY (to_char(nlu_parse_log."timestamp", 'MM/DD'::text)) asc
 LIMIT 30;
 
-CREATE OR REPLACE VIEW entity_synonym_variants AS
-SELECT synonyms.entity_id,
-synonyms.synonym_id,
-synonym_variant.synonym_variant_id,
-synonym_variant.synonym_value,
-synonyms.synonym_reference
-FROM synonym_variant
-JOIN synonyms ON synonyms.synonym_id = synonym_variant.synonym_id;
-
-
 CREATE OR REPLACE VIEW expression_parameters AS
 SELECT parameters.expression_id,
 parameters.parameter_required,
@@ -486,7 +476,6 @@ entities.entity_name
 FROM parameters
 JOIN expressions ON parameters.expression_id = expressions.expression_id
 LEFT JOIN entities ON entities.entity_id = parameters.entity_id;
-
 
 CREATE OR REPLACE VIEW intent_usage_total AS
 SELECT count(*) AS count
