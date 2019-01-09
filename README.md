@@ -26,6 +26,7 @@ Rasa UI is a web application built on top of, and for, [Rasa NLU](https://github
 - Log requests for usage tracking, history, improvements
 - Usage dashboard
 - Easily execute intent parsing using different models
+- Manage synonyms at agent level
 
 ![Screenshot1](https://github.com/paschmann/rasa-ui/blob/master/resources/rasa_ui_1.png)
 
