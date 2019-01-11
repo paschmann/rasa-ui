@@ -104,6 +104,12 @@ app.config(function(
       templateUrl: "/app/components/entities/add_entity.html",
       activePage: "entities"
     })
+    .when("/agent/:agent_id/entity/:entity_id", {
+      requireADLogin: appConfig.azureadauthentication,
+      controller: "EntityController as entity",
+      templateUrl: "/app/components/entities/entity.html",
+      activePage: "agents"
+    })
     .when("/agent/:agent_id/regex/add", {
       requireADLogin: appConfig.azureadauthentication,
       controller: "AddRegexController as addentity",
@@ -171,7 +177,5 @@ app.config(function(
       templateUrl: "/app/components/settings/settings.html",
       activePage: "settings"
     })
-    .otherwise({
-      redirectTo: "/"
-    });
+    .otherwise({ redirectTo: "/" });
 });
