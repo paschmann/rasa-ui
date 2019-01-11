@@ -73,7 +73,7 @@ router.post("/entities", entities.createEntity);
 router.put("/entities/:entity_id", entities.updateEntity);
 router.delete("/entities/:entity_id", entities.removeEntity);
 
-router.get("/regex", regex.getAllRegex);
+router.get("/agent/:agent_id/regex", regex.getAgentRegex);
 router.get("/regex/:regex_id", regex.getSingleRegex);
 router.post("/regex", regex.createRegex);
 router.put("/regex/:regex_id", regex.updateRegex);

@@ -152,6 +152,50 @@
           </div>
         </div>
       </div>
+      <div class="col-sm-6 col-lg-6">
+        <div class="card">
+          <div class="card-header">
+            <strong>Regex</strong>
+            <span class="float-right">
+              <a
+                class="btn btn-outline-primary"
+                href="#/agent/{{ agent.agent_id }}/regex/add"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Click to Add a New Regex"
+                tooltip
+                ><i class="icon-plus"></i> &nbsp;Add Regex</a
+              >
+            </span>
+          </div>
+          <div class="card-block">
+            <div class="row">
+              <div class="col-sm-12">
+                <div
+                  class="list-group"
+                  dir-paginate="regex in regexList  | itemsPerPage: 5"
+                  pagination-id="regexList"
+                >
+                  <div class="list-group-item">
+                    <a
+                      href="#/agent/{{ agent.agent_id }}/regex/{{
+                        regex.regex_id
+                      }}"
+                      >{{ regex.regex_name }}</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br />
+            <div style="float:right">
+              <dir-pagination-controls
+                pagination-id="regexList"
+              ></dir-pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="row">
       <div class="col-sm-12 col-lg-12">

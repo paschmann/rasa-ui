@@ -104,19 +104,13 @@ app.config(function(
       templateUrl: "/app/components/entities/add_entity.html",
       activePage: "entities"
     })
-    .when("/regex", {
-      requireADLogin: appConfig.azureadauthentication,
-      controller: "RegexController as regex",
-      templateUrl: "/app/components/regex/regex.html",
-      activePage: "regex"
-    })
-    .when("/regex/add", {
+    .when("/agent/:agent_id/regex/add", {
       requireADLogin: appConfig.azureadauthentication,
       controller: "AddRegexController as addentity",
       templateUrl: "/app/components/regex/add_regex.html",
       activePage: "regex"
     })
-    .when("/regex/:regex_id", {
+    .when("/agent/:agent_id/regex/:regex_id", {
       requireADLogin: appConfig.azureadauthentication,
       controller: "EditRegexController as editregex",
       templateUrl: "/app/components/regex/edit_regex.html",

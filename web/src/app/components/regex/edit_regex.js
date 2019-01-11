@@ -1,23 +1,29 @@
-angular
-.module('app')
-.controller('EditRegexController', EditRegexController)
+angular.module("app").controller("EditRegexController", EditRegexController);
 
-function EditRegexController($scope, Regex) {
+function EditRegexController($scope, Regex, Agent) {
   $scope.message = "";
 
-  Regex.get({regex_id: $scope.$routeParams.regex_id}, function(data) {
-      $scope.regex = data;
+  Agent.get({ agent_id: $scope.$routeParams.agent_id }, function(data) {
+    $scope.agent = data;
+  });
+
+  Regex.get({ regex_id: $scope.$routeParams.regex_id }, function(data) {
+    $scope.regex = data;
   });
 
   $scope.deleteRegex = function() {
-    Regex.remove({regex_id: $scope.$routeParams.regex_id}).$promise.then(function(resp) {
-      $scope.go('/regex');
-    });
+    Regex.remove({ regex_id: $scope.$routeParams.regex_id }).$promise.then(
+      function(resp) {
+        $scope.go(`/agent/${$scope.$routeParams.agent_id}`);
+      }
+    );
   };
 
   $scope.editRegex = function(agent) {
-    Regex.update({ regex_id: $scope.regex.regex_id }, $scope.regex).$promise.then(function() {
-      $scope.go('/regex/' + $scope.regex.regex_id);
+    Regex.update(
+      { regex_id: $scope.regex.regex_id },
+      $scope.regex
+    ).$promise.then(function() {
       $scope.message = "Regex updated successfully";
     });
   };

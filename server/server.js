@@ -91,8 +91,6 @@ app.use("/scripts", express.static("node_modules/"));
 
 // route middleware to verify a token
 app.use(function(req, res, next) {
-  console.log("route middleware to verify a token");
-
   if (req.originalUrl.endsWith("health")) {
     next();
   } else {
@@ -102,10 +100,6 @@ app.use(function(req, res, next) {
     ) {
       // Azure AD authentication
       passport.authenticate("oauth-bearer", (err, user, info) => {
-        console.log("passport.authenticate err", err);
-        console.log("passport.authenticate user", user);
-        console.log("passport.authenticate info", info);
-
         if (err) {
           console.error("ERROR passport.authenticate oauth-bearer");
           res.status(401).send({
