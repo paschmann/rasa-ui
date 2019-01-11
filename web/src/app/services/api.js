@@ -116,6 +116,15 @@ app.factory("Regex", [
   }
 ]);
 
+app.factory("AgentRegex", [
+  "$resource",
+  function($resource) {
+    return $resource(api_endpoint_v2 + "/agent/:agent_id/regex", {
+      agent_id: "@id"
+    });
+  }
+]);
+
 app.factory("AgentSynonyms", function($resource) {
   return $resource(api_endpoint_v2 + "/agent/:agent_id/synonyms", {
     agent_id: "@id"

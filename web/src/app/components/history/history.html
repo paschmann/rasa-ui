@@ -22,7 +22,7 @@
                       >
                         <option
                           ng-repeat="agent in agentList"
-                          value="{{agent.agent_id}}"
+                          value="{{ agent.agent_id }}"
                           >{{ agent.agent_name }}</option
                         >
                       </select>
@@ -69,16 +69,13 @@
                 <tr
                   ng-repeat="user in users | orderBy:'-chatlog.timestamp'"
                   ng-if="users.length > 0"
+                  ng-click="goToConversation(user.user_id)"
                 >
-                  <td>
-                    <a
-                      ng-href="#/conversation/{{selectedAgentId}}/{{user.user_id}}"
-                    >
-                      {{ user.user_id }}</a
-                    >
-                  </td>
+                  <td>{{ user.user_id }}</td>
                   <td>{{ user.chatlog.timestamp }}</td>
-                  <td>{{ user.chatlog.noMatchNumber }}</td>
+                  <td ng-class="{'no-match': user.chatlog.noMatchNumber > 0 }">
+                    {{ user.chatlog.noMatchNumber }}
+                  </td>
                   <td>{{ user.chatlog.intentsNumber }}</td>
                 </tr>
               </tbody>

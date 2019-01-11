@@ -60,14 +60,17 @@
 .message-wrapper.user {
   align-items: flex-end;
 }
-.message-wrapper .no-match {
-  color: #b60000;
-}
+
 .message-wrapper .intent {
   cursor: pointer;
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+  font-size: 15px;
+  color: #0ad;
+}
+.message-wrapper .no-match {
+  color: #b60000;
 }
 .message-wrapper .intent span {
   display: flex;

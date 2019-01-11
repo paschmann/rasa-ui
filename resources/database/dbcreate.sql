@@ -259,7 +259,9 @@ CREATE TABLE regex
   regex_id integer NOT NULL DEFAULT nextval('regex_id_seq'::regclass),
   regex_name character varying COLLATE pg_catalog."default",
   regex_pattern character varying COLLATE pg_catalog."default",
-  CONSTRAINT regex_id_pk PRIMARY KEY (regex_id)
+  agent_id integer NOT NULL,
+  CONSTRAINT regex_id_pk PRIMARY KEY (regex_id),
+  CONSTRAINT agent_fkey FOREIGN KEY (agent_id) REFERENCES agents (agent_id) ON DELETE CASCADE
 )
 WITH (
   OIDS = FALSE

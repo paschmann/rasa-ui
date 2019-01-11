@@ -7,7 +7,8 @@ function EditAgentController(
   AgentEntities,
   Actions,
   AgentActions,
-  AgentSynonyms
+  AgentSynonyms,
+  AgentRegex
 ) {
   Agent.get({ agent_id: $scope.$routeParams.agent_id }, function(data) {
     $scope.agent = data;
@@ -35,6 +36,10 @@ function EditAgentController(
     data
   ) {
     $scope.synonymsList = data;
+  });
+
+  AgentRegex.query({ agent_id: $scope.$routeParams.agent_id }, function(data) {
+    $scope.regexList = data;
   });
 
   function parseStories(story_details) {

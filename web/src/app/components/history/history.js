@@ -1,6 +1,6 @@
 angular.module("app").controller("HistoryController", HistoryController);
 
-function HistoryController($scope, $http, Agent) {
+function HistoryController($scope, $http, $location, Agent) {
   $scope.users = [];
   $scope.selectedAgentId = "";
   Agent.query(function(data) {
@@ -48,6 +48,10 @@ function HistoryController($scope, $http, Agent) {
       },
       function(errorResponse) {}
     );
+  };
+
+  $scope.goToConversation = function(userId) {
+    $location.path(`/conversation/${$scope.selectedAgentId}/${userId}`);
   };
 
   getFormattedChatlog = function(chatlog) {
