@@ -84,7 +84,7 @@ router.get("/synonyms/:synonym_id", synonyms.getSingleSynonym);
 router.post("/synonyms", synonyms.createAgentSynonym);
 router.delete("/synonyms/:synonym_id", synonyms.removeSynonym);
 
-router.get("/entity_synonym_variants", variants.getEntitySynonymVariantsQuery); //Used for training
+router.get("/synonyms_variants/:synonyms_id", variants.getSynonymsVariants); //Used for training
 
 router.get("/synonyms/:synonym_id/variants", variants.getSynonymVariants);
 router.get("/variants/:synonym_variant_id", variants.getSingleVariant);

@@ -155,8 +155,10 @@ app.factory("EntitySynonymVariants", function($resource) {
   });
 });
 
-app.factory("EntitySynonymVariantsByEntity", function($resource) {
-  return $resource(api_endpoint_v2 + "/entity_synonym_variants");
+app.factory("SynonymsVariants", function($resource) {
+  return $resource(api_endpoint_v2 + "/synonyms_variants/:synonyms_id", {
+      synonyms_id: "@id"
+  });
 });
 
 app.factory("SynonymVariant", function($resource) {
