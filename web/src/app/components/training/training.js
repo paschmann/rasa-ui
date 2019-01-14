@@ -40,7 +40,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
   $scope.savetofile = function() {
       let data = new Blob([JSON.stringify($scope.exportdata, null, 2)], {type: 'text/plain'});
       let a = document.getElementById("a");
-      a.download = "trainingdata.txt";
+      a.download = "trainingdata.json";
       a.href = URL.createObjectURL(data);
       a.click();
   };
@@ -246,8 +246,8 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
           tmpIntent = {};
           tmpExpression = {};
 
-          tmpIntent.intent = intents[intent_i].intent_name;
           tmpIntent.text = expressionList[expression_i].expression_text;
+          tmpIntent.intent = intents[intent_i].intent_name;
 
           tmpIntent.entities = [];
           tmpIntent.expression_id = expressionList[expression_i].expression_id;
