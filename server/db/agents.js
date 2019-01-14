@@ -1,33 +1,34 @@
-const db = require('./db')
+const db = require('./db');
 
 
 function uploadAgentFromFile(req, res, next) {
   console.log("On server request" + JSON.stringify(req.body));
 
   //agent, intent,expressions, entities, , parameters(expression id, entity id)
-  var intents_map = new Map();
-  var entities_map = new Map();
-  var entities_set = new Set();;
-  var nlu_data_arr = req.body.data.rasa_nlu_data.common_examples;
+  let intents_map = new Map();
+  let entities_map = new Map();
+  let entities_set = new Set();
+  let nlu_data_common_examples = req.body.data.rasa_nlu_data.common_examples;
+  let regex_set = req.body.data.rasa_nlu_data.regex_features;
+  let synonyms_set = req.body.data.rasa_nlu_data.entity_synonyms;
   //modify the data structure for db queries
-  console.log("Starting upload... Array Length :" + nlu_data_arr.length);
-  for (var i = 0; i < nlu_data_arr.length; i++) {
-    console.log("Iteration No : " + i + " Intenet: " + nlu_data_arr[i].intent);
-    var expressions_arr;
-    if (intents_map.has(nlu_data_arr[i].intent)) {
-      expressions_arr = intents_map.get(nlu_data_arr[i].intent);
+  console.log("Starting upload... Array Length :" + nlu_data_common_examples.length);
+  for (let i = 0; i < nlu_data_common_examples.length; i++) {
+    console.log("Iteration No : " + i + " Intenet: " + nlu_data_common_examples[i].intent);
+    let expressions_arr;
+    if (intents_map.has(nlu_data_common_examples[i].intent)) {
+      expressions_arr = intents_map.get(nlu_data_common_examples[i].intent);
     } else {
       expressions_arr = [];
     }
-    var expressionObj = new Object();
-    expressionObj.text = nlu_data_arr[i].text;
+    let expressionObj = {};
+    expressionObj.text = nlu_data_common_examples[i].text;
     expressionObj.paramArray = [];
-    var intentEntities = nlu_data_arr[i].entities || [];
-    var entities_query_arr = [];
-    for (j = 0; j < intentEntities.length; j++) {
-      var entityObj = intentEntities[j];
+    let intentEntities = nlu_data_common_examples[i].entities || [];
+    for (let j = 0; j < intentEntities.length; j++) {
+      let entityObj = intentEntities[j];
       entities_set.add(entityObj.entity);
-      var parameterObj = new Object();
+      let parameterObj = {};
       parameterObj.entity = entityObj.entity;
       parameterObj.entity_id = -1;
       parameterObj.parameter_value = entityObj.value;
@@ -38,8 +39,12 @@ function uploadAgentFromFile(req, res, next) {
     }
 
     expressions_arr.push(expressionObj);
-    intents_map.set(nlu_data_arr[i].intent, expressions_arr);
+    intents_map.set(nlu_data_common_examples[i].intent, expressions_arr);
   }
+
+  console.log("REGEX BD :", regex_set);
+  console.log("SYNONYMS BD :", synonyms_set);
+
   console.log("Done Iterations. Inserting data now.");
 
   // data = as returned from the transaction's callback
@@ -48,9 +53,9 @@ function uploadAgentFromFile(req, res, next) {
     return t.one('insert into agents(agent_name) values($1) RETURNING agent_id', [req.body.agent_name])
       .then(agent => {
         console.log("Agent Inserted. Inserting Entites First. These ids are needed for Intents.");
-        var entity_queries_arr = [];
+        let entity_queries_arr = [];
         entities_set.forEach(function (entity) {
-          var entity_query = t.one('insert into entities(entity_name, agent_id, slot_data_type) values($1,$2,$3) RETURNING entity_id', [entity,agent.agent_id,'NOT_USED'])
+          let entity_query = t.one('insert into entities(entity_name, agent_id, slot_data_type) values($1,$2,$3) RETURNING entity_id', [entity,agent.agent_id,'NOT_USED'])
             .then(function (return_entity) {
               console.log("Entity Inserted. Updating map for " + entity);
               entities_map.set(entity, return_entity.entity_id);
@@ -60,22 +65,22 @@ function uploadAgentFromFile(req, res, next) {
           entity_queries_arr.push(entity_query);
         });
         return t.batch(entity_queries_arr)
-        .then(dataAfterAgentAndEntities => {
-          var intents_query_arr = [];
+        .then(() => {
+          let intents_query_arr = [];
           intents_map.forEach(function (expressionsArray, key, map) {
             console.log("Inserting Intent " + key);
-            var intent_query = t.one('insert into intents(agent_id, intent_name) VALUES($1, $2) RETURNING intent_id', [agent.agent_id, key])
+            let intent_query = t.one('insert into intents(agent_id, intent_name) VALUES($1, $2) RETURNING intent_id', [agent.agent_id, key])
               .then(intent => {
-                var expressions_query_arr = [];
+                let expressions_query_arr = [];
                 expressionsArray.forEach(function (expressionObjVal) {
                   console.log("Inserting Expression " + expressionObjVal.text);
-                  var expressions_query = t.one('insert into expressions(intent_id, expression_text) values($1, $2) RETURNING expression_id', [intent.intent_id, expressionObjVal.text])
+                  let expressions_query = t.one('insert into expressions(intent_id, expression_text) values($1, $2) RETURNING expression_id', [intent.intent_id, expressionObjVal.text])
                     .then(expression => {
-                      var parameters_query_arr = [];
-                      var p_arr = expressionObjVal.paramArray;
-                      for (var j = 0; j < p_arr.length; j++) {
-                        var paramObj = p_arr[j];
-                        if (paramObj.entity_id == -1) {
+                      let parameters_query_arr = [];
+                      let p_arr = expressionObjVal.paramArray;
+                      for (let j = 0; j < p_arr.length; j++) {
+                        let paramObj = p_arr[j];
+                        if (paramObj.entity_id === -1) {
                           //updated entityid
                           paramObj.entity_id = entities_map.get(paramObj.entity);
                         }
@@ -93,9 +98,44 @@ function uploadAgentFromFile(req, res, next) {
             intents_query_arr.push(intent_query);
           });
           return t.batch(intents_query_arr);
+        }).then(() => {
+          let regex_query_arr = [];
+          if(typeof regex_set === "undefined") {
+              return
+          }
+          for(let i = 0; i < regex_set.length; i++) {
+              let regex = regex_set[i];
+              let regex_query = t.none('insert into regex(regex_name, regex_pattern, agent_id) values($1,$2,$3)',
+                  [regex.name, regex.pattern, agent.agent_id]);
+              regex_query_arr.push(regex_query);
+          }
+          return t.batch(regex_query_arr)
+        }).then(() => {
+          if(typeof synonyms_set === "undefined") {
+              return
+          }
+          let synonym_query_arr = [];
+          for(let i = 0; i < synonyms_set.length; i++) {
+              let synonym = synonyms_set[i];
+              let synonym_query = t.one('insert into synonyms(agent_id, synonym_reference) values($1, $2) ' +
+                  'RETURNING synonym_id',
+                  [agent.agent_id, synonym.value])
+                  .then(synonym_inserted => {
+                      let variant_query_arr = [];
+                      let variants = synonym.synonyms;
+                      for(let j = 0; j < variants.length; j++) {
+                          let variants_query = t.none('insert into synonym_variant(synonym_value, synonym_id) ' +
+                              'values ($1, $2)', [variants[j], synonym_inserted.synonym_id]);
+                          variant_query_arr.push(variants_query);
+                      }
+                      return t.batch(variant_query_arr);
+                  });
+              synonym_query_arr.push(synonym_query);
+          }
+            return t.batch(synonym_query_arr);
         });
       });
-  }).then(data => {
+  }).then(() => {
     // success. All Data inserted.
     console.log("----- All Data inserted. Sending response back --------");
     return res.status(200).json({});
