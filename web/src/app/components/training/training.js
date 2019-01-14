@@ -246,8 +246,8 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
           tmpIntent = {};
           tmpExpression = {};
 
-          tmpIntent.intent = intents[intent_i].intent_name;
           tmpIntent.text = expressionList[expression_i].expression_text;
+          tmpIntent.intent = intents[intent_i].intent_name;
 
           tmpIntent.entities = [];
           tmpIntent.expression_id = expressionList[expression_i].expression_id;
