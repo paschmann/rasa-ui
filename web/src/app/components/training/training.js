@@ -2,7 +2,8 @@ angular
 .module('app')
 .controller('TrainingController', TrainingController);
 
-function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Agent, Intents, Expressions, Regex, ExpressionParameters, Rasa_Config, IntentExpressions, yaml, AgentEntities, AgentActions, AgentSynonyms, SynonymsVariants) {
+function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Agent, Intents, Expressions, AgentRegex, ExpressionParameters,
+                            Rasa_Config, IntentExpressions, yaml, AgentEntities, AgentActions, AgentSynonyms,  SynonymsVariants) {
   let exportData;
   let statuscheck = $interval(getRasaStatus, 5000);
   $scope.generateError = "";
@@ -76,7 +77,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
       //Fetch rasa core data only if its enabled
       if($scope.selectedAgent.rasa_core_enabled === true)
         populateCoreDomainYaml(agent_id,intents);
-      Regex.query(function (regex) {
+        AgentRegex.query({agent_id: agent_id}, function (regex) {
           AgentSynonyms.query({agent_id: agent_id}, function(synonyms) {
           let intentIds = intents.map(function(item) { return item['intent_id']; }).toString();
           if (intentIds.length > 0) {
