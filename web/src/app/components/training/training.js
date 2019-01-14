@@ -40,7 +40,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
   $scope.savetofile = function() {
       let data = new Blob([JSON.stringify($scope.exportdata, null, 2)], {type: 'text/plain'});
       let a = document.getElementById("a");
-      a.download = "trainingdata.txt";
+      a.download = "trainingdata.json";
       a.href = URL.createObjectURL(data);
       a.click();
   };
