@@ -27,20 +27,16 @@ function getSynonymVariants(req, res, next) {
     });
 }
 
-function getEntitySynonymVariantsQuery(req, res, next) {
-  console.log("variants.getEntitySynonymVariantsQuery");
-  var entityIds = req.query.entity_ids;
-  var sql =
-    "select * from entity_synonym_variants where entity_id in (" +
-    entityIds +
-    ")";
-  db.any(sql)
-    .then(function(data) {
-      res.status(200).json(data);
-    })
-    .catch(function(err) {
-      return next(err);
-    });
+function getSynonymsVariants(req, res, next) {
+    console.log("variants.getSynonymVariants");
+    let synonymsId = req.params.synonyms_id;
+    db.any("select * from synonym_variant where synonym_id in (" + synonymsId + ")")
+        .then(function(data) {
+            res.status(200).json(data);
+        })
+        .catch(function(err) {
+            return next(err);
+        });
 }
 
 function getAllSynonymVariants(req, res, next) {
@@ -118,6 +114,6 @@ module.exports = {
   createVariant: createVariant,
   removeVariant: removeVariant,
   removeSynonymVariants: removeSynonymVariants,
-  getEntitySynonymVariantsQuery: getEntitySynonymVariantsQuery,
+  getSynonymsVariants: getSynonymsVariants,
   getAllSynonymVariants: getAllSynonymVariants
 };
