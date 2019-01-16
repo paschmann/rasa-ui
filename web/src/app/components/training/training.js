@@ -86,7 +86,6 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
               if (expressionIds.length > 0) {
                 ExpressionParameters.query({expression_ids: expressionIds}, function(params) {
                     let synonymsIds = synonyms.map(function(item) { return item['synonym_id']; });
-                    console.log("SYNONYMS ID ", synonymsIds);
                     if(synonymsIds.length > 0) {
                         SynonymsVariants.query({synonyms_id: synonymsIds}, function (variants) {
                             generateData(regex, intents, expressions, params, synonyms, variants);
@@ -260,7 +259,6 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
               tmpParam.end = parameterList[parameter_i].parameter_end;
               tmpParam.value = parameterList[parameter_i].parameter_value;
               tmpParam.entity = parameterList[parameter_i].entity_name;
-              tmpParam.entity_id = parameterList[parameter_i].entity_id;
               tmpIntent.entities.push(tmpParam);
 
               //Check for common errors
