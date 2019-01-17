@@ -75,7 +75,7 @@ function parseRasaRequest(req, res, next) {
 async function routeRequest(req, res, next, agentObj) {
   logger.winston.info('routeRequest');
   if (agentObj !== undefined && agentObj.rasa_core_enabled) {
-    coreRouter.parseRequest(req, res, next, agentObj);
+    core_router.parseRequest(req, res, next, agentObj);
   } else {
     nlu_router.parseRequest(req, res, next, agentObj);
   }
