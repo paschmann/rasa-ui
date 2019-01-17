@@ -44,7 +44,7 @@
   "config": {
     "rasanluendpoint": "http://localhost:5000",
     "rasacoreendpoint": "http://localhost:5005",
-    "rasacorerequestpath": "/conversations/{id}/parse",
+    "rasacorerequestpath": "/webhooks/rest/webhook",
     "coresecuritytoken": "",
     "corejwttoken": "",
     "nlusecuritytoken": "",
