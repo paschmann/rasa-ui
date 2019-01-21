@@ -51,6 +51,7 @@ router.get("/intent_expressions", expressions.getIntentExpressionQuery); //Used 
 
 router.get("/intents/:intent_id/expressions", expressions.getIntentExpressions);
 router.get("/expressions/:expression_id", expressions.getSingleExpression);
+router.put("/expressions/:expression_id", expressions.updateExpression);
 router.post("/expressions", expressions.createIntentExpression);
 router.delete("/expressions/:expression_id", expressions.removeExpression);
 

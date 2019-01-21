@@ -8,18 +8,20 @@ angular.module("app").directive("ensureElementInView", [
       },
       link: function(scope, element, attrs) {
         function ensureElementInView(element, container) {
-          let cTop = container.scrollTop;
-          let cBottom = cTop + container.clientHeight;
+          if (element && container) {
+            let cTop = container.scrollTop;
+            let cBottom = cTop + container.clientHeight;
 
-          //Get element properties
-          let eTop = element.offsetTop;
-          let eBottom = eTop + element.clientHeight;
+            //Get element properties
+            let eTop = element.offsetTop;
+            let eBottom = eTop + element.clientHeight;
 
-          //Check if in view
-          let isInView = eTop >= cTop && eBottom <= cBottom;
+            //Check if in view
+            let isInView = eTop >= cTop && eBottom <= cBottom;
 
-          if (!isInView) {
-            scrollElementToView(container, element);
+            if (!isInView) {
+              scrollElementToView(container, element);
+            }
           }
         }
 
@@ -41,11 +43,15 @@ angular.module("app").directive("ensureElementInView", [
           const element = document.getElementById(scope.elementId);
           const container = document.getElementById(scope.containerId);
           ensureElementInView(element, container);
-          element.classList.add("active");
+          if (element) {
+            element.classList.add("active");
+          }
         });
         element[0].addEventListener("mouseout", function() {
           const element = document.getElementById(scope.elementId);
-          element.classList.remove("active");
+          if (element) {
+            element.classList.remove("active");
+          }
         });
       }
     };

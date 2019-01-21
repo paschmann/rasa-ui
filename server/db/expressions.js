@@ -76,10 +76,32 @@ function removeExpression(req, res, next) {
     });
 }
 
+function updateExpression(req, res, next) {
+  console.log("expressions.updateExpressionEndpoint");
+  db.none(
+    "update expressions set intent_id=$2,expression_text=$3 where expression_id=$1",
+    [
+      parseInt(req.params.expression_id),
+      req.body.intent_id,
+      req.body.expression_text
+    ]
+  )
+    .then(function() {
+      res.status(200).json({
+        status: "success",
+        message: "Updated Expression"
+      });
+    })
+    .catch(function(err) {
+      return next(err);
+    });
+}
+
 module.exports = {
   getSingleExpression: getSingleExpression,
   getIntentExpressions: getIntentExpressions,
   createIntentExpression: createIntentExpression,
   removeExpression: removeExpression,
-  getIntentExpressionQuery: getIntentExpressionQuery
+  getIntentExpressionQuery: getIntentExpressionQuery,
+  updateExpression: updateExpression
 };

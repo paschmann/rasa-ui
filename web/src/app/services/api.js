@@ -55,7 +55,15 @@ app.factory("IntentExpressions", function($resource) {
 });
 
 app.factory("Expression", function($resource) {
-  return $resource(api_endpoint_v2 + "/expressions/:expression_id");
+  return $resource(
+    api_endpoint_v2 + "/expressions/:expression_id",
+    {
+      expression_id: "@id"
+    },
+    {
+      update: { method: "PUT" }
+    }
+  );
 });
 
 app.factory("UniqueIntentEntities", function($resource) {
@@ -157,7 +165,7 @@ app.factory("EntitySynonymVariants", function($resource) {
 
 app.factory("SynonymsVariants", function($resource) {
   return $resource(api_endpoint_v2 + "/synonyms_variants/:synonyms_id", {
-      synonyms_id: "@id"
+    synonyms_id: "@id"
   });
 });
 
