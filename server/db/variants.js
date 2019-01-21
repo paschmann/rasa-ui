@@ -1,7 +1,8 @@
 const db = require("./db");
+const logger = require("../util/logger");
 
 function getSingleVariant(req, res, next) {
-  console.log("variants.getSingleVariant");
+  logger.winston.info("variants.getSingleVariant");
   var synonymVariantId = parseInt(req.params.synonym_variant_id);
   db.any(
     "select * from synonym_variant where synonym_variant_id = $1",
@@ -16,7 +17,7 @@ function getSingleVariant(req, res, next) {
 }
 
 function getSynonymVariants(req, res, next) {
-  console.log("variants.getSynonymVariants");
+  logger.winston.info("variants.getSynonymVariants");
   var synonymId = parseInt(req.params.synonym_id);
   db.any("select * from synonym_variant where synonym_id = $1", synonymId)
     .then(function(data) {
@@ -28,19 +29,21 @@ function getSynonymVariants(req, res, next) {
 }
 
 function getSynonymsVariants(req, res, next) {
-    console.log("variants.getSynonymVariants");
-    let synonymsId = req.params.synonyms_id;
-    db.any("select * from synonym_variant where synonym_id in (" + synonymsId + ")")
-        .then(function(data) {
-            res.status(200).json(data);
-        })
-        .catch(function(err) {
-            return next(err);
-        });
+  logger.winston.info("variants.getSynonymVariants");
+  let synonymsId = req.params.synonyms_id;
+  db.any(
+    "select * from synonym_variant where synonym_id in (" + synonymsId + ")"
+  )
+    .then(function(data) {
+      res.status(200).json(data);
+    })
+    .catch(function(err) {
+      return next(err);
+    });
 }
 
 function getAllSynonymVariants(req, res, next) {
-  console.log("variants.getAllSynonymVariants");
+  logger.winston.info("variants.getAllSynonymVariants");
 
   db.any(
     "select synonym_reference as value, '[' || string_agg('\"' || synonym_value || '\"', ', ') || ']' as synonyms from entity_synonym_variants group by 1"
@@ -54,7 +57,7 @@ function getAllSynonymVariants(req, res, next) {
 }
 
 function createVariant(req, res, next) {
-  console.log("variants.createVariant");
+  logger.winston.info("variants.createVariant");
   db.any(
     "insert into synonym_variant(synonym_id, synonym_value)" +
       "values(${synonym_id}, ${synonym_value})",
@@ -72,7 +75,7 @@ function createVariant(req, res, next) {
 }
 
 function removeVariant(req, res, next) {
-  console.log("variants.removeVariant");
+  logger.winston.info("variants.removeVariant");
   var variantId = parseInt(req.params.synonym_variant_id);
   db.result(
     "delete from synonym_variant where synonym_variant_id = $1",
@@ -92,7 +95,7 @@ function removeVariant(req, res, next) {
 }
 
 function removeSynonymVariants(req, res, next) {
-  console.log("variants.removeSynonymVariants");
+  logger.winston.info("variants.removeSynonymVariants");
   var synonymId = parseInt(req.params.synonym_id);
   db.result("delete from synonym_variant where synonym_id = $1", synonymId)
     .then(function(result) {

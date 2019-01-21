@@ -1,7 +1,8 @@
 const db = require("./db");
+const logger = require("../util/logger");
 
 function getSingleExpression(req, res, next) {
-  console.log("expression.getSingleExpression");
+  logger.winston.info("expression.getSingleExpression");
   var intentId = parseInt(req.params.expression_id);
   db.one("select * from expressions where expression_id = $1", intentId)
     .then(function(data) {
@@ -13,7 +14,7 @@ function getSingleExpression(req, res, next) {
 }
 
 function getIntentExpressions(req, res, next) {
-  console.log("expression.getIntentExpressions");
+  logger.winston.info("expression.getIntentExpressions");
   var IntentId = parseInt(req.params.intent_id);
   db.any(
     "select * from expressions where intent_id = $1 order by expression_id desc",
@@ -28,7 +29,7 @@ function getIntentExpressions(req, res, next) {
 }
 
 function getIntentExpressionQuery(req, res, next) {
-  console.log("expression.getIntentExpressionQuery");
+  logger.winston.info("expression.getIntentExpressionQuery");
   var IntentIds = req.query.intent_ids;
   var sql = "select * from expressions where intent_id in (" + IntentIds + ")";
   db.any(sql)
@@ -41,7 +42,7 @@ function getIntentExpressionQuery(req, res, next) {
 }
 
 function createIntentExpression(req, res, next) {
-  console.log("expressions.createIntentExpression");
+  logger.winston.info("expressions.createIntentExpression");
   db.any(
     "insert into expressions(intent_id, expression_text)" +
       "values(${intent_id}, ${expression_text}) RETURNING expression_id",
@@ -60,7 +61,7 @@ function createIntentExpression(req, res, next) {
 }
 
 function removeExpression(req, res, next) {
-  console.log("expressions.removeExpression");
+  logger.winston.info("expressions.removeExpression");
   var expressionId = parseInt(req.params.expression_id);
   db.result("delete from expressions where expression_id = $1", expressionId)
     .then(function(result) {
@@ -77,7 +78,7 @@ function removeExpression(req, res, next) {
 }
 
 function updateExpression(req, res, next) {
-  console.log("expressions.updateExpressionEndpoint");
+  logger.winston.info("expressions.updateExpressionEndpoint");
   db.none(
     "update expressions set intent_id=$2,expression_text=$3 where expression_id=$1",
     [

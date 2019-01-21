@@ -1,4 +1,5 @@
 const db = require("./db");
+const logger = require("../util/logger");
 
 function getSingleParameter(req, res, next) {
   var parameterID = parseInt(req.params.parameter_id);
@@ -12,7 +13,7 @@ function getSingleParameter(req, res, next) {
 }
 
 function getIntentParameters(req, res, next) {
-  console.log("parameters.getExpressionParameters");
+  logger.winston.info("parameters.getExpressionParameters");
   var intentId = parseInt(req.params.intent_id);
   db.any("select * from expression_parameters where intent_id = $1", intentId)
     .then(function(data) {
@@ -24,7 +25,7 @@ function getIntentParameters(req, res, next) {
 }
 
 function getExpressionParametersQuery(req, res, next) {
-  console.log("parameters.getExpressionParametersQuery");
+  logger.winston.info("parameters.getExpressionParametersQuery");
   var expressionIds = req.query.expression_ids;
   var sql =
     "select * from expression_parameters where expression_id in (" +
@@ -40,7 +41,7 @@ function getExpressionParametersQuery(req, res, next) {
 }
 
 function updateParameter(req, res, next) {
-  console.log("parameters.updateParameter");
+  logger.winston.info("parameters.updateParameter");
   db.none("update parameters set entity_id=$1 where parameter_id=$2", [
     req.body.entity_id,
     parseInt(req.params.parameter_id)
@@ -57,7 +58,7 @@ function updateParameter(req, res, next) {
 }
 
 function getExpressionParameters(req, res, next) {
-  console.log("parameters.getExpressionParameters");
+  logger.winston.info("parameters.getExpressionParameters");
   var expressionId = parseInt(req.params.expression_id);
   db.any(
     "select * from expression_parameters where expression_id = $1",
@@ -72,7 +73,7 @@ function getExpressionParameters(req, res, next) {
 }
 
 function createExpressionParameter(req, res, next) {
-  console.log("parameters.createExpressionParameter");
+  logger.winston.info("parameters.createExpressionParameter");
   if (!req.body.entity_id) {
     req.body.entity_id = null;
   }

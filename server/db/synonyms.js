@@ -1,7 +1,8 @@
 const db = require("./db");
+const logger = require("../util/logger");
 
 function getSingleSynonym(req, res, next) {
-  console.log("synonym.getSingleSynonym");
+  logger.winston.info("synonym.getSingleSynonym");
   var synonymId = parseInt(req.params.synonym_id);
   db.one("select * from synonyms where synonym_id = $1", synonymId)
     .then(function(data) {
@@ -13,7 +14,7 @@ function getSingleSynonym(req, res, next) {
 }
 
 function getAgentSynonyms(req, res, next) {
-  console.log("synonym.getAgentSynonyms");
+  logger.winston.info("synonym.getAgentSynonyms");
   var agentId = parseInt(req.params.agent_id);
   db.any("select * from synonyms where agent_id = $1", agentId)
     .then(function(data) {
@@ -25,7 +26,7 @@ function getAgentSynonyms(req, res, next) {
 }
 
 function createAgentSynonym(req, res, next) {
-  console.log("synonym.createAgentSynonym");
+  logger.winston.info("synonym.createAgentSynonym");
   db.any(
     "insert into synonyms(agent_id, synonym_reference)" +
       "values(${agent_id}, ${synonym_reference}) RETURNING synonym_id",
@@ -44,7 +45,7 @@ function createAgentSynonym(req, res, next) {
 }
 
 function removeSynonym(req, res, next) {
-  console.log("synonym.removeExpression");
+  logger.winston.info("synonym.removeExpression");
   var synonymId = parseInt(req.params.synonym_id);
   db.result("delete from synonyms where synonym_id = $1", synonymId)
     .then(function(result) {

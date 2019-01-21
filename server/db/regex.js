@@ -1,7 +1,8 @@
 const db = require("./db");
+const logger = require("../util/logger");
 
 function getAgentRegex(req, res, next) {
-  console.log("regex.getAgentRegex");
+  logger.winston.info("regex.getAgentRegex");
   var agentId = parseInt(req.params.agent_id);
   db.any("select * from regex where agent_id = $1", agentId)
     .then(function(data) {
@@ -13,7 +14,7 @@ function getAgentRegex(req, res, next) {
 }
 
 function getSingleRegex(req, res, next) {
-  console.log("regex.getSingleRegex");
+  logger.winston.info("regex.getSingleRegex");
   var regexID = parseInt(req.params.regex_id);
   db.one("select * from regex where regex_id = $1", regexID)
     .then(function(data) {
@@ -25,7 +26,7 @@ function getSingleRegex(req, res, next) {
 }
 
 function createRegex(req, res, next) {
-  console.log("regex.createRegex");
+  logger.winston.info("regex.createRegex");
   db.any(
     "insert into regex(regex_name, regex_pattern, agent_id) values(${regex_name}, ${regex_pattern}, ${agent_id}) RETURNING regex_id",
     req.body

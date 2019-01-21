@@ -42,7 +42,7 @@ var cors = require("cors");
 var jwt = require("jsonwebtoken");
 
 const db = require("./db/db");
-const url = require("url");
+const logger = require("./util/logger");
 
 if (global.azureadauthentication) {
   // Passport for Azure AD
@@ -64,10 +64,8 @@ if (global.azureadauthentication) {
   };
 
   var bearerStrategy = new OIDCBearerStrategy(options, function(token, done) {
-    //console.log(token, 'was the token retrieved');
     if (!token.oid) done(new Error("oid is not found in token"));
     else {
-      owner = token.oid;
       done(null, token);
     }
   });
@@ -91,6 +89,7 @@ app.use("/scripts", express.static("node_modules/"));
 
 // route middleware to verify a token
 app.use(function(req, res, next) {
+  logger.winston.info(`${req.method} ${req.url}`);
   if (req.originalUrl.endsWith("health")) {
     next();
   } else {
@@ -101,14 +100,14 @@ app.use(function(req, res, next) {
       // Azure AD authentication
       passport.authenticate("oauth-bearer", (err, user, info) => {
         if (err) {
-          console.error("ERROR passport.authenticate oauth-bearer");
+          logger.winston.error("ERROR passport.authenticate oauth-bearer");
           res.status(401).send({
             success: false,
             message: "No token provided."
           });
         } else {
           if (!user) {
-            console.error("ERROR JWT token verify failed");
+            logger.winston.error("ERROR JWT token verify failed");
             res.status(401).send({
               success: false,
               message: "No token provided."
@@ -131,7 +130,7 @@ app.use(function(req, res, next) {
           req.originalUrl.endsWith("auth") ||
           req.originalUrl.endsWith("authclient")
         ) {
-          console.log("No Token, but got an Auth request. Allowing it");
+          logger.winston.info("No Token, but got an Auth request. Allowing it");
           next();
         } else {
           return res.status(401).send({
@@ -179,7 +178,6 @@ app.set("socketCache", socketCache);
 // Socket.io Communication
 io.sockets.on("connection", function(socket) {
   var jwt0 = "";
-  //console.log("All Cookies: " + socket.request.headers.cookie);
   try {
     var cookieArr = socket.request.headers.cookie.split(";");
     for (var i = 0; i < cookieArr.length; i++) {
@@ -188,15 +186,17 @@ io.sockets.on("connection", function(socket) {
         break;
       }
     }
-    //console.log("Adding Socket to Sockets List");
+    //logger.winston.info("Adding Socket to Sockets List");
     app.get("socketCache").set(jwt0, socket);
   } catch (err) {
-    console.log("Problem when parsing the cookies. Ignoring socket" + err);
+    logger.winston.info(
+      "Problem when parsing the cookies. Ignoring socket" + err
+    );
   }
 
   socket.on("disconnect", function() {
-    //console.log("Disconnecting All Cookies: "); // + socket.request.headers.cookie);
-    //console.log('Socket disconnected');
+    //logger.winston.info("Disconnecting All Cookies: "); // + socket.request.headers.cookie);
+    //logger.winston.info('Socket disconnected');
     var discjwt0 = "";
     try {
       var cookieArr = socket.request.headers.cookie.split(";");
@@ -206,10 +206,10 @@ io.sockets.on("connection", function(socket) {
           break;
         }
       }
-      //console.log("Removing SOCKET: " + discjwt0 + " from List: "+ JSON.stringify(app.get("socketCache").keys()));
+      //logger.winston.info("Removing SOCKET: " + discjwt0 + " from List: "+ JSON.stringify(app.get("socketCache").keys()));
       app.get("socketCache").del(jwt0);
     } catch (err) {
-      console.log(
+      logger.winston.info(
         "Problem when parsing the cookies. Unable to delete socket" + err
       );
     }
@@ -247,8 +247,10 @@ checkRasaNLU();
 checkRasaCore();
 
 function checkRasaUI() {
-  console.log("Rasa UI Server: http://localhost:" + listener.address().port);
-  console.log("");
+  logger.winston.info(
+    "Rasa UI Server: http://localhost:" + listener.address().port
+  );
+  logger.winston.info("");
 }
 
 function checkDB() {
@@ -260,22 +262,22 @@ function checkDB() {
     "select current_database(), current_schema(), inet_server_port(), inet_server_addr()"
   )
     .then(function(data) {
-      console.log("");
-      console.log("Postgres DB Connected");
-      console.log("Using connection string from: " + dbconn);
-      console.log(
+      logger.winston.info("");
+      logger.winston.info("Postgres DB Connected");
+      logger.winston.info("Using connection string from: " + dbconn);
+      logger.winston.info(
         "Postgres Server: " +
           data["inet_server_addr"] +
           ":" +
           data["inet_server_port"]
       );
-      console.log("Database:" + data["current_database"]);
-      console.log("Schema:" + data["current_schema"]);
-      console.log("");
+      logger.winston.info("Database:" + data["current_database"]);
+      logger.winston.info("Schema:" + data["current_schema"]);
+      logger.winston.info("");
     })
     .catch(function(err) {
-      console.log("Postgres DB Connection Error: " + err);
-      console.log("Using connection string from: " + dbconn);
+      logger.winston.info("Postgres DB Connection Error: " + err);
+      logger.winston.info("Using connection string from: " + dbconn);
     });
 }
 
@@ -287,19 +289,19 @@ function checkRasaNLU() {
   request(global.rasanluendpoint + "/config", function(error, response, body) {
     try {
       if (body !== undefined) {
-        console.log("");
-        console.log("Rasa NLU Connected");
-        console.log("Using connection string from: " + rasaconn);
-        console.log("Rasa NLU Server: " + global.rasanluendpoint);
+        logger.winston.info("");
+        logger.winston.info("Rasa NLU Connected");
+        logger.winston.info("Using connection string from: " + rasaconn);
+        logger.winston.info("Rasa NLU Server: " + global.rasanluendpoint);
       }
       if (error !== null) {
-        console.log("");
-        console.log("Rasa NLU Error: " + error);
-        console.log("Using connection string from: " + rasaconn);
+        logger.winston.info("");
+        logger.winston.info("Rasa NLU Error: " + error);
+        logger.winston.info("Using connection string from: " + rasaconn);
       }
-      console.log("");
+      logger.winston.info("");
     } catch (err) {
-      console.log("Rasa Connection Error: " + err);
+      logger.winston.info("Rasa Connection Error: " + err);
     }
   });
 }
@@ -316,19 +318,19 @@ function checkRasaCore() {
   ) {
     try {
       if (body !== undefined) {
-        console.log("");
-        console.log("Rasa Core Connected");
-        console.log("Using connection string from: " + rasacoreconn);
-        console.log("Rasa Core Server: " + global.rasacoreendpoint);
+        logger.winston.info("");
+        logger.winston.info("Rasa Core Connected");
+        logger.winston.info("Using connection string from: " + rasacoreconn);
+        logger.winston.info("Rasa Core Server: " + global.rasacoreendpoint);
       }
       if (error !== null) {
-        console.log("");
-        console.log("Rasa Core Error: " + error);
-        console.log("Using connection string from: " + rasacoreconn);
+        logger.winston.info("");
+        logger.winston.info("Rasa Core Error: " + error);
+        logger.winston.info("Using connection string from: " + rasacoreconn);
       }
-      console.log("");
+      logger.winston.info("");
     } catch (err) {
-      console.log("Rasa Connection Error: " + err);
+      logger.winston.info("Rasa Connection Error: " + err);
     }
   });
 }

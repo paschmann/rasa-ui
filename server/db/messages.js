@@ -1,9 +1,10 @@
 const db = require("./db");
+const logger = require("../util/logger");
 
 //agent/:agent_id/messages
 function getRecent9UniqueUsersList(req, res, next) {
   var agent_id = parseInt(req.params.agent_id);
-  console.log("messages.getRecent9UniqueUsersList");
+  logger.winston.info("messages.getRecent9UniqueUsersList");
   db.any(
     "select user_id,user_name, MAX(timestamp) as recent_active from messages where agent_id=$1 group by user_id,user_name order by recent_active desc  limit 9 ",
     agent_id
@@ -12,14 +13,14 @@ function getRecent9UniqueUsersList(req, res, next) {
       res.status(200).json(data);
     })
     .catch(function(err) {
-      console.log("Error in DB Call" + err);
+      logger.winston.info("Error in DB Call" + err);
       return next(err);
     });
 }
 
 //agent/:agent_id/messages
 function getUniqueUsersList(req, res, next) {
-  console.log("messages.getUniqueUsersList");
+  logger.winston.info("messages.getUniqueUsersList");
   var agent_id = parseInt(req.params.agent_id);
   var limit = req.query.limit ? parseInt(req.query.limit) : 10;
   db.any(
@@ -30,13 +31,13 @@ function getUniqueUsersList(req, res, next) {
       res.status(200).json(data);
     })
     .catch(function(err) {
-      console.log("Error in DB Call" + err);
+      logger.winston.info("Error in DB Call" + err);
       return next(err);
     });
 }
 
 function getMessagesListByUser(req, res, next) {
-  console.log("messages.getMessagesListByUser");
+  logger.winston.info("messages.getMessagesListByUser");
   db.any(
     `select * 
     from messages_expressions
@@ -72,13 +73,13 @@ function getMessagesListByUser(req, res, next) {
       });
     })
     .catch(function(err) {
-      console.log("Error in DB Call" + err);
+      logger.winston.info("Error in DB Call" + err);
       return next(err);
     });
 }
 
 function getMessageEntities(message_id) {
-  console.log("messages.getMessageEntities");
+  logger.winston.info("messages.getMessageEntities");
   return db.any(
     `select *
     from entities_parameters
@@ -88,7 +89,7 @@ function getMessageEntities(message_id) {
 }
 
 function deleteMessageEntities(req, res, next) {
-  console.log("messages.deleteMessageEntities");
+  logger.winston.info("messages.deleteMessageEntities");
   db.any(
     `delete from messages_entities
     where message_id=$1 and entity_value=$2`,
@@ -98,12 +99,12 @@ function deleteMessageEntities(req, res, next) {
       res.status(200).json(data);
     })
     .catch(err => {
-      console.log("Error in DB Call" + err);
+      logger.winston.info("Error in DB Call" + err);
       return next(err);
     });
 }
 function updateMessageEntities(req, res, next) {
-  console.log("messages.updateMessageEntities");
+  logger.winston.info("messages.updateMessageEntities");
   db.any(
     `select *
     from entities_parameters
@@ -131,18 +132,18 @@ function updateMessageEntities(req, res, next) {
           res.status(200).json(data);
         })
         .catch(err => {
-          console.log("Error in DB Call" + err);
+          logger.winston.info("Error in DB Call" + err);
           return next(err);
         });
     })
     .catch(function(err) {
-      console.log("Error in DB Call" + err);
+      logger.winston.info("Error in DB Call" + err);
       return next(err);
     });
 }
 
 function addMessageEntities(req, res, next) {
-  console.log("messages.addMessageEntities");
+  logger.winston.info("messages.addMessageEntities");
   db.any(
     "insert into messages_entities(message_id, entity_id, entity_start, entity_end, entity_value, entity_confidence)" +
       " values($1, $2, $3, $4, $5, 0)",
@@ -158,14 +159,14 @@ function addMessageEntities(req, res, next) {
       res.status(200).json(data);
     })
     .catch(function(err) {
-      console.log("Error in DB Call" + err);
+      logger.winston.info("Error in DB Call" + err);
       return next(err);
     });
 }
 //this returns the details about nlu and core
 //messages/:messages_id
 function getMessageDetails(req, res, next) {
-  console.log("messages.getMessageDetails");
+  logger.winston.info("messages.getMessageDetails");
   db.task("get-message-details", async t => {
     const msgDetails = await t.any(
       "select * from core_parse_log FULL JOIN nlu_parse_log ON core_parse_log.messages_id=nlu_parse_log.messages_id where core_parse_log.messages_id=$1",
@@ -184,25 +185,25 @@ function getMessageDetails(req, res, next) {
       res.status(200).json(data);
     })
     .catch(function(err) {
-      console.log("Error in DB Call" + err);
+      logger.winston.info("Error in DB Call" + err);
       return next(err);
     });
 }
 
 function createMessage(messageObj) {
   if (messageObj != undefined && messageObj.agent_id != undefined) {
-    console.log("Messages.createUserMessage");
+    logger.winston.info("Messages.createUserMessage");
     db.any(
       "insert into messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)" +
         " values(${agent_id}, ${user_id},${user_name}, ${message_text},${message_rich}, ${user_message_ind})",
       messageObj
     )
       .then(function(messages_id) {
-        console.log("Message created successfully!!!");
+        logger.winston.info("Message created successfully!!!");
         return;
       })
       .catch(function(err) {
-        console.log("Error in createMessage" + err);
+        logger.winston.info("Error in createMessage" + err);
         //res.status(500).json(err);
         return;
       });
@@ -211,7 +212,7 @@ function createMessage(messageObj) {
   }
 }
 function updateMessage(req, res, next) {
-  console.log("Messages.updateMessage");
+  logger.winston.info("Messages.updateMessage");
 
   if (req.body.intent_id != undefined && req.params.messages_id != undefined) {
     db.none("update messages set intent_id=$1 where messages_id=$2", [
