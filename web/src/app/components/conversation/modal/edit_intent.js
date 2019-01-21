@@ -14,8 +14,6 @@ function EditIntentModalController(
   $scope.intentList = intentList;
   $scope.selectedIntent;
 
-  console.log("message", message);
-
   if ($scope.message.intent_id) {
     $scope.selectedIntent = $scope.intentList.find(function(intent) {
       return intent.intent_id === $scope.message.intent_id;

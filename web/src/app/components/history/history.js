@@ -13,7 +13,6 @@ function HistoryController($scope, $http, $location, Agent) {
 
   //get recent 9 users
   $scope.loadAgentHistory = function() {
-    console.log("Loading agent history:" + $scope.selectedAgentId);
     $http({
       method: "GET",
       url:
