@@ -43,7 +43,7 @@ function AsideController(
       ) {
         configcheck = $interval(
           getRasaConfig,
-          parseInt($rootScope.settings["refresh_time"])
+          Number($rootScope.settings["refresh_time"])
         );
       }
       getRasaConfig();
@@ -71,7 +71,7 @@ function AsideController(
         function(data) {
           $rootScope.config = data.toJSON();
           $rootScope.config.isonline = 1;
-          $rootScope.config.server_model_dirs_array = getAvailableModels(
+          $rootScope.config.server_model_dirs_array = window.getAvailableModels(
             statusdata
           );
           if ($rootScope.config.server_model_dirs_array.length > 0) {

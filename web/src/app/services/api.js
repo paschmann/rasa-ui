@@ -1,3 +1,5 @@
+const app = angular.module("app");
+
 app.factory("Agent", function($resource, appConfig) {
   return $resource(
     appConfig.api_endpoint_v2 + "/agents/:agent_id/:path",

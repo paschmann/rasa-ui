@@ -35,12 +35,12 @@ function TrainingController(
   });
 
   $scope.train = function() {
-    let agentname = objectFindByKey(
+    let agentname = window.objectFindByKey(
       $scope.agentList,
       "agent_id",
       $scope.agent.agent_id
     ).agent_name;
-    let id = new XDate().toString("yyyyMMdd-HHmmss");
+    let id = new window.XDate().toString("yyyyMMdd-HHmmss");
     reset();
 
     $http
@@ -448,7 +448,7 @@ function TrainingController(
         try {
           $rootScope.config = configdata.toJSON();
           $rootScope.config.isonline = 1;
-          $rootScope.config.server_model_dirs_array = getAvailableModels(
+          $rootScope.config.server_model_dirs_array = window.getAvailableModels(
             statusdata
           );
           if ($rootScope.config.server_model_dirs_array.length > 0) {
@@ -462,11 +462,11 @@ function TrainingController(
             statusdata !== undefined ||
             statusdata.available_models !== undefined
           ) {
-            $rootScope.available_models = sortArrayByDate(
-              getAvailableModels(statusdata),
+            $rootScope.available_models = window.sortArrayByDate(
+              window.getAvailableModels(statusdata),
               "xdate"
             );
-            $rootScope.trainings_under_this_process = getNoOfTrainingJobs(
+            $rootScope.trainings_under_this_process = window.getNoOfTrainingJobs(
               statusdata
             );
           }
