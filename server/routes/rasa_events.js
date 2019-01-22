@@ -35,51 +35,9 @@
 
 */
 const db = require("../db/db");
-var async = require("asyncawait/async");
 const logger = require("../util/logger");
 
-/*
-  RasaCore user message contains project name field with which we can retrieve the agentId
-  If not found or undefined, set it to default 0
-*/
-var getAgentIdFromName = async(function(message) {
-  logger.winston.info("getAgentIdFromName");
-
-  db.any("SELECT agent_id FROM agents WHERE agent_name=$(agent_name)", message)
-    .then(function(data) {
-      logger.winston.info(data);
-      if (data[0] != undefined) {
-        message.agent_id = data[0].agent_id;
-      }
-    })
-    .catch(function(err) {
-      logger.winston.info("Error in DB call" + err);
-    });
-});
-
-/*
-  RasaCore bot message does not contain "project" field and has no field to retrieve it
-  The common information with the sender is the sender_id
-*/
-var getAgentIdFromBotMessage = async(function(message) {
-  logger.winston.info("getAgentIdFromBotMessage");
-
-  db.any(
-    "SELECT agent_id FROM messages WHERE user_id=$(user_id) and user_name='user' ORDER BY timestamp DESC LIMIT 1",
-    message
-  )
-    .then(function(data) {
-      logger.winston.info(data);
-      if (data[0] != undefined) {
-        message.agent_id = data[0].agent_id;
-      }
-    })
-    .catch(function(err) {
-      logger.winston.info("Error in DB call" + err);
-    });
-});
-
-var insertNLUParseLogDB = async(function(nlulogData) {
+async function insertNLUParseLogDB(nlulogData) {
   db.none(
     "INSERT INTO nlu_parse_log(messages_id, intent_name, entity_data, intent_confidence_pct, user_response_time_ms, nlu_response_time_ms) VALUES ($(messages_id), $(intent_name), $(entity_data), $(intent_confidence_pct),$(user_response_time_ms),$(nlu_response_time_ms))",
     nlulogData
@@ -91,9 +49,9 @@ var insertNLUParseLogDB = async(function(nlulogData) {
       logger.winston.info("Exception while inserting NLU Parse log");
       logger.winston.info(err);
     });
-});
+}
 
-insertMessagesEntitiesDB = async(function(messagesEntitiesDataItem) {
+async function insertMessagesEntitiesDB(messagesEntitiesDataItem) {
   logger.winston.info("insertMessagesEntitiesDB");
   logger.winston.info(messagesEntitiesDataItem);
 
@@ -108,9 +66,9 @@ insertMessagesEntitiesDB = async(function(messagesEntitiesDataItem) {
       logger.winston.info("Exception while inserting MessagesEntities db");
       logger.winston.info(err);
     });
-});
+}
 
-var processAllEntitiesFromExpressionId = async(function(messagesEntitiesData) {
+async function processAllEntitiesFromExpressionId(messagesEntitiesData) {
   logger.winston.info("processAllEntitiesFromExpressionId");
   logger.winston.info(messagesEntitiesData);
 
@@ -122,7 +80,7 @@ var processAllEntitiesFromExpressionId = async(function(messagesEntitiesData) {
       .then(function(data) {
         logger.winston.info(data);
         for (var i = 0; i < data.length; i++) {
-          messagesEntitiesDataItem = new Object();
+          let messagesEntitiesDataItem = new Object();
           messagesEntitiesDataItem.message_id = messagesEntitiesData.message_id;
           messagesEntitiesDataItem.entity_id = data[i].entity_id;
           messagesEntitiesDataItem.entity_start = data[i].parameter_start;
@@ -149,9 +107,7 @@ var processAllEntitiesFromExpressionId = async(function(messagesEntitiesData) {
         .then(function(data) {
           logger.winston.info(data);
           if (data[0] != undefined) {
-            var entities = messagesEntitiesData.entities;
-
-            messagesEntitiesDataItem = new Object();
+            let messagesEntitiesDataItem = new Object();
             messagesEntitiesDataItem.message_id =
               messagesEntitiesData.message_id;
             messagesEntitiesDataItem.entity_id = data[0].entity_id;
@@ -172,9 +128,9 @@ var processAllEntitiesFromExpressionId = async(function(messagesEntitiesData) {
         });
     }
   }
-});
+}
 
-processInsertMessagesEntitiesDB = async(function(messagesEntitiesData) {
+async function processInsertMessagesEntitiesDB(messagesEntitiesData) {
   logger.winston.info("processInsertMessagesEntitiesDB 0");
   logger.winston.info(messagesEntitiesData);
   db.any(
@@ -195,7 +151,7 @@ processInsertMessagesEntitiesDB = async(function(messagesEntitiesData) {
       logger.winston.info("Error in DB call" + err);
       messagesEntitiesData.expression_id = null;
     });
-});
+}
 
 async function insertlogEventMessageToDB(
   message,
@@ -241,7 +197,7 @@ async function processLogEventsToDBs(
   messagesEntitiesData
 ) {
   logger.winston.info("processLogEventsToDBs");
-  sqlCommand = "";
+  let sqlCommand = "";
 
   if (message.event == "user") {
     sqlCommand = "SELECT agent_id FROM agents WHERE agent_name=$(agent_name)";
@@ -336,7 +292,7 @@ async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
       nluLogData.nlu_response_time_ms = 0;
 
       //logger.winston.info(nluLogData);
-      messagesEntitiesData = new Object();
+      var messagesEntitiesData = new Object();
       messagesEntitiesData.entities = rasaCoreEvent.parse_data.entities;
     } else {
       nluLogData = null;
