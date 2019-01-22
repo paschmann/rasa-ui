@@ -10,7 +10,8 @@ function ConversationController(
   Intents,
   ModalService,
   Parameter,
-  Expression
+  Expression,
+  appConfig
 ) {
   $scope.chatlog;
   $scope.selectedAgentId = $scope.$routeParams.agent_id;
@@ -42,13 +43,13 @@ function ConversationController(
 
   $scope.$on("entitySelected", function(evt, data) {
     $scope.selectedText = data.selectedText;
-    $scope.selectedMessageId = parseInt(data.messageId.replace("message-", ""));
+    $scope.selectedMessageId = Number(data.messageId.replace("message-", ""));
   });
 
   function getMessagesList() {
     $http
       .post(
-        api_endpoint_v2 + "/messages/list",
+        appConfig.api_endpoint_v2 + "/messages/list",
         JSON.stringify({
           user_id: $scope.userId,
           agent_id: $scope.selectedAgentId
@@ -167,10 +168,13 @@ function ConversationController(
       .$promise;
 
     $http
-      .delete(`${api_endpoint_v2}/messages/${entity.messages_id}/entities`, {
-        data: entity,
-        headers: { "Content-Type": "application/json;charset=utf-8" }
-      })
+      .delete(
+        `${appConfig.api_endpoint_v2}/messages/${entity.messages_id}/entities`,
+        {
+          data: entity,
+          headers: { "Content-Type": "application/json;charset=utf-8" }
+        }
+      )
       .then(() => {
         getMessagesList();
       });

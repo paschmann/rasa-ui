@@ -1,6 +1,6 @@
-app.factory("Agent", function($resource) {
+app.factory("Agent", function($resource, appConfig) {
   return $resource(
-    api_endpoint_v2 + "/agents/:agent_id/:path",
+    appConfig.api_endpoint_v2 + "/agents/:agent_id/:path",
     { agent_id: "@id", path: "@path" },
     {
       update: { method: "PUT" }
@@ -8,9 +8,9 @@ app.factory("Agent", function($resource) {
   );
 });
 
-app.factory("Actions", function($resource) {
+app.factory("Actions", function($resource, appConfig) {
   return $resource(
-    api_endpoint_v2 + "/actions/:action_id",
+    appConfig.api_endpoint_v2 + "/actions/:action_id",
     { action_id: "@id" },
     {
       update: { method: "PUT" }
@@ -18,19 +18,19 @@ app.factory("Actions", function($resource) {
   );
 });
 
-app.factory("AgentActions", function($resource) {
-  return $resource(api_endpoint_v2 + "/agents/:agent_id/actions", {
+app.factory("AgentActions", function($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + "/agents/:agent_id/actions", {
     agent_id: "@id"
   });
 });
 
-app.factory("AgentStories", function($resource) {
-  return $resource(api_endpoint_v2 + "/agentStory");
+app.factory("AgentStories", function($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + "/agentStory");
 });
 
-app.factory("Intent", function($resource) {
+app.factory("Intent", function($resource, appConfig) {
   return $resource(
-    api_endpoint_v2 + "/intents/:intent_id",
+    appConfig.api_endpoint_v2 + "/intents/:intent_id",
     { intent_id: "@id" },
     {
       update: { method: "PUT" }
@@ -38,25 +38,28 @@ app.factory("Intent", function($resource) {
   );
 });
 
-app.factory("Intents", function($resource) {
-  return $resource(api_endpoint_v2 + "/agents/:agent_id/intents", {
+app.factory("Intents", function($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + "/agents/:agent_id/intents", {
     agent_id: "@id"
   });
 });
 
-app.factory("Expressions", function($resource) {
-  return $resource(api_endpoint_v2 + "/intents/:intent_id/expressions", {
-    intent_id: "@id"
-  });
-});
-
-app.factory("IntentExpressions", function($resource) {
-  return $resource(api_endpoint_v2 + "/intent_expressions");
-});
-
-app.factory("Expression", function($resource) {
+app.factory("Expressions", function($resource, appConfig) {
   return $resource(
-    api_endpoint_v2 + "/expressions/:expression_id",
+    appConfig.api_endpoint_v2 + "/intents/:intent_id/expressions",
+    {
+      intent_id: "@id"
+    }
+  );
+});
+
+app.factory("IntentExpressions", function($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + "/intent_expressions");
+});
+
+app.factory("Expression", function($resource, appConfig) {
+  return $resource(
+    appConfig.api_endpoint_v2 + "/expressions/:expression_id",
     {
       expression_id: "@id"
     },
@@ -66,26 +69,29 @@ app.factory("Expression", function($resource) {
   );
 });
 
-app.factory("UniqueIntentEntities", function($resource) {
+app.factory("UniqueIntentEntities", function($resource, appConfig) {
   return $resource(
-    api_endpoint_v2 + "/intents/:intent_id/unique_intent_entities",
+    appConfig.api_endpoint_v2 + "/intents/:intent_id/unique_intent_entities",
     { intent_id: "@id" }
   );
 });
 
-app.factory("Parameters", function($resource) {
-  return $resource(api_endpoint_v2 + "/intent/:intent_id/parameters");
+app.factory("Parameters", function($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + "/intent/:intent_id/parameters");
 });
 
-app.factory("ExpressionParameters", function($resource) {
-  return $resource(api_endpoint_v2 + "/expression_parameters/:expression_id");
+app.factory("ExpressionParameters", function($resource, appConfig) {
+  return $resource(
+    appConfig.api_endpoint_v2 + "/expression_parameters/:expression_id"
+  );
 });
 
 app.factory("Parameter", [
   "$resource",
-  function($resource) {
+  "appConfig",
+  function($resource, appConfig) {
     return $resource(
-      api_endpoint_v2 + "/parameters/:parameter_id",
+      appConfig.api_endpoint_v2 + "/parameters/:parameter_id",
       { parameter_id: "@id" },
       {
         update: { method: "PUT" }
@@ -96,9 +102,10 @@ app.factory("Parameter", [
 
 app.factory("Entity", [
   "$resource",
-  function($resource) {
+  "appConfig",
+  function($resource, appConfig) {
     return $resource(
-      api_endpoint_v2 + "/entities/:entity_id",
+      appConfig.api_endpoint_v2 + "/entities/:entity_id",
       { entity_id: "@id" },
       {
         update: { method: "PUT" }
@@ -107,15 +114,16 @@ app.factory("Entity", [
   }
 ]);
 
-app.factory("Entities", function($resource) {
-  return $resource(api_endpoint_v2 + "/entities");
+app.factory("Entities", function($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + "/entities");
 });
 
 app.factory("Regex", [
   "$resource",
-  function($resource) {
+  "appConfig",
+  function($resource, appConfig) {
     return $resource(
-      api_endpoint_v2 + "/regex/:regex_id",
+      appConfig.api_endpoint_v2 + "/regex/:regex_id",
       { regex_id: "@id" },
       {
         update: { method: "PUT" }
@@ -126,28 +134,29 @@ app.factory("Regex", [
 
 app.factory("AgentRegex", [
   "$resource",
-  function($resource) {
-    return $resource(api_endpoint_v2 + "/agent/:agent_id/regex", {
+  "appConfig",
+  function($resource, appConfig) {
+    return $resource(appConfig.api_endpoint_v2 + "/agent/:agent_id/regex", {
       agent_id: "@id"
     });
   }
 ]);
 
-app.factory("AgentSynonyms", function($resource) {
-  return $resource(api_endpoint_v2 + "/agent/:agent_id/synonyms", {
+app.factory("AgentSynonyms", function($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + "/agent/:agent_id/synonyms", {
     agent_id: "@id"
   });
 });
 
-app.factory("AgentEntities", function($resource) {
-  return $resource(api_endpoint_v2 + "/entities/agent/:agent_id", {
+app.factory("AgentEntities", function($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + "/entities/agent/:agent_id", {
     agent_id: "@id"
   });
 });
 
-app.factory("Synonym", function($resource) {
+app.factory("Synonym", function($resource, appConfig) {
   return $resource(
-    api_endpoint_v2 + "/synonyms/:synonym_id",
+    appConfig.api_endpoint_v2 + "/synonyms/:synonym_id",
     {
       synonym_id: "@id"
     },
@@ -157,33 +166,43 @@ app.factory("Synonym", function($resource) {
   );
 });
 
-app.factory("EntitySynonymVariants", function($resource) {
-  return $resource(api_endpoint_v2 + "/synonyms/:synonym_id/variants", {
-    synonym_id: "@id"
-  });
+app.factory("EntitySynonymVariants", function($resource, appConfig) {
+  return $resource(
+    appConfig.api_endpoint_v2 + "/synonyms/:synonym_id/variants",
+    {
+      synonym_id: "@id"
+    }
+  );
 });
 
-app.factory("SynonymsVariants", function($resource) {
-  return $resource(api_endpoint_v2 + "/synonyms_variants/:synonyms_id", {
-    synonyms_id: "@id"
-  });
+app.factory("SynonymsVariants", function($resource, appConfig) {
+  return $resource(
+    appConfig.api_endpoint_v2 + "/synonyms_variants/:synonyms_id",
+    {
+      synonyms_id: "@id"
+    }
+  );
 });
 
-app.factory("SynonymVariant", function($resource) {
-  return $resource(api_endpoint_v2 + "/variants/:synonym_variant_id", {
-    synonym_variant_id: "@id"
-  });
+app.factory("SynonymVariant", function($resource, appConfig) {
+  return $resource(
+    appConfig.api_endpoint_v2 + "/variants/:synonym_variant_id",
+    {
+      synonym_variant_id: "@id"
+    }
+  );
 });
 
-app.factory("AllSynonymVariants", function($resource) {
-  return $resource(api_endpoint_v2 + "/synonymvariants");
+app.factory("AllSynonymVariants", function($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + "/synonymvariants");
 });
 
 app.factory("Settings", [
   "$resource",
-  function($resource) {
+  "appConfig",
+  function($resource, appConfig) {
     return $resource(
-      api_endpoint_v2 + "/settings/:setting_name",
+      appConfig.api_endpoint_v2 + "/settings/:setting_name",
       { setting_name: "@setting_name" },
       {
         update: { method: "PUT" }
@@ -192,23 +211,23 @@ app.factory("Settings", [
   }
 ]);
 
-app.factory("ActionResponses", function($resource) {
-  return $resource(api_endpoint_v2 + "/actionresponse/:action_id", {
+app.factory("ActionResponses", function($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + "/actionresponse/:action_id", {
     action_id: "@id"
   });
 });
 //All responses for an intent
-app.factory("Responses", function($resource) {
-  return $resource(api_endpoint_v2 + "/response/:intent_id", {
+app.factory("Responses", function($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + "/response/:intent_id", {
     intent_id: "@id"
   });
 });
 //Reponse actions: create and delete
-app.factory("Response", function($resource) {
-  return $resource(api_endpoint_v2 + "/response/:response_id", {
+app.factory("Response", function($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + "/response/:response_id", {
     response_id: "@id"
   });
 });
-app.factory("IntentResponse", function($resource) {
-  return $resource(api_endpoint_v2 + "/rndmresponse");
+app.factory("IntentResponse", function($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + "/rndmresponse");
 });

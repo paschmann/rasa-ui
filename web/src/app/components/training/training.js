@@ -7,8 +7,6 @@ function TrainingController(
   $http,
   Rasa_Status,
   Agent,
-  Intents,
-  Expressions,
   AgentRegex,
   ExpressionParameters,
   Rasa_Config,
@@ -17,7 +15,8 @@ function TrainingController(
   AgentEntities,
   AgentActions,
   AgentSynonyms,
-  SynonymsVariants
+  SynonymsVariants,
+  appConfig
 ) {
   let exportData;
   let statuscheck = $interval(getRasaStatus, 5000);
@@ -46,7 +45,7 @@ function TrainingController(
 
     $http
       .post(
-        api_endpoint_v2 +
+        appConfig.api_endpoint_v2 +
           "/rasa/train?name=" +
           agentname +
           "_" +
@@ -251,7 +250,10 @@ function TrainingController(
 
           $http({
             method: "GET",
-            url: api_endpoint_v2 + "/action_responses?action_ids=" + action_ids
+            url:
+              appConfig.api_endpoint_v2 +
+              "/action_responses?action_ids=" +
+              action_ids
           }).then(
             function(data) {
               if (data.data.length > 0) {

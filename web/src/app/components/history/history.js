@@ -1,6 +1,6 @@
 angular.module("app").controller("HistoryController", HistoryController);
 
-function HistoryController($scope, $http, $location, Agent) {
+function HistoryController($scope, $http, $location, Agent, appConfig) {
   $scope.users = [];
   $scope.selectedAgentId = "";
   Agent.query(function(data) {
@@ -16,7 +16,7 @@ function HistoryController($scope, $http, $location, Agent) {
     $http({
       method: "GET",
       url:
-        api_endpoint_v2 +
+        appConfig.api_endpoint_v2 +
         "/agent/" +
         $scope.selectedAgentId +
         "/messages?limit=20"
@@ -30,7 +30,7 @@ function HistoryController($scope, $http, $location, Agent) {
           var userChatlog = (function(i) {
             $http
               .post(
-                api_endpoint_v2 + "/messages/list",
+                appConfig.api_endpoint_v2 + "/messages/list",
                 JSON.stringify({
                   user_id: $scope.users[i].user_id,
                   agent_id: $scope.selectedAgentId

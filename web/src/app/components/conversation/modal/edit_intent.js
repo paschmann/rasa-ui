@@ -8,7 +8,8 @@ function EditIntentModalController(
   message,
   intentList,
   Expression,
-  $http
+  $http,
+  appConfig
 ) {
   $scope.message = message;
   $scope.intentList = intentList;
@@ -29,7 +30,7 @@ function EditIntentModalController(
     ) {
       $http
         .put(
-          api_endpoint_v2 + `/messages/${$scope.message.messages_id}`,
+          appConfig.api_endpoint_v2 + `/messages/${$scope.message.messages_id}`,
           JSON.stringify({
             intent_id: $scope.selectedIntent.intent_id
           })

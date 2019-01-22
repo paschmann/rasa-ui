@@ -236,7 +236,7 @@ async function logEventsRoute(req, res, next) {
         message: "Inserted"
       });
     },
-    function() {
+    function(err) {
       res.status(500).json({ "Error logEvents": err });
     }
   );

@@ -2,26 +2,20 @@ app.config(function(
   $routeProvider,
   adalAuthenticationServiceProvider,
   appConfig,
-  $httpProvider,
   $locationProvider
 ) {
-  adalAuthenticationServiceProvider.init(
-    {
-      anonymousEndpoints: [],
-      instance: "https://login.microsoftonline.com/",
-      tenant: appConfig.azureadtenantid,
-      clientId: appConfig.azureddclientid,
-      //cacheLocation: 'localStorage',
-      postLogoutRedirectUri: window.location.origin
-    }
-    //,$httpProvider
-  );
+  adalAuthenticationServiceProvider.init({
+    anonymousEndpoints: [],
+    instance: "https://login.microsoftonline.com/",
+    tenant: appConfig.azureadtenantid,
+    clientId: appConfig.azureddclientid,
+    postLogoutRedirectUri: window.location.origin
+  });
 
   // Avoid AAD login loop
   $locationProvider
     .html5Mode({
       enabled: false
-      //requireBase: false
     })
     .hashPrefix("");
 

@@ -11,7 +11,8 @@ function EditEntityModalController(
   entitiesList,
   $http,
   Parameter,
-  Expression
+  Expression,
+  appConfig
 ) {
   $scope.entity = entity;
   $scope.selectedText = selectedText;
@@ -78,7 +79,7 @@ function EditEntityModalController(
     entity.entity_end = entity.entity_start + $scope.selectedText.length;
     entity.message_id = $scope.message.messages_id;
     return $http.post(
-      `${api_endpoint_v2}/messages/${entity.message_id}/entities`,
+      `${appConfig.api_endpoint_v2}/messages/${entity.message_id}/entities`,
       entity,
       { headers: { "Content-Type": "application/json;charset=utf-8" } }
     );
@@ -88,7 +89,7 @@ function EditEntityModalController(
     $scope.entity.entity_id = $scope.selectedEntity.entity_id;
     $scope.entity.entity_name = $scope.selectedEntity.entity_name;
     return $http.put(
-      `${api_endpoint_v2}/messages/${
+      `${appConfig.api_endpoint_v2}/messages/${
         entity.messages_id
       }/entities/${oldEntityId}`,
       entity,

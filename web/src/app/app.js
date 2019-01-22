@@ -1,5 +1,3 @@
-var api_endpoint_v2 = "/api/v2"; //rasa UI API = location of Nodejs server.js script running, edit this if the nodejs web front end is not running on the server instance
-
 var app = angular
   .module("app", [
     "ngCookies",
@@ -99,23 +97,25 @@ angular
     });
 
     $scope.loginUser = function(user) {
-      $http.post(api_endpoint_v2 + "/auth", JSON.stringify(user)).then(
-        function(response) {
-          // success callback
-          $sessionStorage.jwt = response.data.token;
-          $cookies.put("loggedinjwt", $sessionStorage.jwt);
-          $rootScope.$broadcast("USER_AUTHENTICATED");
-        },
-        function(errorResponse) {
-          // failure callback
-          $("#alertTextDiv").addClass("show");
-          $scope.alert_text =
-            "Invalid Username and Password. Please try again.";
-          $timeout(function() {
-            $("#alertTextDiv").removeClass("show");
-          }, 2000);
-        }
-      );
+      $http
+        .post(appConfig.api_endpoint_v2 + "/auth", JSON.stringify(user))
+        .then(
+          function(response) {
+            // success callback
+            $sessionStorage.jwt = response.data.token;
+            $cookies.put("loggedinjwt", $sessionStorage.jwt);
+            $rootScope.$broadcast("USER_AUTHENTICATED");
+          },
+          function(errorResponse) {
+            // failure callback
+            $("#alertTextDiv").addClass("show");
+            $scope.alert_text =
+              "Invalid Username and Password. Please try again.";
+            $timeout(function() {
+              $("#alertTextDiv").removeClass("show");
+            }, 2000);
+          }
+        );
     };
 
     // ADAL

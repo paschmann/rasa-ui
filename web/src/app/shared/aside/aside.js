@@ -5,13 +5,12 @@ function AsideController(
   $rootScope,
   $interval,
   $http,
-  Rasa_Parse,
   Rasa_Config,
   Rasa_Version,
   Settings,
   Rasa_Status,
-  IntentResponse,
-  mySocket
+  mySocket,
+  appConfig
 ) {
   //$scope.test_text = 'I want italian food in new york';
   $scope.test_text_response = {};
@@ -89,7 +88,7 @@ function AsideController(
   }
   $scope.restartConversation = function() {
     $scope.test_text_response = {};
-    $http.post(api_endpoint_v2 + "/rasa/restart");
+    $http.post(appConfig.api_endpoint_v2 + "/rasa/restart");
     $scope.response_text = [];
     $scope.test_text_response = {};
     $scope.test_text = "";
@@ -128,7 +127,10 @@ function AsideController(
       //make a httpcall
       addOverlay();
       $http
-        .post(api_endpoint_v2 + "/rasa/parse", JSON.stringify(reqMessage))
+        .post(
+          appConfig.api_endpoint_v2 + "/rasa/parse",
+          JSON.stringify(reqMessage)
+        )
         .then(
           function(response) {
             // success callback
