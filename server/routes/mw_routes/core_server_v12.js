@@ -45,7 +45,7 @@ class CoreServerV12 extends CoreServer {
           } else {
             // If the status is 200, only display the text for the moment
             // TODO Display images
-            response = "";
+            let response = "";
 
             body.forEach(function(element) {
               response += element.text + " \r\n";
