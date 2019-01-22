@@ -87,7 +87,7 @@ function EditIntentController(
   };
 
   function highlight(str, word) {
-    str = str.replace(
+    const highlighted = str.replace(
       word,
       '<span style="padding: 3px; background-color: ' +
         window.pastelColors() +
@@ -95,7 +95,7 @@ function EditIntentController(
         word +
         "</span>"
     );
-    return str;
+    return highlighted;
   }
 
   $scope.toggleArrow = function(expression_id) {

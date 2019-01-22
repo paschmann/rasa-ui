@@ -17,20 +17,20 @@ function StoriesController(
     toolbar: [
       {
         name: "heading2",
-        action: SimpleMDE.toggleHeading2,
+        action: window.SimpleMDE.toggleHeading2,
         className: "fa fa-header",
         title: "Heading2"
       },
       {
         name: "unorderedlist",
-        action: SimpleMDE.toggleUnorderedList,
+        action: window.SimpleMDE.toggleUnorderedList,
         className: "fa fa-list-ul",
         title: "Generic List"
       },
       "|",
       {
         name: "preview",
-        action: SimpleMDE.togglePreview,
+        action: window.SimpleMDE.togglePreview,
         className: "fa fa-eye no-disable",
         title: "Toggle Preview"
       },

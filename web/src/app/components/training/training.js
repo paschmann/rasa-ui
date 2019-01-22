@@ -103,7 +103,7 @@ function TrainingController(
   }
 
   $scope.getData = function(agent_id) {
-    $scope.selectedAgent = objectFindByKey(
+    $scope.selectedAgent = window.objectFindByKey(
       $scope.agentList,
       "agent_id",
       agent_id
