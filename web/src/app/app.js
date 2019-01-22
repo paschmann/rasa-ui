@@ -15,27 +15,9 @@ var app = angular
     "angularModalService",
     "AdalAngular"
   ])
-  .config(function() {
-    function success(response) {
-      return response;
-    }
-    function error(response) {
-      var status = response.status;
-      if (status == 401) {
-        //window.location = "/account/login?redirectUrl=" + Base64.encode(document.URL);
-        //$rootScope.$broadcast("INVALID_JWT_TOKEN");
-        return;
-      }
-      // otherwise
-      return $q.reject(response);
-    }
-    return function(promise) {
-      return promise.then(success, error);
-    };
-  })
   .factory("mySocket", function(socketFactory) {
     return socketFactory({
-      ioSocket: io.connect()
+      ioSocket: window.io.connect()
     });
   })
   .run(function($rootScope, $http, $sessionStorage, appConfig) {

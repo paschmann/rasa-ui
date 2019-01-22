@@ -63,7 +63,7 @@ function StoriesController(
     ]
   });
 
-  Agent.get({ agent_id: $scope.$routeParams.agent_id }, function(data) {
+  Agent.get({ agent_id: $scope.$routeParams.agent_id }, data => {
     $scope.agent = data;
     simplemde.value(data.story_details);
   });
