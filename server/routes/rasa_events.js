@@ -248,7 +248,7 @@ async function processLogEventsToDBs(
   } else if (message.event == "bot") {
     sqlCommand =
       "SELECT agent_id FROM messages WHERE user_id=$(user_id) and user_name='user' ORDER BY timestamp DESC LIMIT 1";
-  )
+  }
 
   db.any(sqlCommand, message)
     .then(function(data) {
