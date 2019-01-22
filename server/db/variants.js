@@ -60,7 +60,7 @@ function createVariant(req, res, next) {
   logger.winston.info("variants.createVariant");
   db.any(
     "insert into synonym_variant(synonym_id, synonym_value)" +
-      "values(${synonym_id}, ${synonym_value})",
+      "values($(synonym_id), $(synonym_value))",
     req.body
   )
     .then(function() {
@@ -85,7 +85,7 @@ function removeVariant(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: "success",
-        message: "Removed ${result.rowCount}"
+        message: `Removed ${result.rowCount}`
       });
       /* jshint ignore:end */
     })
@@ -102,7 +102,7 @@ function removeSynonymVariants(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: "success",
-        message: "Removed ${result.rowCount}"
+        message: `Removed ${result.rowCount}`
       });
       /* jshint ignore:end */
     })

@@ -28,7 +28,7 @@ function getSingleRegex(req, res, next) {
 function createRegex(req, res, next) {
   logger.winston.info("regex.createRegex");
   db.any(
-    "insert into regex(regex_name, regex_pattern, agent_id) values(${regex_name}, ${regex_pattern}, ${agent_id}) RETURNING regex_id",
+    "insert into regex(regex_name, regex_pattern, agent_id) values($(regex_name), $(regex_pattern), $(agent_id)) RETURNING regex_id",
     req.body
   )
     .then(function(data) {
@@ -66,7 +66,7 @@ function removeRegex(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: "success",
-        message: "Removed ${result.rowCount}"
+        message: `Removed ${result.rowCount}`
       });
       /* jshint ignore:end */
     })

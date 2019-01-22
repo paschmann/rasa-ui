@@ -29,7 +29,7 @@ function createAgentAction(req, res, next) {
   logger.winston.info("actions.createAgentAction");
   db.any(
     "insert into actions(agent_id, action_name)" +
-      "values(${agent_id}, ${action_name})",
+      "values($(agent_id), $(action_name))",
     req.body
   )
     .then(function() {
@@ -51,7 +51,7 @@ function removeAction(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: "success",
-        message: "Removed ${result.rowCount}"
+        message: `Removed ${result.rowCount}`
       });
       /* jshint ignore:end */
     })

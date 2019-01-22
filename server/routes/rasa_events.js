@@ -45,7 +45,7 @@ const logger = require("../util/logger");
 var getAgentIdFromName = async(function(message) {
   logger.winston.info("getAgentIdFromName");
 
-  db.any("SELECT agent_id FROM agents WHERE agent_name=${agent_name}", message)
+  db.any("SELECT agent_id FROM agents WHERE agent_name=$(agent_name)", message)
     .then(function(data) {
       logger.winston.info(data);
       if (data[0] != undefined) {
@@ -65,7 +65,7 @@ var getAgentIdFromBotMessage = async(function(message) {
   logger.winston.info("getAgentIdFromBotMessage");
 
   db.any(
-    "SELECT agent_id FROM messages WHERE user_id=${user_id} and user_name='user' ORDER BY timestamp DESC LIMIT 1",
+    "SELECT agent_id FROM messages WHERE user_id=$(user_id) and user_name='user' ORDER BY timestamp DESC LIMIT 1",
     message
   )
     .then(function(data) {
@@ -81,7 +81,7 @@ var getAgentIdFromBotMessage = async(function(message) {
 
 var insertNLUParseLogDB = async(function(nlulogData) {
   db.none(
-    "INSERT INTO nlu_parse_log(messages_id, intent_name, entity_data, intent_confidence_pct, user_response_time_ms, nlu_response_time_ms) VALUES (${messages_id}, ${intent_name}, ${entity_data}, ${intent_confidence_pct},${user_response_time_ms},${nlu_response_time_ms})",
+    "INSERT INTO nlu_parse_log(messages_id, intent_name, entity_data, intent_confidence_pct, user_response_time_ms, nlu_response_time_ms) VALUES ($(messages_id), $(intent_name), $(entity_data), $(intent_confidence_pct),$(user_response_time_ms),$(nlu_response_time_ms))",
     nlulogData
   )
     .then(function() {
@@ -98,7 +98,7 @@ insertMessagesEntitiesDB = async(function(messagesEntitiesDataItem) {
   logger.winston.info(messagesEntitiesDataItem);
 
   db.none(
-    "INSERT INTO messages_entities(message_id, entity_id, entity_start, entity_end, entity_value, entity_confidence) VALUES (${message_id}, ${entity_id}, ${entity_start}, ${entity_end}, ${entity_value}, ${entity_confidence})",
+    "INSERT INTO messages_entities(message_id, entity_id, entity_start, entity_end, entity_value, entity_confidence) VALUES ($(message_id), $(entity_id), $(entity_start), $(entity_end), $(entity_value), $(entity_confidence))",
     messagesEntitiesDataItem
   )
     .then(function() {
@@ -116,7 +116,7 @@ var processAllEntitiesFromExpressionId = async(function(messagesEntitiesData) {
 
   if (messagesEntitiesData.expression_id != null) {
     db.any(
-      "SELECT entity_id, parameter_start, parameter_end, parameter_value FROM parameters WHERE expression_id=${expression_id}",
+      "SELECT entity_id, parameter_start, parameter_end, parameter_value FROM parameters WHERE expression_id=$(expression_id)",
       messagesEntitiesData
     )
       .then(function(data) {
@@ -143,7 +143,7 @@ var processAllEntitiesFromExpressionId = async(function(messagesEntitiesData) {
       messagesEntitiesData.current_entity = entities[i];
       // Find entity_id
       db.any(
-        "SELECT entity_id FROM entities WHERE entity_name=${entity}",
+        "SELECT entity_id FROM entities WHERE entity_name=$(entity)",
         entities[i]
       )
         .then(function(data) {
@@ -178,7 +178,7 @@ processInsertMessagesEntitiesDB = async(function(messagesEntitiesData) {
   logger.winston.info("processInsertMessagesEntitiesDB 0");
   logger.winston.info(messagesEntitiesData);
   db.any(
-    "SELECT expression_id FROM expressions WHERE LOWER(expression_text)=LOWER(${message_text})",
+    "SELECT expression_id FROM expressions WHERE LOWER(expression_text)=LOWER($(message_text))",
     messagesEntitiesData
   )
     .then(function(data) {
@@ -205,7 +205,7 @@ async function insertlogEventMessageToDB(
 ) {
   db.any(
     "INSERT INTO messages(timestamp, agent_id, user_id, user_name, message_text, message_rich, user_message_ind, intent_id)" +
-      " VALUES(${timestamp}, ${agent_id}, ${user_id},${user_name}, ${message_text}, ${message_rich}, ${user_message_ind}, (SELECT intent_id FROM intents WHERE intent_name=${intent_name})) RETURNING messages_id",
+      " VALUES($(timestamp), $(agent_id), $(user_id),$(user_name), $(message_text), $(message_rich), $(user_message_ind), (SELECT intent_id FROM intents WHERE intent_name=$(intent_name))) RETURNING messages_id",
     message
   )
 
@@ -244,11 +244,11 @@ async function processLogEventsToDBs(
   sqlCommand = "";
 
   if (message.event == "user") {
-    sqlCommand = "SELECT agent_id FROM agents WHERE agent_name=${agent_name}";
+    sqlCommand = "SELECT agent_id FROM agents WHERE agent_name=$(agent_name)";
   } else if (message.event == "bot") {
     sqlCommand =
-      "SELECT agent_id FROM messages WHERE user_id=${user_id} and user_name='user' ORDER BY timestamp DESC LIMIT 1";
-  }
+      "SELECT agent_id FROM messages WHERE user_id=$(user_id) and user_name='user' ORDER BY timestamp DESC LIMIT 1";
+  )
 
   db.any(sqlCommand, message)
     .then(function(data) {

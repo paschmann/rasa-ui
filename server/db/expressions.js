@@ -45,7 +45,7 @@ function createIntentExpression(req, res, next) {
   logger.winston.info("expressions.createIntentExpression");
   db.any(
     "insert into expressions(intent_id, expression_text)" +
-      "values(${intent_id}, ${expression_text}) RETURNING expression_id",
+      "values($(intent_id), $(expression_text)) RETURNING expression_id",
     req.body
   )
     .then(function(data) {

@@ -1,4 +1,6 @@
 const winston = require("winston");
+global.loglevel =
+  process.env.loglevel || process.env.npm_package_config_loglevel;
 
 class Logger {
   constructor(appliName) {
@@ -12,7 +14,7 @@ class Logger {
     });
 
     this.winston = winston.createLogger({
-      level: process.env.LOG_LEVEL || "info",
+      level: global.loglevel || "info",
       format: winston.format.combine(
         winston.format.timestamp(),
         this.logFormat

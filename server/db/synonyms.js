@@ -29,7 +29,7 @@ function createAgentSynonym(req, res, next) {
   logger.winston.info("synonym.createAgentSynonym");
   db.any(
     "insert into synonyms(agent_id, synonym_reference)" +
-      "values(${agent_id}, ${synonym_reference}) RETURNING synonym_id",
+      "values($(agent_id), $(synonym_reference)) RETURNING synonym_id",
     req.body
   )
     .then(function(data) {
@@ -52,7 +52,7 @@ function removeSynonym(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: "success",
-        message: "Removed ${result.rowCount}"
+        message: `Removed ${result.rowCount}`
       });
       /* jshint ignore:end */
     })

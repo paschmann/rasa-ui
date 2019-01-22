@@ -79,7 +79,7 @@ function createExpressionParameter(req, res, next) {
   }
   db.any(
     "insert into parameters (expression_id, parameter_end, parameter_start, parameter_value, entity_id)" +
-      "values(${expression_id}, ${parameter_end}, ${parameter_start}, ${parameter_value}, ${entity_id})",
+      "values($(expression_id), $(parameter_end), $(parameter_start), $(parameter_value), $(entity_id))",
     req.body
   )
     .then(function() {
@@ -100,7 +100,7 @@ function removeParameter(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: "success",
-        message: "Removed ${result.rowCount}"
+        message: `Removed ${result.rowCount}`
       });
       /* jshint ignore:end */
     })

@@ -31,7 +31,7 @@ function createActionResponse(req, res, next) {
   //using default response type
   db.any(
     "insert into responses(action_id, response_text, response_type, buttons_info, response_image_url)" +
-      "values(${action_id}, ${response_text},${response_type},${buttons_info},${response_image_url})",
+      "values($(action_id), $(response_text),$(response_type),$(buttons_info),$(response_image_url))",
     //using default response type
     req.body
   )
@@ -52,7 +52,7 @@ function createIntentResponse(req, res, next) {
   //using default response type
   db.any(
     "insert into responses(intent_id, response_text, response_type)" +
-      "values(${intent_id}, ${response_text},${response_type})",
+      "values($(intent_id), $(response_text),$(response_type))",
     //using default response type
     req.body
   )

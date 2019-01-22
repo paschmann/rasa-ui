@@ -1,6 +1,6 @@
 {
   "name": "RasaUI",
-  "version": "2.3.5",
+  "version": "2.3.6",
   "description": "Rasa UI is a web application built on top of, and for, Rasa NLU.",
   "dependencies": {
     "adal-angular": "^1.0.17",
@@ -55,7 +55,8 @@
     "rasanlufixedmodelname": "",
     "azureadauthentication": false,
     "azureadtenantid": "91f15101-0cac-45c1-8710-cd08874eebab",
-    "azureddclientid": "3836863c-92af-4d2d-a3e1-8b9276ab3f5e"
+    "azureddclientid": "3836863c-92af-4d2d-a3e1-8b9276ab3f5e",
+    "loglevel": "info"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

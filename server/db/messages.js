@@ -195,7 +195,7 @@ function createMessage(messageObj) {
     logger.winston.info("Messages.createUserMessage");
     db.any(
       "insert into messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)" +
-        " values(${agent_id}, ${user_id},${user_name}, ${message_text},${message_rich}, ${user_message_ind})",
+        " values($(agent_id), $(user_id),$(user_name), $(message_text),$(message_rich), $(user_message_ind))",
       messageObj
     )
       .then(function(messages_id) {

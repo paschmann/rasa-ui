@@ -17,7 +17,7 @@ var app = angular
     "angularModalService",
     "AdalAngular"
   ])
-  .config(function config() {
+  .config(function() {
     function success(response) {
       return response;
     }
@@ -40,8 +40,7 @@ var app = angular
       ioSocket: io.connect()
     });
   })
-  .run(function run($rootScope, $http, $sessionStorage, appConfig) {
-
+  .run(function($rootScope, $http, $sessionStorage, appConfig) {
     $rootScope.azureadauthentication = appConfig.azureadauthentication;
 
     // keep user logged in after page refresh
@@ -124,39 +123,41 @@ angular
       // this is referencing adal module to do login
       //userInfo is defined at the $rootscope with adalAngular module
       $scope.testMessage = "";
-      $scope.init = function () {
-          $scope.testMessage = "";
+      $scope.init = function() {
+        $scope.testMessage = "";
       };
 
-      $scope.logout = function () {
-          adalAuthenticationService.logOut();
-          $rootScope.$broadcast("INVALID_JWT_TOKEN");
+      $scope.logout = function() {
+        adalAuthenticationService.logOut();
+        $rootScope.$broadcast("INVALID_JWT_TOKEN");
       };
 
-      $scope.login = function () {
-          adalAuthenticationService.login();
+      $scope.login = function() {
+        adalAuthenticationService.login();
       };
 
       // optional
-      $scope.$on("adal:loginSuccess", function () {
-          $scope.testMessage = "loginSuccess";
+      $scope.$on("adal:loginSuccess", function() {
+        $scope.testMessage = "loginSuccess";
 
-          // Inject Azure Token_ID as JWT Token
-          var clientID = appConfig.azureddclientid;
-          $sessionStorage.jwt = adalAuthenticationService.getCachedToken(clientID);
-          $cookies.put('loggedinjwt', $sessionStorage.jwt);
-          $rootScope.$broadcast("USER_AUTHENTICATED");
+        // Inject Azure Token_ID as JWT Token
+        var clientID = appConfig.azureddclientid;
+        $sessionStorage.jwt = adalAuthenticationService.getCachedToken(
+          clientID
+        );
+        $cookies.put("loggedinjwt", $sessionStorage.jwt);
+        $rootScope.$broadcast("USER_AUTHENTICATED");
       });
 
       // optional
-      $scope.$on("adal:loginFailure", function () {
-          $scope.testMessage = "loginFailure";
-          $location.path("/login");
+      $scope.$on("adal:loginFailure", function() {
+        $scope.testMessage = "loginFailure";
+        $location.path("/login");
       });
 
       // optional
-      $scope.$on("adal:notAuthorized", function (event, rejection, forResource) {
-          $scope.testMessage = "It is not Authorized for resource:" + forResource;
+      $scope.$on("adal:notAuthorized", function(event, rejection, forResource) {
+        $scope.testMessage = "It is not Authorized for resource:" + forResource;
       });
     }
   });

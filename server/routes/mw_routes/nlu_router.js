@@ -205,14 +205,14 @@ function finalizeCacheFlushToDbAndRespond(cacheKey, http_code, res, body) {
         if (nlu_parse_cache.agent_id != undefined) {
           db.any(
             "insert into messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)" +
-              " values(${agent_id}, ${user_id},${user_name}, ${message_text}, ${message_rich}, ${user_message_ind}) RETURNING messages_id",
+              " values($(agent_id), $(user_id),$(user_name), $(message_text), $(message_rich), $(user_message_ind)) RETURNING messages_id",
             nlu_parse_cache
           )
             .then(function(returnData) {
               nlu_parse_cache.messages_id = returnData[0].messages_id;
               db.none(
                 "INSERT INTO nlu_parse_log(intent_name, entity_data, messages_id,intent_confidence_pct, user_response_time_ms,nlu_response_time_ms) " +
-                  " values(${intent_name}, ${entity_data}, ${messages_id}, ${intent_confidence_pct},${user_response_time_ms},${nlu_response_time_ms})",
+                  " values($(intent_name), $(entity_data), $(messages_id), $(intent_confidence_pct),$(user_response_time_ms),$(nlu_response_time_ms))",
                 nlu_parse_cache
               )
                 .then(function() {
@@ -325,7 +325,7 @@ function logRequest(req, type, data) {
 
     db.any(
       "insert into nlu_log(ip_address, query, event_type, event_data)" +
-        "values(${ip_address}, ${query}, ${event_type}, ${event_data})",
+        "values($(ip_address), $(query), $(event_type), $(event_data))",
       obj
     ).catch(function(err) {
       logger.winston.info(err);

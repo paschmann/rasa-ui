@@ -229,7 +229,7 @@ function getSingleAgent(req, res, next) {
 
 function createAgent(req, res, next) {
   logger.winston.info("Agent.createAgent");
-  db.none("insert into agents(agent_name)" + "values(${agent_name})", req.body)
+  db.none("insert into agents(agent_name)" + "values($(agent_name))", req.body)
     .then(function() {
       res.status(200).json({
         status: "success",
@@ -275,7 +275,7 @@ function removeAgent(req, res, next) {
     .then(function(result) {
       res.status(200).json({
         status: "success",
-        message: "Removed ${result.rowCount}"
+        message: `Removed ${result.rowCount}`
       });
     })
     .catch(function(err) {

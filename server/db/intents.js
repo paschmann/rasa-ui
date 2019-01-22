@@ -40,7 +40,7 @@ function createAgentIntent(req, res, next) {
   logger.winston.info("intents.createAgentIntent");
   db.any(
     "insert into intents(agent_id, intent_name)" +
-      "values(${agent_id}, ${intent_name}) RETURNING intent_id",
+      "values($(agent_id), $(intent_name)) RETURNING intent_id",
     req.body
   )
     .then(function(resp) {
@@ -63,7 +63,7 @@ function removeIntent(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: "success",
-        message: "Removed ${result.rowCount}"
+        message: `Removed ${result.rowCount}`
       });
       /* jshint ignore:end */
     })

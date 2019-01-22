@@ -40,7 +40,7 @@ function createEntity(req, res, next) {
   logger.winston.info("Entities.createEntity");
   req.body.agent_id = req.body.agent.agent_id;
   db.none(
-    "insert into entities(entity_name, agent_id, slot_data_type) values(${entity_name},${agent_id},${slot_data_type})",
+    "insert into entities(entity_name, agent_id, slot_data_type) values($(entity_name),$(agent_id),$(slot_data_type))",
     req.body
   )
     .then(function() {
@@ -85,7 +85,7 @@ function removeEntity(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: "success",
-        message: "Removed ${result.rowCount}"
+        message: `Removed ${result.rowCount}`
       });
       /* jshint ignore:end */
     })
