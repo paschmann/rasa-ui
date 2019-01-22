@@ -3,7 +3,7 @@ const logger = require("../util/logger");
 
 function getSingleExpression(req, res, next) {
   logger.winston.info("expression.getSingleExpression");
-  var intentId = parseInt(req.params.expression_id);
+  var intentId = Number(req.params.expression_id);
   db.one("select * from expressions where expression_id = $1", intentId)
     .then(function(data) {
       res.status(200).json(data);
@@ -15,7 +15,7 @@ function getSingleExpression(req, res, next) {
 
 function getIntentExpressions(req, res, next) {
   logger.winston.info("expression.getIntentExpressions");
-  var IntentId = parseInt(req.params.intent_id);
+  var IntentId = Number(req.params.intent_id);
   db.any(
     "select * from expressions where intent_id = $1 order by expression_id desc",
     IntentId
@@ -62,7 +62,7 @@ function createIntentExpression(req, res, next) {
 
 function removeExpression(req, res, next) {
   logger.winston.info("expressions.removeExpression");
-  var expressionId = parseInt(req.params.expression_id);
+  var expressionId = Number(req.params.expression_id);
   db.result("delete from expressions where expression_id = $1", expressionId)
     .then(function(result) {
       /* jshint ignore:start */
@@ -82,7 +82,7 @@ function updateExpression(req, res, next) {
   db.none(
     "update expressions set intent_id=$2,expression_text=$3 where expression_id=$1",
     [
-      parseInt(req.params.expression_id),
+      Number(req.params.expression_id),
       req.body.intent_id,
       req.body.expression_text
     ]

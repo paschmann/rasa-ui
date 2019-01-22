@@ -2,7 +2,7 @@ const db = require("./db");
 const logger = require("../util/logger");
 
 function getSingleAction(req, res, next) {
-  var action_id = parseInt(req.params.action_id);
+  var action_id = Number(req.params.action_id);
   logger.winston.info("actions.getSingleAction");
   db.one("select * from actions where action_id = $1", action_id)
     .then(function(data) {
@@ -15,7 +15,7 @@ function getSingleAction(req, res, next) {
 
 function getAgentActions(req, res, next) {
   logger.winston.info("actions.getAgentActions");
-  var AgentID = parseInt(req.params.agent_id);
+  var AgentID = Number(req.params.agent_id);
   db.any("select * from actions where agent_id = $1", AgentID)
     .then(function(data) {
       res.status(200).json(data);
@@ -45,7 +45,7 @@ function createAgentAction(req, res, next) {
 
 function removeAction(req, res, next) {
   logger.winston.info("actions.removeAction");
-  var action_id = parseInt(req.params.action_id);
+  var action_id = Number(req.params.action_id);
   db.result("delete from actions where action_id = $1", action_id)
     .then(function(result) {
       /* jshint ignore:start */
@@ -63,7 +63,7 @@ function removeAction(req, res, next) {
 function updateAction(req, res, next) {
   logger.winston.info("actions.updateAction");
   db.none("update actions set action_name=$2 where action_id=$1", [
-    parseInt(req.params.action_id),
+    Number(req.params.action_id),
     req.body.action_name
   ])
     .then(function() {

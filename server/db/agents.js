@@ -217,7 +217,7 @@ function getAllAgents(req, res, next) {
 }
 
 function getSingleAgent(req, res, next) {
-  var agentID = parseInt(req.params.agent_id);
+  var agentID = Number(req.params.agent_id);
   db.one("select * from agents where agent_id = $1", agentID)
     .then(function(data) {
       res.status(200).json(data);
@@ -246,7 +246,7 @@ function updateAgent(req, res, next) {
   db.none(
     "update agents set agent_name=$2, endpoint_enabled=$3, endpoint_url=$4, basic_auth_username=$5, basic_auth_password=$6, rasa_core_enabled=$7 where agent_id=$1",
     [
-      parseInt(req.params.agent_id),
+      Number(req.params.agent_id),
       req.body.agent_name,
       req.body.endpoint_enabled,
       req.body.endpoint_url,
@@ -267,7 +267,7 @@ function updateAgent(req, res, next) {
 }
 
 function removeAgent(req, res, next) {
-  var agentID = parseInt(req.params.agent_id);
+  var agentID = Number(req.params.agent_id);
   db.result(
     "delete from intents where agent_id = $1; delete from actions where agent_id = $1; delete from entities where agent_id = $1; delete from agents where agent_id = $1;",
     agentID
@@ -287,7 +287,7 @@ function removeAgent(req, res, next) {
 function updateAgentStory(req, res, next) {
   logger.winston.info("Agent.updateAgentStory");
   db.none("update agents set story_details=$2 where agent_id=$1", [
-    parseInt(req.body.agent_id),
+    Number(req.body.agent_id),
     req.body.story_details
   ])
     .then(function() {

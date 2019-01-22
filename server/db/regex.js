@@ -3,7 +3,7 @@ const logger = require("../util/logger");
 
 function getAgentRegex(req, res, next) {
   logger.winston.info("regex.getAgentRegex");
-  var agentId = parseInt(req.params.agent_id);
+  var agentId = Number(req.params.agent_id);
   db.any("select * from regex where agent_id = $1", agentId)
     .then(function(data) {
       res.status(200).json(data);
@@ -15,7 +15,7 @@ function getAgentRegex(req, res, next) {
 
 function getSingleRegex(req, res, next) {
   logger.winston.info("regex.getSingleRegex");
-  var regexID = parseInt(req.params.regex_id);
+  var regexID = Number(req.params.regex_id);
   db.one("select * from regex where regex_id = $1", regexID)
     .then(function(data) {
       res.status(200).json(data);
@@ -46,7 +46,7 @@ function createRegex(req, res, next) {
 function updateRegex(req, res, next) {
   db.none(
     "update regex set regex_name=$1, regex_pattern=$3 where regex_id=$2",
-    [req.body.regex_name, parseInt(req.params.regex_id), req.body.regex_pattern]
+    [req.body.regex_name, Number(req.params.regex_id), req.body.regex_pattern]
   )
     .then(function() {
       res.status(200).json({
@@ -60,7 +60,7 @@ function updateRegex(req, res, next) {
 }
 
 function removeRegex(req, res, next) {
-  var regexID = parseInt(req.params.regex_id);
+  var regexID = Number(req.params.regex_id);
   db.result("delete from regex where regex_id = $1", regexID)
     .then(function(result) {
       /* jshint ignore:start */

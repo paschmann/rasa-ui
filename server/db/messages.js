@@ -3,7 +3,7 @@ const logger = require("../util/logger");
 
 //agent/:agent_id/messages
 function getRecent9UniqueUsersList(req, res, next) {
-  var agent_id = parseInt(req.params.agent_id);
+  var agent_id = Number(req.params.agent_id);
   logger.winston.info("messages.getRecent9UniqueUsersList");
   db.any(
     "select user_id,user_name, MAX(timestamp) as recent_active from messages where agent_id=$1 group by user_id,user_name order by recent_active desc  limit 9 ",
@@ -21,8 +21,8 @@ function getRecent9UniqueUsersList(req, res, next) {
 //agent/:agent_id/messages
 function getUniqueUsersList(req, res, next) {
   logger.winston.info("messages.getUniqueUsersList");
-  var agent_id = parseInt(req.params.agent_id);
-  var limit = req.query.limit ? parseInt(req.query.limit) : 10;
+  var agent_id = Number(req.params.agent_id);
+  var limit = req.query.limit ? Number(req.query.limit) : 10;
   db.any(
     "select user_id, MAX(timestamp) as recent_active from messages_expressions where agent_id=$1 and user_id IS NOT NULL group by user_id order by recent_active desc limit $2",
     [agent_id, limit]
@@ -170,12 +170,12 @@ function getMessageDetails(req, res, next) {
   db.task("get-message-details", async t => {
     const msgDetails = await t.any(
       "select * from core_parse_log FULL JOIN nlu_parse_log ON core_parse_log.messages_id=nlu_parse_log.messages_id where core_parse_log.messages_id=$1",
-      parseInt(req.params.messages_id)
+      Number(req.params.messages_id)
     );
     if (msgDetails.length < 1) {
       const msgDetails = await t.any(
         "select * from nlu_parse_log where nlu_parse_log.messages_id=$1",
-        parseInt(req.params.messages_id)
+        Number(req.params.messages_id)
       );
       return msgDetails;
     }
@@ -216,8 +216,8 @@ function updateMessage(req, res, next) {
 
   if (req.body.intent_id != undefined && req.params.messages_id != undefined) {
     db.none("update messages set intent_id=$1 where messages_id=$2", [
-      parseInt(req.body.intent_id),
-      parseInt(req.params.messages_id)
+      Number(req.body.intent_id),
+      Number(req.params.messages_id)
     ])
       .then(function() {
         res.status(200).json({

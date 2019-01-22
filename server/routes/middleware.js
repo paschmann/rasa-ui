@@ -86,8 +86,8 @@ async function routeRequest(req, res, next, agentObj) {
     let rasaVersion = JSON.parse(
       await core_router.getRasaCoreVersion(req, res, next)
     ).version.split(".");
-    let majorVersion = parseInt(rasaVersion[0]);
-    let minorVersion = parseInt(rasaVersion[1]);
+    let majorVersion = Number(rasaVersion[0]);
+    let minorVersion = Number(rasaVersion[1]);
     let coreRouter;
     if (majorVersion === 0 && minorVersion < 11) {
       coreRouter = new CoreServerV10();

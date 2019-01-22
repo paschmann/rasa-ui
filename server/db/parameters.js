@@ -2,7 +2,7 @@ const db = require("./db");
 const logger = require("../util/logger");
 
 function getSingleParameter(req, res, next) {
-  var parameterID = parseInt(req.params.parameter_id);
+  var parameterID = Number(req.params.parameter_id);
   db.one("select * from parameters where parameter_id = $1", parameterID)
     .then(function(data) {
       res.status(200).json(data);
@@ -14,7 +14,7 @@ function getSingleParameter(req, res, next) {
 
 function getIntentParameters(req, res, next) {
   logger.winston.info("parameters.getExpressionParameters");
-  var intentId = parseInt(req.params.intent_id);
+  var intentId = Number(req.params.intent_id);
   db.any("select * from expression_parameters where intent_id = $1", intentId)
     .then(function(data) {
       res.status(200).json(data);
@@ -44,7 +44,7 @@ function updateParameter(req, res, next) {
   logger.winston.info("parameters.updateParameter");
   db.none("update parameters set entity_id=$1 where parameter_id=$2", [
     req.body.entity_id,
-    parseInt(req.params.parameter_id)
+    Number(req.params.parameter_id)
   ])
     .then(function() {
       res.status(200).json({
@@ -59,7 +59,7 @@ function updateParameter(req, res, next) {
 
 function getExpressionParameters(req, res, next) {
   logger.winston.info("parameters.getExpressionParameters");
-  var expressionId = parseInt(req.params.expression_id);
+  var expressionId = Number(req.params.expression_id);
   db.any(
     "select * from expression_parameters where expression_id = $1",
     expressionId
@@ -94,7 +94,7 @@ function createExpressionParameter(req, res, next) {
 }
 
 function removeParameter(req, res, next) {
-  var parameterId = parseInt(req.params.parameter_id);
+  var parameterId = Number(req.params.parameter_id);
   db.result("delete from parameters where parameter_id = $1", parameterId)
     .then(function(result) {
       /* jshint ignore:start */

@@ -2,7 +2,7 @@ const db = require("./db");
 const logger = require("../util/logger");
 
 function getSingleIntent(req, res, next) {
-  var intentID = parseInt(req.params.intent_id);
+  var intentID = Number(req.params.intent_id);
   db.one("select * from intents where intent_id = $1", intentID)
     .then(function(data) {
       res.status(200).json(data);
@@ -14,7 +14,7 @@ function getSingleIntent(req, res, next) {
 
 function getAgentIntents(req, res, next) {
   logger.winston.info("intents.getAgentIntents");
-  var AgentID = parseInt(req.params.agent_id);
+  var AgentID = Number(req.params.agent_id);
   db.any("select * from intents where agent_id = $1", AgentID)
     .then(function(data) {
       res.status(200).json(data);
@@ -26,7 +26,7 @@ function getAgentIntents(req, res, next) {
 
 function getUniqueIntents(req, res, next) {
   logger.winston.info("intents.getUniqueIntents");
-  var IntentID = parseInt(req.params.intent_id);
+  var IntentID = Number(req.params.intent_id);
   db.any("select * from unique_intent_entities where intent_id = $1", IntentID)
     .then(function(data) {
       res.status(200).json(data);
@@ -57,7 +57,7 @@ function createAgentIntent(req, res, next) {
 
 function removeIntent(req, res, next) {
   logger.winston.info("intents.removeIntent");
-  var intentID = parseInt(req.params.intent_id);
+  var intentID = Number(req.params.intent_id);
   db.result("delete from intents where intent_id = $1", intentID)
     .then(function(result) {
       /* jshint ignore:start */
@@ -77,7 +77,7 @@ function updateIntent(req, res, next) {
   db.none(
     "update intents set intent_name=$2,endpoint_enabled=$3 where intent_id=$1",
     [
-      parseInt(req.params.intent_id),
+      Number(req.params.intent_id),
       req.body.intent_name,
       req.body.endpoint_enabled
     ]

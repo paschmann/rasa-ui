@@ -3,7 +3,7 @@ const logger = require("../util/logger");
 
 function getSingleVariant(req, res, next) {
   logger.winston.info("variants.getSingleVariant");
-  var synonymVariantId = parseInt(req.params.synonym_variant_id);
+  var synonymVariantId = Number(req.params.synonym_variant_id);
   db.any(
     "select * from synonym_variant where synonym_variant_id = $1",
     synonymVariantId
@@ -18,7 +18,7 @@ function getSingleVariant(req, res, next) {
 
 function getSynonymVariants(req, res, next) {
   logger.winston.info("variants.getSynonymVariants");
-  var synonymId = parseInt(req.params.synonym_id);
+  var synonymId = Number(req.params.synonym_id);
   db.any("select * from synonym_variant where synonym_id = $1", synonymId)
     .then(function(data) {
       res.status(200).json(data);
@@ -76,7 +76,7 @@ function createVariant(req, res, next) {
 
 function removeVariant(req, res, next) {
   logger.winston.info("variants.removeVariant");
-  var variantId = parseInt(req.params.synonym_variant_id);
+  var variantId = Number(req.params.synonym_variant_id);
   db.result(
     "delete from synonym_variant where synonym_variant_id = $1",
     variantId
@@ -96,7 +96,7 @@ function removeVariant(req, res, next) {
 
 function removeSynonymVariants(req, res, next) {
   logger.winston.info("variants.removeSynonymVariants");
-  var synonymId = parseInt(req.params.synonym_id);
+  var synonymId = Number(req.params.synonym_id);
   db.result("delete from synonym_variant where synonym_id = $1", synonymId)
     .then(function(result) {
       /* jshint ignore:start */

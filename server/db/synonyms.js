@@ -3,7 +3,7 @@ const logger = require("../util/logger");
 
 function getSingleSynonym(req, res, next) {
   logger.winston.info("synonym.getSingleSynonym");
-  var synonymId = parseInt(req.params.synonym_id);
+  var synonymId = Number(req.params.synonym_id);
   db.one("select * from synonyms where synonym_id = $1", synonymId)
     .then(function(data) {
       res.status(200).json(data);
@@ -15,7 +15,7 @@ function getSingleSynonym(req, res, next) {
 
 function getAgentSynonyms(req, res, next) {
   logger.winston.info("synonym.getAgentSynonyms");
-  var agentId = parseInt(req.params.agent_id);
+  var agentId = Number(req.params.agent_id);
   db.any("select * from synonyms where agent_id = $1", agentId)
     .then(function(data) {
       res.status(200).json(data);
@@ -46,7 +46,7 @@ function createAgentSynonym(req, res, next) {
 
 function removeSynonym(req, res, next) {
   logger.winston.info("synonym.removeExpression");
-  var synonymId = parseInt(req.params.synonym_id);
+  var synonymId = Number(req.params.synonym_id);
   db.result("delete from synonyms where synonym_id = $1", synonymId)
     .then(function(result) {
       /* jshint ignore:start */
