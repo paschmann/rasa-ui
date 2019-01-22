@@ -12,7 +12,7 @@ function StoriesController(
 ) {
   $scope.graphData = "";
 
-  var simplemde = new SimpleMDE({
+  var simplemde = new window.SimpleMDE({
     element: $("#MyID")[0],
     toolbar: [
       {
@@ -45,7 +45,7 @@ function StoriesController(
 		},*/ "|",
       {
         name: "save",
-        action: function customFunction(editor) {
+        action: function() {
           var formdata = {};
           formdata.story_details = simplemde.value();
           formdata.agent_id = $scope.agent.agent_id;
@@ -157,7 +157,7 @@ function StoriesController(
   $scope.getGraph = function() {
     if ($scope.graphData.length > 0) {
       setTimeout(function() {
-        mermaid.init();
+        window.mermaid.init();
       }, 2000);
       return $sce.trustAsHtml($scope.graphData);
     } else {

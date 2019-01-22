@@ -47,7 +47,7 @@ function EditEntityModalController(
           $scope.selectedText,
           $scope.selectedEntity.entity_id
         ).then(() => {
-          addMessageEntity($scope.entity).then(result => {
+          addMessageEntity().then(result => {
             close(result, 500);
           });
           close(result, 500);

@@ -198,13 +198,13 @@ function ConversationController(
     return $scope.selectedEntity ? $scope.selectedEntity === entity : false;
   };
 
-  getFormattedChatlog = function(chatlog) {
+  function getFormattedChatlog(chatlog) {
     chatlog.timestamp = getConversationTimestamp(chatlog);
     var intentsAndNoMatch = getConversationIntentsAndNoMatch(chatlog);
     chatlog.intentsNumber = intentsAndNoMatch.intents;
     chatlog.noMatchNumber = intentsAndNoMatch.noMatch;
     return chatlog;
-  };
+  }
 
   function getConversationEntities(chatlog) {
     let conversationEntities = [];

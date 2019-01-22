@@ -2,15 +2,7 @@ angular
   .module("app")
   .controller("ImportAgentController", ImportAgentController);
 
-function ImportAgentController(
-  $scope,
-  $rootScope,
-  Agent,
-  $http,
-  $timeout,
-  $route,
-  $location
-) {
+function ImportAgentController($scope, $rootScope, Agent, $route, $location) {
   $scope.show_preview = false;
   $scope.fileInvalid = true;
   $scope.show_progress = false;
@@ -20,9 +12,7 @@ function ImportAgentController(
       agent_name: $scope.formData.agent_name,
       data: $scope.agentImportData
     };
-    Agent.save({ agent_id: "upload" }, postRequest).$promise.then(function(
-      resp
-    ) {
+    Agent.save({ agent_id: "upload" }, postRequest).$promise.then(function() {
       $rootScope.$broadcast("setAlertText", "Agent uploaded successfully");
       if ($location.path().endsWith("agents")) {
         $route.reload();
@@ -54,7 +44,6 @@ function ImportAgentController(
     };
     reader.onerror = function(err) {
       $scope.agentImportData = "Error Occurred while uploading the file";
-      button.removeAttribute("disabled");
     };
     reader.readAsText(file);
   };

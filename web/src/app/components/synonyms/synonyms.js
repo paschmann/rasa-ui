@@ -5,9 +5,7 @@ function SynonymController(
   Synonym,
   EntitySynonymVariants,
   Agent,
-  Synonym,
   SynonymVariant,
-  EntitySynonymVariants,
   $location
 ) {
   $scope.tags = [{}];
@@ -36,7 +34,7 @@ function SynonymController(
     SynonymVariant.save(objNew);
   };
 
-  getEntitySynonymVariants = function(synonym_id) {
+  function getEntitySynonymVariants(synonym_id) {
     EntitySynonymVariants.query({ synonym_id: synonym_id }).$promise.then(
       function(data) {
         var tags = [];
@@ -49,7 +47,7 @@ function SynonymController(
         $scope.tags[synonym_id] = tags;
       }
     );
-  };
+  }
 
   $scope.saveNewSynonym = function() {
     //First save the synonym into the synonym table

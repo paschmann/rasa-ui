@@ -53,13 +53,13 @@ function HistoryController($scope, $http, $location, Agent, appConfig) {
     $location.path(`/conversation/${$scope.selectedAgentId}/${userId}`);
   };
 
-  getFormattedChatlog = function(chatlog) {
+  function getFormattedChatlog(chatlog) {
     chatlog.timestamp = getConversationTimestamp(chatlog);
     var intentsAndNoMatch = getConversationIntentsAndNoMatch(chatlog);
     chatlog.intentsNumber = intentsAndNoMatch.intents;
     chatlog.noMatchNumber = intentsAndNoMatch.noMatch;
     return chatlog;
-  };
+  }
 
   function getConversationIntentsAndNoMatch(chatlog) {
     var noMatch = 0;
@@ -83,9 +83,9 @@ function HistoryController($scope, $http, $location, Agent, appConfig) {
     return { intents, noMatch };
   }
 
-  getConversationTimestamp = function(chatlog) {
+  function getConversationTimestamp(chatlog) {
     return chatlog && chatlog[0] && chatlog[0].timestamp
       ? chatlog[0].timestamp
       : null;
-  };
+  }
 }
