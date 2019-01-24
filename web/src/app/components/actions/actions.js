@@ -10,14 +10,6 @@ function ActionsController($rootScope,$scope, $http,Actions, Response, ActionRes
     $scope.buttonsArray=[];
     Actions.get({action_id: $scope.$routeParams.action_id}, function(data) {
         $scope.action = data;
-        if($scope.action.action_name.startsWith('utter_webhook_')){
-          $scope.action.action_name_prefix = 'utter_webhook_';
-          $scope.action.action_name = $scope.action.action_name.substring('utter_webhook_'.length,$scope.action.action_name.length);
-        }
-        else {
-          $scope.action.action_name_prefix='utter_';
-          $scope.action.action_name = $scope.action.action_name.substring('utter_'.length,$scope.action.action_name.length);
-        }
     });
     loadActionResponses($scope.$routeParams.action_id);
 
@@ -62,19 +54,12 @@ function ActionsController($rootScope,$scope, $http,Actions, Response, ActionRes
         if($scope.readonly){
           $scope.readonly =false;
           $scope.mstr_action_name = $scope.action.action_name;
-          $scope.mstr_action_name_prefix = $scope.action.action_name_prefix;
           return;
         }else{
           $scope.readonly = true;
-          if(($scope.action.action_name != $scope.mstr_action_name) || ($scope.mstr_action_name_prefix != $scope.action.action_name_prefix)){
-            var new_prefix=action.action_name_prefix;
-            var new_name=action.action_name;
-            action.action_name=action.action_name_prefix+action.action_name;
+          if($scope.action.action_name != $scope.mstr_action_name){
             Actions.update({ action_id:action.action_id }, action).$promise.then(function() {
               $rootScope.$broadcast('setAlertText', "Action information updated Sucessfully!!");
-              //loadAgentActions(action.agent_id);
-              action.action_name_prefix =new_prefix;
-              action.action_name = new_name;
             });
           }
         }
