@@ -67,19 +67,27 @@
               </thead>
               <tbody>
                 <tr
-                  ng-repeat="user in users | orderBy:'-chatlog.timestamp'"
-                  ng-if="users.length > 0"
-                  ng-click="goToConversation(user.user_id)"
+                  dir-paginate="conversation in conversations | itemsPerPage: itemsPerPage"
+                  pagination-id="conversationsList"
+                  total-items="totalItems"
+                  ng-if="conversations.length > 0"
+                  ng-click="goToConversation(conversation.user_id)"
                 >
-                  <td>{{ user.user_id }}</td>
-                  <td>{{ user.chatlog.timestamp }}</td>
-                  <td ng-class="{'no-match': user.chatlog.noMatchNumber > 0 }">
-                    {{ user.chatlog.noMatchNumber }}
+                  <td>{{ conversation.user_id }}</td>
+                  <td>{{ conversation.recent_active }}</td>
+                  <td ng-class="{'no-match': conversation.noMatchCount > 0 }">
+                    {{ conversation.noMatchCount }}
                   </td>
-                  <td>{{ user.chatlog.intentsNumber }}</td>
+                  <td>{{ conversation.intentsCount }}</td>
                 </tr>
               </tbody>
             </table>
+            <div style="float:right">
+              <dir-pagination-controls
+                pagination-id="conversationsList"
+                on-page-change="onPageChange(newPageNumber, oldPageNumber)"
+              ></dir-pagination-controls>
+            </div>
           </div>
         </div>
       </div>
