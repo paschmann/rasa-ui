@@ -103,27 +103,3 @@ function pastelColors() {
   var hue = Math.floor(Math.random() * 360);
   return "hsl(" + hue + ", 100%, 87.5%)";
 }
-
-function getConversationIntentsAndNoMatch(chatlog) {
-  var noMatch = 0;
-  var intents = 0;
-  if (chatlog) {
-    for (let index = 0; index < chatlog.length; index++) {
-      const message = chatlog[index];
-      if (message.user_name === "user") {
-        if (message && message.intent_name && message.intent_name.length > 0) {
-          intents++;
-        } else {
-          noMatch++;
-        }
-      }
-    }
-  }
-  return { intents, noMatch };
-}
-
-function getConversationTimestamp(chatlog) {
-  return chatlog && chatlog[0] && chatlog[0].timestamp
-    ? chatlog[0].timestamp
-    : null;
-}

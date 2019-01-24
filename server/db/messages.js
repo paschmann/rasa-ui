@@ -19,16 +19,73 @@ function getRecent9UniqueUsersList(req, res, next) {
 }
 
 //agent/:agent_id/messages
-function getUniqueUsersList(req, res, next) {
+async function getUniqueUsersList(req, res, next) {
   logger.winston.info("messages.getUniqueUsersList");
-  var agent_id = Number(req.params.agent_id);
-  var limit = req.query.limit ? Number(req.query.limit) : 10;
+  const agent_id = Number(req.params.agent_id);
+  const itemsPerPage = req.query.itemsPerPage
+    ? Number(req.query.itemsPerPage)
+    : 10;
+  const page = req.query.page ? Number(req.query.page) : 1;
+  const offset = (page - 1) * itemsPerPage;
+
+  const total = await db.any(
+    "SELECT COUNT(DISTINCT user_id) FROM messages_expressions where agent_id=$1 and user_id IS NOT NULL;",
+    [agent_id]
+  );
   db.any(
-    "select user_id, MAX(timestamp) as recent_active from messages_expressions where agent_id=$1 and user_id IS NOT NULL group by user_id order by recent_active desc limit $2",
-    [agent_id, limit]
+    `select user_id, MAX(timestamp) as recent_active 
+    FROM messages_expressions 
+    WHERE agent_id=$1 and user_id IS NOT NULL 
+    group by user_id order by recent_active desc 
+    LIMIT $2
+    OFFSET $3`,
+    [agent_id, itemsPerPage, offset]
   )
-    .then(function(data) {
-      res.status(200).json(data);
+    .then(function(conversations) {
+      let intentsCountPromises = [];
+      conversations.forEach(conversation => {
+        intentsCountPromises.push(
+          db.any(
+            `SELECT ( 
+              SELECT count(messages_id)
+              FROM messages_expressions
+              WHERE agent_id=$1 
+              AND user_id=$2 
+              AND intent_id IS NOT NULL
+              AND user_name = 'user'
+            ) as intentsCount,
+            (
+              SELECT count(messages_id) 
+              FROM messages_expressions
+              WHERE agent_id=$1 
+              AND user_id=$2 
+              AND intent_id IS NULL
+              AND user_name = 'user'
+            ) as noMatchCount`,
+            [agent_id, conversation.user_id]
+          )
+        );
+      });
+
+      Promise.all(intentsCountPromises)
+        .then(counts => {
+          for (let index = 0; index < counts.length; index++) {
+            conversations[index].intentsCount = counts[index][0].intentscount;
+            conversations[index].noMatchCount = counts[index][0].nomatchcount;
+          }
+
+          res.status(200).json({
+            conversations,
+            meta: {
+              total: total[0].count,
+              page: page,
+              itemsPerPage: itemsPerPage
+            }
+          });
+        })
+        .catch(error => {
+          res.status(200).json(error);
+        });
     })
     .catch(function(err) {
       logger.winston.info("Error in DB Call" + err);
