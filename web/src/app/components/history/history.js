@@ -3,7 +3,7 @@ angular.module("app").controller("HistoryController", HistoryController);
 function HistoryController($scope, $http, $location, Agent, appConfig) {
   $scope.conversations = [];
   $scope.selectedAgentId = "";
-  $scope.itemsPerPage = 5;
+  $scope.itemsPerPage = 20;
   $scope.currentPage = 1;
 
   Agent.query(function(data) {
