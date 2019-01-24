@@ -27,12 +27,6 @@
             <div class="row">
               <div class="col-sm-12">
                 <div class="input-group">
-                  <span class="input-group-btn" data-toggle="tooltip" data-placement="top" title="Action name prefix" tooltip>
-                    <select class="form-control form-control" ng-model="action.action_name_prefix" required ng-disabled="readonly" >
-                      <option value="utter_">utter_</option>
-                      <option value="utter_webhook_">utter_webhook_</option>
-                    </select>
-                  </span>
                   <input type="text" class="form-control" id="action-name" ng-model="action.action_name" required ng-readonly="readonly">
                   <span class="input-group-btn">
                     <button class="btn btn-outline-primary" type="button" ng-click="actionNameEdit(action)"><span id="action_editable_icon" ng-class="readonly?'fa fa-edit':'fa fa-check'"></span></button>
@@ -44,8 +38,20 @@
         </div>
       </div>
     </div>
-
-    <div class="row">
+    <div class="row" ng-show="!action.action_name.startsWith('utter_')">
+      <div class="col-sm-12 col-lg-12">
+        <div class="card">
+          <div class="card-header">
+              <strong>Action Response Templates</strong>
+          </div>
+          <div class="card-block">
+              Templetes can be configured only for Utter type of actions. Actions that start with utter_.
+          </div>
+        </div>
+      </div>
+    </div>
+      
+    <div class="row" ng-show="action.action_name.startsWith('utter_')">
       <div class="col-sm-12 col-lg-12">
         <div class="card">
           <div class="card-header">
