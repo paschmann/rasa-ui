@@ -35,29 +35,25 @@ function TrainingController(
   });
 
   $scope.train = function() {
-    let agentname = window.objectFindByKey(
-      $scope.agentList,
-      'agent_id',
-      $scope.agent.agent_id
-    ).agent_name;
-    let id = new window.XDate().toString('yyyyMMdd-HHmmss');
-    reset();
+    var agentToTrain = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
+    var dataToPost={rasa_nlu_pipeline:"",trainingData:exportData};
 
-    $http
-      .post(
-        appConfig.api_endpoint_v2 +
-          '/rasa/train?name=' +
-          agentname +
-          '_' +
-          id +
-          '&project=' +
-          agentname,
-        JSON.stringify(exportData)
-      )
-      .then(
-        function(response) {
-          $scope.message =
-            'Training for ' + agentname + ' completed successfully';
+    var id = new XDate().toString('yyyyMMdd-HHmmss');
+    reset();
+    var modelName=agentToTrain.agent_name + "_" + id;
+
+    // Add Custome Pipeline if available
+    if(agentToTrain.rasa_nlu_pipeline!=null && agentToTrain.rasa_nlu_pipeline!=''){
+      dataToPost.rasa_nlu_pipeline=agentToTrain.rasa_nlu_pipeline;
+    }
+    // Use Fixed model name if available
+    if(agentToTrain.rasa_nlu_fixed_model_name!=''){
+      modelName = agentToTrain.rasa_nlu_fixed_model_name;
+    }
+
+    $http.post(api_endpoint_v2 + "/rasa/train?name=" + modelName+ "&project=" + agentToTrain.agent_name, dataToPost).then(
+        function(response){
+          $scope.message = "Training for " + agentToTrain.agent_name + " completed successfully";
           $rootScope.trainings_under_this_process = 0;
         },
         function(errorResponse) {

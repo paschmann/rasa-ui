@@ -39,11 +39,12 @@
     "socket.io-client": "^2.0.4",
     "tether": "latest",
     "winston": "^3.1.0",
-    "xdate": "latest"
+    "xdate": "latest",
+    "yaml": "^1.2.1"
   },
   "config": {
     "rasanluendpoint": "http://localhost:5000",
-    "rasacoreendpoint": "http://localhost:5005",
+    "rasacoreendpoint": "http://localhost:5002",
     "rasacorerequestpath": "/webhooks/rest/webhook",
     "coresecuritytoken": "",
     "corejwttoken": "",
