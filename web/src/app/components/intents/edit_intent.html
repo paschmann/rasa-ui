@@ -38,7 +38,7 @@
     </div>
     <div class="row">
       <div class="col-sm-12 col-lg-12">
-        <form>
+        <form autocomplete="off">
           <div class="card">
             <div class="card-header">
               <strong>Expressions</strong>
@@ -146,7 +146,7 @@
                 <div class="form-check">
                     <strong data-toggle="tooltip" data-placement="top" title="Send one of the Random Static response. If webhook is enabled, these will be ignored." tooltip>Static Responses</strong>
                     <br><br>
-                    <input type="text" ng-model="formData.response_text" class="form-control" id="response_text" placeholder="Enter a response text and press enter" ng-keyup="$event.keyCode == 13 && saveNewResponse($event)">
+                    <input autocomplete="off" type="text" ng-model="formData.response_text" class="form-control" id="response_text" placeholder="Enter a response text and press enter" ng-keyup="$event.keyCode == 13 && saveNewResponse($event)">
                     <ul class="list-group" ng-hide="responses.length == 0" style="margin-top: 20px;">
                       <li class="list-group-item" ng-repeat="response in responses track by response.response_id">
                         <span ng-bind-html="response.response_text | trusted"></span>
