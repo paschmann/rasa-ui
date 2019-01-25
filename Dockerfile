@@ -1,3 +1,9 @@
+FROM mhart/alpine-node:10 as builder
+
+RUN apk add --no-cache make gcc g++ python
+COPY ./package*.json ./
+RUN npm install --production
+
 FROM mhart/alpine-node:10
 
 RUN apk add --no-cache make gcc g++ python
@@ -12,8 +18,10 @@ ENV rasacorerequestpath=/conversations/{id}/parse
 ENV rasanlufixedmodelname ""
 
 WORKDIR /opt/rasaui
+
+COPY --from=builder /node_modules ./node_modules
+
 COPY ./package*.json ./
-RUN npm install --production
 COPY ./resources ./resources
 COPY ./server ./server
 COPY ./web ./web

@@ -135,11 +135,11 @@
                         <ul class="list-style">
                           <li>Download and Copy above files to a directory (Ex. /data)</li>
                           <li><strong>Training</strong>
-                            <pre>python -m rasa_core.train -s /data/_stories.md -d data/_domain.yml -o /path/to/models/dialogue</pre>
+                            <pre>python -m rasa_core.train -s data/_stories.md -d data/_domain.yml -o models/dialogue</pre>
                           </li>
                           <li>Custom policy can be included in yml file and provided as an argument "-c policies.yml" to above command</li>
                           <li><strong>Start Rasa Core REST Channel</strong>
-                            <pre>python -m rasa_core.run -d /path/to/models/dialogue -u {{selectedAgent.agent_name}}/model_name_to_be_selected --endpoints endpoints.yml  --port 5002 --credentials credentials.yml </pre>
+                            <pre>python -m rasa_core.run -d models/dialogue -u {{selectedAgent.agent_name}}/model_name_to_be_selected --endpoints data/endpoints.yml  --port 5002 --credentials data/credentials.yml </pre>
                           </li>
                         </ul>
                     </div>
