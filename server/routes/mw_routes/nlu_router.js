@@ -20,6 +20,11 @@ function getRasaNluStatus(req, res, next) {
   });
 }
 
+function getRasaNluEndpoint(req, res, next) {
+  console.log("Rasa NLU Endpoint Request");
+  sendOutput(200, res, '{"url" : "'+global.rasanluendpoint+'"}');
+}
+
 function getRasaNluConfig(req, res, next) {
   console.log("Rasa NLU Config Request -> " + global.rasanluendpoint + "/config");
   request(global.rasanluendpoint + '/config', function (error, response, body) {
@@ -366,5 +371,6 @@ module.exports = {
   getRasaNluConfig: getRasaNluConfig,
   getRasaNluVersion: getRasaNluVersion,
   trainRasaNlu: trainRasaNlu,
-  parseRequest: parseRequest
+  parseRequest: parseRequest,
+  getRasaNluEndpoint: getRasaNluEndpoint
 };

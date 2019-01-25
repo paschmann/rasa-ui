@@ -69,6 +69,18 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
       core_stories.download = "_stories.md";
       core_stories.href = URL.createObjectURL(stories_data);
       core_stories.click();
+
+      var core_credentials_data = new Blob([$scope.credentials_yml], {type: 'text/plain'});
+      var core_credentials = document.getElementById("core_credentials");
+      core_credentials.download = "credentials.yml";
+      core_credentials.href = URL.createObjectURL(core_credentials_data);
+      core_credentials.click();
+
+      var endpoints_data = new Blob([$scope.endpoints_yml], {type: 'text/plain'});
+      var endpoints = document.getElementById("endpoints_yml");
+      endpoints.download = "endpoints.yml";
+      endpoints.href = URL.createObjectURL(endpoints_data);
+      endpoints.click();
   }
   $scope.convertToLowerCase = function() {
     $scope.exportdata = JSON.parse(JSON.stringify($scope.exportdata).toLowerCase());
@@ -145,10 +157,26 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
   function populateCoreDomainYaml(agent_id, intents){
     //get entities by agentid
     var domain_yml_obj={};
+    var endpoints_yml_obj={};
+    var credentials_yml_obj={rest:""};
     $scope.stories_md='';
     Agent.get({agent_id: agent_id}, function(data) {
         $scope.stories_md = data.story_details;
+        if(data.endpoint_enabled){
+          endpoints_yml_obj.action_endpoint={"url":data.endpoint_url};
+        }
+        $scope.credentials_yml=yaml.stringify(credentials_yml_obj);
+        $http({method: 'GET', url: api_endpoint_v2 + '/rasa/url'}).then(
+          function(response){
+            endpoints_yml_obj.nlu=response.data;
+            $scope.endpoints_yml=yaml.stringify(endpoints_yml_obj);
+          },
+          function(errorResponse){
+            console.log("Error Message while Getting Messages." + errorResponse);
+          });
     });
+
+  
 
     AgentEntities.query({agent_id: agent_id},function(allEntities) {
         var requiredSlots = allEntities.filter(entity => (entity.slot_data_type != 'NOT_USED' && entity.slot_data_type != '' ));
