@@ -50,19 +50,11 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
   });
 
   function getRasaConfig() {
-    // Add a status param to config and set to 0 if server is offline
     Rasa_Status.get(function(statusdata) {
-      Rasa_Config.get().$promise.then(function(data) {
-        $rootScope.config = data.toJSON();
-        $rootScope.config.isonline = 1;
-        $rootScope.config.server_model_dirs_array = getAvailableModels(statusdata);
-        if ($rootScope.config.server_model_dirs_array.length > 0) {
-          $rootScope.modelname = $rootScope.config.server_model_dirs_array[0].name;
-        }
-      }, function(error) {
-        // error handler
-        $rootScope.config.isonline = 0;
-      });
+      $rootScope.config.server_model_dirs_array = getAvailableModels(statusdata);
+      if ($rootScope.config.server_model_dirs_array.length > 0) {
+        $rootScope.modelname = $rootScope.config.server_model_dirs_array[0].name;
+      }
     });
   }
   $scope.restartConversation=function(){

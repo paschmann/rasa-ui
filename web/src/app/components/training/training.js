@@ -33,7 +33,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
       dataToPost.rasa_nlu_pipeline=agentToTrain.rasa_nlu_pipeline;
     }
     // Use Fixed model name if available
-    if(agentToTrain.rasa_nlu_fixed_model_name!=''){
+    if(agentToTrain.rasa_nlu_fixed_model_name!=null && agentToTrain.rasa_nlu_fixed_model_name!=''){
       modelName = agentToTrain.rasa_nlu_fixed_model_name;
     }
 
