@@ -74,7 +74,11 @@
                   ng-click="goToConversation(conversation.user_id)"
                 >
                   <td>{{ conversation.user_id }}</td>
-                  <td>{{ conversation.recent_active }}</td>
+                  <td>
+                    {{
+                      conversation.recent_active | date: "yyyy/MM/dd HH:mm:ss"
+                    }}
+                  </td>
                   <td ng-class="{'no-match': conversation.noMatchCount > 0 }">
                     {{ conversation.noMatchCount }}
                   </td>
