@@ -1,11 +1,11 @@
-var promise = require('bluebird');
+const promise = require('bluebird');
 
-var options = {
+const options = {
   // Initialization Options
-  promiseLib: promise
+  promiseLib: promise,
 };
 
-var pgp = require('pg-promise')(options);
-var db = pgp(global.postgresserver);
+const pgp = require('pg-promise')(options);
+const db = pgp(global.postgresserver);
 
 module.exports = db;

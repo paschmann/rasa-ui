@@ -1,9 +1,9 @@
-const db = require("./db");
-const logger = require("../util/logger");
+const db = require('./db');
+const logger = require('../util/logger');
 
 function getSingleParameter(req, res, next) {
-  var parameterID = Number(req.params.parameter_id);
-  db.one("select * from parameters where parameter_id = $1", parameterID)
+  const parameterID = Number(req.params.parameter_id);
+  db.one('select * from parameters where parameter_id = $1', parameterID)
     .then(function(data) {
       res.status(200).json(data);
     })
@@ -13,9 +13,9 @@ function getSingleParameter(req, res, next) {
 }
 
 function getIntentParameters(req, res, next) {
-  logger.winston.info("parameters.getExpressionParameters");
-  var intentId = Number(req.params.intent_id);
-  db.any("select * from expression_parameters where intent_id = $1", intentId)
+  logger.winston.info('parameters.getExpressionParameters');
+  const intentId = Number(req.params.intent_id);
+  db.any('select * from expression_parameters where intent_id = $1', intentId)
     .then(function(data) {
       res.status(200).json(data);
     })
@@ -25,12 +25,9 @@ function getIntentParameters(req, res, next) {
 }
 
 function getExpressionParametersQuery(req, res, next) {
-  logger.winston.info("parameters.getExpressionParametersQuery");
-  var expressionIds = req.query.expression_ids;
-  var sql =
-    "select * from expression_parameters where expression_id in (" +
-    expressionIds +
-    ")";
+  logger.winston.info('parameters.getExpressionParametersQuery');
+  const expressionIds = req.query.expression_ids;
+  const sql = `select * from expression_parameters where expression_id in (${expressionIds})`;
   db.any(sql)
     .then(function(data) {
       res.status(200).json(data);
@@ -41,15 +38,15 @@ function getExpressionParametersQuery(req, res, next) {
 }
 
 function updateParameter(req, res, next) {
-  logger.winston.info("parameters.updateParameter");
-  db.none("update parameters set entity_id=$1 where parameter_id=$2", [
+  logger.winston.info('parameters.updateParameter');
+  db.none('update parameters set entity_id=$1 where parameter_id=$2', [
     req.body.entity_id,
-    Number(req.params.parameter_id)
+    Number(req.params.parameter_id),
   ])
     .then(function() {
       res.status(200).json({
-        status: "success",
-        message: "Updated parameter"
+        status: 'success',
+        message: 'Updated parameter',
       });
     })
     .catch(function(err) {
@@ -58,10 +55,10 @@ function updateParameter(req, res, next) {
 }
 
 function getExpressionParameters(req, res, next) {
-  logger.winston.info("parameters.getExpressionParameters");
-  var expressionId = Number(req.params.expression_id);
+  logger.winston.info('parameters.getExpressionParameters');
+  const expressionId = Number(req.params.expression_id);
   db.any(
-    "select * from expression_parameters where expression_id = $1",
+    'select * from expression_parameters where expression_id = $1',
     expressionId
   )
     .then(function(data) {
@@ -73,19 +70,19 @@ function getExpressionParameters(req, res, next) {
 }
 
 function createExpressionParameter(req, res, next) {
-  logger.winston.info("parameters.createExpressionParameter");
+  logger.winston.info('parameters.createExpressionParameter');
   if (!req.body.entity_id) {
     req.body.entity_id = null;
   }
   db.any(
-    "insert into parameters (expression_id, parameter_end, parameter_start, parameter_value, entity_id)" +
-      "values($(expression_id), $(parameter_end), $(parameter_start), $(parameter_value), $(entity_id))",
+    'insert into parameters (expression_id, parameter_end, parameter_start, parameter_value, entity_id)' +
+      'values($(expression_id), $(parameter_end), $(parameter_start), $(parameter_value), $(entity_id))',
     req.body
   )
     .then(function() {
       res.status(200).json({
-        status: "success",
-        message: "Inserted"
+        status: 'success',
+        message: 'Inserted',
       });
     })
     .catch(function(err) {
@@ -94,13 +91,13 @@ function createExpressionParameter(req, res, next) {
 }
 
 function removeParameter(req, res, next) {
-  var parameterId = Number(req.params.parameter_id);
-  db.result("delete from parameters where parameter_id = $1", parameterId)
+  const parameterId = Number(req.params.parameter_id);
+  db.result('delete from parameters where parameter_id = $1', parameterId)
     .then(function(result) {
       /* jshint ignore:start */
       res.status(200).json({
-        status: "success",
-        message: `Removed ${result.rowCount}`
+        status: 'success',
+        message: `Removed ${result.rowCount}`,
       });
       /* jshint ignore:end */
     })
@@ -110,11 +107,11 @@ function removeParameter(req, res, next) {
 }
 
 module.exports = {
-  getSingleParameter: getSingleParameter,
-  getExpressionParameters: getExpressionParameters,
-  getIntentParameters: getIntentParameters,
-  createExpressionParameter: createExpressionParameter,
-  removeParameter: removeParameter,
-  updateParameter: updateParameter,
-  getExpressionParametersQuery: getExpressionParametersQuery
+  getSingleParameter,
+  getExpressionParameters,
+  getIntentParameters,
+  createExpressionParameter,
+  removeParameter,
+  updateParameter,
+  getExpressionParametersQuery,
 };
