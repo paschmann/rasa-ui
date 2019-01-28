@@ -38,8 +38,7 @@ function createActionResponse(req, res, next) {
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Inserted',
-      });
+        message: 'Inserted'});
     })
     .catch(function(err) {
       logger.winston.info(err);
@@ -59,8 +58,7 @@ function createIntentResponse(req, res, next) {
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Inserted',
-      });
+        message: 'Inserted'});
     })
     .catch(function(err) {
       return next(err);
@@ -74,8 +72,7 @@ function removeResponse(req, res, next) {
     .then(function(result) {
       res.status(200).json({
         status: 'success',
-        message: 'Removed ' + result.rowCount,
-      });
+        message: 'Removed ' + result.rowCount});
       /* jshint ignore:end */
     })
     .catch(function(err) {
@@ -119,5 +116,4 @@ module.exports = {
   createActionResponse,
   getRandomResponseForIntent,
   getActionResponses,
-  getActionResponsesQuery,
-};
+  getActionResponsesQuery};

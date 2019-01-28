@@ -56,8 +56,7 @@ function uploadAgentFromFile(req, res, next) {
     // t.ctx = transaction context object
     return t
       .one('insert into agents(agent_name) values($1) RETURNING agent_id', [
-        req.body.agent_name,
-      ])
+        req.body.agent_name])
       .then(agent => {
         logger.winston.info(
           'Agent Inserted. Inserting Entites First. These ids are needed for Intents.'
@@ -125,8 +124,7 @@ function uploadAgentFromFile(req, res, next) {
                               paramObj.end,
                               paramObj.start,
                               paramObj.parameter_value,
-                              paramObj.entity_id,
-                            ]
+                              paramObj.entity_id]
                           );
                           parameters_query_arr.push(params_query);
                         }
@@ -227,8 +225,7 @@ function createAgent(req, res, next) {
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Inserted',
-      });
+        message: 'Inserted'});
     })
     .catch(function(err) {
       return next(err);
@@ -246,14 +243,12 @@ function updateAgent(req, res, next) {
       req.body.endpoint_url,
       req.body.basic_auth_username,
       req.body.basic_auth_password,
-      req.body.rasa_core_enabled,
-    ]
+      req.body.rasa_core_enabled]
   )
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Updated agent',
-      });
+        message: 'Updated agent'});
     })
     .catch(function(err) {
       return next(err);
@@ -269,8 +264,7 @@ function removeAgent(req, res) {
     .then(function(result) {
       res.status(200).json({
         status: 'success',
-        message: `Removed ${result.rowCount}`,
-      });
+        message: `Removed ${result.rowCount}`});
     })
     .catch(function(err) {
       logger.winston.info('Error removeAgent:  ' + err);
@@ -287,8 +281,7 @@ function updateAgentStory(req, res, next) {
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Updated Story For Agent',
-      });
+        message: 'Updated Story For Agent'});
     })
     .catch(function(err) {
       return next(err);
@@ -301,5 +294,4 @@ module.exports = {
   updateAgent,
   removeAgent,
   uploadAgentFromFile,
-  updateAgentStory,
-};
+  updateAgentStory};

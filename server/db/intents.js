@@ -47,8 +47,7 @@ function createAgentIntent(req, res, next) {
       res.status(200).json({
         status: 'success',
         message: 'Inserted',
-        agent_id: req.body.agent_id,
-      });
+        agent_id: req.body.agent_id});
     })
     .catch(function(err) {
       return next(err);
@@ -63,8 +62,7 @@ function removeIntent(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: 'success',
-        message: `Removed ${result.rowCount}`,
-      });
+        message: `Removed ${result.rowCount}`});
       /* jshint ignore:end */
     })
     .catch(function(err) {
@@ -79,14 +77,12 @@ function updateIntent(req, res, next) {
     [
       Number(req.params.intent_id),
       req.body.intent_name,
-      req.body.endpoint_enabled,
-    ]
+      req.body.endpoint_enabled]
   )
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Updated Intent',
-      });
+        message: 'Updated Intent'});
     })
     .catch(function(err) {
       return next(err);
@@ -99,5 +95,4 @@ module.exports = {
   getSingleIntent,
   removeIntent,
   getUniqueIntents,
-  updateIntent
-};
+  updateIntent};

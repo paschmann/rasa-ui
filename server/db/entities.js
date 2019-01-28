@@ -46,8 +46,7 @@ function createEntity(req, res, next) {
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Inserted',
-      });
+        message: 'Inserted'});
     })
     .catch(function(err) {
       logger.winston.info(err);
@@ -62,14 +61,12 @@ function updateEntity(req, res, next) {
       req.body.entity_name,
       Number(req.params.entity_id),
       Number(req.body.agent.agent_id),
-      req.body.slot_data_type,
-    ]
+      req.body.slot_data_type]
   )
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Updated agent',
-      });
+        message: 'Updated agent'});
     })
     .catch(function(err) {
       return next(err);
@@ -85,8 +82,7 @@ function removeEntity(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: 'success',
-        message: `Removed ${result.rowCount}`,
-      });
+        message: `Removed ${result.rowCount}`});
       /* jshint ignore:end */
     })
     .catch(function(err) {
@@ -100,5 +96,4 @@ module.exports = {
   getSingleEntity,
   createEntity,
   updateEntity,
-  removeEntity,
-};
+  removeEntity};

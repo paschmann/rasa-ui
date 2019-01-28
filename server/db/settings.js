@@ -28,13 +28,11 @@ function updateSetting(req, res, next) {
   logger.winston.info('settings.updateSetting');
   db.none('update settings set setting_value=$1 where setting_name=$2', [
     req.body.setting_value,
-    req.params.setting_name
-  ])
+    req.params.setting_name])
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Updated setting',
-      });
+        message: 'Updated setting'});
     })
     .catch(function(err) {
       return next(err);
@@ -44,5 +42,4 @@ function updateSetting(req, res, next) {
 module.exports = {
   getSingleSetting,
   getSettings,
-  updateSetting,
-};
+  updateSetting};

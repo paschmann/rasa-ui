@@ -36,8 +36,7 @@ function createAgentSynonym(req, res, next) {
       res.status(200).json({
         status: 'success',
         message: 'Inserted',
-        synonym_id: data[0].synonym_id,
-      });
+        synonym_id: data[0].synonym_id});
     })
     .catch(function(err) {
       return next(err);
@@ -52,8 +51,7 @@ function removeSynonym(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: 'success',
-        message: `Removed ${result.rowCount}`,
-      });
+        message: `Removed ${result.rowCount}`});
       /* jshint ignore:end */
     })
     .catch(function(err) {
@@ -65,5 +63,4 @@ module.exports = {
   getSingleSynonym,
   getAgentSynonyms,
   createAgentSynonym,
-  removeSynonym,
-};
+  removeSynonym};

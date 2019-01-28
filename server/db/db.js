@@ -2,8 +2,7 @@ const promise = require('bluebird');
 
 const options = {
   // Initialization Options
-  promiseLib: promise,
-};
+  promiseLib: promise};
 
 const pgp = require('pg-promise')(options);
 const db = pgp(global.postgresserver);
