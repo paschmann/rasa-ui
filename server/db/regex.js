@@ -35,8 +35,7 @@ function createRegex(req, res, next) {
       res.status(200).json({
         status: 'success',
         message: 'Inserted',
-        regex_id: data[0].regex_id,
-      });
+        regex_id: data[0].regex_id});
     })
     .catch(function(err) {
       return next(err);
@@ -51,8 +50,7 @@ function updateRegex(req, res, next) {
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Updated regex',
-      });
+        message: 'Updated regex'});
     })
     .catch(function(err) {
       return next(err);
@@ -66,8 +64,7 @@ function removeRegex(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: 'success',
-        message: `Removed ${result.rowCount}`,
-      });
+        message: `Removed ${result.rowCount}`});
       /* jshint ignore:end */
     })
     .catch(function(err) {
@@ -80,5 +77,4 @@ module.exports = {
   getSingleRegex,
   createRegex,
   updateRegex,
-  removeRegex,
-};
+  removeRegex};

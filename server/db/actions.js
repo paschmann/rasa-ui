@@ -35,8 +35,7 @@ function createAgentAction(req, res, next) {
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Inserted',
-      });
+        message: 'Inserted'});
     })
     .catch(function(err) {
       return next(err);
@@ -51,8 +50,7 @@ function removeAction(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: 'success',
-        message: `Removed ${result.rowCount}`,
-      });
+        message: `Removed ${result.rowCount}`});
       /* jshint ignore:end */
     })
     .catch(function(err) {
@@ -64,13 +62,11 @@ function updateAction(req, res, next) {
   logger.winston.info('actions.updateAction');
   db.none('update actions set action_name=$2 where action_id=$1', [
     Number(req.params.action_id),
-    req.body.action_name,
-  ])
+    req.body.action_name])
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Updated Action',
-      });
+        message: 'Updated Action'});
     })
     .catch(function(err) {
       return next(err);
@@ -82,5 +78,4 @@ module.exports = {
   getAgentActions,
   createAgentAction,
   updateAction,
-  removeAction,
-};
+  removeAction};

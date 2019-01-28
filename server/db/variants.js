@@ -66,8 +66,7 @@ function createVariant(req, res, next) {
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Inserted',
-      });
+        message: 'Inserted'});
     })
     .catch(function(err) {
       return next(err);
@@ -85,8 +84,7 @@ function removeVariant(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: 'success',
-        message: `Removed ${result.rowCount}`,
-      });
+        message: `Removed ${result.rowCount}`});
       /* jshint ignore:end */
     })
     .catch(function(err) {
@@ -102,8 +100,7 @@ function removeSynonymVariants(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: 'success',
-        message: `Removed ${result.rowCount}`,
-      });
+        message: `Removed ${result.rowCount}`});
       /* jshint ignore:end */
     })
     .catch(function(err) {
@@ -118,5 +115,4 @@ module.exports = {
   removeVariant,
   removeSynonymVariants,
   getSynonymsVariants,
-  getAllSynonymVariants,
-};
+  getAllSynonymVariants};

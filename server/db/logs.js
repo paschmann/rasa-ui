@@ -12,8 +12,7 @@ module.exports = {
   getAvgNluResponseTimesLast30Days,
   getAvgUserResponseTimesLast30Days,
   getActiveUserCountLast12Months,
-  getActiveUserCountLast30Days,
-};
+  getActiveUserCountLast30Days};
 
 function getActiveUserCountLast30Days(req, res, next){
   db.any('select * from active_user_count_30_days')

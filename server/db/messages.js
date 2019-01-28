@@ -79,8 +79,7 @@ async function getUniqueUsersList(req, res, next) {
             meta: {
               total: total[0].count,
               page,
-              itemsPerPage: itemsPerPage,
-            },
+              itemsPerPage: itemsPerPage},
           });
         })
         .catch(error => {
@@ -181,8 +180,7 @@ function updateMessageEntities(req, res, next) {
           messageIds,
           req.params.entity_id,
           req.body.parameter_value,
-          req.body.entity_id,
-        ]
+          req.body.entity_id]
       )
         .then(data => {
           res.status(200).json(data);
@@ -208,8 +206,7 @@ function addMessageEntities(req, res, next) {
       req.body.entity_id,
       req.body.entity_start,
       req.body.entity_end,
-      req.body.entity_value,
-    ]
+      req.body.entity_value]
   )
     .then(function(data) {
       res.status(200).json(data);
@@ -271,13 +268,11 @@ function updateMessage(req, res, next) {
   if (req.body.intent_id !== undefined && req.params.messages_id !== undefined) {
     db.none('update messages set intent_id=$1 where messages_id=$2', [
       Number(req.body.intent_id),
-      Number(req.params.messages_id)
-    ])
+      Number(req.params.messages_id)])
       .then(function() {
         res.status(200).json({
           status: 'success',
-          message: 'Updated message',
-        });
+          message: 'Updated message'});
       })
       .catch(function(err) {
         return next(err);
@@ -297,5 +292,4 @@ module.exports = {
   getMessageEntities,
   deleteMessageEntities,
   updateMessageEntities,
-  addMessageEntities,
-};
+  addMessageEntities};

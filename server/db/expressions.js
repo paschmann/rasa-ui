@@ -51,8 +51,7 @@ function createIntentExpression(req, res, next) {
       res.status(200).json({
         status: 'success',
         message: 'Inserted',
-        expression_id: data[0].expression_id,
-      });
+        expression_id: data[0].expression_id});
     })
     .catch(function(err) {
       return next(err);
@@ -67,8 +66,7 @@ function removeExpression(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: 'success',
-        message: `Removed ${result.rowCount}`,
-      });
+        message: `Removed ${result.rowCount}`});
       /* jshint ignore:end */
     })
     .catch(function(err) {
@@ -83,14 +81,12 @@ function updateExpression(req, res, next) {
     [
       Number(req.params.expression_id),
       req.body.intent_id,
-      req.body.expression_text,
-    ]
+      req.body.expression_text]
   )
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Updated Expression'
-      });
+        message: 'Updated Expression'});
     })
     .catch(function(err) {
       return next(err);
@@ -103,5 +99,4 @@ module.exports = {
   createIntentExpression,
   removeExpression,
   getIntentExpressionQuery,
-  updateExpression
-};
+  updateExpression};

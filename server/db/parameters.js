@@ -41,13 +41,11 @@ function updateParameter(req, res, next) {
   logger.winston.info('parameters.updateParameter');
   db.none('update parameters set entity_id=$1 where parameter_id=$2', [
     req.body.entity_id,
-    Number(req.params.parameter_id),
-  ])
+    Number(req.params.parameter_id)])
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Updated parameter',
-      });
+        message: 'Updated parameter'});
     })
     .catch(function(err) {
       return next(err);
@@ -82,8 +80,7 @@ function createExpressionParameter(req, res, next) {
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Inserted',
-      });
+        message: 'Inserted'});
     })
     .catch(function(err) {
       return next(err);
@@ -97,8 +94,7 @@ function removeParameter(req, res, next) {
       /* jshint ignore:start */
       res.status(200).json({
         status: 'success',
-        message: `Removed ${result.rowCount}`,
-      });
+        message: `Removed ${result.rowCount}`});
       /* jshint ignore:end */
     })
     .catch(function(err) {
@@ -113,5 +109,4 @@ module.exports = {
   createExpressionParameter,
   removeParameter,
   updateParameter,
-  getExpressionParametersQuery,
-};
+  getExpressionParametersQuery};
