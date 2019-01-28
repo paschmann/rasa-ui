@@ -1,10 +1,10 @@
-const db = require("./db");
-const logger = require("../util/logger");
+const db = require('./db');
+const logger = require('../util/logger');
 
 function getSingleSetting(req, res, next) {
-  logger.winston.info("settings.getSingleSetting");
-  var settingName = req.params.setting_name;
-  db.one("select * from settings where setting_name = $1", settingName)
+  logger.winston.info('settings.getSingleSetting');
+  const settingName = req.params.setting_name;
+  db.one('select * from settings where setting_name = $1', settingName)
     .then(function(data) {
       res.status(200).json(data);
     })
@@ -14,8 +14,8 @@ function getSingleSetting(req, res, next) {
 }
 
 function getSettings(req, res, next) {
-  logger.winston.info("settings.getSettings");
-  db.any("select * from settings")
+  logger.winston.info('settings.getSettings');
+  db.any('select * from settings')
     .then(function(data) {
       res.status(200).json(data);
     })
@@ -25,15 +25,15 @@ function getSettings(req, res, next) {
 }
 
 function updateSetting(req, res, next) {
-  logger.winston.info("settings.updateSetting");
-  db.none("update settings set setting_value=$1 where setting_name=$2", [
+  logger.winston.info('settings.updateSetting');
+  db.none('update settings set setting_value=$1 where setting_name=$2', [
     req.body.setting_value,
     req.params.setting_name
   ])
     .then(function() {
       res.status(200).json({
-        status: "success",
-        message: "Updated setting"
+        status: 'success',
+        message: 'Updated setting',
       });
     })
     .catch(function(err) {
@@ -42,7 +42,7 @@ function updateSetting(req, res, next) {
 }
 
 module.exports = {
-  getSingleSetting: getSingleSetting,
-  getSettings: getSettings,
-  updateSetting: updateSetting
+  getSingleSetting,
+  getSettings,
+  updateSetting,
 };

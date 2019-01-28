@@ -1,11 +1,11 @@
-const db = require("./db");
-const logger = require("../util/logger");
+const db = require('./db');
+const logger = require('../util/logger');
 
 function getSingleVariant(req, res, next) {
-  logger.winston.info("variants.getSingleVariant");
-  var synonymVariantId = Number(req.params.synonym_variant_id);
+  logger.winston.info('variants.getSingleVariant');
+  const synonymVariantId = Number(req.params.synonym_variant_id);
   db.any(
-    "select * from synonym_variant where synonym_variant_id = $1",
+    'select * from synonym_variant where synonym_variant_id = $1',
     synonymVariantId
   )
     .then(function(data) {
@@ -17,9 +17,9 @@ function getSingleVariant(req, res, next) {
 }
 
 function getSynonymVariants(req, res, next) {
-  logger.winston.info("variants.getSynonymVariants");
-  var synonymId = Number(req.params.synonym_id);
-  db.any("select * from synonym_variant where synonym_id = $1", synonymId)
+  logger.winston.info('variants.getSynonymVariants');
+  const synonymId = Number(req.params.synonym_id);
+  db.any('select * from synonym_variant where synonym_id = $1', synonymId)
     .then(function(data) {
       res.status(200).json(data);
     })
@@ -29,10 +29,10 @@ function getSynonymVariants(req, res, next) {
 }
 
 function getSynonymsVariants(req, res, next) {
-  logger.winston.info("variants.getSynonymVariants");
+  logger.winston.info('variants.getSynonymVariants');
   let synonymsId = req.params.synonyms_id;
   db.any(
-    "select * from synonym_variant where synonym_id in (" + synonymsId + ")"
+    `select * from synonym_variant where synonym_id in (${synonymsId})`
   )
     .then(function(data) {
       res.status(200).json(data);
@@ -43,10 +43,10 @@ function getSynonymsVariants(req, res, next) {
 }
 
 function getAllSynonymVariants(req, res, next) {
-  logger.winston.info("variants.getAllSynonymVariants");
+  logger.winston.info('variants.getAllSynonymVariants');
 
   db.any(
-    "select synonym_reference as value, '[' || string_agg('\"' || synonym_value || '\"', ', ') || ']' as synonyms from entity_synonym_variants group by 1"
+    "select synonym_reference as value, '[' || string_agg('\'' || synonym_value || '\'', ', ') || ']' as synonyms from entity_synonym_variants group by 1"
   )
     .then(function(data) {
       res.status(200).json(data);
@@ -57,16 +57,16 @@ function getAllSynonymVariants(req, res, next) {
 }
 
 function createVariant(req, res, next) {
-  logger.winston.info("variants.createVariant");
+  logger.winston.info('variants.createVariant');
   db.any(
-    "insert into synonym_variant(synonym_id, synonym_value)" +
-      "values($(synonym_id), $(synonym_value))",
+    'insert into synonym_variant(synonym_id, synonym_value)' +
+      'values($(synonym_id), $(synonym_value))',
     req.body
   )
     .then(function() {
       res.status(200).json({
-        status: "success",
-        message: "Inserted"
+        status: 'success',
+        message: 'Inserted',
       });
     })
     .catch(function(err) {
@@ -75,17 +75,17 @@ function createVariant(req, res, next) {
 }
 
 function removeVariant(req, res, next) {
-  logger.winston.info("variants.removeVariant");
-  var variantId = Number(req.params.synonym_variant_id);
+  logger.winston.info('variants.removeVariant');
+  const variantId = Number(req.params.synonym_variant_id);
   db.result(
-    "delete from synonym_variant where synonym_variant_id = $1",
+    'delete from synonym_variant where synonym_variant_id = $1',
     variantId
   )
     .then(function(result) {
       /* jshint ignore:start */
       res.status(200).json({
-        status: "success",
-        message: `Removed ${result.rowCount}`
+        status: 'success',
+        message: `Removed ${result.rowCount}`,
       });
       /* jshint ignore:end */
     })
@@ -95,14 +95,14 @@ function removeVariant(req, res, next) {
 }
 
 function removeSynonymVariants(req, res, next) {
-  logger.winston.info("variants.removeSynonymVariants");
-  var synonymId = Number(req.params.synonym_id);
-  db.result("delete from synonym_variant where synonym_id = $1", synonymId)
+  logger.winston.info('variants.removeSynonymVariants');
+  const synonymId = Number(req.params.synonym_id);
+  db.result('delete from synonym_variant where synonym_id = $1', synonymId)
     .then(function(result) {
       /* jshint ignore:start */
       res.status(200).json({
-        status: "success",
-        message: `Removed ${result.rowCount}`
+        status: 'success',
+        message: `Removed ${result.rowCount}`,
       });
       /* jshint ignore:end */
     })
@@ -112,11 +112,11 @@ function removeSynonymVariants(req, res, next) {
 }
 
 module.exports = {
-  getSingleVariant: getSingleVariant,
-  getSynonymVariants: getSynonymVariants,
-  createVariant: createVariant,
-  removeVariant: removeVariant,
-  removeSynonymVariants: removeSynonymVariants,
-  getSynonymsVariants: getSynonymsVariants,
-  getAllSynonymVariants: getAllSynonymVariants
+  getSingleVariant,
+  getSynonymVariants,
+  createVariant,
+  removeVariant,
+  removeSynonymVariants,
+  getSynonymsVariants,
+  getAllSynonymVariants,
 };
