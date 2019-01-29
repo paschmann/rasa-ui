@@ -1,13 +1,12 @@
-let request = require("request");
-const logger = require("../../util/logger");
+let request = require('request');
+const logger = require('../../util/logger');
 
 //only for Error cases.
 function sendHTTPResponse(http_code, res, body) {
   res.writeHead(http_code, {
-    "Access-Control-Allow-Origin": "*",
-    "Content-Type": "application/json"
-  });
-  if (body != null && body !== "") {
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json'});
+  if (body != null && body !== '') {
     res.write(body);
   }
   res.end();
@@ -15,26 +14,25 @@ function sendHTTPResponse(http_code, res, body) {
 
 function restartRasaCoreConversation(req, res) {
   logger.winston.info(
-    "Rasa Core Restart Request -> " + global.rasacoreendpoint
+    'Rasa Core Restart Request -> ' + global.rasacoreendpoint
   );
   try {
     request(
       {
-        method: "POST",
+        method: 'POST',
         uri:
           global.rasacoreendpoint +
-          "/conversations/" +
+          '/conversations/' +
           req.jwt.username +
-          "/continue",
-        body: JSON.stringify({ events: [{ event: "restart" }] })
-      },
+          '/continue',
+        body: JSON.stringify({ events: [{ event: 'restart' }] })},
       function(error, response, body) {
         if (error) {
           logger.winston.info(error);
           sendHTTPResponse(500, res, '{"error" : "Exception caught !!"}');
           return;
         }
-        logger.winston.info("Restart Response" + JSON.stringify(body));
+        logger.winston.info('Restart Response' + JSON.stringify(body));
         sendHTTPResponse(200, res, body);
       }
     );
@@ -46,10 +44,10 @@ function restartRasaCoreConversation(req, res) {
 
 function getRasaCoreVersion() {
   logger.winston.info(
-    "Rasa Core Version Request -> " + global.rasacoreendpoint + "/version"
+    'Rasa Core Version Request -> ' + global.rasacoreendpoint + '/version'
   );
   return new Promise(function(resolve, reject) {
-    request(global.rasacoreendpoint + "/version", function(error, res, body) {
+    request(`${global.rasacoreendpoint}/version`, function(error, res, body) {
       if (!error && res.statusCode === 200) {
         resolve(body);
       } else {
@@ -60,6 +58,5 @@ function getRasaCoreVersion() {
 }
 
 module.exports = {
-  getRasaCoreVersion: getRasaCoreVersion,
-  restartRasaCoreConversation: restartRasaCoreConversation
-};
+  getRasaCoreVersion,
+  restartRasaCoreConversation};
