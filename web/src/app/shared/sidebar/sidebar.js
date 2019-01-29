@@ -1,6 +1,6 @@
 angular
 .module('app')
-.controller('SideBarController', SideBarController)
+.controller('SideBarController', SideBarController);
 
 function SideBarController() {
   

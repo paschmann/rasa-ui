@@ -1,4 +1,4 @@
-angular.module("app").controller("SynonymController", SynonymController);
+angular.module('app').controller('SynonymController', SynonymController);
 
 function SynonymController(
   $scope,
@@ -51,11 +51,11 @@ function SynonymController(
 
   $scope.saveNewSynonym = function() {
     //First save the synonym into the synonym table
-    var obNew = {
+    const obNew = {
       agent_id: $scope.$routeParams.agent_id,
       synonym_reference: $("#synonym_reference").val()
     };
-    $("#synonym_reference").val("");
+    $('#synonym_reference').val('');
     Synonym.save(obNew).$promise.then(function(resp) {
       if (resp.synonym_id) {
         $location.path(

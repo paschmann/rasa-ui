@@ -1,6 +1,6 @@
 angular
-  .module("app")
-  .controller("ConversationController", ConversationController);
+  .module('app')
+  .controller('ConversationController', ConversationController);
 
 function ConversationController(
   $scope,
@@ -41,19 +41,18 @@ function ConversationController(
 
   getMessagesList();
 
-  $scope.$on("entitySelected", function(evt, data) {
+  $scope.$on('entitySelected', function(evt, data) {
     $scope.selectedText = data.selectedText;
-    $scope.selectedMessageId = Number(data.messageId.replace("message-", ""));
+    $scope.selectedMessageId = Number(data.messageId.replace('message-', ''));
   });
 
   function getMessagesList() {
     $http
       .post(
-        appConfig.api_endpoint_v2 + "/messages/list",
+        appConfig.api_endpoint_v2 + '/messages/list',
         JSON.stringify({
           user_id: $scope.userId,
-          agent_id: $scope.selectedAgentId
-        })
+          agent_id: $scope.selectedAgentId})
       )
       .then(
         function(response) {
@@ -67,14 +66,12 @@ function ConversationController(
 
   $scope.editIntent = function(message) {
     ModalService.showModal({
-      templateUrl: "/app/components/conversation/modal/edit_intent.html",
-      controller: "EditIntentModalController",
+      templateUrl: '/app/components/conversation/modal/edit_intent.html',
+      controller: 'EditIntentModalController',
       inputs: {
         message: message,
         agent: $scope.agent,
-        intentList: $scope.intentList
-      }
-    }).then(function(modal) {
+        intentList: $scope.intentList}}).then(function(modal) {
       modal.element.modal();
       modal.close.then(function(result) {
         if (result.intent_id && result.intent_name) {
@@ -87,16 +84,14 @@ function ConversationController(
 
   $scope.editEntity = function(entity) {
     ModalService.showModal({
-      templateUrl: "/app/components/conversation/modal/edit_entity.html",
-      controller: "EditEntityModalController",
+      templateUrl: '/app/components/conversation/modal/edit_entity.html',
+      controller: 'EditEntityModalController',
       inputs: {
         entity,
         selectedText: undefined,
         message: $scope.selectedMessage,
         agent: $scope.agent,
-        entitiesList: $scope.entitiesList
-      }
-    }).then(function(modal) {
+        entitiesList: $scope.entitiesList}}).then(function(modal) {
       modal.element.modal();
       modal.close.then(function(result) {
         if (result) {
@@ -111,16 +106,14 @@ function ConversationController(
       message => message.messages_id === $scope.selectedMessageId
     );
     ModalService.showModal({
-      templateUrl: "/app/components/conversation/modal/edit_entity.html",
-      controller: "EditEntityModalController",
+      templateUrl: '/app/components/conversation/modal/edit_entity.html',
+      controller: 'EditEntityModalController',
       inputs: {
         entity: undefined,
         selectedText: $scope.selectedText,
         message: message,
         agent: $scope.agent,
-        entitiesList: $scope.entitiesList
-      }
-    }).then(function(modal) {
+        entitiesList: $scope.entitiesList}}).then(function(modal) {
       modal.element.modal();
       modal.close.then(function(result) {
         if (result) {
@@ -143,8 +136,6 @@ function ConversationController(
   };
 
   $scope.deleteEntity = async function(entity, conversationEntityIndex) {
-    conversationEntityIndex = conversationEntityIndex || undefined;
-
     if (!$scope.selectedMessage) {
       for (let index = 0; index < $scope.chatlog.length; index++) {
         const message = $scope.chatlog[index];
@@ -156,7 +147,7 @@ function ConversationController(
     }
 
     if (!$scope.selectedMessage.expression_id) {
-      var expression = {};
+      const expression = {};
       if ($scope.selectedMessage.intent_id) {
         expression.intent_id = $scope.selectedMessage.intent_id;
       }
@@ -172,7 +163,7 @@ function ConversationController(
         `${appConfig.api_endpoint_v2}/messages/${entity.messages_id}/entities`,
         {
           data: entity,
-          headers: { "Content-Type": "application/json;charset=utf-8" }
+          headers: { 'Content-Type': 'application/json;charset=utf-8' }
         }
       )
       .then(() => {
@@ -181,7 +172,7 @@ function ConversationController(
   };
 
   $scope.highlightMessageEntites = function(message) {
-    if (message && message.user_name === "user") {
+    if (message && message.user_name === 'user') {
       $scope.highlightedMessage = message;
     } else {
       $scope.highlightedMessage = undefined;
@@ -200,7 +191,7 @@ function ConversationController(
 
   function getFormattedChatlog(chatlog) {
     chatlog.timestamp = getConversationTimestamp(chatlog);
-    var intentsAndNoMatch = getConversationIntentsAndNoMatch(chatlog);
+    const intentsAndNoMatch = getConversationIntentsAndNoMatch(chatlog);
     chatlog.intentsNumber = intentsAndNoMatch.intents;
     chatlog.noMatchNumber = intentsAndNoMatch.noMatch;
     return chatlog;
@@ -237,12 +228,12 @@ function ConversationController(
           const entity = message.entities[i];
           message.message_text_highlight = message.message_text.replace(
             entity.parameter_value,
-            `<span class="entity"
+            `<span class='entity'
             edit-entity
             ensure-element-in-view
-            element-id="entity-${entity.messages_id}-${entity.parameter_id}"
-            container-id="entities"
-            ng-click="selectEntity(message, ${i})">${
+            element-id='entity-${entity.messages_id}-${entity.parameter_id}'
+            container-id='entities'
+            ng-click='selectEntity(message, ${i})'>${
               entity.parameter_value
             }</span>`
           );
@@ -254,12 +245,12 @@ function ConversationController(
   }
 
   function getConversationIntentsAndNoMatch(chatlog) {
-    var noMatch = 0;
-    var intents = 0;
+    let noMatch = 0;
+    let intents = 0;
     if (chatlog) {
       for (let index = 0; index < chatlog.length; index++) {
         const message = chatlog[index];
-        if (message.user_name === "user") {
+        if (message.user_name === 'user') {
           if (
             message &&
             message.intent_name &&

@@ -1,3 +1,3 @@
-angular.module("app").controller("MiddlewareController", MiddlewareController);
+angular.module('app').controller('MiddlewareController', MiddlewareController);
 
 function MiddlewareController($scope) {}

@@ -1,8 +1,8 @@
-angular.module("app").controller("HistoryController", HistoryController);
+angular.module('app').controller('HistoryController', HistoryController);
 
 function HistoryController($scope, $http, $location, Agent, appConfig) {
   $scope.conversations = [];
-  $scope.selectedAgentId = "";
+  $scope.selectedAgentId = '';
   $scope.itemsPerPage = 20;
   $scope.currentPage = 1;
 
@@ -16,11 +16,10 @@ function HistoryController($scope, $http, $location, Agent, appConfig) {
 
   $scope.loadAgentConversations = function() {
     $http({
-      method: "GET",
+      method: 'GET',
       url: `${appConfig.api_endpoint_v2}/agent/${
         $scope.selectedAgentId
-      }/messages?itemsPerPage=${$scope.itemsPerPage}&page=${$scope.currentPage}`
-    }).then(
+      }/messages?itemsPerPage=${$scope.itemsPerPage}&page=${$scope.currentPage}`}).then(
       function(response) {
         $scope.totalItems = response.data.meta.total;
         $scope.conversations = response.data.conversations;

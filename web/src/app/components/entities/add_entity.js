@@ -1,6 +1,6 @@
 angular
 .module('app')
-.controller('AddEntityController', AddEntityController)
+.controller('AddEntityController', AddEntityController);
 
 function AddEntityController($scope, Entity,Agent, $rootScope) {
 
@@ -12,7 +12,7 @@ function AddEntityController($scope, Entity,Agent, $rootScope) {
   });
 
   $scope.addEntity = function(params) {
-    Entity.save(this.formData).$promise.then(function(resp) {
+    Entity.save(this.formData).$promise.then(function() {
       $scope.formData.entity_name = "";
       $rootScope.$broadcast('setAlertText', "Entity Added for " +$scope.formData.agent.agent_name + " Sucessfully !!");
       $scope.go('/agent/'+$scope.formData.agent.agent_id);

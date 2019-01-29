@@ -1,4 +1,4 @@
-angular.module("app").controller("EntityController", EntityController);
+angular.module('app').controller('EntityController', EntityController);
 
 function EntityController($rootScope, $scope, Agent, Entity) {
   $scope.tags = [{}];
@@ -17,7 +17,7 @@ function EntityController($rootScope, $scope, Agent, Entity) {
 
   $scope.deleteEntity = function() {
     Entity.remove({ entity_id: $scope.$routeParams.entity_id }, function(data) {
-      $scope.go("/agent/" + $scope.entity.agent.agent_id);
+      $scope.go('/agent/' + $scope.entity.agent.agent_id);
     });
   };
 
@@ -25,8 +25,8 @@ function EntityController($rootScope, $scope, Agent, Entity) {
     Entity.update({ entity_id: entity.entity_id }, entity).$promise.then(
       function() {
         $rootScope.$broadcast(
-          "setAlertText",
-          "Entity information updated Sucessfully!!"
+          'setAlertText',
+          'Entity information updated Sucessfully!!'
         );
       }
     );

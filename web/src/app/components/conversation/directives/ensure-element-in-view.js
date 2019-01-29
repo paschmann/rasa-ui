@@ -1,12 +1,11 @@
-angular.module("app").directive("ensureElementInView", [
+angular.module('app').directive('ensureElementInView', [
   function() {
     return {
-      restrict: "A",
+      restrict: 'A',
       scope: {
-        elementId: "@elementId",
-        containerId: "@containerId"
-      },
-      link: function(scope, element, attrs) {
+        elementId: '@elementId',
+        containerId: '@containerId'},
+      link: function(scope, element) {
         function ensureElementInView(element, container) {
           if (element && container) {
             let cTop = container.scrollTop;
@@ -39,21 +38,20 @@ angular.module("app").directive("ensureElementInView", [
           }
         }
 
-        element[0].addEventListener("mouseover", function() {
+        element[0].addEventListener('mouseover', function() {
           const element = document.getElementById(scope.elementId);
           const container = document.getElementById(scope.containerId);
           ensureElementInView(element, container);
           if (element) {
-            element.classList.add("active");
+            element.classList.add('active');
           }
         });
-        element[0].addEventListener("mouseout", function() {
+        element[0].addEventListener('mouseout', function() {
           const element = document.getElementById(scope.elementId);
           if (element) {
-            element.classList.remove("active");
+            element.classList.remove('active');
           }
         });
-      }
-    };
+      }};
   }
 ]);

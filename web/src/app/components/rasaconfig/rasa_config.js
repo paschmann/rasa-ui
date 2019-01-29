@@ -1,6 +1,6 @@
 angular
 .module('app')
-.controller('RasaConfigController', RasaConfigController)
+.controller('RasaConfigController', RasaConfigController);
 
 function RasaConfigController($scope, $rootScope, Rasa_Config) {
   loadConfig();

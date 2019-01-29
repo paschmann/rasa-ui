@@ -1,4 +1,4 @@
-angular.module("app").controller("EditIntentController", EditIntentController);
+angular.module('app').controller('EditIntentController', EditIntentController);
 
 function EditIntentController(
   $rootScope,
@@ -51,7 +51,7 @@ function EditIntentController(
   $scope.saveNewResponse = function(event) {
     this.formData.intent_id = $scope.$routeParams.intent_id;
     this.formData.response_type = 1; //DEFAULT type
-    Response.save(this.formData).$promise.then(function(resp) {
+    Response.save(this.formData).$promise.then(function() {
       //update list
       loadResponses();
       //empty formData
@@ -67,21 +67,21 @@ function EditIntentController(
     Intent.update({ intent_id: intent.intent_id }, intent).$promise.then(
       function() {
         $rootScope.$broadcast(
-          "setAlertText",
-          "Intent information updated Sucessfully!!"
+          'setAlertText',
+          'Intent information updated Sucessfully!!'
         );
       }
     );
   };
 
   $scope.runExpression = function(expression_text) {
-    $rootScope.$broadcast("executeTestRequest", expression_text);
+    $rootScope.$broadcast('executeTestRequest', expression_text);
   };
 
   $scope.deleteIntent = function() {
     Intent.remove({ intent_id: $scope.$routeParams.intent_id }).$promise.then(
-      function(resp) {
-        $scope.go("/agent/" + $scope.$routeParams.agent_id);
+      function() {
+        $scope.go('/agent/' + $scope.$routeParams.agent_id);
       }
     );
   };
@@ -99,14 +99,14 @@ function EditIntentController(
   }
 
   $scope.toggleArrow = function(expression_id) {
-    if ($("#table_expression_" + expression_id).hasClass("show")) {
-      $("#icon_expression_" + expression_id)
-        .removeClass("icon-arrow-up")
-        .addClass("icon-arrow-down");
+    if ($('#table_expression_' + expression_id).hasClass('show')) {
+      $('#icon_expression_' + expression_id)
+        .removeClass('icon-arrow-up')
+        .addClass('icon-arrow-down');
     } else {
-      $("#icon_expression_" + expression_id)
-        .removeClass("icon-arrow-down")
-        .addClass("icon-arrow-up");
+      $('#icon_expression_' + expression_id)
+        .removeClass('icon-arrow-down')
+        .addClass('icon-arrow-up');
     }
   };
 
@@ -126,10 +126,10 @@ function EditIntentController(
       $scope.parameterList = data;
       $scope.parameterFilterList = data;
       //Loop through each parameter and highlight the words it is for
-      for (var z = 0; z <= $scope.expressionList.length; z++) {
+      for (let z = 0; z <= $scope.expressionList.length; z++) {
         if ($scope.expressionList[z] !== undefined) {
-          var text = $scope.expressionList[z].expression_text;
-          for (var i = 0; i <= data.length - 1; i++) {
+          let text = $scope.expressionList[z].expression_text;
+          for (let i = 0; i <= data.length - 1; i++) {
             if (
               $scope.expressionList[z].expression_id === data[i].expression_id
             ) {
@@ -142,10 +142,10 @@ function EditIntentController(
     });
   }
   $scope.addParameter = function(expression_id) {
-    var selectedText = window.getSelection().toString();
-    if (selectedText !== "") {
-      var expressionText = $("#expression_" + expression_id).text();
-      var newObj = {};
+    const selectedText = window.getSelection().toString();
+    if (selectedText !== '') {
+      const expressionText = $('#expression_' + expression_id).text();
+      const newObj = {};
       newObj.expression_id = expression_id;
       newObj.parameter_start = expressionText.indexOf(selectedText);
       newObj.parameter_end = newObj.parameter_start + selectedText.length;
@@ -155,7 +155,7 @@ function EditIntentController(
       });
 
       //Make sure parameter table is open
-      $("#table_expression_" + expression_id).addClass("show");
+      $('#table_expression_' + expression_id).addClass('show');
     }
   };
 
@@ -166,12 +166,12 @@ function EditIntentController(
   };
 
   $scope.addExpression = function() {
-    var newObj = {};
+    const newObj = {};
     newObj.intent_id = $scope.$routeParams.intent_id;
     newObj.expression_text = this.expression_text;
 
     Expression.save(newObj).$promise.then(function() {
-      $scope.expression_text = "";
+      $scope.expression_text = '';
       loadExpressions();
     });
   };
