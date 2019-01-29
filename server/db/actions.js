@@ -2,7 +2,7 @@ const db = require('./db');
 const logger = require('../util/logger');
 
 function getSingleAction(req, res, next) {
-  let action_id = Number(req.params.action_id);
+  const  action_id = Number(req.params.action_id);
   logger.winston.info('actions.getSingleAction');
   db.one('select * from actions where action_id = $1', action_id)
     .then(function(data) {
@@ -15,7 +15,7 @@ function getSingleAction(req, res, next) {
 
 function getAgentActions(req, res, next) {
   logger.winston.info('actions.getAgentActions');
-  let AgentID = Number(req.params.agent_id);
+  const AgentID = Number(req.params.agent_id);
   db.any('select * from actions where agent_id = $1', AgentID)
     .then(function(data) {
       res.status(200).json(data);
@@ -44,7 +44,7 @@ function createAgentAction(req, res, next) {
 
 function removeAction(req, res, next) {
   logger.winston.info('actions.removeAction');
-  let action_id = Number(req.params.action_id);
+  const action_id = Number(req.params.action_id);
   db.result('delete from actions where action_id = $1', action_id)
     .then(function(result) {
       /* jshint ignore:start */
