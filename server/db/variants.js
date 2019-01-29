@@ -30,7 +30,7 @@ function getSynonymVariants(req, res, next) {
 
 function getSynonymsVariants(req, res, next) {
   logger.winston.info('variants.getSynonymVariants');
-  let synonymsId = req.params.synonyms_id;
+  const synonymsId = req.params.synonyms_id;
   db.any(
     `select * from synonym_variant where synonym_id in (${synonymsId})`
   )

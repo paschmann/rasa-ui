@@ -46,7 +46,7 @@ async function getUniqueUsersList(req, res, next) {
       conversations.forEach(conversation => {
         intentsCountPromises.push(
           db.any(
-            `SELECT ( 
+            `SELECT (
               SELECT count(messages_id)
               FROM messages_expressions
               WHERE agent_id=$1
@@ -79,8 +79,7 @@ async function getUniqueUsersList(req, res, next) {
             meta: {
               total: total[0].count,
               page,
-              itemsPerPage: itemsPerPage},
-          });
+              itemsPerPage}});
         })
         .catch(error => {
           res.status(200).json(error);
@@ -113,7 +112,7 @@ function getMessagesListByUser(req, res, next) {
             const entity = messagesEntity[index];
 
             if (entity.messages_id) {
-              let message = messages.find(message => {
+              const message = messages.find(message => {
                 return message.messages_id === entity.messages_id;
               });
 

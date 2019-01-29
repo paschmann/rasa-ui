@@ -30,7 +30,7 @@ function uploadAgentFromFile(req, res, next) {
     expressionObj.paramArray = [];
     const intentEntities = nlu_data_common_examples[i].entities || [];
     for (let j = 0; j < intentEntities.length; j++) {
-      let entityObj = intentEntities[j];
+      const entityObj = intentEntities[j];
       entities_set.add(entityObj.entity);
       const parameterObj = {};
       parameterObj.entity = entityObj.entity;
@@ -112,7 +112,7 @@ function uploadAgentFromFile(req, res, next) {
                             );
                           }
                           logger.winston.info(
-                            `Inserting Parameter for ${paramObj.parameter_value}, 
+                            `Inserting Parameter for ${paramObj.parameter_value},
                             Mapping to Entity: ${paramObj.entity} ,
                             with key: ${paramObj.entity_id}`
                           );
@@ -276,8 +276,7 @@ function updateAgentStory(req, res, next) {
   logger.winston.info('Agent.updateAgentStory');
   db.none('update agents set story_details=$2 where agent_id=$1', [
     Number(req.body.agent_id),
-    req.body.story_details
-  ])
+    req.body.story_details])
     .then(function() {
       res.status(200).json({
         status: 'success',
