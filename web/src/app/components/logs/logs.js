@@ -1,11 +1,11 @@
 angular
 .module('app')
-.controller('LogsController', LogsController)
+.controller('LogsController', LogsController);
 
 function LogsController($scope, $http, $sce, NLU_log) {
 
   $scope.loadLogs = function(type) {
-    var query = type;
+    const query = type;
     /*
     if (type === 'parse' || type === 'train') {
       query = 'event_type=eq.' + type
@@ -15,7 +15,7 @@ function LogsController($scope, $http, $sce, NLU_log) {
     query += '&limit=100&order=timestamp.desc'
     */
     
-    NLU_log.query({query: query}, function(data) {
+    NLU_log.query({query}, function(data) {
         $scope.logData = data;
     });
   }

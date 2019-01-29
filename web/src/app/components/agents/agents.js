@@ -1,6 +1,6 @@
 angular
 .module('app')
-.controller('AgentsController', AgentsController)
+.controller('AgentsController', AgentsController);
 
 function AgentsController($scope, $rootScope, Agent) {
   Agent.query(function(data) {

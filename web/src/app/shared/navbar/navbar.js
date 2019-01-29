@@ -1,4 +1,4 @@
-angular.module("app").controller("NavBarController", NavBarController);
+angular.module('app').controller('NavBarController', NavBarController);
 
 function NavBarController(
   $scope,
@@ -7,30 +7,30 @@ function NavBarController(
   appConfig
 ) {
   $scope.toggleAside = function() {
-    if (angular.element("body").hasClass("aside-menu-hidden")) {
+    if (angular.element('body').hasClass('aside-menu-hidden')) {
       angular
-        .element("body")
-        .removeClass("aside-menu-hidden")
-        .addClass("aside-menu-fixed");
+        .element('body')
+        .removeClass('aside-menu-hidden')
+        .addClass('aside-menu-fixed');
     } else {
       angular
-        .element("body")
-        .removeClass("aside-menu-fixed")
-        .addClass("aside-menu-hidden");
+        .element('body')
+        .removeClass('aside-menu-fixed')
+        .addClass('aside-menu-hidden');
     }
   };
 
   $scope.toggleSidebar = function() {
-    if (angular.element("body").hasClass("sidebar-fixed")) {
+    if (angular.element('body').hasClass('sidebar-fixed')) {
       angular
-        .element("body")
-        .removeClass("sidebar-fixed")
-        .addClass("sidebar-hidden");
+        .element('body')
+        .removeClass('sidebar-fixed')
+        .addClass('sidebar-hidden');
     } else {
       angular
-        .element("body")
-        .addClass("sidebar-fixed")
-        .removeClass("sidebar-hidden");
+        .element('body')
+        .addClass('sidebar-fixed')
+        .removeClass('sidebar-hidden');
     }
   };
 
@@ -38,6 +38,6 @@ function NavBarController(
     if (appConfig.azureadauthentication) {
       adalAuthenticationService.logOut();
     }
-    $rootScope.$broadcast("INVALID_JWT_TOKEN");
+    $rootScope.$broadcast('INVALID_JWT_TOKEN');
   };
 }

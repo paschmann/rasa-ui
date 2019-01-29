@@ -1,6 +1,6 @@
 angular
-  .module("app")
-  .controller("EditEntityModalController", EditEntityModalController);
+  .module('app')
+  .controller('EditEntityModalController', EditEntityModalController);
 
 function EditEntityModalController(
   $scope,
@@ -32,7 +32,7 @@ function EditEntityModalController(
   $scope.close = async function(result) {
     if (result) {
       if (!$scope.message.expression_id) {
-        var expression = {};
+        const expression = {};
         if ($scope.message.intent_id) {
           expression.intent_id = $scope.message.intent_id;
         }
@@ -81,7 +81,7 @@ function EditEntityModalController(
     return $http.post(
       `${appConfig.api_endpoint_v2}/messages/${entity.message_id}/entities`,
       entity,
-      { headers: { "Content-Type": "application/json;charset=utf-8" } }
+      { headers: { 'Content-Type': 'application/json;charset=utf-8' } }
     );
   }
   function editMessageEntity(entity) {
@@ -93,13 +93,13 @@ function EditEntityModalController(
         entity.messages_id
       }/entities/${oldEntityId}`,
       entity,
-      { headers: { "Content-Type": "application/json;charset=utf-8" } }
+      { headers: { 'Content-Type': 'application/json;charset=utf-8' } }
     );
   }
 
   function addParameter(message, parameter_value, entity_id, parameter_id) {
-    if (parameter_value !== "") {
-      var parameter = {};
+    if (parameter_value !== '') {
+      const parameter = {};
       parameter.expression_id = message.expression_id;
       parameter.parameter_start = message.message_text.indexOf(parameter_value);
       parameter.parameter_end =

@@ -1,6 +1,6 @@
 angular
-  .module("app")
-  .controller("EditIntentModalController", EditIntentModalController);
+  .module('app')
+  .controller('EditIntentModalController', EditIntentModalController);
 
 function EditIntentModalController(
   $scope,
@@ -62,7 +62,7 @@ function EditIntentModalController(
   };
 
   $scope.addExpression = function() {
-    var expression = {};
+    const expression = {};
     expression.intent_id = $scope.selectedIntent.intent_id;
     expression.expression_text = $scope.message.message_text;
     return Expression.save(expression).$promise;

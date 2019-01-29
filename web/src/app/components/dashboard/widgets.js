@@ -1,31 +1,31 @@
 // Default colors
-var brandPrimary = "#20a8d8";
-var brandSuccess = "#4dbd74";
-var brandInfo = "#63c2de";
-var brandWarning = "#f8cb00";
-var brandDanger = "#f86c6b";
+const brandPrimary = '#20a8d8';
+const brandSuccess = '#4dbd74';
+const brandInfo = '#63c2de';
+const brandWarning = '#f8cb00';
+const brandDanger = '#f86c6b';
 
-var grayDark = "#2a2c36";
-var gray = "#55595c";
-var grayLight = "#818a91";
-var grayLighter = "#d1d4d7";
-var grayLightest = "#f8f9fa";
+const grayDark = '#2a2c36';
+const gray = '#55595c';
+const grayLight = '#818a91';
+const grayLighter = '#d1d4d7';
+const grayLightest = '#f8f9fa';
 
 angular
-  .module("app")
-  .controller("cardChartCtrl1", cardChartCtrl1)
-  .controller("cardChartCtrl2", cardChartCtrl2)
-  .controller("cardChartCtrl2", cardChartCtrl2)
-  .controller("usageChartCtrl", usageChartCtrl);
+  .module('app')
+  .controller('cardChartCtrl1', cardChartCtrl1)
+  .controller('cardChartCtrl2', cardChartCtrl2)
+  .controller('cardChartCtrl2', cardChartCtrl2)
+  .controller('usageChartCtrl', usageChartCtrl);
 
 //convert Hex to RGBA
 function convertHex(hex, opacity) {
-  hex = hex.replace("#", "");
-  r = parseInt(hex.substring(0, 2), 16);
-  g = parseInt(hex.substring(2, 4), 16);
-  b = parseInt(hex.substring(4, 6), 16);
+  hex = hex.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
 
-  result = "rgba(" + r + "," + g + "," + b + "," + opacity / 100 + ")";
+  const result = 'rgba(' + r + ',' + g + ',' + b + ',' + opacity / 100 + ')';
   return result;
 }
 
@@ -34,33 +34,31 @@ function random(min, max) {
 }
 
 function usageChartCtrl($scope, NLU_log, NLU_log_stats) {
-  NLU_log_stats.query({ path: "avg_intent_usage_by_day" }, function(avg_data) {
-    NLU_log_stats.query({ path: "intent_usage_by_day" }, function(data) {
-      var elements = data.length;
-      var data1 = [];
-      var data2 = [];
-      var labels = [];
+  NLU_log_stats.query({ path: 'avg_intent_usage_by_day' }, function(avg_data) {
+    NLU_log_stats.query({ path: 'intent_usage_by_day' }, function(data) {
+      const elements = data.length;
+      const data1 = [];
+      const data2 = [];
+      const labels = [];
 
-      for (var i = 0; i <= elements - 1; i++) {
+      for (let i = 0; i <= elements - 1; i++) {
         labels.push(data[i].to_char);
         data1.push(data[i].count);
         data2.push(avg_data[0].avg);
       }
 
       $scope.labels = labels;
-      $scope.series = ["Processed", "Average"];
+      $scope.series = ['Processed', 'Average'];
       $scope.data = [data1, data2];
       $scope.colors = [
         {
           backgroundColor: convertHex(brandInfo, 10),
           borderColor: brandInfo,
-          pointHoverBackgroundColor: "#fff"
-        },
+          pointHoverBackgroundColor: '#fff'},
         {
-          backgroundColor: "transparent",
+          backgroundColor: 'transparent',
           borderColor: brandSuccess,
-          pointHoverBackgroundColor: "#fff"
-        }
+          pointHoverBackgroundColor: '#fff'}
       ];
       $scope.options = {
         responsive: true,
@@ -74,8 +72,7 @@ function usageChartCtrl($scope, NLU_log, NLU_log_stats) {
               ticks: {
                 callback: function(value) {
                   return value;
-                }
-              }
+                }}
             }
           ],
           yAxes: [
@@ -100,8 +97,7 @@ function usageChartCtrl($scope, NLU_log, NLU_log_stats) {
             radius: 0,
             hitRadius: 10,
             hoverRadius: 4,
-            hoverBorderWidth: 3
-          }
+            hoverBorderWidth: 3}
         }
       };
     });
@@ -112,19 +108,19 @@ function cardChartCtrl1($scope) {
   $scope.onlineusers = 1110;
 
   $scope.labels = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July"
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July'
   ];
   $scope.data = [[65, 59, 84, 84, 51, 55, 40]];
   $scope.colors = [
     {
       backgroundColor: brandPrimary,
-      borderColor: "rgba(255,255,255,.55)"
+      borderColor: 'rgba(255,255,255,.55)'
     }
   ];
   $scope.options = {
@@ -133,13 +129,11 @@ function cardChartCtrl1($scope) {
       xAxes: [
         {
           gridLines: {
-            color: "transparent",
-            zeroLineColor: "transparent"
-          },
+            color: 'transparent',
+            zeroLineColor: 'transparent'},
           ticks: {
             fontSize: 2,
-            fontColor: "transparent"
-          }
+            fontColor: 'transparent'}
         }
       ],
       yAxes: [
@@ -148,20 +142,16 @@ function cardChartCtrl1($scope) {
           ticks: {
             display: false,
             min: Math.min.apply(Math, $scope.data[0]) - 5,
-            max: Math.max.apply(Math, $scope.data[0]) + 5
-          }
-        }
+            max: Math.max.apply(Math, $scope.data[0]) + 5}}
       ]
     },
     elements: {
       line: {
-        borderWidth: 1
-      },
+        borderWidth: 1},
       point: {
         radius: 4,
         hitRadius: 10,
-        hoverRadius: 4
-      }
+        hoverRadius: 4}
     }
   };
 }

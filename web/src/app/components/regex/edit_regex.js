@@ -1,7 +1,7 @@
-angular.module("app").controller("EditRegexController", EditRegexController);
+angular.module('app').controller('EditRegexController', EditRegexController);
 
 function EditRegexController($scope, Regex, Agent) {
-  $scope.message = "";
+  $scope.message = '';
 
   Agent.get({ agent_id: $scope.$routeParams.agent_id }, function(data) {
     $scope.agent = data;
@@ -13,7 +13,7 @@ function EditRegexController($scope, Regex, Agent) {
 
   $scope.deleteRegex = function() {
     Regex.remove({ regex_id: $scope.$routeParams.regex_id }).$promise.then(
-      function(resp) {
+      function() {
         $scope.go(`/agent/${$scope.$routeParams.agent_id}`);
       }
     );
@@ -24,7 +24,7 @@ function EditRegexController($scope, Regex, Agent) {
       { regex_id: $scope.regex.regex_id },
       $scope.regex
     ).$promise.then(function() {
-      $scope.message = "Regex updated successfully";
+      $scope.message = 'Regex updated successfully';
     });
   };
 }

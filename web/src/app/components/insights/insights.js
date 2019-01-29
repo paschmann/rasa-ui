@@ -1,17 +1,17 @@
-angular.module("app").controller("InsightsController", InsightsController);
+angular.module('app').controller('InsightsController', InsightsController);
 
 function InsightsController($scope, $http, $sce, NLU_log_stats) {
-  $scope.option = "Daily";
+  $scope.option = 'Daily';
   loadDailyActiveUsers();
 
-  NLU_log_stats.query({ path: "avgNluResponseTimesLast30Days" }, function(
+  NLU_log_stats.query({ path: 'avgNluResponseTimesLast30Days' }, function(
     data
   ) {
-    var nlu_response_data = [];
+    const nlu_response_data = [];
     $scope.nlu_response_labels = [];
-    var nlu_avg_response = 0;
-    $scope.nlu_response_series = ["time in ms"];
-    for (var i = 0; i < data.length; i++) {
+    let nlu_avg_response = 0;
+    $scope.nlu_response_series = ['time in ms'];
+    for (let i = 0; i < data.length; i++) {
       $scope.nlu_response_labels.push(data[i].month_date);
       nlu_response_data.push(data[i].round);
       nlu_avg_response = nlu_avg_response + Number(data[i].round);
@@ -20,14 +20,14 @@ function InsightsController($scope, $http, $sce, NLU_log_stats) {
     $scope.nlu_response_data = [nlu_response_data];
   });
 
-  NLU_log_stats.query({ path: "avgUserResponseTimesLast30Days" }, function(
+  NLU_log_stats.query({ path: 'avgUserResponseTimesLast30Days' }, function(
     data
   ) {
-    var response_data = [];
-    var user_avg_response = 0;
+    const response_data = [];
+    let user_avg_response = 0;
     $scope.user_response_labels = [];
-    $scope.user_response_series = ["time in ms"];
-    for (var i = 0; i < data.length; i++) {
+    $scope.user_response_series = ['time in ms'];
+    for (let i = 0; i < data.length; i++) {
       $scope.user_response_labels.push(data[i].month_date);
       response_data.push(data[i].round);
       user_avg_response = user_avg_response + Number(data[i].round);
@@ -37,21 +37,21 @@ function InsightsController($scope, $http, $sce, NLU_log_stats) {
   });
 
   $scope.updateData = function(option) {
-    if (option == "Daily") {
+    if (option === 'Daily') {
       loadDailyActiveUsers();
     } else {
       loadMonthlyActiveUsers();
     }
   };
 
-  NLU_log_stats.query({ path: "intentsMostUsed" }, function(data) {
+  NLU_log_stats.query({ path: 'intentsMostUsed' }, function(data) {
     //group data by agent id.
-    var agents_intents_map = new Map();
-    var agents_dropdown = [];
+    const agents_intents_map = new Map();
+    const agents_dropdown = [];
 
-    for (var i = 0; i < data.length; i++) {
-      //{"intent_name":"is360_server_search","agent_id":7,"agent_name":"IS360Bot","grp_intent_count":null}
-      var agentDataObj = new Object();
+    for (let i = 0; i < data.length; i++) {
+      //{'intent_name':'is360_server_search','agent_id':7,'agent_name':'IS360Bot','grp_intent_count':null}
+      let agentDataObj = {};
       if (agents_intents_map.has(data[i].agent_name)) {
         agentDataObj = agents_intents_map.get(data[i].agent_name);
       } else {
@@ -59,7 +59,7 @@ function InsightsController($scope, $http, $sce, NLU_log_stats) {
         agentDataObj = { label_data: [], data: [] };
       }
       agentDataObj.label_data.push(data[i].intent_name);
-      if (data[i].grp_intent_count == null || data[i].grp_intent_count == "") {
+      if (data[i].grp_intent_count == null || data[i].grp_intent_count === '') {
         agentDataObj.data.push(0);
       } else {
         agentDataObj.data.push(data[i].grp_intent_count);
@@ -87,12 +87,12 @@ function InsightsController($scope, $http, $sce, NLU_log_stats) {
     $scope.intents_pie_data = $scope.agents_intents_map.get(agent_name).data;
   };
 
-  NLU_log_stats.query({ path: "agentsByIntentConfidencePct" }, function(data) {
+  NLU_log_stats.query({ path: 'agentsByIntentConfidencePct' }, function(data) {
     $scope.bar_chart_labels = [];
-    $scope.bar_chart_series = ["Passed", "Failed"];
-    var agents_names_confidence_map = new Map();
-    for (var i = 0; i < data.length; i++) {
-      var agentDataObj = new Object();
+    $scope.bar_chart_series = ['Passed', 'Failed'];
+    const agents_names_confidence_map = new Map();
+    for (let i = 0; i < data.length; i++) {
+      let agentDataObj = {};
       if (agents_names_confidence_map.has(data[i].agent_name)) {
         agentDataObj = agents_names_confidence_map.get(data[i].agent_name);
       } else {
@@ -103,18 +103,18 @@ function InsightsController($scope, $http, $sce, NLU_log_stats) {
       agents_names_confidence_map.set(data[i].agent_name, agentDataObj);
     }
 
-    var passed_data = [];
-    var failed_data = [];
+    const passed_data = [];
+    const failed_data = [];
     for (const key of agents_names_confidence_map.keys()) {
       if (key.length > 10) {
-        $scope.bar_chart_labels.push(key.substring(0, 10) + "...");
+        $scope.bar_chart_labels.push(key.substring(0, 10) + '...');
       } else {
         $scope.bar_chart_labels.push(key);
       }
-      var map_obj = agents_names_confidence_map.get(key);
-      var passed_conter = 0;
-      var failed_conter = 0;
-      for (var j = 0; j < map_obj.data.length; j++) {
+      const map_obj = agents_names_confidence_map.get(key);
+      let passed_conter = 0;
+      let failed_conter = 0;
+      for (let j = 0; j < map_obj.data.length; j++) {
         if (map_obj.data[j] > $scope.confidencePercent) {
           passed_conter++;
         } else {
@@ -128,16 +128,16 @@ function InsightsController($scope, $http, $sce, NLU_log_stats) {
     $scope.agents_names_confidence_map = agents_names_confidence_map;
   });
   $scope.updateBarChart = function() {
-    var passed_data = [];
-    var failed_data = [];
-    if ($scope.agents_names_confidence_map == undefined) {
+    const passed_data = [];
+    const failed_data = [];
+    if ($scope.agents_names_confidence_map === undefined) {
       //nothing populated yet
       return;
     }
     for (const key of $scope.agents_names_confidence_map.keys()) {
-      var map_obj = $scope.agents_names_confidence_map.get(key);
-      var passed_conter = 0;
-      var failed_conter = 0;
+      const map_obj = $scope.agents_names_confidence_map.get(key);
+      let passed_conter = 0;
+      let failed_conter = 0;
       for (var j = 0; j < map_obj.data.length; j++) {
         if (map_obj.data[j] > $scope.confidencePercent) {
           passed_conter++;
@@ -152,24 +152,21 @@ function InsightsController($scope, $http, $sce, NLU_log_stats) {
   };
 
   $scope.piechart_options = {
-    legend: { display: true, position: "top" },
+    legend: { display: true, position: 'top' },
     backgroundColor: [
-      "rgb(255, 99, 132)",
-      "rgb(54, 162, 235)",
-      "rgb(255, 205, 86)"
+      'rgb(255, 99, 132)',
+      'rgb(54, 162, 235)',
+      'rgb(255, 205, 86)'
     ],
     scales: {
       xAxes: [
         {
           gridLines: {
-            color: "transparent",
-            zeroLineColor: "transparent"
-          },
+            color: 'transparent',
+            zeroLineColor: 'transparent'},
           ticks: {
             fontSize: 2,
-            fontColor: "transparent"
-          }
-        }
+            fontColor: 'transparent'}}
       ],
       yAxes: [
         {
@@ -180,15 +177,12 @@ function InsightsController($scope, $http, $sce, NLU_log_stats) {
     elements: {
       line: {
         tension: 0.00001,
-        borderWidth: 2
-      },
+        borderWidth: 2},
       point: {
         radius: 1,
         hitRadius: 10,
-        hoverRadius: 4
-      }
-    }
-  };
+        hoverRadius: 4}
+    }};
 
   $scope.activeusers_options = {
     maintainAspectRatio: false,
@@ -197,14 +191,13 @@ function InsightsController($scope, $http, $sce, NLU_log_stats) {
       xAxes: [
         {
           gridLines: {
-            color: "transparent",
-            zeroLineColor: "transparent"
+            color: 'transparent',
+            zeroLineColor: 'transparent'
           },
           ticks: {
             fontSize: 2,
-            fontColor: "transparent"
-          }
-        }
+            fontColor: 'transparent'
+          }}
       ],
       yAxes: [
         {
@@ -215,23 +208,20 @@ function InsightsController($scope, $http, $sce, NLU_log_stats) {
     elements: {
       line: {
         tension: 0.00001,
-        borderWidth: 2
-      },
+        borderWidth: 2},
       point: {
         radius: 1,
         hitRadius: 10,
-        hoverRadius: 4
-      }
-    }
-  };
+        hoverRadius: 4}
+    }};
 
   function loadDailyActiveUsers() {
-    NLU_log_stats.query({ path: "activeUserCountLast30Days" }, function(data) {
-      var users_data = [];
-      var avg_act_users = 0;
+    NLU_log_stats.query({ path: 'activeUserCountLast30Days' }, function(data) {
+      const users_data = [];
+      let avg_act_users = 0;
       $scope.activeusers_labels = [];
-      $scope.activeusers_series = ["Active"];
-      for (var i = 0; i < data.length; i++) {
+      $scope.activeusers_series = ['Active'];
+      for (let i = 0; i < data.length; i++) {
         $scope.activeusers_labels.push(data[i].month_date);
         users_data.push(data[i].user_count);
         avg_act_users = avg_act_users + Number(data[i].user_count);
@@ -242,14 +232,14 @@ function InsightsController($scope, $http, $sce, NLU_log_stats) {
   }
 
   function loadMonthlyActiveUsers() {
-    NLU_log_stats.query({ path: "activeUserCountLast12Months" }, function(
+    NLU_log_stats.query({ path: 'activeUserCountLast12Months' }, function(
       data
     ) {
-      var users_data = [];
-      var avg_act_users = 0;
+      const users_data = [];
+      let avg_act_users = 0;
       $scope.activeusers_labels = [];
-      $scope.activeusers_series = ["Active"];
-      for (var i = 0; i < data.length; i++) {
+      $scope.activeusers_series = ['Active'];
+      for (let i = 0; i < data.length; i++) {
         $scope.activeusers_labels.push(data[i].month_year);
         users_data.push(data[i].count_users);
         avg_act_users = avg_act_users + Number(data[i].count_users);

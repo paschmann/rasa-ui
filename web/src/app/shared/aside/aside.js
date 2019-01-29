@@ -1,4 +1,4 @@
-angular.module("app").controller("AsideController", AsideController);
+angular.module('app').controller('AsideController', AsideController);
 
 function AsideController(
   $scope,
@@ -15,13 +15,13 @@ function AsideController(
   //$scope.test_text = 'I want italian food in new york';
   $scope.test_text_response = {};
   $rootScope.config = {}; //Initilize in case server is not online at startup
-  var configcheck;
+  let configcheck;
 
-  mySocket.on("on:responseMessage", function(message) {
-    if (message.next_action != "action_listen") {
+  mySocket.on('on:responseMessage', function(message) {
+    if (message.next_action !== 'action_listen') {
       $scope.response_text.push(message.response_text);
     } else {
-      $scope.response_text.push("Listening ...");
+      $scope.response_text.push('Listening ...');
     }
   });
 
@@ -33,34 +33,34 @@ function AsideController(
   function executeRefreshSettings() {
     Settings.query().$promise.then(function(data) {
       $rootScope.settings = data;
-      for (var key in data) {
-        $rootScope.settings[data[key]["setting_name"]] =
-          data[key]["setting_value"];
+      for (let key in data) {
+        $rootScope.settings[data[key]['setting_name']] =
+          data[key]['setting_value'];
       }
       if (
-        $rootScope.settings["refresh_time"] !== "-1" &&
-        $rootScope.settings["refresh_time"] !== undefined
+        $rootScope.settings['refresh_time'] !== '-1' &&
+        $rootScope.settings['refresh_time'] !== undefined
       ) {
         configcheck = $interval(
           getRasaConfig,
-          Number($rootScope.settings["refresh_time"])
+          Number($rootScope.settings['refresh_time'])
         );
       }
       getRasaConfig();
     });
   }
 
-  $scope.$on("executeTestRequest", function(event, expression_text) {
+  $scope.$on('executeTestRequest', function(event, expression_text) {
     $scope.test_text = expression_text;
     $scope.executeTestRequest();
   });
 
-  $scope.$on("refreshIntervelUpdate", function(event, expression_text) {
+  $scope.$on('refreshIntervelUpdate', function(event, expression_text) {
     $interval.cancel(configcheck);
     executeRefreshSettings();
   });
 
-  $scope.$on("$destroy", function() {
+  $scope.$on('$destroy', function() {
     $interval.cancel(configcheck);
   });
 
@@ -88,36 +88,36 @@ function AsideController(
   }
   $scope.restartConversation = function() {
     $scope.test_text_response = {};
-    $http.post(appConfig.api_endpoint_v2 + "/rasa/restart");
+    $http.post(appConfig.api_endpoint_v2 + '/rasa/restart');
     $scope.response_text = [];
     $scope.test_text_response = {};
-    $scope.test_text = "";
-    $rootScope.$broadcast("setAlertText", "Conversation restarted!!");
+    $scope.test_text = '';
+    $rootScope.$broadcast('setAlertText', 'Conversation restarted!!');
   };
 
   function addOverlay() {
-    $(".aside-menu").addClass("dimmed");
+    $('.aside-menu').addClass('dimmed');
   }
 
   function removeOverlay() {
-    $(".aside-menu").removeClass("dimmed");
+    $('.aside-menu').removeClass('dimmed');
   }
 
   $scope.executeTestRequest = function() {
     $scope.response_text = [];
     $scope.test_text_response = {};
-    var reqMessage = {};
-    if ($scope.modelname == "default*fallback") {
+    let reqMessage = {};
+    if ($scope.modelname === 'default*fallback') {
       reqMessage = { q: $scope.test_text };
     } else {
       reqMessage = {
         q: $scope.test_text,
-        project: $scope.modelname.split("*")[0],
-        model: $scope.modelname.split("*")[1]
+        project: $scope.modelname.split('*')[0],
+        model: $scope.modelname.split('*')[1]
       };
     }
 
-    //mySocket.emit('send:message', {message: "hello there"});
+    //mySocket.emit('send:message', {message: 'hello there'});
     if ($scope.wsEnabled) {
       //reponses will be streamed in websockets.
       reqMessage.wsstream = true;
@@ -128,7 +128,7 @@ function AsideController(
       addOverlay();
       $http
         .post(
-          appConfig.api_endpoint_v2 + "/rasa/parse",
+          appConfig.api_endpoint_v2 + '/rasa/parse',
           JSON.stringify(reqMessage)
         )
         .then(

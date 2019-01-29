@@ -1,6 +1,6 @@
 angular
 .module('app')
-.controller('EntitiesController', EntitiesController)
+.controller('EntitiesController', EntitiesController);
 
 function EntitiesController($scope, Entities, Entity) {
   loadEntities();
