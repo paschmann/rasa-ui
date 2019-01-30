@@ -42,12 +42,14 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 
 const db = require('./db/db');
+
+// Passport for Azure AD
+const passport = require('passport');
+const OIDCBearerStrategy = require('passport-azure-ad').BearerStrategy;
+
 const logger = require('./util/logger');
 
 if (global.azureadauthentication) {
-  // Passport for Azure AD
-  const passport = require('passport');
-  const OIDCBearerStrategy = require('passport-azure-ad').BearerStrategy;
 
   const options = {
     // Metadata/Azure AD tenantID/clientID

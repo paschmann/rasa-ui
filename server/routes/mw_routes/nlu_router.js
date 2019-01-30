@@ -135,10 +135,11 @@ function parseRequest(req, res, next, agentObj) {
   let modelName;
   let projectName;
 
+  let cache_key;
   if (req.body.model !== undefined) {
     projectName = req.body.project;
     modelName = req.body.model;
-    const cache_key = req.jwt.username + '_' + modelName + '_' + Date.now();
+    cache_key = req.jwt.username + '_' + modelName + '_' + Date.now();
     logRequest(req, 'parse', {
       project: projectName,
       model: modelName,
