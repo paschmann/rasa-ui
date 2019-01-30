@@ -1,4 +1,4 @@
-let request = require('request');
+const request = require('request');
 const logger = require('../../util/logger');
 
 //only for Error cases.
@@ -21,10 +21,7 @@ function restartRasaCoreConversation(req, res) {
       {
         method: 'POST',
         uri:
-          global.rasacoreendpoint +
-          '/conversations/' +
-          req.jwt.username +
-          '/continue',
+          `${global.rasacoreendpoint}/conversations/${req.jwt.username}/continue`,
         body: JSON.stringify({ events: [{ event: 'restart' }] })},
       function(error, response, body) {
         if (error) {
