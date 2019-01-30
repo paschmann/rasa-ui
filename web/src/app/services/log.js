@@ -1,4 +1,4 @@
-const app = angular.module('app');
+var app = angular.module('app');
 
 app.factory('NLU_log', function($resource, appConfig) {
   return $resource(appConfig.api_endpoint_v2 + '/nlu_log/:query', {

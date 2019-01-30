@@ -1,4 +1,4 @@
-const app = angular
+var app = angular
   .module('app', [
     'ngCookies',
     'btford.socket-io',
