@@ -32,39 +32,39 @@ global.rasanlufixedmodelname =
   process.env.rasanlufixedmodelname ||
   process.env.npm_package_config_rasanlufixedmodelname;
 
-var express = require("express");
-var proxy = require("http-proxy-middleware");
-var bodyParser = require("body-parser");
-var app = express();
-var request = require("request");
-var routes = require("./routes/index");
-var cors = require("cors");
-var jwt = require("jsonwebtoken");
+const express = require('express');
+const proxy = require('http-proxy-middleware');
+const bodyParser = require('body-parser');
+const app = express();
+const request = require('request');
+const routes = require('./routes/index');
+const cors = require('cors');
+const jwt = require('jsonwebtoken');
 
-const db = require("./db/db");
-const logger = require("./util/logger");
+const db = require('./db/db');
+const logger = require('./util/logger');
 
 if (global.azureadauthentication) {
   // Passport for Azure AD
-  var passport = require("passport");
-  var OIDCBearerStrategy = require("passport-azure-ad").BearerStrategy;
+  const passport = require('passport');
+  const OIDCBearerStrategy = require('passport-azure-ad').BearerStrategy;
 
-  var options = {
+  const options = {
     // Metadata/Azure AD tenantID/clientID
     identityMetadata:
-      "https://login.microsoftonline.com/" +
+      'https://login.microsoftonline.com/' +
       global.azureadtenantid +
-      "/.well-known/openid-configuration",
+      '/.well-known/openid-configuration',
     clientID: global.azureddclientid,
     // Validate issuer
     validateIssuer: true,
-    issuer: "https://sts.windows.net/" + global.azureadtenantid + "/",
+    issuer: 'https://sts.windows.net/' + global.azureadtenantid + '/',
     //passReqToCallback: false,
-    loggingLevel: "error"
+    loggingLevel: 'error'
   };
 
-  var bearerStrategy = new OIDCBearerStrategy(options, function(token, done) {
-    if (!token.oid) done(new Error("oid is not found in token"));
+  const bearerStrategy = new OIDCBearerStrategy(options, function(token, done) {
+    if (!token.oid) done(new Error('oid is not found in token'));
     else {
       done(null, token);
     }
@@ -78,39 +78,39 @@ app.use(cors());
 app.use(
   bodyParser.urlencoded({
     parameterLimit: 10000,
-    limit: "2mb",
+    limit: '2mb',
     extended: true
   })
 );
-app.use(bodyParser.json({ limit: "2mb" }));
+app.use(bodyParser.json({ limit: '2mb' }));
 /** Serve static files for UI website on root / */
-app.use("/", express.static("web/src/"));
-app.use("/scripts", express.static("node_modules/"));
+app.use('/', express.static('web/src/'));
+app.use('/scripts', express.static('node_modules/'));
 
 // route middleware to verify a token
 app.use(function(req, res, next) {
   logger.winston.info(`${req.method} ${req.url}`);
-  if (req.originalUrl.endsWith("health")) {
+  if (req.originalUrl.endsWith('health')) {
     next();
   } else {
     if (
-      global.azureadauthentication == "true" &&
-      !req.originalUrl.endsWith("logEvents")
+      global.azureadauthentication === 'true' &&
+      !req.originalUrl.endsWith('logEvents')
     ) {
       // Azure AD authentication
-      passport.authenticate("oauth-bearer", (err, user, info) => {
+      passport.authenticate('oauth-bearer', (err, user, info) => {
         if (err) {
-          logger.winston.error("ERROR passport.authenticate oauth-bearer");
+          logger.winston.error('ERROR passport.authenticate oauth-bearer');
           res.status(401).send({
             success: false,
-            message: "No token provided."
+            message: 'No token provided.'
           });
         } else {
           if (!user) {
-            logger.winston.error("ERROR JWT token verify failed");
+            logger.winston.error('ERROR JWT token verify failed');
             res.status(401).send({
               success: false,
-              message: "No token provided."
+              message: 'No token provided.'
             });
           } else {
             // if everything is good, save to request for use in other routes
@@ -118,7 +118,7 @@ app.use(function(req, res, next) {
             //req.original_token=user;
 
             // Azure AD token has no username field;Propagate sessionId
-            req.jwt.username = "admin";
+            req.jwt.username = 'admin';
             next();
           }
         }
@@ -127,28 +127,26 @@ app.use(function(req, res, next) {
       // Basic Authentication
       if (!req.headers.authorization) {
         if (
-          req.originalUrl.endsWith("auth") ||
-          req.originalUrl.endsWith("authclient")
+          req.originalUrl.endsWith('auth') ||
+          req.originalUrl.endsWith('authclient')
         ) {
-          logger.winston.info("No Token, but got an Auth request. Allowing it");
+          logger.winston.info('No Token, but got an Auth request. Allowing it');
           next();
         } else {
           return res.status(401).send({
             success: false,
-            message: "No Authorization header."
-          });
+            message: 'No Authorization header.'});
         }
       } else {
         // read token and check it
-        if (req.headers.authorization.split(" ")[0] === "Bearer") {
-          var token = req.headers.authorization.split(" ")[1];
+        if (req.headers.authorization.split(' ')[0] === 'Bearer') {
+          const token = req.headers.authorization.split(' ')[1];
           // verifies secret and checks exp
           jwt.verify(token, global.jwtsecret, function(err, decoded) {
             if (err) {
               return res.json({
                 success: false,
-                message: "Failed to authenticate token."
-              });
+                message: 'Failed to authenticate token.'});
             } else {
               // if everything is good, save to request for use in other routes
               req.jwt = decoded;
@@ -160,71 +158,70 @@ app.use(function(req, res, next) {
           // if there is no token send error..angularjs/ chat clients  will figure how to create the token.
           return res.status(401).send({
             success: false,
-            message: "No token provided."
-          });
+            message: 'No token provided.'});
         }
       }
     }
   }
 });
 
-var server = require("http").createServer(app);
-var io = require("socket.io").listen(server);
+const server = require('http').createServer(app);
+const io = require('socket.io').listen(server);
 
-const NodeCache = require("node-cache");
+const NodeCache = require('node-cache');
 //https://github.com/mpneuried/nodecache
 const socketCache = new NodeCache({ useClones: false });
-app.set("socketCache", socketCache);
+app.set('socketCache', socketCache);
 // Socket.io Communication
-io.sockets.on("connection", function(socket) {
-  var jwt0 = "";
+io.sockets.on('connection', function(socket) {
+  let jwt0 = '';
   try {
-    var cookieArr = socket.request.headers.cookie.split(";");
-    for (var i = 0; i < cookieArr.length; i++) {
-      if (cookieArr[i].split("=")[0].trim() === "loggedinjwt") {
-        jwt0 = cookieArr[i].split("=")[1].split(".")[0];
+    const cookieArr = socket.request.headers.cookie.split(';');
+    for (let i = 0; i < cookieArr.length; i++) {
+      if (cookieArr[i].split('=')[0].trim() === 'loggedinjwt') {
+        jwt0 = cookieArr[i].split('=')[1].split('.')[0];
         break;
       }
     }
-    //logger.winston.info("Adding Socket to Sockets List");
-    app.get("socketCache").set(jwt0, socket);
+    //logger.winston.info('Adding Socket to Sockets List');
+    app.get('socketCache').set(jwt0, socket);
   } catch (err) {
     logger.winston.info(
-      "Problem when parsing the cookies. Ignoring socket" + err
+      'Problem when parsing the cookies. Ignoring socket' + err
     );
   }
 
-  socket.on("disconnect", function() {
-    //logger.winston.info("Disconnecting All Cookies: "); // + socket.request.headers.cookie);
+  socket.on('disconnect', function() {
+    //logger.winston.info('Disconnecting All Cookies: '); // + socket.request.headers.cookie);
     //logger.winston.info('Socket disconnected');
-    var discjwt0 = "";
+    let discjwt0 = '';
     try {
-      var cookieArr = socket.request.headers.cookie.split(";");
-      for (var i = 0; i < cookieArr.length; i++) {
-        if (cookieArr[i].split("=")[0].trim() === "loggedinjwt") {
-          discjwt0 = cookieArr[i].split("=")[1].split(".")[0];
+      const cookieArr = socket.request.headers.cookie.split(';');
+      for (let i = 0; i < cookieArr.length; i++) {
+        if (cookieArr[i].split('=')[0].trim() === 'loggedinjwt') {
+          discjwt0 = cookieArr[i].split('=')[1].split('.')[0];
           break;
         }
       }
-      //logger.winston.info("Removing SOCKET: " + discjwt0 + " from List: "+ JSON.stringify(app.get("socketCache").keys()));
-      app.get("socketCache").del(jwt0);
+      //logger.winston.info('Removing SOCKET: ' + discjwt0 + ' from List: '+ JSON.stringify(app.get('socketCache').keys()));
+      app.get('socketCache').del(jwt0);
     } catch (err) {
       logger.winston.info(
-        "Problem when parsing the cookies. Unable to delete socket" + err
+        'Problem when parsing the cookies. Unable to delete socket' + err
       );
     }
   });
 });
 
-app.use("/api/v2/", routes);
+app.use('/api/v2/', routes);
 
 // error handlers
 // development error handler
 // will print stacktrace
-if (app.get("env") === "development") {
+if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.code || 500).json({
-      status: "error",
+      status: 'error',
       message: err
     });
   });
@@ -234,12 +231,12 @@ if (app.get("env") === "development") {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500).json({
-    status: "error",
+    status: 'error',
     message: err.message
   });
 });
 
-var listener = server.listen(5001);
+const listener = server.listen(5001);
 
 checkRasaUI();
 checkDB();
@@ -248,89 +245,89 @@ checkRasaCore();
 
 function checkRasaUI() {
   logger.winston.info(
-    "Rasa UI Server: http://localhost:" + listener.address().port
+    'Rasa UI Server: http://localhost:' + listener.address().port
   );
-  logger.winston.info("");
+  logger.winston.info('');
 }
 
 function checkDB() {
-  var dbconn =
-    process.env.postgresserver != undefined
-      ? "process.env.postgresserver"
-      : "package.json";
+  const dbconn =
+    process.env.postgresserver !== undefined
+      ? 'process.env.postgresserver'
+      : 'package.json';
   db.one(
-    "select current_database(), current_schema(), inet_server_port(), inet_server_addr()"
+    'select current_database(), current_schema(), inet_server_port(), inet_server_addr()'
   )
     .then(function(data) {
-      logger.winston.info("");
-      logger.winston.info("Postgres DB Connected");
-      logger.winston.info("Using connection string from: " + dbconn);
+      logger.winston.info('');
+      logger.winston.info('Postgres DB Connected');
+      logger.winston.info('Using connection string from: ' + dbconn);
       logger.winston.info(
-        "Postgres Server: " +
-          data["inet_server_addr"] +
-          ":" +
-          data["inet_server_port"]
+        'Postgres Server: ' +
+          data['inet_server_addr'] +
+          ':' +
+          data['inet_server_port']
       );
-      logger.winston.info("Database:" + data["current_database"]);
-      logger.winston.info("Schema:" + data["current_schema"]);
-      logger.winston.info("");
+      logger.winston.info('Database:' + data['current_database']);
+      logger.winston.info('Schema:' + data['current_schema']);
+      logger.winston.info('');
     })
     .catch(function(err) {
-      logger.winston.info("Postgres DB Connection Error: " + err);
-      logger.winston.info("Using connection string from: " + dbconn);
+      logger.winston.info('Postgres DB Connection Error: ' + err);
+      logger.winston.info('Using connection string from: ' + dbconn);
     });
 }
 
 function checkRasaNLU() {
-  var rasaconn =
-    process.env.rasanluendpoint != undefined
-      ? "process.env.rasanluendpoint"
-      : "package.json";
-  request(global.rasanluendpoint + "/config", function(error, response, body) {
+  const rasaconn =
+    process.env.rasanluendpoint !== undefined
+      ? 'process.env.rasanluendpoint'
+      : 'package.json';
+  request(global.rasanluendpoint + '/config', function(error, response, body) {
     try {
       if (body !== undefined) {
-        logger.winston.info("");
-        logger.winston.info("Rasa NLU Connected");
-        logger.winston.info("Using connection string from: " + rasaconn);
-        logger.winston.info("Rasa NLU Server: " + global.rasanluendpoint);
+        logger.winston.info('');
+        logger.winston.info('Rasa NLU Connected');
+        logger.winston.info('Using connection string from: ' + rasaconn);
+        logger.winston.info('Rasa NLU Server: ' + global.rasanluendpoint);
       }
       if (error !== null) {
-        logger.winston.info("");
-        logger.winston.info("Rasa NLU Error: " + error);
-        logger.winston.info("Using connection string from: " + rasaconn);
+        logger.winston.info('');
+        logger.winston.info('Rasa NLU Error: ' + error);
+        logger.winston.info('Using connection string from: ' + rasaconn);
       }
-      logger.winston.info("");
+      logger.winston.info('');
     } catch (err) {
-      logger.winston.info("Rasa Connection Error: " + err);
+      logger.winston.info('Rasa Connection Error: ' + err);
     }
   });
 }
 
 function checkRasaCore() {
-  var rasacoreconn =
-    process.env.rasacoreendpoint != undefined
-      ? "process.env.rasacoreendpoint"
-      : "package.json";
-  request(global.rasacoreendpoint + "/version", function(
+  const rasacoreconn =
+    process.env.rasacoreendpoint !== undefined
+      ? 'process.env.rasacoreendpoint'
+      : 'package.json';
+  request(global.rasacoreendpoint + '/version', function(
     error,
     response,
     body
   ) {
     try {
       if (body !== undefined) {
-        logger.winston.info("");
-        logger.winston.info("Rasa Core Connected");
-        logger.winston.info("Using connection string from: " + rasacoreconn);
-        logger.winston.info("Rasa Core Server: " + global.rasacoreendpoint);
+        logger.winston.info('');
+        logger.winston.info('Rasa Core Connected');
+        logger.winston.info('Using connection string from: ' + rasacoreconn);
+        logger.winston.info('Rasa Core Server: ' + global.rasacoreendpoint);
       }
       if (error !== null) {
-        logger.winston.info("");
-        logger.winston.info("Rasa Core Error: " + error);
-        logger.winston.info("Using connection string from: " + rasacoreconn);
+        logger.winston.info('');
+        logger.winston.info('Rasa Core Error: ' + error);
+        logger.winston.info('Using connection string from: ' + rasacoreconn);
       }
-      logger.winston.info("");
+      logger.winston.info('');
     } catch (err) {
-      logger.winston.info("Rasa Connection Error: " + err);
+      logger.winston.info('Rasa Connection Error: ' + err);
     }
   });
 }

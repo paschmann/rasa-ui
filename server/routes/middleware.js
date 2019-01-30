@@ -26,7 +26,7 @@ function parseRasaRequest(req, res, next) {
     agentObj = agentCache.get(agent_name);
   }
 
-  let messageObj = new Object();
+  const messageObj = {};
   messageObj.user_id = req.jwt.username;
   messageObj.user_name = req.jwt.name;
   messageObj.message_text = req.body.q;

@@ -34,53 +34,53 @@
     nlu_parse_log
 
 */
-const db = require("../db/db");
-const logger = require("../util/logger");
+const db = require('../db/db');
+const logger = require('../util/logger');
 
 async function insertNLUParseLogDB(nlulogData) {
   db.none(
-    "INSERT INTO nlu_parse_log(messages_id, intent_name, entity_data, intent_confidence_pct, user_response_time_ms, nlu_response_time_ms) VALUES ($(messages_id), $(intent_name), $(entity_data), $(intent_confidence_pct),$(user_response_time_ms),$(nlu_response_time_ms))",
+    'INSERT INTO nlu_parse_log(messages_id, intent_name, entity_data, intent_confidence_pct, user_response_time_ms, nlu_response_time_ms) VALUES ($(messages_id), $(intent_name), $(entity_data), $(intent_confidence_pct),$(user_response_time_ms),$(nlu_response_time_ms))',
     nlulogData
   )
     .then(function() {
-      logger.winston.info("Cache inserted into NLU db");
+      logger.winston.info('Cache inserted into NLU db');
     })
     .catch(function(err) {
-      logger.winston.info("Exception while inserting NLU Parse log");
+      logger.winston.info('Exception while inserting NLU Parse log');
       logger.winston.info(err);
     });
 }
 
 async function insertMessagesEntitiesDB(messagesEntitiesDataItem) {
-  logger.winston.info("insertMessagesEntitiesDB");
+  logger.winston.info('insertMessagesEntitiesDB');
   logger.winston.info(messagesEntitiesDataItem);
 
   db.none(
-    "INSERT INTO messages_entities(message_id, entity_id, entity_start, entity_end, entity_value, entity_confidence) VALUES ($(message_id), $(entity_id), $(entity_start), $(entity_end), $(entity_value), $(entity_confidence))",
+    'INSERT INTO messages_entities(message_id, entity_id, entity_start, entity_end, entity_value, entity_confidence) VALUES ($(message_id), $(entity_id), $(entity_start), $(entity_end), $(entity_value), $(entity_confidence))',
     messagesEntitiesDataItem
   )
     .then(function() {
-      logger.winston.info("Cache inserted into MessagesEntities db");
+      logger.winston.info('Cache inserted into MessagesEntities db');
     })
     .catch(function(err) {
-      logger.winston.info("Exception while inserting MessagesEntities db");
+      logger.winston.info('Exception while inserting MessagesEntities db');
       logger.winston.info(err);
     });
 }
 
 async function processAllEntitiesFromExpressionId(messagesEntitiesData) {
-  logger.winston.info("processAllEntitiesFromExpressionId");
+  logger.winston.info('processAllEntitiesFromExpressionId');
   logger.winston.info(messagesEntitiesData);
 
   if (messagesEntitiesData.expression_id != null) {
     db.any(
-      "SELECT entity_id, parameter_start, parameter_end, parameter_value FROM parameters WHERE expression_id=$(expression_id)",
+      'SELECT entity_id, parameter_start, parameter_end, parameter_value FROM parameters WHERE expression_id=$(expression_id)',
       messagesEntitiesData
     )
       .then(function(data) {
         logger.winston.info(data);
-        for (var i = 0; i < data.length; i++) {
-          let messagesEntitiesDataItem = new Object();
+        for (let i = 0; i < data.length; i++) {
+          const messagesEntitiesDataItem = {};
           messagesEntitiesDataItem.message_id = messagesEntitiesData.message_id;
           messagesEntitiesDataItem.entity_id = data[i].entity_id;
           messagesEntitiesDataItem.entity_start = data[i].parameter_start;
@@ -92,22 +92,22 @@ async function processAllEntitiesFromExpressionId(messagesEntitiesData) {
         }
       })
       .catch(function(err) {
-        logger.winston.info("Error in DB call" + err);
+        logger.winston.info('Error in DB call' + err);
       });
   } else {
     // Just insert detected entities
-    var entities = messagesEntitiesData.entities;
-    for (var i = 0; i < entities.length; i++) {
+    const entities = messagesEntitiesData.entities;
+    for (let i = 0; i < entities.length; i++) {
       messagesEntitiesData.current_entity = entities[i];
       // Find entity_id
       db.any(
-        "SELECT entity_id FROM entities WHERE entity_name=$(entity)",
+        'SELECT entity_id FROM entities WHERE entity_name=$(entity)',
         entities[i]
       )
         .then(function(data) {
           logger.winston.info(data);
-          if (data[0] != undefined) {
-            let messagesEntitiesDataItem = new Object();
+          if (data[0] !== undefined) {
+            let messagesEntitiesDataItem = {};
             messagesEntitiesDataItem.message_id =
               messagesEntitiesData.message_id;
             messagesEntitiesDataItem.entity_id = data[0].entity_id;
@@ -124,23 +124,23 @@ async function processAllEntitiesFromExpressionId(messagesEntitiesData) {
           }
         })
         .catch(function(err) {
-          logger.winston.info("Error in DB call" + err);
+          logger.winston.info('Error in DB call' + err);
         });
     }
   }
 }
 
 async function processInsertMessagesEntitiesDB(messagesEntitiesData) {
-  logger.winston.info("processInsertMessagesEntitiesDB 0");
+  logger.winston.info('processInsertMessagesEntitiesDB 0');
   logger.winston.info(messagesEntitiesData);
   db.any(
-    "SELECT expression_id FROM expressions WHERE LOWER(expression_text)=LOWER($(message_text))",
+    'SELECT expression_id FROM expressions WHERE LOWER(expression_text)=LOWER($(message_text))',
     messagesEntitiesData
   )
     .then(function(data) {
       logger.winston.info(data);
-      if (data[0] != undefined) {
-        logger.winston.info("processInsertMessagesEntitiesDB 1");
+      if (data[0] !== undefined) {
+        logger.winston.info('processInsertMessagesEntitiesDB 1');
         // If expression_id is found, get it
         // If expression_id is not found, just insert the detected intents
         messagesEntitiesData.expression_id = data[0].expression_id;
@@ -148,7 +148,7 @@ async function processInsertMessagesEntitiesDB(messagesEntitiesData) {
       processAllEntitiesFromExpressionId(messagesEntitiesData);
     })
     .catch(function(err) {
-      logger.winston.info("Error in DB call" + err);
+      logger.winston.info('Error in DB call' + err);
       messagesEntitiesData.expression_id = null;
     });
 }
@@ -160,14 +160,14 @@ async function insertlogEventMessageToDB(
   messagesEntitiesData
 ) {
   db.any(
-    "INSERT INTO messages(timestamp, agent_id, user_id, user_name, message_text, message_rich, user_message_ind, intent_id)" +
-      " VALUES($(timestamp), $(agent_id), $(user_id),$(user_name), $(message_text), $(message_rich), $(user_message_ind), (SELECT intent_id FROM intents WHERE intent_name=$(intent_name))) RETURNING messages_id",
+    'INSERT INTO messages(timestamp, agent_id, user_id, user_name, message_text, message_rich, user_message_ind, intent_id)' +
+      ' VALUES($(timestamp), $(agent_id), $(user_id),$(user_name), $(message_text), $(message_rich), $(user_message_ind), (SELECT intent_id FROM intents WHERE intent_name=$(intent_name))) RETURNING messages_id',
     message
   )
 
     .then(function(response) {
       logger.winston.info(
-        "Message Inserted with Id: " + response[0].messages_id
+        'Message Inserted with Id: ' + response[0].messages_id
       );
 
       //corelogData.messages_id = response[0].messages_id;
@@ -185,7 +185,7 @@ async function insertlogEventMessageToDB(
       }
     })
     .catch(function(err) {
-      logger.winston.info("Exception while inserting inserting to DB");
+      logger.winston.info('Exception while inserting inserting to DB');
       logger.winston.info(err);
     });
 }
@@ -196,12 +196,12 @@ async function processLogEventsToDBs(
   nlulogData,
   messagesEntitiesData
 ) {
-  logger.winston.info("processLogEventsToDBs");
-  let sqlCommand = "";
+  logger.winston.info('processLogEventsToDBs');
+  let sqlCommand = '';
 
-  if (message.event == "user") {
-    sqlCommand = "SELECT agent_id FROM agents WHERE agent_name=$(agent_name)";
-  } else if (message.event == "bot") {
+  if (message.event == 'user') {
+    sqlCommand = 'SELECT agent_id FROM agents WHERE agent_name=$(agent_name)';
+  } else if (message.event == 'bot') {
     sqlCommand =
       "SELECT agent_id FROM messages WHERE user_id=$(user_id) and user_name='user' ORDER BY timestamp DESC LIMIT 1";
   }
@@ -209,7 +209,7 @@ async function processLogEventsToDBs(
   db.any(sqlCommand, message)
     .then(function(data) {
       logger.winston.info(data);
-      if (data[0] != undefined) {
+      if (data[0] !== undefined) {
         message.agent_id = data[0].agent_id;
 
         insertlogEventMessageToDB(
@@ -221,45 +221,44 @@ async function processLogEventsToDBs(
       }
     })
     .catch(function(err) {
-      logger.winston.info("Error in DB call" + err);
+      logger.winston.info('Error in DB call' + err);
     });
 }
 
 async function logEventsRoute(req, res, next) {
-  var rasaCoreEvent = req.body;
+  const rasaCoreEvent = req.body;
 
   logEvents(
     rasaCoreEvent,
     function() {
       res.status(200).json({
-        status: "success",
-        message: "Inserted"
-      });
+        status: 'success',
+        message: 'Inserted'});
     },
     function(err) {
-      res.status(500).json({ "Error logEvents": err });
+      res.status(500).json({ 'Error logEvents': err });
     }
   );
 }
 
 async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
-  var message = new Object();
-  var nluLogData = null;
+  const message = {};
+  let nluLogData = null;
   if (
-    rasaCoreEvent != undefined &&
-    (rasaCoreEvent.event == "user" || rasaCoreEvent.event == "bot")
+    rasaCoreEvent !== undefined &&
+    (rasaCoreEvent.event === 'user' || rasaCoreEvent.event === 'bot')
   ) {
-    logger.winston.info("user or bot event");
+    logger.winston.info('user or bot event');
     logger.winston.info(rasaCoreEvent);
 
-    message.timestamp = rasaCoreEvent["@timestamp"];
+    message.timestamp = rasaCoreEvent['@timestamp'];
     message.user_id = rasaCoreEvent.sender_id;
 
     message.user_name = rasaCoreEvent.event;
     message.message_text = rasaCoreEvent.text;
     message.agent_id = 0;
 
-    if (rasaCoreEvent.event == "user") {
+    if (rasaCoreEvent.event === 'user') {
       message.event = rasaCoreEvent.event;
       message.user_message_ind = true;
       message.message_rich = rasaCoreEvent.parse_data;
@@ -269,8 +268,8 @@ async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
       message.event = rasaCoreEvent.event;
       message.user_message_ind = false;
       message.message_rich = rasaCoreEvent.data;
-      message.agent_name = "";
-      message.intent_name = "";
+      message.agent_name = '';
+      message.intent_name = '';
 
       if (rasaCoreEvent.data.elements && rasaCoreEvent.data.elements[0].text) {
         // RasaCore logs for custom message has the text inside that field
@@ -279,9 +278,9 @@ async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
     }
 
     //logger.winston.info(message);
-
-    if (rasaCoreEvent.event == "user") {
-      nluLogData = new Object();
+    let messagesEntitiesData;
+    if (rasaCoreEvent.event === 'user') {
+      nluLogData = {};
       nluLogData.intent_name = rasaCoreEvent.parse_data.intent.name;
       nluLogData.entity_data = JSON.stringify(
         rasaCoreEvent.parse_data.entities
@@ -292,7 +291,7 @@ async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
       nluLogData.nlu_response_time_ms = 0;
 
       //logger.winston.info(nluLogData);
-      var messagesEntitiesData = new Object();
+      messagesEntitiesData = {};
       messagesEntitiesData.entities = rasaCoreEvent.parse_data.entities;
     } else {
       nluLogData = null;
@@ -308,16 +307,16 @@ async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
       );
       success_callback();
     } catch (err) {
-      logger.winston.info("Exception while inserting inserting to DB");
+      logger.winston.info('Exception while inserting inserting to DB');
       logger.winston.info(err);
       failure_callback();
     }
   } else {
-    //logger.winston.info("NO user or bot event");
+    //logger.winston.info('NO user or bot event');
     success_callback();
   }
 }
 
 module.exports = {
-  logEventsRoute: logEventsRoute
+  logEventsRoute
 };
