@@ -1,4 +1,4 @@
-const app = angular.module('app');
+var app = angular.module('app');
 
 app.factory('Agent', function($resource, appConfig) {
   return $resource(
