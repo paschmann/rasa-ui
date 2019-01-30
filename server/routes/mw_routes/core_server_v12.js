@@ -32,7 +32,7 @@ class CoreServerV12 extends CoreServer {
             CoreServerV12.sendHTTPResponse(
               500,
               res,
-              '{'error' : 'A problem has occurred'}'
+              '{"error" : "A problem has occurred"}'
             );
             return;
           }
@@ -67,7 +67,7 @@ class CoreServerV12 extends CoreServer {
       CoreServerV12.sendHTTPResponse(
         500,
         res,
-        '{'error' : 'A problem has occurred'}'
+        '{"error" : "A problem has occurred"}'
       );
     }
   }
