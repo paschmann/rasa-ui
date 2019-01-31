@@ -55,13 +55,6 @@ function parseRasaRequest(req, res, next) {
             );
             agentCache.set(agent_name, data[0]);
           }
-          if (data.length > 0) {
-            //insert user_message into message table.
-            messageObj.agent_id = data[0].agent_id;
-          } else {
-            //messageObj.agent_id = ;
-          }
-          messages.createMessage(messageObj);
           //route the req to appropriate router.
           routeRequest(req, res, next, data[0]);
         } catch (err) {
