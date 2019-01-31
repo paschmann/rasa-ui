@@ -30,6 +30,8 @@ global.adaltenantid =
   process.env.adaltenantid || process.env.npm_package_config_adaltenantid;
 global.adalclientid =
   process.env.adalclientid || process.env.npm_package_config_adalclientid;
+global.adaltokenissuer =
+process.env.adaltokenissuer || process.env.npm_package_config_adaltokenissuer;
 global.rasanlufixedmodelname =
   process.env.rasanlufixedmodelname ||
   process.env.npm_package_config_rasanlufixedmodelname;
@@ -62,7 +64,7 @@ if (global.adalauthentication === 'true') {
     clientID: global.adalclientid,
     // Validate issuer
     validateIssuer: true,
-    issuer: 'https://sts.windows.net/' + global.adaltenantid + '/',
+    issuer: global.adaltokenissuer + '/' + global.adaltenantid + '/',
     //passReqToCallback: false,
     loggingLevel: 'error'
   };

@@ -4,7 +4,7 @@ angular.module('app').directive('selection', [
     return {
       restrict: 'A',
       link: function(scope, element) {
-        entityAddElem = element[0];
+        let entityAddElem = element[0];
 
         document.addEventListener('selectionchange', function(event) {
           const entityAddElemHeight = entityAddElem.offsetHeight;
