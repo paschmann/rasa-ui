@@ -21,13 +21,15 @@ global.cacheagents =
 global.rasacorerequestpath =
   process.env.rasacorerequestpath ||
   process.env.npm_package_config_rasacorerequestpath;
-global.azureadauthentication =
-  process.env.azureadauthentication ||
-  process.env.npm_package_config_azureadauthentication;
-global.azureadtenantid =
-  process.env.azureadtenantid || process.env.npm_package_config_azureadtenantid;
-global.azureddclientid =
-  process.env.azureddclientid || process.env.npm_package_config_azureddclientid;
+global.adalauthentication =
+  process.env.adalauthentication ||
+  process.env.npm_package_config_adalauthentication;
+global.adalinstance =
+  process.env.adalinstance || process.env.npm_package_config_adalinstance;
+global.adaltenantid =
+  process.env.adaltenantid || process.env.npm_package_config_adaltenantid;
+global.adalclientid =
+  process.env.adalclientid || process.env.npm_package_config_adalclientid;
 global.rasanlufixedmodelname =
   process.env.rasanlufixedmodelname ||
   process.env.npm_package_config_rasanlufixedmodelname;
@@ -49,18 +51,18 @@ const OIDCBearerStrategy = require('passport-azure-ad').BearerStrategy;
 
 const logger = require('./util/logger');
 
-if (global.azureadauthentication) {
+if (global.adalauthentication === 'true') {
 
   const options = {
     // Metadata/Azure AD tenantID/clientID
     identityMetadata:
-      'https://login.microsoftonline.com/' +
-      global.azureadtenantid +
+      global.adalinstance + '/' +
+      global.adaltenantid +
       '/.well-known/openid-configuration',
-    clientID: global.azureddclientid,
+    clientID: global.adalclientid,
     // Validate issuer
     validateIssuer: true,
-    issuer: 'https://sts.windows.net/' + global.azureadtenantid + '/',
+    issuer: 'https://sts.windows.net/' + global.adaltenantid + '/',
     //passReqToCallback: false,
     loggingLevel: 'error'
   };
@@ -96,7 +98,7 @@ app.use(function(req, res, next) {
     next();
   } else {
     if (
-      global.azureadauthentication === 'true' &&
+      global.adalauthentication === 'true' &&
       !req.originalUrl.endsWith('logEvents')
     ) {
       // Azure AD authentication

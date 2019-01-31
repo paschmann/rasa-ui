@@ -10,17 +10,17 @@ def label = "${clientName}-${componentName}-${env.BUILD_NUMBER}"
 
 timestamps {
   podTemplate(label: label, serviceAccount: 'jenkins', slaveConnectTimeout: 120, name: label,
-      containers: [
+    containers: [
       containerTemplate(name: 'nodejs', image: 'node:8.11.4', ttyEnabled: true, command: 'cat'),
       containerTemplate(name: 'node8-jre', image: 'docker.factory.prod.cacd2.io/cacd2/build-images/node8-jre:1.0.0', ttyEnabled: true, command: 'cat'),
       containerTemplate(name: 'docker', image: 'docker:stable', ttyEnabled: true, command: 'cat')
-      ],
-      imagePullSecrets: [ 'regcred' ],
-      volumes: [
+    ],
+    imagePullSecrets: [ 'regcred' ],
+    volumes: [
       hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
       persistentVolumeClaim(claimName: 'jenkins', mountPath: '/jenkins-data')
-      ]
-      ) {
+    ]
+    ) {
 
     node(label) {
       def componentVersion = ""
