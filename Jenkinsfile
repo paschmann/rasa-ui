@@ -15,7 +15,7 @@ timestamps {
       containerTemplate(name: 'node8-jre', image: 'docker.factory.prod.cacd2.io/cacd2/build-images/node8-jre:1.0.0', ttyEnabled: true, command: 'cat'),
       containerTemplate(name: 'docker', image: 'docker:stable', ttyEnabled: true, command: 'cat')
     ],
-    imagePullSecrets: [ 'regcred' ],
+    imagePullSecrets: [ 'regcred-docker' ],
     volumes: [
       hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
       persistentVolumeClaim(claimName: 'jenkins', mountPath: '/jenkins-data')
