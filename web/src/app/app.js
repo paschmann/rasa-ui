@@ -21,7 +21,7 @@ var app = angular
     });
   })
   .run(function($rootScope, $http, $sessionStorage, appConfig) {
-    $rootScope.azureadauthentication = appConfig.azureadauthentication;
+    $rootScope.adalauthentication = appConfig.adalauthentication;
 
     // keep user logged in after page refresh
     if ($sessionStorage.jwt) {
@@ -101,7 +101,7 @@ angular
     };
 
     // ADAL
-    if (appConfig.azureadauthentication) {
+    if (appConfig.adalauthentication) {
       // this is referencing adal module to do login
       //userInfo is defined at the $rootscope with adalAngular module
       $scope.testMessage = '';
@@ -123,7 +123,7 @@ angular
         $scope.testMessage = 'loginSuccess';
 
         // Inject Azure Token_ID as JWT Token
-        const clientID = appConfig.azureddclientid;
+        const clientID = appConfig.adalclientid;
         $sessionStorage.jwt = adalAuthenticationService.getCachedToken(
           clientID
         );

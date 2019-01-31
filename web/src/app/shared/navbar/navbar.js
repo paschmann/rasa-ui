@@ -35,7 +35,7 @@ function NavBarController(
   };
 
   $scope.logout = function() {
-    if (appConfig.azureadauthentication) {
+    if (global.adalauthentication) {
       adalAuthenticationService.logOut();
     }
     $rootScope.$broadcast('INVALID_JWT_TOKEN');
