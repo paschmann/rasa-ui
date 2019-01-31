@@ -161,7 +161,7 @@ async function insertlogEventMessageToDB(
 ) {
   db.any(
     'INSERT INTO messages(timestamp, agent_id, user_id, user_name, message_text, message_rich, user_message_ind, intent_id)' +
-      ' VALUES($(timestamp), $(agent_id), $(user_id),$(user_name), $(message_text), $(message_rich), $(user_message_ind), (SELECT intent_id FROM intents WHERE intent_name=$(intent_name))) RETURNING messages_id',
+      ' VALUES($(timestamp), $(agent_id), $(user_id),$(user_name), $(message_text), $(message_rich), $(user_message_ind), (SELECT intent_id FROM intents WHERE intent_name=$(intent_name) and agent_id=$(agent_id))) RETURNING messages_id',
     message
   )
 
