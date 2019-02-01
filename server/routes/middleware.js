@@ -6,7 +6,6 @@ const core_router = require('./mw_routes/core_router');
 const nlu_router = require('./mw_routes/nlu_router');
 //https://github.com/mpneuried/nodecache
 const agentCache = new NodeCache();
-const { CoreServerV10, CoreServerV12 } = require('./mw_routes');
 
 /*
  * Middleware for parse Request. All other requests go to specific modules.
@@ -76,17 +75,6 @@ function parseRasaRequest(req, res, next) {
 async function routeRequest(req, res, next, agentObj) {
   logger.winston.info('routeRequest');
   if (agentObj !== undefined && agentObj.rasa_core_enabled) {
-    const rasaVersion = JSON.parse(
-      await core_router.getRasaCoreVersion(req, res, next)
-    ).version.split('.');
-    const majorVersion = Number(rasaVersion[0]);
-    const minorVersion = Number(rasaVersion[1]);
-    let coreRouter;
-    if (majorVersion === 0 && minorVersion < 11) {
-      coreRouter = new CoreServerV10();
-    } else {
-      coreRouter = new CoreServerV12();
-    }
     coreRouter.parseRequest(req, res, next, agentObj);
   } else {
     nlu_router.parseRequest(req, res, next, agentObj);
