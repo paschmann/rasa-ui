@@ -204,6 +204,8 @@ function TrainingController(
     let domain_yml_obj = {};
     var endpoints_yml_obj={};
     var credentials_yml_obj={rest:""};
+    var endpoints_yml_obj={};
+    var credentials_yml_obj={rest:""};
     $scope.stories_md = '';
     Agent.get({ agent_id: agent_id }, function(data) {
       $scope.stories_md = data.story_details;
@@ -220,8 +222,6 @@ function TrainingController(
             console.log("Error Message while Getting Messages." + errorResponse);
           });
     });
-
-
 
     AgentEntities.query({ agent_id: agent_id }, function(allEntities) {
       let requiredSlots = allEntities.filter(

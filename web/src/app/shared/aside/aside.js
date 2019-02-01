@@ -74,7 +74,6 @@ function AsideController(
             $rootScope.modelname =
               $rootScope.config.server_model_dirs_array[0].name;
           }
-
     });
   }
   $scope.restartConversation = function() {

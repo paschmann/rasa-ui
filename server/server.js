@@ -13,7 +13,7 @@ global.coresecuritytoken =
   process.env.npm_package_config_coresecuritytoken;
 global.corejwttoken =
   process.env.corejwttoken || process.env.npm_package_config_corejwttoken;
-global.nlusecuritytoken =
+global.corejwttoken= process.env.corejwttoken || process.env.npm_package_config_corejwttoken;global.nlusecuritytoken =
   process.env.nlusecuritytoken ||
   process.env.npm_package_config_nlusecuritytoken;
 global.cacheagents =
@@ -32,9 +32,9 @@ global.adalclientid =
   process.env.adalclientid || process.env.npm_package_config_adalclientid;
 global.adaltokenissuer =
 process.env.adaltokenissuer || process.env.npm_package_config_adaltokenissuer;
-global.rasanlufixedmodelname =
-  process.env.rasanlufixedmodelname ||
-  process.env.npm_package_config_rasanlufixedmodelname;
+global.rasacorerequestpath =
+  process.env.rasacorerequestpath ||
+  process.env.npm_package_config_rasacorerequestpath;
 
 const express = require('express');
 const proxy = require('http-proxy-middleware');

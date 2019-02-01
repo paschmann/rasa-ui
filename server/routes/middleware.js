@@ -7,6 +7,7 @@ const nlu_router = require('./mw_routes/nlu_router');
 //https://github.com/mpneuried/nodecache
 const agentCache = new NodeCache();
 
+
 /*
  * Middleware for parse Request. All other requests go to specific modules.
  */
@@ -75,7 +76,7 @@ function parseRasaRequest(req, res, next) {
 async function routeRequest(req, res, next, agentObj) {
   logger.winston.info('routeRequest');
   if (agentObj !== undefined && agentObj.rasa_core_enabled) {
-    core_router.parseRequest(req, res, next, agentObj);
+    core_router.parseRequest(req, res, next, agentObj)
   } else {
     nlu_router.parseRequest(req, res, next, agentObj);
   }
