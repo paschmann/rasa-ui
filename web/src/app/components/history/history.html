@@ -10,21 +10,17 @@
                 <div class="col-sm-6">
                   <div class="form-group row">
                     <label for="staticEmail" class="col-sm-2 col-form-label"
-                      >Agent</label
+                      >Agent - {{ selectedAgentId }}</label
                     >
                     <div class="col-sm-4">
                       <select
                         name="agentSelect"
                         id="agentSelect"
-                        ng-model="selectedAgentId"
+                        ng-model="selectedAgent"
                         class="form-control"
-                        ng-change="loadAgentHistory()"
+                        ng-change="loadAgentConversations()"
+                        ng-options="agent.agent_name for agent in agentList track by agent.agent_id"
                       >
-                        <option
-                          ng-repeat="agent in agentList"
-                          value="{{ agent.agent_id }}"
-                          >{{ agent.agent_name }}</option
-                        >
                       </select>
                     </div>
                   </div>
