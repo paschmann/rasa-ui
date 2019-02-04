@@ -42,7 +42,10 @@ var app = angular
     $rootScope.$on("INVALID_JWT_TOKEN", function(event) {
       $rootScope.authenticated = false;
       $sessionStorage.$reset();
-      adalAuthenticationService.logOut();
+
+      if (appConfig.adalauthentication) {
+          adalAuthenticationService.logOut();
+      }
     });
   });
 
@@ -125,9 +128,7 @@ angular
 
         // Inject Azure Token_ID as JWT Token
         const clientID = appConfig.adalclientid;
-        $sessionStorage.jwt = adalAuthenticationService.getCachedToken(
-          clientID
-        );
+        $sessionStorage.jwt = adalAuthenticationService.getCachedToken(clientID);
         $cookies.put("loggedinjwt", $sessionStorage.jwt);
         $rootScope.$broadcast("USER_AUTHENTICATED");
       });
