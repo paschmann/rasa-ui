@@ -20,19 +20,19 @@ var app = angular
       ioSocket: window.io.connect()
     });
   })
-  .run(function($rootScope, $http, $sessionStorage, appConfig) {
+  .run(function($rootScope, $http, $sessionStorage, appConfig, adalAuthenticationService) {
     $rootScope.adalauthentication = appConfig.adalauthentication;
 
     // keep user logged in after page refresh
     if ($sessionStorage.jwt) {
       $rootScope.authenticated = true;
-      $http.defaults.headers.common.Authorization =
-        "Bearer " + $sessionStorage.jwt;
+      $http.defaults.headers.common.Authorization = "Bearer " + $sessionStorage.jwt;
     } else {
       //show login page
       $rootScope.authenticated = false;
       $rootScope.$broadcast("INVALID_JWT_TOKEN");
     }
+
     $rootScope.$on("USER_AUTHENTICATED", function(event) {
       $rootScope.authenticated = true;
       $http.defaults.headers.common.Authorization =
@@ -127,8 +127,7 @@ angular
         $scope.testMessage = "loginSuccess";
 
         // Inject Azure Token_ID as JWT Token
-        const clientID = appConfig.adalclientid;
-        $sessionStorage.jwt = adalAuthenticationService.getCachedToken(clientID);
+        $sessionStorage.jwt = adalAuthenticationService.getCachedToken(appConfig.adalclientid);
         $cookies.put("loggedinjwt", $sessionStorage.jwt);
         $rootScope.$broadcast("USER_AUTHENTICATED");
       });
@@ -137,6 +136,21 @@ angular
       $scope.$on("adal:loginFailure", function() {
         $scope.testMessage = "loginFailure";
         $location.path("/login");
+      });
+
+      $scope.$on("adal:acquireTokenSuccess", function() {
+        $scope.testMessage = "acquireTokenSuccess";
+
+        // When ADAL.js refreshes token after expiration, $sessionStorage.jwt is desynchronized
+        $sessionStorage.jwt = adalAuthenticationService.getCachedToken(appConfig.adalclientid);
+        $cookies.put("loggedinjwt", $sessionStorage.jwt);
+        $rootScope.$broadcast("USER_AUTHENTICATED");
+      });
+
+      $scope.$on("adal:acquireTokenFailure", function() {
+        $scope.testMessage = "acquireTokenFailure";
+        adalAuthenticationService.logOut();
+        $rootScope.$broadcast("INVALID_JWT_TOKEN");
       });
 
       // optional
