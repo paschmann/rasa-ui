@@ -129,9 +129,7 @@ function trainRasaNlu(req, res, next) {
         sendOutput(500, res, '{"error" : ' + err + "}");
       }
     }
-  );} catch (err) {
-    console.log("Exception When sending Training Data to Rasa:" + err);
-  }
+  );
 }
 
 function parseRequest(req, res, next, agentObj) {

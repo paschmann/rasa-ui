@@ -2,13 +2,9 @@ const request = require('request');
 const logger = require('../../util/logger');
 
 function sendHTTPResponse(http_code, res, body) {
-  res.writeHead(http_code, {
-    'Access-Control-Allow-Origin': '*',
-    'Content-Type': 'application/json'});
   if (body != null && body !== '') {
-    res.write(body);
+    res.send(body);
   }
-  res.end();
 }
 
 function restartRasaCoreConversation(req, res) {
@@ -67,14 +63,12 @@ function parseRequest(req, res, next, agentObj) {
           );
           return;
         }
-        if (
-          response.status !== 200 &&
-          typeof response.status !== 'undefined'
-        ) {
+        if (response.status !== 200 && typeof response.status !== 'undefined') {
           sendHTTPResponse(response.statusCode, res, body);
         } else {
           // If the status is 200, only display the text for the moment
           // TODO Display images
+
           let response = '';
 
           body.forEach(function(element) {

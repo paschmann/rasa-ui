@@ -35,23 +35,25 @@ function TrainingController(
   });
 
   $scope.train = function() {
-    var agentToTrain = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
-    var dataToPost={rasa_nlu_pipeline:"",trainingData:exportData};
+    let agentToTrain = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
+    let dataToPost;
 
-    var id = new XDate().toString('yyyyMMdd-HHmmss');
+    let id = new XDate().toString('yyyyMMdd-HHmmss');
     reset();
-    var modelName=agentToTrain.agent_name + "_" + id;
+    let modelName=agentToTrain.agent_name + "_" + id;
 
     // Add Custome Pipeline if available
-    if(agentToTrain.rasa_nlu_pipeline!=null && agentToTrain.rasa_nlu_pipeline!=''){
-      dataToPost.rasa_nlu_pipeline=agentToTrain.rasa_nlu_pipeline;
+    if(agentToTrain.rasa_nlu_pipeline!=null && agentToTrain.rasa_nlu_pipeline !== '') {
+      dataToPost = { pipeline:agentToTrain.rasa_nlu_pipeline, data:exportData };
+    } else {
+      dataToPost = exportData;
     }
     // Use Fixed model name if available
-    if(agentToTrain.rasa_nlu_fixed_model_name!=null && agentToTrain.rasa_nlu_fixed_model_name!=''){
+    if(agentToTrain.rasa_nlu_fixed_model_name!=null && agentToTrain.rasa_nlu_fixed_model_name !== ''){
       modelName = agentToTrain.rasa_nlu_fixed_model_name;
     }
 
-    $http.post(api_endpoint_v2 + "/rasa/train?name=" + modelName+ "&project=" + agentToTrain.agent_name, dataToPost).then(
+    $http.post(appConfig.api_endpoint_v2 + "/rasa/train?name=" + modelName+ "&project=" + agentToTrain.agent_name, JSON.stringify(dataToPost)).then(
         function(response){
           $scope.message = "Training for " + agentToTrain.agent_name + " completed successfully";
           $rootScope.trainings_under_this_process = 0;
@@ -213,7 +215,7 @@ function TrainingController(
           endpoints_yml_obj.action_endpoint={"url":data.endpoint_url};
         }
         $scope.credentials_yml=yaml.stringify(credentials_yml_obj);
-        $http({method: 'GET', url: api_endpoint_v2 + '/rasa/url'}).then(
+        $http({method: 'GET', url: appConfig.api_endpoint_v2 + '/rasa/url'}).then(
           function(response){
             endpoints_yml_obj.nlu=response.data;
             $scope.endpoints_yml=yaml.stringify(endpoints_yml_obj);
