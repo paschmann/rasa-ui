@@ -1,0 +1,48 @@
+.modal-dialog {
+  max-width: 750px;
+  width: 40%;
+  min-width: 400px;
+}
+.modal .card {
+  border: 0;
+  margin-bottom: 0;
+}
+.modal #tagList {
+  border: 1px solid #c2cfd6;
+  padding: 15px;
+}
+.modal #tagList .tag {
+  height: 25px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 55px;
+  margin-right: 5px;
+  padding: 5px;
+  color: #2cadda;
+  border: 1px solid #2cadda;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 13px;
+  -webkit-user-select: none; /* Chrome all / Safari all */
+  -moz-user-select: none; /* Firefox all */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none; /* Likely future */
+}
+.modal #tagList .tag.active {
+  background-color: #2cadda;
+  color: white;
+}
+.modal #tagList .tag .icon {
+  font-size: 18px;
+  height: 10px;
+  margin-right: 5px;
+  color: #2cadda;
+}
+.modal .modal-footer {
+  padding: 0 1rem 1rem 1rem;
+  border: 0;
+}
+
+:disabled {
+  cursor: not-allowed;
+}

@@ -1,17 +1,18 @@
 {
   "name": "RasaUI",
-  "version": "2.3.2",
+  "version": "2.5.1",
   "description": "Rasa UI is a web application built on top of, and for, Rasa NLU.",
   "dependencies": {
+    "adal-angular": "^1.0.17",
     "angular": "1.7.2",
     "angular-chart.js": "^1.1.1",
     "angular-cookies": "1.7.2",
+    "angular-modal-service": "^0.15.1",
     "angular-resource": "1.7.2",
     "angular-route": "1.7.2",
     "angular-sanitize": "1.7.2",
     "angular-socket-io": "^0.7.0",
     "angular-utils-pagination": "^0.11.1",
-    "asyncawait": "1.0.7",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
     "bootstrap": "latest",
@@ -28,7 +29,8 @@
     "ng-tags-input": "^3.2.0",
     "ngstorage": "^0.3.11",
     "node-cache": "^4.1.1",
-    "pg-promise": "^5.9.5",
+    "passport-azure-ad": "^4.0.0",
+    "pg-promise": "^8.5.4",
     "popper.js": "latest",
     "request": "^2.88.0",
     "simple-line-icons": "^2.4.1",
@@ -36,6 +38,7 @@
     "socket.io": "^2.0.4",
     "socket.io-client": "^2.0.4",
     "tether": "latest",
+    "winston": "^3.1.0",
     "xdate": "latest",
     "yaml": "^1.2.1"
   },
@@ -48,11 +51,19 @@
     "nlusecuritytoken": "",
     "cacheagents": false,
     "jwtsecret": "th1s1sn0t0nlyths3cr3tbutth3m0st1mp0rtAntp13c30f1nf0rmAt10nf0rth1sAppl1cAt10n",
-    "postgresserver": "postgres://postgres:rasaui@localhost:5432/rasaui"
+    "postgresserver": "postgres://rasaui:compose@localhost:5432/rasaui",
+    "rasanlufixedmodelname": "",
+    "adalauthentication": false,
+    "adalinstance": "https://login.microsoftonline.com",
+    "adaltenantid": "",
+    "adalclientid": "",
+    "adaltokenissuer": "https://sts.windows.net",
+    "loglevel": "info"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/server.js"
+    "start": "node server/server.js",
+    "start:local": "node --inspect server/server.js "
   },
   "author": "Paul Aschmann",
   "url": "https://github.com/paschmann/rasa-ui",

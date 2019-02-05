@@ -1,177 +1,253 @@
-
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <link rel="icon" href="assets/img/favicon.png">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="assets/img/favicon.png" />
 
-  <title>Rasa UI</title>
+    <title>Rasa UI</title>
 
-  <!-- 3rd Party libs -->
-  <script src="scripts/jquery/dist/jquery.min.js"></script>
-  <script src="scripts/chart.js/dist/Chart.min.js"></script>
-  <script src="scripts/angular/angular.min.js"></script>
-  <script src="scripts/angular-resource/angular-resource.min.js"></script>
-  <script src="scripts/angular-cookies/angular-cookies.min.js"></script>
-  <script src="scripts/angular-route/angular-route.min.js"></script>
-  <script src="scripts/ngstorage/ngStorage.min.js"></script>
-  <script src="scripts/angular-chart.js/dist/angular-chart.min.js"></script>
-  <script src="scripts/jsonformatter/dist/json-formatter.min.js"></script>
-  <script src="scripts/ng-tags-input/build/ng-tags-input.min.js"></script>
-  <script src="scripts/angular-utils-pagination/dirPagination.js"></script>
-  <script src="scripts/ng-file-upload/dist/ng-file-upload.min.js"></script>
-  <script src="scripts/xdate/src/xdate.js"></script>
-  <script src="scripts/popper.js/dist/umd/popper.min.js"></script>
-  <script src="scripts/angular-socket-io/socket.min.js"></script>
-  <script src="scripts/socket.io-client/dist/socket.io.slim.js"></script>
-  <script src="scripts/ng-jsyaml/angular-jsyaml.js"></script>
-  <script src="scripts/js-yaml/dist/js-yaml.js"></script>
-  <script src="scripts/angular-sanitize/angular-sanitize.min.js"></script>
-  <script src="scripts/simplemde/dist/simplemde.min.js"></script>
+    <!-- 3rd Party libs -->
+    <script src="scripts/jquery/dist/jquery.min.js"></script>
+    <script src="scripts/chart.js/dist/Chart.min.js"></script>
+    <script src="scripts/angular/angular.min.js"></script>
+    <script src="scripts/angular-resource/angular-resource.min.js"></script>
+    <script src="scripts/angular-cookies/angular-cookies.min.js"></script>
+    <script src="scripts/angular-route/angular-route.min.js"></script>
+    <script src="scripts/ngstorage/ngStorage.min.js"></script>
+    <script src="scripts/angular-chart.js/dist/angular-chart.min.js"></script>
+    <script src="scripts/jsonformatter/dist/json-formatter.min.js"></script>
+    <script src="scripts/ng-tags-input/build/ng-tags-input.min.js"></script>
+    <script src="scripts/angular-utils-pagination/dirPagination.js"></script>
+    <script src="scripts/ng-file-upload/dist/ng-file-upload.min.js"></script>
+    <script src="scripts/xdate/src/xdate.js"></script>
+    <script src="scripts/popper.js/dist/umd/popper.min.js"></script>
+    <script src="scripts/angular-socket-io/socket.min.js"></script>
+    <script src="scripts/socket.io-client/dist/socket.io.slim.js"></script>
+    <script src="scripts/ng-jsyaml/angular-jsyaml.js"></script>
+    <script src="scripts/js-yaml/dist/js-yaml.js"></script>
+    <script src="scripts/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="scripts/simplemde/dist/simplemde.min.js"></script>
+    <script src="scripts/angular-modal-service/dst/angular-modal-service.min.js"></script>
 
-  <!-- 3rd Party CSS -->
-  <link href="scripts/jsonformatter/dist/json-formatter.css" rel="stylesheet">
-  <link href="scripts/ng-tags-input/build/ng-tags-input.min.css"  rel="stylesheet">
-  <link href="scripts/ng-tags-input/build/ng-tags-input.bootstrap.min.css" rel="stylesheet">
-  <link href="scripts/simple-line-icons/css/simple-line-icons.css" rel="stylesheet">
-  <link href="scripts/simplemde/dist/simplemde.min.css" rel="stylesheet">
-  <link href="assets/css/vendor/core-ui.css" rel="stylesheet">
-  <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet">
+    <!-- ADAL -->
+    <script src="scripts/adal-angular/dist//adal.min.js"></script>
+    <script src="scripts/adal-angular/dist//adal-angular.min.js"></script>
 
-  <!-- core app -->
-  <script src="app/app.js"></script>
-  <script src="app/router.js"></script>
-  <script src="app/directives.js"></script>
+    <!-- 3rd Party CSS -->
+    <link
+      href="scripts/jsonformatter/dist/json-formatter.css"
+      rel="stylesheet"
+    />
+    <link
+      href="scripts/ng-tags-input/build/ng-tags-input.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="scripts/ng-tags-input/build/ng-tags-input.bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="scripts/simple-line-icons/css/simple-line-icons.css"
+      rel="stylesheet"
+    />
+    <link href="scripts/simplemde/dist/simplemde.min.css" rel="stylesheet" />
+    <link href="assets/css/vendor/core-ui.css" rel="stylesheet" />
+    <link
+      href="https://use.fontawesome.com/releases/v5.0.8/css/all.css"
+      rel="stylesheet"
+    />
 
-  <!-- general js scripts -->
-  <script src="app/utils.js"></script>
+    <!-- core app -->
+    <script src="app/app.js"></script>
+    <script src="app/router.js"></script>
+    <script src="app/directives.js"></script>
 
-  <!-- Components/pages -->
-  <script src="app/components/dashboard/dashboard.js"></script>
-  <script src="app/components/dashboard/widgets.js"></script>
-  <script src="app/components/agents/agents.js"></script>
-  <script src="app/components/agents/edit_agent.js"></script>
-  <script src="app/components/agents/add_agent.js"></script>
-  <script src="app/components/agents/import_agent.js"></script>
-  <script src="app/components/actions/actions.js"></script>
-  <script src="app/components/intents/add_intent.js"></script>
-  <script src="app/components/intents/edit_intent.js"></script>
-  <script src="app/components/entities/entities.js"></script>
-  <script src="app/components/entities/add_entity.js"></script>
-  <script src="app/components/synonyms/synonyms.js"></script>
-  <script src="app/components/rasaconfig/rasa_config.js"></script>
-  <script src="app/components/logs/logs.js"></script>
-  <script src="app/components/history/history.js"></script>
-  <script src="app/components/training/training.js"></script>
-  <script src="app/components/settings/settings.js"></script>
-  <script src="app/components/insights/insights.js"></script>
-  <script src="app/components/stories/stories.js"></script>
-  <script src="app/components/regex/regex.js"></script>
-  <script src="app/components/regex/add_regex.js"></script>
-  <script src="app/components/regex/edit_regex.js"></script>
+    <!-- general js scripts -->
+    <script src="app/utils.js"></script>
+    <script src="app/config/app.config.js"></script>
 
-  <!-- Middleware Interceptor/Layer -->
-  <script src="app/components/middleware/middleware.js"></script>
+    <!-- Components/pages -->
+    <script src="app/components/dashboard/dashboard.js"></script>
+    <script src="app/components/dashboard/widgets.js"></script>
+    <script src="app/components/agents/agents.js"></script>
+    <script src="app/components/agents/edit_agent.js"></script>
+    <script src="app/components/agents/add_agent.js"></script>
+    <script src="app/components/agents/import_agent.js"></script>
+    <script src="app/components/actions/actions.js"></script>
+    <script src="app/components/intents/add_intent.js"></script>
+    <script src="app/components/intents/edit_intent.js"></script>
+    <script src="app/components/entities/entities.js"></script>
+    <script src="app/components/entities/entity.js"></script>
+    <script src="app/components/entities/add_entity.js"></script>
+    <script src="app/components/synonyms/synonyms.js"></script>
+    <script src="app/components/rasaconfig/rasa_config.js"></script>
+    <script src="app/components/logs/logs.js"></script>
+    <script src="app/components/history/history.js"></script>
+    <script src="app/components/conversation/conversation.js"></script>
+    <script src="app/components/conversation/modal/edit_intent.js"></script>
+    <script src="app/components/conversation/modal/edit_entity.js"></script>
+    <script src="app/components/conversation/directives/compile.js"></script>
+    <script src="app/components/conversation/directives/edit-entity.js"></script>
+    <script src="app/components/conversation/directives/ensure-element-in-view.js"></script>
+    <script src="app/components/conversation/directives/selection.js"></script>
+    <script src="app/components/conversation/filters/no-underscore.js"></script>
+    <script src="app/components/training/training.js"></script>
+    <script src="app/components/settings/settings.js"></script>
+    <script src="app/components/insights/insights.js"></script>
+    <script src="app/components/stories/stories.js"></script>
+    <script src="app/components/regex/add_regex.js"></script>
+    <script src="app/components/regex/edit_regex.js"></script>
 
-  <!-- Shared components -->
-  <script src="app/shared/sidebar/sidebar.js"></script>
-  <script src="app/shared/navbar/navbar.js"></script>
-  <script src="app/shared/aside/aside.js"></script>
+    <!-- Middleware Interceptor/Layer -->
+    <script src="app/components/middleware/middleware.js"></script>
 
-  <!-- Services -->
-  <script src="app/services/api.js"></script>
-  <script src="app/services/rasa_api.js"></script>
-  <script src="app/services/log.js"></script>
+    <!-- Shared components -->
+    <script src="app/shared/sidebar/sidebar.js"></script>
+    <script src="app/shared/navbar/navbar.js"></script>
+    <script src="app/shared/aside/aside.js"></script>
 
-  <!-- Styles -->
-  <link href="assets/css/style.css" rel="stylesheet">
-</head>
+    <!-- Services -->
+    <script src="app/services/api.js"></script>
+    <script src="app/services/rasa_api.js"></script>
+    <script src="app/services/log.js"></script>
 
-<body class="app header-fixed sidebar-fixed" ng-class="$route.current.activePage == 'agents' ? 'aside-menu-fixed' : 'aside-menu-hidden'" ng-controller="appCtrl">
-  <div id="alertTextDiv" class="alert alert-warning alert-dismissible fade alert-div" role="alert">
-    <button style="padding: 0px !important" type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-    <span class="alert-text"><strong>{{alert_text}}</strong></span>
-  </div>
-  <!-- if no user dont show this just login information -->
-  <div ng-if="authenticated">
-    <div ng-include="'/app/shared/navbar/navbar.html'"></div>
-    <div class="app-body">
-      <div ng-include="'/app/shared/sidebar/sidebar.html'"></div>
-      <!-- Main content -->
-      <main class="main">
-        <span ng-view></span>
-      </main>
-      <div ng-include="'/app/shared/aside/aside.html'"></div>
+    <!-- Styles -->
+    <link href="assets/css/style.css" rel="stylesheet" />
+  </head>
+
+  <body
+    class="app header-fixed sidebar-fixed"
+    ng-class="$route.current.activePage == 'agents' ? 'aside-menu-fixed' : 'aside-menu-hidden'"
+    ng-controller="appCtrl"
+  >
+    <div
+      id="alertTextDiv"
+      class="alert alert-warning alert-dismissible fade alert-div"
+      role="alert"
+    >
+      <button
+        style="padding: 0px !important"
+        type="button"
+        class="close"
+        data-dismiss="alert"
+        aria-label="Close"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <span class="alert-text"
+        ><strong>{{ alert_text }}</strong></span
+      >
     </div>
-  </div>
-  <div ng-if="!authenticated">
+    <!-- if no user dont show this just login information -->
+    <div ng-if="authenticated">
+      <div ng-include="'/app/shared/navbar/navbar.html'"></div>
+      <div class="app-body">
+        <div ng-include="'/app/shared/sidebar/sidebar.html'"></div>
+        <!-- Main content -->
+        <main class="main"><span ng-view></span></main>
+        <div ng-include="'/app/shared/aside/aside.html'"></div>
+      </div>
+    </div>
+    <div ng-if="!authenticated && !adalauthentication" ng-cloak>
       <div class="row" style="padding-top:100px;">
-        <div class= "col-sm-4"></div>
-        <div class= "col-sm-4">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
           <div class="card" style="box-shadow: 10px 10px 5px #888888;">
             <div class="card-header">
-                <strong>Welcome to Rasa-UI console</strong>
-                <small>Please login(admin/admin)</small>
+              <strong>Welcome to Rasa-UI console</strong>
+              <small>Please login(admin/admin)</small>
             </div>
             <div class="card-block">
               <form name="myForm" novalidate ng-submit="loginUser(user)">
-              <div class="row">
+                <div class="row">
                   <div class="col-sm-12">
-                      <div class="form-group">
-                          <label for="name">User Name</label>
-                          <input autocomplete="off" type="text" class="form-control" name="username" ng-model="user.username"  placeholder="Enter your username" required>
-                      </div>
+                    <div class="form-group">
+                      <label for="name">User Name</label>
+                      <input
+                       autocomplete="off" type="text"
+                        class="form-control"
+                        name="username"
+                        ng-model="user.username"
+                        placeholder="Enter your username"
+                        required
+                      />
+                    </div>
                   </div>
-              </div>
-              <div class="row">
+                </div>
+                <div class="row">
                   <div class="col-sm-12">
-                      <div class="form-group">
-                          <label for="ccnumber">Password</label>
-                          <input type="password" class="form-control" name="password" ng-model="user.password" placeholder="Enter your Password" required>
-                      </div>
+                    <div class="form-group">
+                      <label for="ccnumber">Password</label>
+                      <input
+                        type="password"
+                        class="form-control"
+                        name="password"
+                        ng-model="user.password"
+                        placeholder="Enter your Password"
+                        required
+                      />
+                    </div>
                   </div>
-              </div>
-              <div class="row">
+                </div>
+                <div class="row">
                   <div class="form-group col-sm-4"></div>
                   <div class="form-group col-sm-4"></div>
                   <div class="form-group col-sm-4">
-                    <button type="submit" class="btn btn-success" ng-disabled="myForm.$invalid">Submit</button>
+                    <button
+                      type="submit"
+                      class="btn btn-success"
+                      ng-disabled="myForm.$invalid"
+                    >
+                      Submit
+                    </button>
                   </div>
-              </div>
-            </form>
+                </div>
+              </form>
             </div>
+          </div>
         </div>
-      </div>
-      <div class= "col-sm-4"></div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="modal_confirm">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modal_title"></h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <p id="modal_body"></p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" id="modal_save_btn">OK</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        </div>
+        <div class="col-sm-4"></div>
       </div>
     </div>
-  </div>
 
-  <!-- Bootstrap core JavaScript -->
-  <script src="scripts/bootstrap/dist/js/bootstrap.min.js"></script>
-</body>
+    <div class="modal fade" id="modal_confirm">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal_title"></h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body"><p id="modal_body"></p></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="modal_save_btn">
+              OK
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="scripts/bootstrap/dist/js/bootstrap.min.js"></script>
+  </body>
 </html>

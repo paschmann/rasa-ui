@@ -1,19 +1,18 @@
-const db = require('./db')
+const db = require('./db');
 
 module.exports = {
-  getLogs: getLogs,
-  getRequestUsageTotal: getRequestUsageTotal,
-  getIntentUsageTotal: getIntentUsageTotal,
-  getIntentUsageByDay: getIntentUsageByDay,
-  getAvgIntentUsageByDay: getAvgIntentUsageByDay,
-  getNluParseLogByAgent: getNluParseLogByAgent,
-  getAgentsByIntentConfidencePct:getAgentsByIntentConfidencePct,
-  getIntentsMostUsed:getIntentsMostUsed,
-  getAvgNluResponseTimesLast30Days:getAvgNluResponseTimesLast30Days,
-  getAvgUserResponseTimesLast30Days:getAvgUserResponseTimesLast30Days,
-  getActiveUserCountLast12Months:getActiveUserCountLast12Months,
-  getActiveUserCountLast30Days:getActiveUserCountLast30Days
-};
+  getLogs,
+  getRequestUsageTotal,
+  getIntentUsageTotal,
+  getIntentUsageByDay,
+  getAvgIntentUsageByDay,
+  getNluParseLogByAgent,
+  getAgentsByIntentConfidencePct,
+  getIntentsMostUsed,
+  getAvgNluResponseTimesLast30Days,
+  getAvgUserResponseTimesLast30Days,
+  getActiveUserCountLast12Months,
+  getActiveUserCountLast30Days};
 
 function getActiveUserCountLast30Days(req, res, next){
   db.any('select * from active_user_count_30_days')
@@ -23,7 +22,7 @@ function getActiveUserCountLast30Days(req, res, next){
     })
     .catch(function (err) {
       return next(err);
-    })
+    });
 }
 
 function getActiveUserCountLast12Months(req, res, next){
@@ -34,7 +33,7 @@ function getActiveUserCountLast12Months(req, res, next){
     })
     .catch(function (err) {
       return next(err);
-    })
+    });
 }
 
 function getAvgUserResponseTimesLast30Days(req, res, next){
@@ -45,7 +44,7 @@ function getAvgUserResponseTimesLast30Days(req, res, next){
     })
     .catch(function (err) {
       return next(err);
-    })
+    });
 }
 
 function getAvgNluResponseTimesLast30Days(req, res, next){
@@ -56,7 +55,7 @@ function getAvgNluResponseTimesLast30Days(req, res, next){
     })
     .catch(function (err) {
       return next(err);
-    })
+    });
 }
 
 function getIntentsMostUsed(req, res, next){
@@ -67,7 +66,7 @@ function getIntentsMostUsed(req, res, next){
     })
     .catch(function (err) {
       return next(err);
-    })
+    });
 }
 
 function getAgentsByIntentConfidencePct(req, res, next){
@@ -80,11 +79,11 @@ function getAgentsByIntentConfidencePct(req, res, next){
     })
     .catch(function (err) {
       return next(err);
-    })
+    });
 }
 
 function getNluParseLogByAgent(req, res, next) {
-  var agent_id = req.params.agent_id;
+  const agent_id = req.params.agent_id;
   db.any('select * from nlu_parse_log where agent_id = $1 order by timestamp desc', agent_id)
     .then(function (data) {
       res.status(200)
@@ -95,7 +94,7 @@ function getNluParseLogByAgent(req, res, next) {
     });
 }
 function getLogs(req, res, next) {
-  var query = req.params.query;
+  const query = req.params.query;
   db.any('select * from nlu_log where event_type = $1 order by timestamp desc LIMIT 100', query)
     .then(function (data) {
       res.status(200)
