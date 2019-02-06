@@ -468,34 +468,31 @@ function TrainingController(
 
   function getRasaStatus() {
     Rasa_Status.get(function(statusdata) {
-      Rasa_Config.get(function(configdata) {
-        try {
-          $rootScope.config = configdata.toJSON();
-          $rootScope.config.isonline = 1;
-          $rootScope.config.server_model_dirs_array = window.getAvailableModels(
+      try {
+        $rootScope.config.isonline = 1;
+        $rootScope.config.server_model_dirs_array = window.getAvailableModels(
+          statusdata
+        );
+        if ($rootScope.config.server_model_dirs_array.length > 0) {
+          $rootScope.modelname =
+            $rootScope.config.server_model_dirs_array[0].name;
+        } else {
+          $rootScope.modelname = 'Default';
+        }
+
+        if (
+          statusdata !== undefined ||
+          statusdata.available_models !== undefined
+        ) {
+          $rootScope.available_models = window.sortArrayByDate(
+            window.getAvailableModels(statusdata),
+            'xdate'
+          );
+          $rootScope.trainings_under_this_process = window.getNoOfTrainingJobs(
             statusdata
           );
-          if ($rootScope.config.server_model_dirs_array.length > 0) {
-            $rootScope.modelname =
-              $rootScope.config.server_model_dirs_array[0].name;
-          } else {
-            $rootScope.modelname = 'Default';
-          }
-
-          if (
-            statusdata !== undefined ||
-            statusdata.available_models !== undefined
-          ) {
-            $rootScope.available_models = window.sortArrayByDate(
-              window.getAvailableModels(statusdata),
-              'xdate'
-            );
-            $rootScope.trainings_under_this_process = window.getNoOfTrainingJobs(
-              statusdata
-            );
-          }
-        } catch (err) {}
-      });
+        }
+      } catch (err) {}
     });
   }
 }

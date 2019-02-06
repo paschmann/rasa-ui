@@ -28,11 +28,6 @@ function getRasaNluEndpoint(req, res, next) {
   sendOutput(200, res, '{"url" : "'+global.rasanluendpoint+'"}');
 }
 
-function getRasaNluEndpoint(req, res, next) {
-  console.log("Rasa NLU Endpoint Request");
-  sendOutput(200, res, '{"url" : "'+global.rasanluendpoint+'"}');
-}
-
 function getRasaNluConfig(req, res, next) {
   logger.winston.info(
     'Rasa NLU Config Request -> ' + global.rasanluendpoint + '/config'
@@ -64,25 +59,17 @@ function getRasaNluVersion(req, res, next) {
 }
 
 function trainRasaNlu(req, res, next) {
-  let modelName = req.query.name;
-  if (
-    global.rasanlufixedmodelname !== undefined &&
-    global.rasanlufixedmodelname !== ''
-  ) {
-    modelName = global.rasanlufixedmodelname;
-  }
-
   logger.winston.info(
     'Rasa NLU Train Request -> ' +
       global.rasanluendpoint +
       '/train?project=' +
       req.query.project +
       '&model=' +
-      modelName
+      req.query.name
   );
   logRequest(req, 'train', {
     project: req.query.project,
-    model: modelName,
+    model: req.query.name,
     data: req.body
   });
 
@@ -94,7 +81,7 @@ function trainRasaNlu(req, res, next) {
         '/train?project=' +
         req.query.project +
         '&model=' +
-        modelName,
+        req.query.name,
       json: req.body
     },
     function(error, response, body) {

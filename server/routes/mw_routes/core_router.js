@@ -51,7 +51,7 @@ function parseRequest(req, res, next, agentObj) {
         },
         method: 'POST',
         uri: core_url,
-        body: { query: req.body.q },
+        body: {sender:req.jwt.username, message: req.body.q },
         json: true},
       function(error, response, body) {
         if (error) {
@@ -66,11 +66,13 @@ function parseRequest(req, res, next, agentObj) {
         if (response.status !== 200 && typeof response.status !== 'undefined') {
           sendHTTPResponse(response.statusCode, res, body);
         } else {
+          sendHTTPResponse(200, res, body);
+/*        // Ignore formattting.. show the entire response from rasa core.
+
           // If the status is 200, only display the text for the moment
           // TODO Display images
 
           let response = '';
-
           body.forEach(function(element) {
             response += element.text + ' \r\n';
             logger.winston.info('Réponse : ', response);
@@ -82,8 +84,8 @@ function parseRequest(req, res, next, agentObj) {
               });
             }
           });
-
           sendHTTPResponse(200, res, response);
+          */
         }
       }
     );
