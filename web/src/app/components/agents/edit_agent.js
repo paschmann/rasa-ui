@@ -64,7 +64,6 @@ function EditAgentController(
 
   $scope.addAction = function(form, agent) {
     form.agent_id = agent.agent_id;
-    form.action_name = form.action_name_prefix + form.action_name;
     Actions.save(form).$promise.then(function() {
       $('#modal-add-actions').modal('hide');
       $scope.form = {};

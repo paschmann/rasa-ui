@@ -176,6 +176,8 @@ CREATE TABLE agents
   basic_auth_password character varying COLLATE pg_catalog."default",
   client_secret_key text NOT NULL default md5(random()::text),
   story_details text COLLATE pg_catalog."default",
+  rasa_nlu_pipeline character varying COLLATE pg_catalog."default",
+  rasa_nlu_fixed_model_name character varying COLLATE pg_catalog."default",
   CONSTRAINT agent_pkey PRIMARY KEY (agent_id)
 )
 WITH (
@@ -430,7 +432,7 @@ CREATE TABLE messages_entities
 WITH (
   OIDS = FALSE
 )
-TABLESPACE pg_default;  
+TABLESPACE pg_default;
 
 /* Views */
 CREATE OR REPLACE VIEW intents_most_used AS

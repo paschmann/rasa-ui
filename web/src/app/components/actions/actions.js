@@ -17,30 +17,20 @@ function ActionsController(
   $scope.buttonsArray = [];
   Actions.get({ action_id: $scope.$routeParams.action_id }, function(data) {
     $scope.action = data;
-    if ($scope.action.action_name.startsWith('utter_webhook_')) {
-      $scope.action.action_name_prefix = 'utter_webhook_';
-      $scope.action.action_name = $scope.action.action_name.substring(
-        'utter_webhook_'.length,
-        $scope.action.action_name.length
-      );
-    } else {
-      $scope.action.action_name_prefix = 'utter_';
-      $scope.action.action_name = $scope.action.action_name.substring(
-        'utter_'.length,
-        $scope.action.action_name.length
-      );
-    }
+
   });
   loadActionResponses($scope.$routeParams.action_id);
 
   $scope.saveActionResponse = function(actionResponse) {
     if (actionResponse.response_text === '') return;
+
     if ($scope.buttonsArray.length > 0) {
       actionResponse.buttons_info = JSON.stringify($scope.buttonsArray);
     } else {
       actionResponse.buttons_info = null;
     }
-    if (actionResponse.response_image_url === null) {
+    
+    if (typeof actionResponse.response_image_url == 'undefined' || actionResponse.response_image_url === null) {
       actionResponse.response_image_url = '';
     }
     actionResponse.response_type = 1;

@@ -1,6 +1,6 @@
 angular.module('app').controller('EditRegexController', EditRegexController);
 
-function EditRegexController($scope, Regex, Agent) {
+function EditRegexController($rootScope, $scope, Regex, Agent) {
   $scope.message = '';
 
   Agent.get({ agent_id: $scope.$routeParams.agent_id }, function(data) {
@@ -24,7 +24,8 @@ function EditRegexController($scope, Regex, Agent) {
       { regex_id: $scope.regex.regex_id },
       $scope.regex
     ).$promise.then(function() {
-      $scope.message = 'Regex updated successfully';
+      $rootScope.$broadcast('setAlertText', "Regex updated Sucessfully!!");
+      $scope.go(`/agent/${$scope.$routeParams.agent_id}`);
     });
   };
 }

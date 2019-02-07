@@ -27,13 +27,7 @@
             <div class="row">
               <div class="col-sm-12">
                 <div class="input-group">
-                  <span class="input-group-btn" data-toggle="tooltip" data-placement="top" title="Action name prefix" tooltip>
-                    <select class="form-control form-control" ng-model="action.action_name_prefix" required ng-disabled="readonly" >
-                      <option value="utter_">utter_</option>
-                      <option value="utter_webhook_">utter_webhook_</option>
-                    </select>
-                  </span>
-                  <input type="text" class="form-control" id="action-name" ng-model="action.action_name" required ng-readonly="readonly">
+                  <input type="text" autocomplete="off" class="form-control" id="action-name" ng-model="action.action_name" required ng-readonly="readonly">
                   <span class="input-group-btn">
                     <button class="btn btn-outline-primary" type="button" ng-click="actionNameEdit(action)"><span id="action_editable_icon" ng-class="readonly?'fa fa-edit':'fa fa-check'"></span></button>
                   </span>
@@ -44,8 +38,20 @@
         </div>
       </div>
     </div>
-
-    <div class="row">
+    <div class="row" ng-show="!action.action_name.startsWith('utter_')">
+      <div class="col-sm-12 col-lg-12">
+        <div class="card">
+          <div class="card-header">
+              <strong>Action Response Templates</strong>
+          </div>
+          <div class="card-block">
+              Templetes can be configured only for Utter type of actions. Actions that start with utter_.
+          </div>
+        </div>
+      </div>
+    </div>
+      
+    <div class="row" ng-show="action.action_name.startsWith('utter_')">
       <div class="col-sm-12 col-lg-12">
         <div class="card">
           <div class="card-header">
@@ -56,18 +62,18 @@
               <div class="col-sm-12">
                 <div class="form-group">
                   <label for="action-utter" class="form-control-label">Text&nbsp;&nbsp;<small>(You can use {slot_name} to have that automatically filled with value from rasa core)</small></label>
-                  <input type="text" class="form-control" id="action-utter" ng-model="action.response_text"  placeholder="Enter a Response Text for this Action">
+                  <input type="text" autocomplete="off" class="form-control" id="action-utter" ng-model="action.response_text"  placeholder="Enter a Response Text for this Action">
                  </div>
                  <div class="form-group">
                    <label for="action-utter" class="form-control-label">Buttons&nbsp;&nbsp;<small>(Button in title:payload format and hit Enter)</small></label>
                     <div class="input-group">
-                     <input type="text" class="form-control" id="action-utter" ng-model="action.button_text" placeholder="Buttons in title:payload format" ng-keyup="$event.keyCode==13 && addButton(action)">
+                     <input type="text" autocomplete="off" class="form-control" id="action-utter" ng-model="action.button_text" placeholder="Buttons in title:payload format" ng-keyup="$event.keyCode==13 && addButton(action)">
                     </div>
                     <span><button class="btn btn-primary" style="margin:2px;" ng-repeat="buttoninfo in buttonsArray">{{buttoninfo.title}}</button></span>
                   </div>
                   <div class="form-group">
                     <label for="action-utter" class="form-control-label">Image URL</label>
-                    <input type="text" class="form-control" id="action-utter" ng-model="action.response_image_url" placeholder="URL for an image to be displayed">
+                    <input type="text" autocomplete="off" class="form-control" id="action-utter" ng-model="action.response_image_url" placeholder="URL for an image to be displayed">
                   </div>
                   <span class="pull-right">
                     <button class="btn btn-primary" ng-click="saveActionResponse(action)">Add</button>

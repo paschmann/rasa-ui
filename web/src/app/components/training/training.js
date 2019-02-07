@@ -35,29 +35,27 @@ function TrainingController(
   });
 
   $scope.train = function() {
-    let agentname = window.objectFindByKey(
-      $scope.agentList,
-      'agent_id',
-      $scope.agent.agent_id
-    ).agent_name;
-    let id = new window.XDate().toString('yyyyMMdd-HHmmss');
-    reset();
+    let agentToTrain = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
+    let dataToPost;
 
-    $http
-      .post(
-        appConfig.api_endpoint_v2 +
-          '/rasa/train?name=' +
-          agentname +
-          '_' +
-          id +
-          '&project=' +
-          agentname,
-        JSON.stringify(exportData)
-      )
-      .then(
-        function(response) {
-          $scope.message =
-            'Training for ' + agentname + ' completed successfully';
+    let id = new XDate().toString('yyyyMMdd-HHmmss');
+    reset();
+    let modelName=agentToTrain.agent_name + "_" + id;
+
+    // Add Custome Pipeline if available
+    if(agentToTrain.rasa_nlu_pipeline!=null && agentToTrain.rasa_nlu_pipeline !== '') {
+      dataToPost = { pipeline:agentToTrain.rasa_nlu_pipeline, data:exportData };
+    } else {
+      dataToPost = exportData;
+    }
+    // Use Fixed model name if available
+    if(agentToTrain.rasa_nlu_fixed_model_name!=null && agentToTrain.rasa_nlu_fixed_model_name !== ''){
+      modelName = agentToTrain.rasa_nlu_fixed_model_name;
+    }
+
+    $http.post(appConfig.api_endpoint_v2 + "/rasa/train?name=" + modelName+ "&project=" + agentToTrain.agent_name, JSON.stringify(dataToPost)).then(
+        function(response){
+          $scope.message = "Training for " + agentToTrain.agent_name + " completed successfully";
           $rootScope.trainings_under_this_process = 0;
         },
         function(errorResponse) {
@@ -89,6 +87,18 @@ function TrainingController(
     core_stories.download = '_stories.md';
     core_stories.href = URL.createObjectURL(stories_data);
     core_stories.click();
+
+      var core_credentials_data = new Blob([$scope.credentials_yml], {type: 'text/plain'});
+      var core_credentials = document.getElementById("core_credentials");
+      core_credentials.download = "credentials.yml";
+      core_credentials.href = URL.createObjectURL(core_credentials_data);
+      core_credentials.click();
+
+      var endpoints_data = new Blob([$scope.endpoints_yml], {type: 'text/plain'});
+      var endpoints = document.getElementById("endpoints_yml");
+      endpoints.download = "endpoints.yml";
+      endpoints.href = URL.createObjectURL(endpoints_data);
+      endpoints.click();
   };
   $scope.convertToLowerCase = function() {
     $scope.exportdata = JSON.parse(
@@ -194,9 +204,25 @@ function TrainingController(
   function populateCoreDomainYaml(agent_id, intents) {
     //get entities by agentid
     let domain_yml_obj = {};
+    var endpoints_yml_obj={};
+    var credentials_yml_obj={rest:""};
+    var endpoints_yml_obj={};
+    var credentials_yml_obj={rest:""};
     $scope.stories_md = '';
     Agent.get({ agent_id: agent_id }, function(data) {
       $scope.stories_md = data.story_details;
+        if(data.endpoint_enabled){
+          endpoints_yml_obj.action_endpoint={"url":data.endpoint_url};
+        }
+        $scope.credentials_yml=yaml.stringify(credentials_yml_obj);
+        $http({method: 'GET', url: appConfig.api_endpoint_v2 + '/rasa/url'}).then(
+          function(response){
+            endpoints_yml_obj.nlu=response.data;
+            $scope.endpoints_yml=yaml.stringify(endpoints_yml_obj);
+          },
+          function(errorResponse){
+            console.log("Error Message while Getting Messages." + errorResponse);
+          });
     });
 
     AgentEntities.query({ agent_id: agent_id }, function(allEntities) {
@@ -442,34 +468,31 @@ function TrainingController(
 
   function getRasaStatus() {
     Rasa_Status.get(function(statusdata) {
-      Rasa_Config.get(function(configdata) {
-        try {
-          $rootScope.config = configdata.toJSON();
-          $rootScope.config.isonline = 1;
-          $rootScope.config.server_model_dirs_array = window.getAvailableModels(
+      try {
+        $rootScope.config.isonline = 1;
+        $rootScope.config.server_model_dirs_array = window.getAvailableModels(
+          statusdata
+        );
+        if ($rootScope.config.server_model_dirs_array.length > 0) {
+          $rootScope.modelname =
+            $rootScope.config.server_model_dirs_array[0].name;
+        } else {
+          $rootScope.modelname = 'Default';
+        }
+
+        if (
+          statusdata !== undefined ||
+          statusdata.available_models !== undefined
+        ) {
+          $rootScope.available_models = window.sortArrayByDate(
+            window.getAvailableModels(statusdata),
+            'xdate'
+          );
+          $rootScope.trainings_under_this_process = window.getNoOfTrainingJobs(
             statusdata
           );
-          if ($rootScope.config.server_model_dirs_array.length > 0) {
-            $rootScope.modelname =
-              $rootScope.config.server_model_dirs_array[0].name;
-          } else {
-            $rootScope.modelname = 'Default';
-          }
-
-          if (
-            statusdata !== undefined ||
-            statusdata.available_models !== undefined
-          ) {
-            $rootScope.available_models = window.sortArrayByDate(
-              window.getAvailableModels(statusdata),
-              'xdate'
-            );
-            $rootScope.trainings_under_this_process = window.getNoOfTrainingJobs(
-              statusdata
-            );
-          }
-        } catch (err) {}
-      });
+        }
+      } catch (err) {}
     });
   }
 }

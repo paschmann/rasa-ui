@@ -8,3 +8,5 @@ Jenkinsfile
 # editors
 .idea
 *.swp
+*.iml
+
