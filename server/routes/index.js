@@ -123,6 +123,7 @@ router.get('/activeUserCountLast12Months', logs.getActiveUserCountLast12Months);
 router.get('/activeUserCountLast30Days', logs.getActiveUserCountLast30Days);
 //rasa nlu api's
 router.get('/rasa/status', nlu_router.getRasaNluStatus);
+router.get('/rasa/url', nlu_router.getRasaNluEndpoint);
 router.get('/rasa/config', nlu_router.getRasaNluConfig);
 router.get('/rasa/version', nlu_router.getRasaNluVersion);
 router.post('/rasa/train', nlu_router.trainRasaNlu);

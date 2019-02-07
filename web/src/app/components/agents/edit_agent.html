@@ -22,6 +22,7 @@
         <div class="card">
           <div class="card-header">
             <strong>Intents</strong>
+            <input id="agentFilter" autocomplete="off" class="filtertext" type="text" name="search" ng-model="intentFilterText" placeholder="Filter Intents..">
             <span class="float-right">
               <a
                 class="btn btn-outline-primary"
@@ -39,7 +40,7 @@
               <div class="col-sm-12">
                 <div
                   class="list-group"
-                  dir-paginate="intent in intentList  | itemsPerPage: 5"
+                  dir-paginate="intent in intentList| filter:intentFilterText  | itemsPerPage: 5"
                   pagination-id="intentsList"
                 >
                   <div class="list-group-item">
@@ -220,6 +221,7 @@
             tooltip
           >
             <strong>Actions</strong>
+            <input id="agentFilter" autocomplete="off" class="filtertext" type="text" name="search" ng-model="actionsFilterText" placeholder="Filter Actions..">
             <span class="float-right">
               <button
                 type="button"
@@ -236,7 +238,7 @@
               <div class="col-sm-12">
                 <div
                   class="list-group"
-                  dir-paginate="action in actionsList  | itemsPerPage: 5"
+                  dir-paginate="action in actionsList |filter:actionsFilterText | itemsPerPage: 5"
                   pagination-id="actionsList"
                 >
                   <div class="list-group-item">
@@ -329,25 +331,8 @@
                     >Action Name:</label
                   >
                   <div class="input-group">
-                    <span
-                      class="input-group-btn"
-                      data-toggle="tooltip"
-                      data-placement="top"
-                      title="Action name prefix"
-                      tooltip
-                    >
-                      <select
-                        class="form-control form-control"
-                        ng-model="form.action_name_prefix"
-                        required
-                        ng-init="form.action_name_prefix='utter_'"
-                      >
-                        <option value="utter_">utter_</option>
-                        <option value="utter_webhook_">utter_webhook_</option>
-                      </select>
-                    </span>
                     <input
-                      type="text"
+                     autocomplete="off" type="text"
                       class="form-control"
                       id="action-name"
                       ng-model="form.action_name"

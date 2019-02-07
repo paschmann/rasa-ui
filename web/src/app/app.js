@@ -138,6 +138,11 @@ angular
         $location.path("/login");
       });
 
+      // optional
+      $scope.$on("adal:notAuthorized", function(event, rejection, forResource) {
+        $scope.testMessage = "It is not Authorized for resource:" + forResource;
+      });
+
       $scope.$on("adal:acquireTokenSuccess", function() {
         $scope.testMessage = "acquireTokenSuccess";
 
@@ -148,14 +153,9 @@ angular
       });
 
       $scope.$on("adal:acquireTokenFailure", function() {
-        $scope.testMessage = "acquireTokenFailure";
-        adalAuthenticationService.logOut();
-        $rootScope.$broadcast("INVALID_JWT_TOKEN");
-      });
-
-      // optional
-      $scope.$on("adal:notAuthorized", function(event, rejection, forResource) {
-        $scope.testMessage = "It is not Authorized for resource:" + forResource;
+       $scope.testMessage = "acquireTokenFailure";
+       adalAuthenticationService.logOut();
+       $rootScope.$broadcast("INVALID_JWT_TOKEN");
       });
     }
   });
