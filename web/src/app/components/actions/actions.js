@@ -23,12 +23,14 @@ function ActionsController(
 
   $scope.saveActionResponse = function(actionResponse) {
     if (actionResponse.response_text === '') return;
+
     if ($scope.buttonsArray.length > 0) {
       actionResponse.buttons_info = JSON.stringify($scope.buttonsArray);
     } else {
       actionResponse.buttons_info = null;
     }
-    if (actionResponse.response_image_url === null) {
+    
+    if (typeof actionResponse.response_image_url == 'undefined' || actionResponse.response_image_url === null) {
       actionResponse.response_image_url = '';
     }
     actionResponse.response_type = 1;

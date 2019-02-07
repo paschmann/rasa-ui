@@ -1,5 +1,7 @@
+
 <ol class="breadcrumb" breadcrumb="">
-  <li class="breadcrumb-item ng-scope active"><span>Agents</span></li>
+  <li class="breadcrumb-item ng-scope active"><span>Agents</span>  </li>
+  <li> <input id="agentFilter" autocomplete="off" class="filtertext" type="text" name="search" ng-model="agentFilterText" placeholder="Filter Agent.."></li>
   <!-- Breadcrumb Menu-->
   <li class="breadcrumb-menu">
     <div class="btn-group" role="group">
@@ -13,7 +15,7 @@
     <div class="row">
       <div class="col-sm-12 col-lg-12">
         <div id="accordion" role="tablist">
-          <div class="card" dir-paginate="agent in agentList  | itemsPerPage: 7" pagination-id="agentsList">
+          <div class="card" dir-paginate="agent in agentList| filter: agentFilterText | itemsPerPage: 7" pagination-id="agentsList">
             <div class="card-header" role="tab" id="headingOne">
               <span><a ng-href="#/agent/{{agent.agent_id}}">{{ agent.agent_name }}</a></span>
               <span class="float-right">

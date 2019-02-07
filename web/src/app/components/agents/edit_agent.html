@@ -22,6 +22,7 @@
         <div class="card">
           <div class="card-header">
             <strong>Intents</strong>
+            <input id="agentFilter" autocomplete="off" class="filtertext" type="text" name="search" ng-model="intentFilterText" placeholder="Filter Intents..">
             <span class="float-right">
               <a
                 class="btn btn-outline-primary"
@@ -39,7 +40,7 @@
               <div class="col-sm-12">
                 <div
                   class="list-group"
-                  dir-paginate="intent in intentList  | itemsPerPage: 5"
+                  dir-paginate="intent in intentList| filter:intentFilterText  | itemsPerPage: 5"
                   pagination-id="intentsList"
                 >
                   <div class="list-group-item">
@@ -220,6 +221,7 @@
             tooltip
           >
             <strong>Actions</strong>
+            <input id="agentFilter" autocomplete="off" class="filtertext" type="text" name="search" ng-model="actionsFilterText" placeholder="Filter Actions..">
             <span class="float-right">
               <button
                 type="button"
@@ -236,7 +238,7 @@
               <div class="col-sm-12">
                 <div
                   class="list-group"
-                  dir-paginate="action in actionsList  | itemsPerPage: 5"
+                  dir-paginate="action in actionsList |filter:actionsFilterText | itemsPerPage: 5"
                   pagination-id="actionsList"
                 >
                   <div class="list-group-item">

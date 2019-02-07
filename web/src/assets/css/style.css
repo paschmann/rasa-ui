@@ -90,6 +90,13 @@ canvas.chart {
 tags-input .tags .tag-item .remove-button {
     color: #fff;
 }
+.filtertext {
+    border: 0;
+    outline: 0;
+    background: transparent;
+    border-bottom: 1px solid black;
+    margin-left: 20px;
+  }
 .list-group-item:hover, a.list-group-item:focus {text-decoration: none;background-color: rgb(245, 245, 245);}
 .list-group { margin-bottom:0px; }
 
