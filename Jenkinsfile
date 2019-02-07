@@ -58,7 +58,7 @@ timestamps {
             container('docker') {
               stage("Build Docker Image") {
                 env.DOCKER_REGISTRY_IMAGE_TAG_HASH = "${DOCKER_REGISTRY_REPOSITORY}:${componentHash}"
-                  env.DOCKER_BUILD_ARGS = ""
+                  env.DOCKER_BUILD_ARGS = "-f Dockerfile_no_multistage"
                   sh "docker build --label 'image.source.version=${componentHash}' ${DOCKER_BUILD_ARGS} -t $DOCKER_REGISTRY_IMAGE_TAG_HASH ."
               }
               stage("Push Docker Image") {
@@ -76,7 +76,7 @@ timestamps {
               stage("Build Docker Image") {
                 cacd2DockerLogin(cacd2GetDockerRegistry())
                   env.DOCKER_REGISTRY_IMAGE_TAG_US = "${DOCKER_REGISTRY_REPOSITORY}:${cacd2GetUserStoryBranchName(branchName)}"
-                  env.DOCKER_BUILD_ARGS = ""
+                  env.DOCKER_BUILD_ARGS = "-f Dockerfile_no_multistage"
                   sh "docker build --label 'image.source.version=${componentHash}' ${DOCKER_BUILD_ARGS} -t $DOCKER_REGISTRY_IMAGE_TAG_US ."
               }
 
@@ -100,7 +100,7 @@ timestamps {
                   env.DOCKER_REGISTRY_IMAGE_TAG_HASH = "${DOCKER_REGISTRY_REPOSITORY}:${componentHash}"
                   env.DOCKER_REGISTRY_IMAGE_TAG_ALL_PATCHES = "${DOCKER_REGISTRY_REPOSITORY}:${cacd2GetVersionForAllPatches(componentVersion)}"
                   env.DOCKER_REGISTRY_IMAGE_TAG_ALL_MINOR_FIXES = "${DOCKER_REGISTRY_REPOSITORY}:${cacd2GetVersionForAllMinorFixes(componentVersion)}"
-                  env.DOCKER_BUILD_ARGS = ""
+                  env.DOCKER_BUILD_ARGS = "-f Dockerfile_no_multistage"
                   sh "docker build --label 'image.source.version=${componentHash}' ${DOCKER_BUILD_ARGS} -t $DOCKER_REGISTRY_IMAGE_TAG_VERSION -t $DOCKER_REGISTRY_IMAGE_TAG_LATEST -t $DOCKER_REGISTRY_IMAGE_TAG_HASH -t $DOCKER_REGISTRY_IMAGE_TAG_ALL_PATCHES -t $DOCKER_REGISTRY_IMAGE_TAG_ALL_MINOR_FIXES ."
               }
 
