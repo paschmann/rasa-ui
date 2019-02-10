@@ -172,52 +172,6 @@ app.use(function(req, res, next) {
 });
 
 const server = require('http').createServer(app);
-const io = require('socket.io').listen(server);
-
-const NodeCache = require('node-cache');
-//https://github.com/mpneuried/nodecache
-const socketCache = new NodeCache({ useClones: false });
-app.set('socketCache', socketCache);
-// Socket.io Communication
-io.sockets.on('connection', function(socket) {
-  let jwt0 = '';
-  try {
-    const cookieArr = socket.request.headers.cookie.split(';');
-    for (let i = 0; i < cookieArr.length; i++) {
-      if (cookieArr[i].split('=')[0].trim() === 'loggedinjwt') {
-        jwt0 = cookieArr[i].split('=')[1].split('.')[0];
-        break;
-      }
-    }
-    //logger.winston.info('Adding Socket to Sockets List');
-    app.get('socketCache').set(jwt0, socket);
-  } catch (err) {
-    logger.winston.info(
-      'Problem when parsing the cookies. Ignoring socket' + err
-    );
-  }
-
-  socket.on('disconnect', function() {
-    //logger.winston.info('Disconnecting All Cookies: '); // + socket.request.headers.cookie);
-    //logger.winston.info('Socket disconnected');
-    let discjwt0 = '';
-    try {
-      const cookieArr = socket.request.headers.cookie.split(';');
-      for (let i = 0; i < cookieArr.length; i++) {
-        if (cookieArr[i].split('=')[0].trim() === 'loggedinjwt') {
-          discjwt0 = cookieArr[i].split('=')[1].split('.')[0];
-          break;
-        }
-      }
-      //logger.winston.info('Removing SOCKET: ' + discjwt0 + ' from List: '+ JSON.stringify(app.get('socketCache').keys()));
-      app.get('socketCache').del(jwt0);
-    } catch (err) {
-      logger.winston.info(
-        'Problem when parsing the cookies. Unable to delete socket' + err
-      );
-    }
-  });
-});
 
 app.use('/api/v2/', routes);
 

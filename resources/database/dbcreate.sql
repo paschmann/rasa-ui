@@ -176,7 +176,7 @@ CREATE TABLE agents
   basic_auth_password character varying COLLATE pg_catalog."default",
   client_secret_key text NOT NULL default md5(random()::text),
   story_details text COLLATE pg_catalog."default",
-  rasa_nlu_pipeline character varying COLLATE pg_catalog."default",
+  rasa_nlu_pipeline character varying COLLATE pg_catalog."default" DEFAULT 'spacy_sklearn',
   rasa_nlu_fixed_model_name character varying COLLATE pg_catalog."default",
   CONSTRAINT agent_pkey PRIMARY KEY (agent_id)
 )

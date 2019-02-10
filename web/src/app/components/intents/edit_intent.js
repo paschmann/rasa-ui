@@ -55,6 +55,7 @@ function EditIntentController(
       //update list
       loadResponses();
       //empty formData
+      $scope.formData.response_text='';
       $scope.formData = {};
     });
   };
