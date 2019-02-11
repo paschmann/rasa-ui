@@ -1,38 +1,4 @@
-<style>
-  .chat-messaages{
-    list-style-type: none;
-    padding:5px;
-    height: 40%;
-    max-height: 400px;
-    overflow-y: scroll;
-  }
-  .user-message{
-    text-align:right;
-  }
-  .user-message span{
-    padding: 7px;
-    margin-right: 5px;
-    border-radius: 15px;
-    display: inline-flex;
-    margin-bottom: 8px;
-  }
-  .user-message :hover{
-    text-decoration: underline;
-    cursor: pointer;
-  }
-  .bot-message span{
-    padding: 7px;
-    margin-right: 5px;
-    border-radius: 15px;
-    display: inline-flex;
-    margin-bottom: 8px;
-    cursor: pointer
-  }
-  .bot-message :hover{
-    box-shadow: 3px 3px 5px #aaaaaa;
-  }
-</style>
-
+<link rel="stylesheet" href="./app/components/history/history.css" />
 <div class="container-fluid">
   <div class="animated fadeIn">
     <div class="row" style="margin-top: 10px;">
@@ -43,19 +9,34 @@
               <div class="row">
                 <div class="col-sm-6">
                   <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-2 col-form-label">Agent</label>
+                    <label for="staticEmail" class="col-sm-2 col-form-label"
+                      >Agent - {{ selectedAgentId }}</label
+                    >
                     <div class="col-sm-4">
-                       <select name="agentSelect" id="agentSelect" ng-model="selectedAgentId" class="form-control"  ng-change="loadAgentHistory()">
-                         <option ng-repeat="agent in agentList" value="{{agent.agent_id}}">{{agent.agent_name}}</option>
-                       </select>
+                      <select
+                        name="agentSelect"
+                        id="agentSelect"
+                        ng-model="selectedAgent"
+                        class="form-control"
+                        ng-change="loadAgentConversations()"
+                        ng-options="agent.agent_name for agent in agentList track by agent.agent_id"
+                      >
+                      </select>
                     </div>
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-2 col-form-label">User Id</label>
+                    <label for="staticEmail" class="col-sm-2 col-form-label"
+                      >User Id</label
+                    >
                     <div class="col-sm-6">
-                      <input type="text" class="form-control" id="inputPassword" placeholder="Search by userid (TODO..)">
+                      <input
+                       autocomplete="off" type="text"
+                        class="form-control"
+                        id="inputPassword"
+                        placeholder="Search by userid (TODO..)"
+                      />
                     </div>
                   </div>
                 </div>
@@ -65,97 +46,161 @@
         </form>
       </div>
     </div>
+
     <div class="row">
-      <div class="col-12" ng-if="top9users.length==0" class="card" style="margin:10px;text-align: center">
-        <div class="card-header">
-          <strong>No Conversations for this agent.</strong>
-        </div>
-      </div>
-      <div class="col-4" ng-repeat="user in top9users">
-        <div class="card" style="margin:10px;">
-          <div class="card-header">
-            <strong>{{user.user_name}}</strong>
-          </div>
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header"><strong>Available Models</strong></div>
           <div class="card-block">
-            <ul id="chat-msg-id-{{user.user_id}}" class="chat-messaages" scroll-bottom>
-            <li ng-if="message.message_text" ng-class="message.user_message_ind==true?'user-message':'bot-message'" ng-repeat="message in user.chatlog">
-              <span ng-if="message.user_message_ind" class="bg-primary" data-toggle="modal" data-target="#messageFeedbackModal" ng-click="updateModalFeedbackInfo(message)">{{message.message_text}}</span>
-              <span ng-if="!message.user_message_ind" class="bg-light text-dark"  data-toggle="modal" data-target="#messageModalCenter" ng-click="updateModalInfo(message)">{{message.message_text}}</span>
-            </li>
-            </ul>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Session ID</th>
+                  <th>Date</th>
+                  <th>No match</th>
+                  <th>Intentions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  dir-paginate="conversation in conversations | itemsPerPage: itemsPerPage"
+                  pagination-id="conversationsList"
+                  total-items="totalItems"
+                  ng-if="conversations.length > 0"
+                  ng-click="goToConversation(conversation.user_id)"
+                >
+                  <td>{{ conversation.user_id }}</td>
+                  <td>
+                    {{
+                      conversation.recent_active | date: "yyyy/MM/dd HH:mm:ss"
+                    }}
+                  </td>
+                  <td ng-class="{'no-match': conversation.noMatchCount > 0 }">
+                    {{ conversation.noMatchCount }}
+                  </td>
+                  <td>{{ conversation.intentsCount }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="float:right">
+              <dir-pagination-controls
+                pagination-id="conversationsList"
+                on-page-change="onPageChange(newPageNumber, oldPageNumber)"
+              ></dir-pagination-controls>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Modal -->
-<div class="modal fade" id="messageFeedbackModal" tabindex="-1" role="dialog" aria-labelledby="messageFeedbackModalTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="messageFeedbackModalTitle">Message Feedback</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>Ability add this expression back to an intent and also create Entities right here. (TODO)</p>
-        <!--<form>
-          <div class="form-group">
-            <label for="exampleInputEmail1">Expression</label>
-            <span id="expression_id" ng-bind-html="expression | trusted"></span>
-          </div>
-          <div class="form-group">
-            <label for="intentSelect">Intent</label>
-            <select name="intentSelect" id="intentSelect" ng-model="selectedAgentId" class="form-control"  ng-change="loadAgentHistory()">
-              <option ng-repeat="agent in agentList" value="{{agent.agent_id}}">{{agent.agent_name}}</option>
-            </select>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </form> -->
-      </div>
-      <div class="modal-footer">
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="messageFeedbackModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="messageFeedbackModalTitle"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="messageFeedbackModalTitle">
+            Message Feedback
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            Ability add this expression back to an intent and also create
+            Entities right here. (TODO)
+          </p>
+          <!--
+            <form>
+              <div class="form-group">
+                <label for="exampleInputEmail1">Expression</label>
+                <span id="expression_id" ng-bind-html="expression | trusted"></span>
+              </div>
+              <div class="form-group">
+                <label for="intentSelect">Intent</label>
+                <select name="intentSelect" id="intentSelect" ng-model="selectedAgentId" class="form-control"  ng-change="loadAgentHistory()">
+                  <option ng-repeat="agent in agentList" value="{{agent.agent_id}}">{{agent.agent_name}}</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          -->
+        </div>
+        <div class="modal-footer"></div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Modal -->
-<div class="modal fade" id="messageModalCenter" tabindex="-1" role="dialog" aria-labelledby="messageModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="messageModalCenterTitle">Message Details</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="messageModalCenter"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="messageModalCenterTitle"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="messageModalCenterTitle">
+            Message Details
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
           <table class="table table-striped table-hover">
-          <thead class="thead-dark">
-            <tr>
-              <th scope="col">NLU Data</th>
-              <th scope="col">Core Data</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Intent: {{messageDetails.intent_name}}</td>
-              <td>Action: {{messageDetails.action_name}}</td>
-            </tr>
-            <tr>
-              <td>Entities:
-                <json-formatter json="messageDetails.entity_data" open="4"></json-formatter></td>
-              <td>Slots:
-                <json-formatter json="messageDetails.slots_data" open="4"></json-formatter>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="modal-footer">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">NLU Data</th>
+                <th scope="col">Core Data</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Intent: {{ messageDetails.intent_name }}</td>
+                <td>Action: {{ messageDetails.action_name }}</td>
+              </tr>
+              <tr>
+                <td>
+                  Entities:
+                  <json-formatter
+                    json="messageDetails.entity_data"
+                    open="4"
+                  ></json-formatter>
+                </td>
+                <td>
+                  Slots:
+                  <json-formatter
+                    json="messageDetails.slots_data"
+                    open="4"
+                  ></json-formatter>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer"></div>
       </div>
     </div>
   </div>

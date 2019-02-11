@@ -1,13 +1,13 @@
 <ol class="breadcrumb" breadcrumb="">
     <li class="breadcrumb-item ng-scope active">
-        <span>Metrics</span>
+        <span>Insights</span>
     </li>
 </ol>
 <div class="container-fluid">
     <div class="animated fadeIn">
         <div class="row">
             <div class="col-sm-6 col-lg-4">
-                <div class="card card-inverse">
+                <div class="card card-inverse text-white bg-success">
                     <div class="card-block">
                         <div class="row">
                             <div class="col-sm-8">
@@ -33,7 +33,7 @@
             </div>
             <!--/col-->
             <div class="col-sm-6 col-lg-4">
-                <div class="card card-inverse">
+                <div class="card text-white bg-primary card-inverse">
                     <div class="card-block">
                         <h4 title="Average User Response Times">{{user_avg}} ms</h4>
                         <p>User Response Times</p>
@@ -47,7 +47,7 @@
             </div>
             <!--/col-->
             <div class="col-sm-6 col-lg-4">
-                <div class="card card-inverse">
+                <div class="card card-inverse text-white bg-warning">
                     <div class="card-block">
                         <h4 itle="NLU Response Times">{{nlu_avg}} ms</h4>
                         <p>NLU Response Times</p>
@@ -62,51 +62,59 @@
             <!--/col-->
         </div>
         <div class="row">
-            <div class="col-sm-6 col-lg-6">
+            <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">
-                        <strong>Intents Classification</strong>
+                        <strong>Agent Insights</strong>
                     </div>
                     <div class="card-block">
+                        <div class="form-group row">
+                            <label for="select" class="col-sm-2 col-form-label">Agent</label>
+                            <div class="col-sm-10">
+                                <select id="agent_name" ng-change="drawCharts()" ng-options="agent.agent_id as agent.agent_name for agent in agentList" ng-model="selectedAgent" class="form-control">
+                                </select>
+                            </div>
+                        </div><br><br>
                         <div class="row">
-                            <div class="col-sm-12">
-                                <label for="fader">Confidence%: &nbsp;</label> {{confidencePercent}}
-                                <input ng-init="confidencePercent=30" ng-model="confidencePercent" type="range" min="0" max="100" id="fader" style="width:100%" ng-change="updateBarChart()"
-                                />
+                                <div class="col-sm-6 col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <strong>Intents Classification</strong>
+                                        </div>
+                                        <div class="card-block">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <label for="fader">Confidence%: &nbsp;</label> {{confidencePercent}}
+                                                    <input ng-init="confidencePercent=30" ng-model="confidencePercent" type="range" min="0" max="100" id="fader" style="width:100%" ng-change="updateBarChart()"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <br>
+                                            <div class="chart-wrapper">
+                                                <canvas id="confidence-barchart" class="chart chart-bar" chart-data="barchar_data" chart-labels="bar_chart_labels" chart-series="bar_chart_series"
+                                                    chart-colors="colors" height="200px" chart-options="barchart_options"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <strong>Intents Frequency</strong>
+                                        </div>          
+                                    <div class="card-block">
+                                        <div class="chart-wrapper">
+                                            <canvas id="chart_pie_intents_usage" class="chart chart-doughnut" chart-data="intents_pie_data" chart-labels="intents_pie_labels"
+                                                chart-colors="colors" chart-options="piechart_options" height="244px" />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <br>
-                        <br>
-                        <div class="chart-wrapper">
-                            <canvas id="confidence-barchart" class="chart chart-bar" chart-data="barchar_data" chart-labels="bar_chart_labels" chart-series="bar_chart_series"
-                                chart-colors="colors" height="200px" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-6">
-                <div class="card">
-                    <div class="card-header">
-                        <strong>Intents Frequency</strong>
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn-primary dropdown-toggle" style="margin: 0px" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="icon-people"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item float-right" ng-repeat="agent_name in agents_dropdown" ng-click="updatePieChartData(agent_name)">
-                                    <small>{{agent_name}}</small>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                <div class="card-block">
-                    <div class="chart-wrapper">
-                        <canvas id="chart_pie_intents_usage" class="chart chart-doughnut" chart-data="intents_pie_data" chart-labels="intents_pie_labels"
-                            chart-colors="colors" chart-options="piechart_options" height="244px" />
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+       
 </div>

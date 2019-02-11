@@ -1,37 +1,43 @@
-angular
-.module('app')
-.controller('AsideController', AsideController)
+angular.module('app').controller('AsideController', AsideController);
 
-function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_Config, Rasa_Version, Settings, Rasa_Status, IntentResponse, mySocket) {
+function AsideController(
+  $scope,
+  $rootScope,
+  $interval,
+  $http,
+  Rasa_Config,
+  Rasa_Version,
+  Settings,
+  Rasa_Status,
+  appConfig
+) {
   //$scope.test_text = 'I want italian food in new york';
   $scope.test_text_response = {};
   $rootScope.config = {}; //Initilize in case server is not online at startup
-  var configcheck;
-
-  mySocket.on('on:responseMessage', function (message) {
-    console.log("Response from socket:" + JSON.stringify(message));
-    if(message.next_action !='action_listen'){
-      $scope.response_text.push(message.response_text);
-    }else{
-      $scope.response_text.push("Listening ...");
-    }
-  });
+  let configcheck;
 
   Rasa_Version.get().$promise.then(function(data) {
     $rootScope.rasa_version = data.version;
   });
   executeRefreshSettings();
 
-  function executeRefreshSettings(){
+  function executeRefreshSettings() {
     Settings.query().$promise.then(function(data) {
-        $rootScope.settings = data;
-        for(var key in data) {
-          $rootScope.settings[data[key]['setting_name']] = data[key]['setting_value'];
-        }
-        if ($rootScope.settings['refresh_time'] !== "-1" && $rootScope.settings['refresh_time'] !== undefined) {
-          configcheck = $interval(getRasaConfig, parseInt($rootScope.settings['refresh_time']));
-        }
-        getRasaConfig();
+      $rootScope.settings = data;
+      for (let key in data) {
+        $rootScope.settings[data[key]['setting_name']] =
+          data[key]['setting_value'];
+      }
+      if (
+        $rootScope.settings['refresh_time'] !== '-1' &&
+        $rootScope.settings['refresh_time'] !== undefined
+      ) {
+        configcheck = $interval(
+          getRasaConfig,
+          Number($rootScope.settings['refresh_time'])
+        );
+      }
+      getRasaConfig();
     });
   }
 
@@ -45,82 +51,80 @@ function AsideController($scope, $rootScope, $interval, $http,Rasa_Parse, Rasa_C
     executeRefreshSettings();
   });
 
-  $scope.$on("$destroy", function(){
+  $scope.$on('$destroy', function() {
     $interval.cancel(configcheck);
   });
 
   function getRasaConfig() {
-    // Add a status param to config and set to 0 if server is offline
     Rasa_Status.get(function(statusdata) {
-      Rasa_Config.get().$promise.then(function(data) {
-        $rootScope.config = data.toJSON();
-        $rootScope.config.isonline = 1;
-        $rootScope.config.server_model_dirs_array = getAvailableModels(statusdata);
-        if ($rootScope.config.server_model_dirs_array.length > 0) {
-          $rootScope.modelname = $rootScope.config.server_model_dirs_array[0].name;
-        }
-      }, function(error) {
-        // error handler
-        $rootScope.config.isonline = 0;
-      });
+
+          $rootScope.config.server_model_dirs_array = window.getAvailableModels(
+            statusdata
+          );
+          if ($rootScope.config.server_model_dirs_array.length > 0) {
+            $rootScope.modelname =
+              $rootScope.config.server_model_dirs_array[0].name;
+          }
     });
   }
-  $scope.restartConversation=function(){
-    $scope.test_text_response={};
-    $http.post(api_endpoint_v2 + "/rasa/restart");
-    $scope.response_text=[];
-    $scope.test_text_response={};
-    $scope.test_text='';
-    $rootScope.$broadcast('setAlertText', "Conversation restarted!!");
-  }
+  $scope.restartConversation = function() {
+    $scope.test_text_response = {};
+    $http.post(appConfig.api_endpoint_v2 + '/rasa/restart');
+    $scope.response_text = [];
+    $scope.test_text_response = {};
+    $scope.test_text = '';
+    $rootScope.$broadcast('setAlertText', 'Conversation restarted!!');
+  };
 
   function addOverlay() {
-    $(".aside-menu").addClass("dimmed");
+    $('.aside-menu').addClass('dimmed');
   }
 
   function removeOverlay() {
-    $(".aside-menu").removeClass("dimmed");
+    $('.aside-menu').removeClass('dimmed');
   }
 
   $scope.executeTestRequest = function() {
-    $scope.response_text=[];
-    $scope.test_text_response={};
-    var reqMessage = {};
-    if ($scope.modelname == 'default*fallback') {
-      reqMessage = {q: $scope.test_text};
+    $scope.response_text = [];
+    $scope.test_text_response = {};
+    let reqMessage = {};
+    if ($scope.modelname === 'default*fallback') {
+      reqMessage = { q: $scope.test_text };
     } else {
-      reqMessage = {q: $scope.test_text, project:$scope.modelname.split("*")[0], model: $scope.modelname.split("*")[1]};
-    }
-    
-    //mySocket.emit('send:message', {message: "hello there"});
-    if($scope.wsEnabled){
-      //reponses will be streamed in websockets.
-      reqMessage.wsstream=true;
+      reqMessage = {
+        q: $scope.test_text,
+        project: $scope.modelname.split('*')[0],
+        model: $scope.modelname.split('*')[1]
+      };
     }
 
     if ($scope.test_text) {
       //make a httpcall
       addOverlay();
-      $http.post(api_endpoint_v2 + "/rasa/parse", JSON.stringify(reqMessage))
+      $http
+        .post(
+          appConfig.api_endpoint_v2 + '/rasa/parse',
+          JSON.stringify(reqMessage)
+        )
         .then(
-          function(response){
+          function(response) {
             // success callback
             removeOverlay();
             $scope.test_text_response = response.data;
-            if(!$scope.wsEnabled){
+            if (!$scope.wsEnabled) {
               if ($scope.test_text_response > 0) {
                 $scope.test_text_response.forEach(function(response) {
                   $scope.response_text.push(response.response_text);
-                })
+                });
               }
             }
             //$scope.test_text='';
           },
-          function(errorResponse){
+          function(errorResponse) {
             // failure callback
             removeOverlay();
           }
         );
     }
-  }
+  };
 }

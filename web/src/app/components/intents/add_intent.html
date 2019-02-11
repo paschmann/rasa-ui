@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
-  <li class="breadcrumb-item"><a href="#!/agent">Agents</a></li>
-  <li class="breadcrumb-item"><a ng-href="#!/agent/{{agent.agent_id}}">{{ agent.agent_name }}</a></li>
+  <li class="breadcrumb-item"><a href="#/agent">Agents</a></li>
+  <li class="breadcrumb-item"><a ng-href="#/agent/{{agent.agent_id}}">{{ agent.agent_name }}</a></li>
   <li class="breadcrumb-item active">Add Intent</li>
 </ol>
 <div class="container-fluid">
@@ -17,7 +17,7 @@
                                 <div class="col-sm-12">
                                     <div class="form-group">
                                         <label for="name">Name</label>
-                                        <input type="text" ng-model="formData.intent_name" class="form-control" id="name" placeholder="Enter the intent name">
+                                        <input autocomplete="off" type="text" ng-model="formData.intent_name" class="form-control" id="name" placeholder="Enter the intent name">
                                     </div>
                                 </div>
                             </div>

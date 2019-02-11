@@ -6,16 +6,21 @@ RUN npm install --production
 
 FROM mhart/alpine-node:10
 
+RUN apk add --no-cache make gcc g++ python
+
 ENV http_port=5001
 ARG HEALTHCHECK_CMD="curl --silent http://localhost:${http_port}/api/v2/health 2>&1 | grep '\"Rasa UI is running\"'"
 
 ENV rasanluendpoint "http://localhost:5000"
 ENV rasacoreendpoint "http://localhost:5005"
 ENV postgresserver "postgres://postgres:rasaui@localhost:5432/rasa"
+ENV rasacorerequestpath=/conversations/{id}/parse
 ENV rasanlufixedmodelname ""
 
 WORKDIR /opt/rasaui
+
 COPY --from=builder /node_modules ./node_modules
+
 COPY ./package*.json ./
 COPY ./resources ./resources
 COPY ./server ./server

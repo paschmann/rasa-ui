@@ -80,7 +80,7 @@
                   <div id="collapseOne" class="collapse hide" role="tabpanel" aria-labelledby="heading1" data-parent="#accordion">
                       <div class="card-block" style="max-height:400px">
                         <textarea readonly style="width: 100%;height: 300px;">{{domain_yml}}</textarea>
-                    </div>
+                      </div>
                   </div><br>
                   <div class="card-header" role="tab" id="heading2">
                     <h5 class="mb-0">
@@ -96,83 +96,61 @@
                   </div>
                   <br>
                   <div class="card-header" role="tab" id="heading3">
+                      <h5 class="mb-0">
+                        <a data-target="#collapse3" data-toggle="collapse">
+                          credentials.yml
+                        </a>
+                      </h5>
+                    </div>
+  
+                <div id="collapse3" class="collapse hide" role="tabpanel" aria-labelledby="heading3" data-parent="#accordion">
+                    <div class="card-block" style="max-height:400px">
+                      <textarea readonly style="width: 100%;height: 50px;">{{credentials_yml}}</textarea>
+                    </div>
+                </div>
+                <br>
+                <div class="card-header" role="tab" id="heading4">
                     <h5 class="mb-0">
-                      <a data-target="#collapse3" data-toggle="collapse">
+                      <a data-target="#collapse4" data-toggle="collapse">
+                        endpoints.yml
+                      </a>
+                    </h5>
+                  </div>
+
+                  <div id="collapse4" class="collapse hide" role="tabpanel" aria-labelledby="heading4" data-parent="#accordion">
+                      <div class="card-block" style="max-height:400px">
+                        <textarea readonly style="width: 100%;height: 50px;">{{endpoints_yml}}</textarea>
+                      </div>
+                  </div>
+                  <br>
+                  <div class="card-header" role="tab" id="heading5">
+                    <h5 class="mb-0">
+                      <a data-target="#collapse5" data-toggle="collapse">
                         Instructions
                       </a>
                     </h5>
                   </div>
-                  <div id="collapse3" class="collapse hide" role="tabpanel" aria-labelledby="heading3" data-parent="#accordion">
+                  <div id="collapse5" class="collapse hide" role="tabpanel" aria-labelledby="heading5" data-parent="#accordion">
                       <div class="card-block" style="max-height:400px">
                         <ul class="list-style">
-                          <li>Copy these files to a directory (Ex. /data)</li>
-                          <li>Train endpoint for Rasa Core is not yet supported. So a manual step to train is needed.
-                            <ul>
-                              <li>python -m rasa_core.train -s /data/_stories.md -d data/_domain.yml -o /path/to/models/dialogue</li>
-                            </ul>
+                          <li>Download and Copy above files to a directory (Ex. /data)</li>
+                          <li><strong>Training</strong>
+                            <pre>python -m rasa_core.train -s data/_stories.md -d data/_domain.yml -o models/dialogue</pre>
                           </li>
-                          <li><b>Option 1</b>:Start Rasa Core and Rasa NLU as 2 server
-                            <ul>
-                              <li>Download below python script and save as rasa_server.py</li>
-                              <li>Update endpoint, projectname, model and token properties as needed.</li>
-                              <li>Run <pre> python -m rasa_server -d /path/to/models/dialogue -u RasaNLUHttpInterpreter</pre></li>
-                            </ul>
-                          </li>
-                          <li><b>Option 2</b>:Start Rasa Core and Rasa NLU as 1 server
-                            <ul>
-                              <li>Run <pre>python -m rasa_core.server -d models/dialogue -u models/nlu/current </pre></li>
-                            </ul>
+                          <li>Custom policy can be included in yml file and provided as an argument "-c policies.yml" to above command</li>
+                          <li><strong>Start Rasa Core REST Channel</strong>
+                            <pre>python -m rasa_core.run -d models/dialogue -u {{selectedAgent.agent_name}}/model_name_to_be_selected --endpoints data/endpoints.yml  --port 5002 --credentials data/credentials.yml </pre>
                           </li>
                         </ul>
                     </div>
-                  </div>
-                  <br>
-                  <div class="card-header" role="tab" id="heading4">
-                    <h5 class="mb-0">
-                      <a data-target="#collapse4" data-toggle="collapse">
-                        Python Script
-                      </a>
-                    </h5>
-                  </div>
-                  <div id="collapse4" class="collapse hide" role="tabpanel" aria-labelledby="heading4" data-parent="#accordion">
-                    <div class="card-block" style="max-height:400px">
-                      This will start Rasa Core and Rasa NLU as seperate containers
-                      <pre style="background-color: #eff0f1;color: #393318;">
-import logging
-from rasa_core.interpreter import RasaNLUHttpInterpreter
-from rasa_core.server import RasaCoreServer
-from rasa_core.server import create_argument_parser
-
-logger = logging.getLogger(__name__)
-
-if __name__ == '__main__':
-    # Script to run Rasa NLU HTTP Interpreter
-    arg_parser = create_argument_parser()
-    cmdline_args = arg_parser.parse_args()
-
-    logging.basicConfig(level=cmdline_args.loglevel)
-    if cmdline_args.nlu == 'RasaNLUHttpInterpreter':
-        logger.info("Creating RasaNLU HTTP Interpreter")
-        #Fill in the modelname and server details.
-        cmdline_args.nlu = RasaNLUHttpInterpreter(model_name="model_123",token="",server="http://localhost:5000", project_name="")
-
-    rasa = RasaCoreServer(cmdline_args.core,
-                          cmdline_args.nlu,
-                          cmdline_args.loglevel,
-                          cmdline_args.log_file,
-                          cmdline_args.cors,
-                          auth_token=cmdline_args.auth_token)
-
-    logger.info("Starting Rasa Core http server on port %s" % cmdline_args.port)
-    rasa.app.run("0.0.0.0", cmdline_args.port)
-                        </pre>
-                  </div>
                   </div>
                 </div>
               <div class="card-footer">
                 <button type="button" class="btn btn-secondary" ng-show="exportdata !== undefined" ng-click="savecoretofiles()" ng-disabled="selectedAgent.rasa_core_enabled!=true"><i class="fa fa-file"></i>&nbsp; Download Files</button>
                 <a href="" id="core_domain"></a>
                 <a href="" id="core_stories"></a>
+                <a href="" id="core_credentials"></a>
+                <a href="" id="endpoints_yml"></a>
               </div>
                 </div>
           </div>

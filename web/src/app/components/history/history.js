@@ -1,55 +1,42 @@
-angular.module('app').controller('HistoryController', HistoryController)
+angular.module("app").controller("HistoryController", HistoryController);
 
-function HistoryController($scope, $http, Agent) {
-  $scope.top9users=[];
-  $scope.selectedAgentId='';
+function HistoryController($scope, $http, $location, Agent, appConfig) {
+  $scope.conversations = [];
+  $scope.selectedAgent = "";
+  $scope.itemsPerPage = 20;
+  $scope.currentPage = 1;
+
   Agent.query(function(data) {
-      $scope.agentList = data;
-      if($scope.agentList.length>0){
-        $scope.selectedAgentId= data[0].agent_id;
-        $scope.loadAgentHistory();
-      }
+    $scope.agentList = data;
+    if ($scope.agentList.length > 0) {
+      $scope.selectedAgent = data[0];
+      $scope.loadAgentConversations();
+    }
   });
 
-    //get recent 9 users
-  $scope.loadAgentHistory = function() {
-      console.log("Loading agent history:"+ $scope.selectedAgentId);
-      $http({method: 'GET', url: api_endpoint_v2 + '/agent/'+$scope.selectedAgentId+'/recent9UniqueUsersList'}).then(
-          function(response){
-            $scope.top9users=response.data;
-            //load chat history for them
-            for (var i=0;i<$scope.top9users.length;i++) {
-              //closure to update the chat logs
-              var userChatlog = (function(i) {
-                 $http.post(api_endpoint_v2 + "/messages/list", JSON.stringify({user_id:$scope.top9users[i].user_id,agent_id:$scope.selectedAgentId})).then(
-                   function(response){
-                     console.log("loading for "+ $scope.top9users[i].user_id);
-                     $scope.top9users[i].chatlog=response.data;
-                   },
-                   function(errorResponse){
-                   }
-                 );
-               })(i);
-              }
-          },
-          function(errorResponse){
-          }
-        );
+  $scope.loadAgentConversations = function() {
+    $http({
+      method: "GET",
+      url: `${appConfig.api_endpoint_v2}/agent/${
+        $scope.selectedAgent.agent_id
+      }/messages?itemsPerPage=${$scope.itemsPerPage}&page=${$scope.currentPage}`
+    }).then(
+      function(response) {
+        $scope.totalItems = response.data.meta.total;
+        $scope.conversations = response.data.conversations;
+      },
+      function(errorResponse) {}
+    );
+  };
+
+  $scope.onPageChange = function(newPageNumber, oldPageNumber) {
+    $scope.currentPage = newPageNumber;
+    if (newPageNumber !== oldPageNumber) {
+      $scope.loadAgentConversations();
     }
+  };
 
-    $scope.updateModalInfo= function(message) {
-      $http({method: 'GET', url: api_endpoint_v2 + '/messages/'+message.messages_id}).then(
-          function(response){
-            $scope.messageDetails = response.data[0]
-          },
-          function(errorResponse){
-            console.log("Error Message while Getting Messages." + errorResponse);
-          });
-
-    }
-
-  $scope.updateModalFeedbackInfo= function(mesage) {
-      console.log("Add Expression to an Intent. TODO.");
-    }
-
+  $scope.goToConversation = function(userId) {
+    $location.path(`/conversation/${$scope.selectedAgent.agent_id}/${userId}`);
+  };
 }

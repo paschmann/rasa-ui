@@ -1,9 +1,9 @@
 <ol class="breadcrumb" breadcrumb="">
   <li class="breadcrumb-item">
-    <a href="#!/agents">Agents</a>
+    <a href="#/agents">Agents</a>
   </li>
   <li class="breadcrumb-item">
-    <a ng-href="#!/agent/{{agent.agent_id}}">{{ agent.agent_name }} </a>
+    <a ng-href="#/agent/{{agent.agent_id}}">{{ agent.agent_name }} </a>
   </li>
   <li class="breadcrumb-item active">Intents Details</li>
   <!-- Breadcrumb Menu-->
@@ -38,7 +38,7 @@
     </div>
     <div class="row">
       <div class="col-sm-12 col-lg-12">
-        <form>
+        <form autocomplete="off">
           <div class="card">
             <div class="card-header">
               <strong>Expressions</strong>
@@ -48,7 +48,7 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label>User Says ...</label>
-                    <input type="text" ng-model="expression_text" class="form-control" id="text" placeholder="Enter an expression and press enter"
+                    <input type="text" autocomplete="off" ng-model="expression_text" class="form-control" id="text" placeholder="Enter an expression and press enter"
                       ng-keyup="$event.keyCode == 13 && addExpression($event)">
                   </div>
                 </div>
@@ -136,7 +136,7 @@
                     &nbsp;&nbsp;&nbsp;
                     <span class="float-right">
                     <label class="switch switch-default switch-pill switch-success" data-toggle="tooltip" data-placement="top" title="{{agent.endpoint_enabled == false?'Webhook Not Enabled At Agent. Please enable it to select this Option':'Select this Option to get response from an External API'}}" tooltip>
-                        <input id="endpoint_switch" type="checkbox" class="switch-input" ng-model="intent.endpoint_enabled" ng-checked="agent.endpoint_enabled" ng-disabled="agent.endpoint_enabled == false">
+                        <input id="endpoint_switch" type="checkbox" class="switch-input" ng-model="intent.endpoint_enabled" ng-disabled="agent.endpoint_enabled == false">
                         <span class="switch-label"></span>
                         <span class="switch-handle"></span>
                     </label>
@@ -146,7 +146,7 @@
                 <div class="form-check">
                     <strong data-toggle="tooltip" data-placement="top" title="Send one of the Random Static response. If webhook is enabled, these will be ignored." tooltip>Static Responses</strong>
                     <br><br>
-                    <input type="text" ng-model="formData.response_text" class="form-control" id="response_text" placeholder="Enter a response text and press enter" ng-keyup="$event.keyCode == 13 && saveNewResponse($event)">
+                    <input autocomplete="off" type="text" ng-model="formData.response_text" class="form-control" id="response_text" placeholder="Enter a response text and press enter" ng-keyup="$event.keyCode == 13 && saveNewResponse($event)">
                     <ul class="list-group" ng-hide="responses.length == 0" style="margin-top: 20px;">
                       <li class="list-group-item" ng-repeat="response in responses track by response.response_id">
                         <span ng-bind-html="response.response_text | trusted"></span>
