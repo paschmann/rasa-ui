@@ -16,7 +16,7 @@ function getSingleAction(req, res, next) {
 function getAgentActions(req, res, next) {
   logger.winston.info('actions.getAgentActions');
   const AgentID = Number(req.params.agent_id);
-  db.any('select * from actions where agent_id = $1', AgentID)
+  db.any('select * from actions where agent_id = $1 order by action_id', AgentID)
     .then(function(data) {
       res.status(200).json(data);
     })

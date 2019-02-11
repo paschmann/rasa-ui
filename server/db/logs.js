@@ -59,7 +59,8 @@ function getAvgNluResponseTimesLast30Days(req, res, next){
 }
 
 function getIntentsMostUsed(req, res, next){
-  db.any('select * from intents_most_used')
+  const agent_id = req.params.agent_id;
+  db.any('select * from intents_most_used where agent_id=$1',agent_id)
     .then(function (data) {
       res.status(200)
         .json(data);
@@ -70,9 +71,10 @@ function getIntentsMostUsed(req, res, next){
 }
 
 function getAgentsByIntentConfidencePct(req, res, next){
+  const agent_id = req.params.agent_id;
   db.any('select count(*),intent_confidence_pct, agents.agent_id, agents.agent_name from nlu_parse_log, agents, messages '
          +' where messages.agent_id = agents.agent_id and messages.messages_id=nlu_parse_log.messages_id '
-         +' group by intent_confidence_pct, agents.agent_id, agents.agent_name ')
+         +' and agents.agent_id=$1 group by intent_confidence_pct, agents.agent_id, agents.agent_name ',agent_id)
     .then(function (data) {
       res.status(200)
         .json(data);
