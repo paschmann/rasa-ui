@@ -62,7 +62,7 @@ function trainRasaNlu(req, res, next) {
   console.log("Rasa NLU Train Request -> " + global.rasanluendpoint + "/train?project=" + req.query.project + "&model=" + req.query.name);
 
   var reqBody = YAML.stringify({
-    language: "en",
+    language: req.body.language,
     pipeline: req.body.pipeline,
     data: req.body.data
   });
