@@ -2,31 +2,23 @@
 
 # Rasa UI
 
-Rasa UI is a web application built on top of, and for, [Rasa NLU](https://github.com/RasaHQ/rasa_nlu). Rasa UI provides a web application to quickly and easily be able to create agents, define intents and entities. It also provides some convenience features for Rasa NLU, like training your models, monitoring usage or viewing logs. Our goal is to replace api.ai/Dialogflow with Rasa, so a lot of the terminology and usage concepts are similar.
+Rasa UI is a web application built on top of, and for, [Rasa NLU](https://github.com/RasaHQ/rasa_nlu) and [Rasa Core](https://github.com/RasaHQ/rasa_core). Rasa UI provides a web application to quickly and easily be able to create agents, define intents and entities. It also provides some convenience features for Rasa NLU, like training your models, monitoring usage or viewing logs. Our goal is to replace api.ai/Dialogflow with Rasa, so a lot of the terminology and usage concepts are similar.
 
-## Features in 1.0
-- Webhook option for Agents
+## Features
+
+- UI for feeding training data- Intents, Entities, Synonyms, Regex, Actions, Stories to DB and Testing endpoints.
+- Log requests for usage tracking, history, improvements
+- Easily execute intent parsing using different models
+- Manage Multiple Agents in one place with shared NLU instances.
+- Webhook option for Agents to fetch response text and send back to bots.
 - Authentication module can be extended to a different IDP and session is handled by JWT token
 - Webhooks also receive User information part of JWT Token in the Bearer Authorization Header
 - User level Tracking of conversations
-- New Insights to show the frequently used intents and more drill down details on utterances to be added
-- Import Agents in rasa format
+- Insights to show the frequently used intents and their confidence %
+- Import Agents in rasa_nlu format
 - Docker container capabilities
-- Existing apps can migrate to this version after running the db-alters.sql under resources and updating their codebase to master.(Although a backup of the data is recommended as rasa-uui is still in Beta version)
-- Adapted to rasa_nlu 0.10.x Projects Structure. Each Agent in UI translates to a Project on the NLU.
 
 ![Screenshot1](https://github.com/paschmann/rasa-ui/blob/master/resources/insights.png)
-
-
-## Features
-- Training data stored in DB
-- UI for managing training data
-- Initiate training from UI
-- Review Rasa configuration and component pipelines
-- Log requests for usage tracking, history, improvements
-- Usage dashboard
-- Easily execute intent parsing using different models
-- Manage synonyms at agent level
 
 ![Screenshot1](https://github.com/paschmann/rasa-ui/blob/master/resources/rasa_ui_1.png)
 
@@ -37,7 +29,9 @@ Rasa UI can run directly on your Rasa NLU instance, or on a separate machine. Te
 
 ### Prerequisites
 
-[Rasa NLU](https://github.com/golastmile/rasa_nlu) - Version 8.2.?+
+[Rasa NLU](https://github.com/golastmile/rasa_nlu) - Version 0.14+
+
+[Rasa Core](https://github.com/golastmile/rasa_core) - Version 0.12+
 
 [PostgreSQL](https://www.postgresql.org/) - Used for storing training data (entities, intents, synonyms, etc.)
 
@@ -58,6 +52,10 @@ cd rasaui && npm install
 Please see the [wiki](https://github.com/paschmann/rasa-ui/wiki/Rasa-UI-Install-Guide) for more detailed instructions.
 
 #### Docker Setup
+##### Quick start
+`docker pull paschmann/rasa-ui` and browse to localhost:5001
+
+##### Full Build
 The Docker file uses Multi Stage Build feature, ensure that your docker version is greater or equals to 17.05.
 In order to run this setup in docker you need to run the following command to build out the image:
 
