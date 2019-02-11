@@ -12,7 +12,7 @@ function getRasaNluStatus(req, res, next) {
   logger.winston.info(
     'Rasa NLU Status Request -> ' + global.rasanluendpoint + '/status'
   );
-  request(global.rasanluendpoint + '/status', function(error, response, body) {
+  request(global.rasanluendpoint + '/status', function (error, response, body) {
     try {
       if (body !== undefined) sendOutput(200, res, body);
       else sendOutput(500, res, '{"error" : "Server Error"}');
@@ -25,14 +25,14 @@ function getRasaNluStatus(req, res, next) {
 
 function getRasaNluEndpoint(req, res, next) {
   console.log("Rasa NLU Endpoint Request");
-  sendOutput(200, res, '{"url" : "'+global.rasanluendpoint+'"}');
+  sendOutput(200, res, '{"url" : "' + global.rasanluendpoint + '"}');
 }
 
 function getRasaNluConfig(req, res, next) {
   logger.winston.info(
     'Rasa NLU Config Request -> ' + global.rasanluendpoint + '/config'
   );
-  request(global.rasanluendpoint + '/config', function(error, response, body) {
+  request(global.rasanluendpoint + '/config', function (error, response, body) {
     try {
       if (body !== undefined) sendOutput(200, res, body);
       else sendOutput(500, res, '{"error" : "Server Error"}');
@@ -47,7 +47,7 @@ function getRasaNluVersion(req, res, next) {
   logger.winston.info(
     'Rasa NLU Version Request -> ' + global.rasanluendpoint + '/version'
   );
-  request(global.rasanluendpoint + '/version', function(error, response, body) {
+  request(global.rasanluendpoint + '/version', function (error, response, body) {
     try {
       if (body !== undefined) sendOutput(200, res, body);
       else sendOutput(500, res, '{"error" : "Server Error"}');
@@ -59,64 +59,54 @@ function getRasaNluVersion(req, res, next) {
 }
 
 function trainRasaNlu(req, res, next) {
-  logger.winston.info(
-    'Rasa NLU Train Request -> ' +
-      global.rasanluendpoint +
-      '/train?project=' +
-      req.query.project +
-      '&model=' +
-      req.query.name
-  );
-  logRequest(req, 'train', {
+  console.log("Rasa NLU Train Request -> " + global.rasanluendpoint + "/train?project=" + req.query.project + "&model=" + req.query.name);
+
+  var reqBody = YAML.stringify({
+    language: "en",
+    pipeline: req.body.pipeline,
+    data: req.body.data
+  });
+  logRequest(req, "train", {
     project: req.query.project,
     model: req.query.name,
-    data: req.body
+    data: reqBody
   });
 
-  request(
-    {
-      method: 'POST',
-      uri:
-        global.rasanluendpoint +
-        '/train?project=' +
-        req.query.project +
-        '&model=' +
-        req.query.name,
-      json: req.body
-    },
-    function(error, response, body) {
+  try {
+    request({
+      method: "POST",
+      uri: global.rasanluendpoint + "/train?project=" + req.query.project + "&model=" + req.query.name,
+      headers: {
+        'Content-Type': 'application/x-yml'
+      },
+      body: reqBody
+    }, function (error, response, body) {
+      console.log("Done with Request");
+
       if (error) {
-        logger.winston.info(
-          'Error Occured when posting data to nlu endpoint. ' + error
-        );
-        sendOutput(500, res, '{"error" : ' + error + "}");
+        console.log("Error Occured when posting data to nlu endpoint. " + error);
+        sendOutput(500, res, '{"error" : ' + error + '}');
         return;
       }
       try {
-        if (response.statusCode !== 200) {
-          logger.winston.info(
-            'Error occured while training. Response Code : ' +
-              response.statusCode +
-              ' Body' +
-              body
-          );
-          sendOutput(
-            response.statusCode,
-            res,
-            JSON.stringify({ errorBody: body })
-          );
+        if (response.statusCode != 200) {
+          console.log("Error occured while training. Response Code : " + response.statusCode + " Body" + body);
+          sendOutput(response.statusCode, res, JSON.stringify({
+            errorBody: body
+          }));
           return;
         }
-        logger.winston.info(
-          'Training Done !! Response Code : ' + response.statusCode
-        );
-        sendOutput(200, res, '');
+        console.log("Training Done !! Response Code : " + response.statusCode);
+        sendOutput(200, res, "");
+        return;
       } catch (err) {
-        logger.winston.info("Exception:" +err);
-        sendOutput(500, res, '{"error" : ' + err + "}");
+        console.log("Exception:" + err);
+        sendOutput(500, res, '{"error" : ' + err + '}');
       }
-    }
-  );
+    });
+  } catch (err) {
+    console.log("Exception When sending Training Data to Rasa:" + err);
+  }
 }
 
 function parseRequest(req, res, next, agentObj) {
@@ -147,13 +137,12 @@ function parseRequest(req, res, next, agentObj) {
     createInitialCacheRequest(req, cache_key, agentObj);
   }
 
-  request(
-    {
+  request({
       method: 'POST',
       uri: global.rasanluendpoint + '/parse',
       body: JSON.stringify(req.body)
     },
-    function(error, response, body) {
+    function (error, response, body) {
       if (error) {
         logger.winston.info(error);
         sendOutput(500, res, '{"error" : ' + error + "}");
@@ -201,27 +190,27 @@ function finalizeCacheFlushToDbAndRespond(cacheKey, http_code, res, body) {
 
         if (nlu_parse_cache.agent_id !== undefined) {
           db.any(
-            'insert into messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
+              'insert into messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
               ' values($(agent_id), $(user_id),$(user_name), $(message_text), $(message_rich), $(user_message_ind)) RETURNING messages_id',
-            nlu_parse_cache
-          )
-            .then(function(returnData) {
+              nlu_parse_cache
+            )
+            .then(function (returnData) {
               nlu_parse_cache.messages_id = returnData[0].messages_id;
               db.none(
-                'INSERT INTO nlu_parse_log(intent_name, entity_data, messages_id,intent_confidence_pct, user_response_time_ms,nlu_response_time_ms) ' +
+                  'INSERT INTO nlu_parse_log(intent_name, entity_data, messages_id,intent_confidence_pct, user_response_time_ms,nlu_response_time_ms) ' +
                   ' values($(intent_name), $(entity_data), $(messages_id), $(intent_confidence_pct),$(user_response_time_ms),$(nlu_response_time_ms))',
-                nlu_parse_cache
-              )
-                .then(function() {
+                  nlu_parse_cache
+                )
+                .then(function () {
                   logger.winston.info('Cache inserted into db. Removing it');
                   nluParseLogCache.del(cacheKey);
                 })
-                .catch(function(err) {
+                .catch(function (err) {
                   logger.winston.info('Exception while inserting Parse log');
                   logger.winston.info(err);
                 });
             })
-            .catch(function(err) {
+            .catch(function (err) {
               logger.winston.info('Exception in the DB log');
               logger.winston.info(err);
             });
@@ -235,7 +224,8 @@ function finalizeCacheFlushToDbAndRespond(cacheKey, http_code, res, body) {
   //send response
   res.writeHead(http_code, {
     'Access-Control-Allow-Origin': '*',
-    'Content-Type': 'application/json'});
+    'Content-Type': 'application/json'
+  });
   if (body !== '') {
     res.write(JSON.stringify(body));
   }
@@ -289,7 +279,7 @@ function createInitialCacheRequest(req, cacheKey, agentObj) {
     nluParseReqObj.agent_id = agentObj.agent_id;
   }
   //set it in the cache
-  nluParseLogCache.set(cacheKey, nluParseReqObj, function(err, success) {
+  nluParseLogCache.set(cacheKey, nluParseReqObj, function (err, success) {
     if (!err && success) {
       logger.winston.info('Object Inserted into Cache');
     }
@@ -299,7 +289,8 @@ function createInitialCacheRequest(req, cacheKey, agentObj) {
 function sendOutput(http_code, res, body) {
   res.writeHead(http_code, {
     'Access-Control-Allow-Origin': '*',
-    'Content-Type': 'application/json'});
+    'Content-Type': 'application/json'
+  });
   if (body !== '') {
     res.write(body);
   }
@@ -318,9 +309,9 @@ function logRequest(req, type, data) {
 
     db.any(
       'insert into nlu_log(ip_address, query, event_type, event_data)' +
-        'values($(ip_address), $(query), $(event_type), $(event_data))',
-        obj
-    ).catch(function(err) {
+      'values($(ip_address), $(query), $(event_type), $(event_data))',
+      obj
+    ).catch(function (err) {
       logger.winston.info(err);
     });
   } catch (err) {
@@ -341,17 +332,16 @@ function updateAndSendRasaResponse(
   } else {
     db.any(
       'select agents.endpoint_enabled as agent_endpoint, agents.endpoint_url, agents.basic_auth_username,agents.basic_auth_password, ' +
-        'intents.endpoint_enabled as intent_endpoint, intents.intent_id, intents.intent_name  from agents, intents where agents.agent_name=$2 ' +
-        ' and intents.intent_name=$1 and intents.agent_id=agents.agent_id',
+      'intents.endpoint_enabled as intent_endpoint, intents.intent_id, intents.intent_name  from agents, intents where agents.agent_name=$2 ' +
+      ' and intents.intent_name=$1 and intents.agent_id=agents.agent_id',
       [rasa_response.intent.name, projectName]
-      ).then(function(data) {
+    ).then(function (data) {
       //check if webhook is configured
       if (data.length > 0) {
         if (data[0].intent_endpoint === true) {
           //post rasa_response to configured webhook
           //Need to add HTTP Basic Authentication
-          request.post(
-                {
+          request.post({
               url: data[0].endpoint_url,
               headers: {
                 Accept: 'application/json',
@@ -360,7 +350,7 @@ function updateAndSendRasaResponse(
               },
               body: JSON.stringify(rasa_response)
             },
-            function(error, response, body) {
+            function (error, response, body) {
               if (error) {
                 //Got error from webhook,log and and send original rasa nlu response
                 logger.winston.info(error);
@@ -379,18 +369,18 @@ function updateAndSendRasaResponse(
                 //Expecting API.ai style response element.
                 //var response_text={
                 //   'speech': '',
-                  //   'displayText': '',
-                  //   'dataToClient':{}
-                  //}
-                  logger.winston.info(
+                //   'displayText': '',
+                //   'dataToClient':{}
+                //}
+                logger.winston.info(
                   'Response from Webhook --> ' + JSON.stringify(body)
-                  );
+                );
                 if (body !== undefined) {
                   rasa_response.response_text = JSON.parse(body).displayText;
                   rasa_response.response_rich = JSON.parse(body).dataToClient;
                   logger.winston.info(
                     'Sending Rasa NLU Response + Webhook response'
-                    );
+                  );
                   finalizeCacheFlushToDbAndRespond(
                     cacheKey,
                     200,
@@ -400,7 +390,7 @@ function updateAndSendRasaResponse(
                 } else {
                   logger.winston.info(
                     'Unknown response from webhook. Respond back with Rasa NLU only'
-                    );
+                  );
                   finalizeCacheFlushToDbAndRespond(
                     cacheKey,
                     200,
@@ -409,9 +399,9 @@ function updateAndSendRasaResponse(
                   );
                 }
               } catch (err) {
-                  logger.winston.info(
+                logger.winston.info(
                   'Error from Webhook. Respond back with Rasa NLU only'
-                  );
+                );
                 logger.winston.info(err);
                 finalizeCacheFlushToDbAndRespond(
                   cacheKey,
@@ -425,10 +415,10 @@ function updateAndSendRasaResponse(
         } else {
           //no webhook, check if there is a static response configured
           db.any(
-            'SELECT responses.response_text FROM responses, intents where responses.intent_id = intents.intent_id and intents.intent_id = $1 order by random() LIMIT 1',
-            data[0].intent_id
-              )
-            .then(function(data) {
+              'SELECT responses.response_text FROM responses, intents where responses.intent_id = intents.intent_id and intents.intent_id = $1 order by random() LIMIT 1',
+              data[0].intent_id
+            )
+            .then(function (data) {
               if (data.length > 0) {
                 rasa_response.response_text = data[0].response_text;
                 logger.winston.info(
@@ -452,7 +442,7 @@ function updateAndSendRasaResponse(
                 );
               }
             })
-            .catch(function(err) {
+            .catch(function (err) {
               logger.winston.info(
                 'Error occurred. Respond back with Rasa NLU only'
               );

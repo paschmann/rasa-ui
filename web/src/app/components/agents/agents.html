@@ -50,9 +50,9 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label for="{{agent.agent_id}}_formgroupnlupipeline" class="col-sm-4 col-form-label">NLU Pipeline <a href="https://rasa.com/docs/nlu/choosing_pipeline/" target ="blank"><span style="font-size: x-small">How to Choose Pipeline >></span></a></label>
+                  <label for="{{agent.agent_id}}_formgroupnlupipeline" class="col-sm-4 col-form-label">NLU Pipeline Template <br><a href="https://rasa.com/docs/nlu/choosing_pipeline/" target ="blank"><span style="font-size: x-small">How to Choose Pipeline >></span></a></label>
                   <div class="col-sm-8">
-                    <textarea rows="5" cols="65" ng-model="agent.rasa_nlu_pipeline" placeholder="Update Default pipeline."></textarea>
+                      <input type="text" autocomplete="off" class="form-control" ng-model="agent.rasa_nlu_pipeline">
                   </div>
                 </div>
                 <div class="form-group row">
