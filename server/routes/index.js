@@ -127,6 +127,7 @@ router.get('/rasa/url', nlu_router.getRasaNluEndpoint);
 router.get('/rasa/config', nlu_router.getRasaNluConfig);
 router.get('/rasa/version', nlu_router.getRasaNluVersion);
 router.post('/rasa/train', nlu_router.trainRasaNlu);
+router.delete('/rasa/models', nlu_router.unloadRasaModel);
 //common middleware for parse
 router.post('/rasa/parse', middleware.parseRasaRequest);
 //rasa core API
