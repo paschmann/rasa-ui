@@ -58,12 +58,12 @@ function parseRasaRequest(req, res, next) {
           //route the req to appropriate router.
           routeRequest(req, res, next, data[0]);
         } catch (err) {
-          logger.winston.info(err);
+          logger.winston.error(err);
         }
       })
       .catch(function(err) {
         logger.winston.info('DB Error while getting agent details.');
-        logger.winston.info(err);
+        logger.winston.error(err);
       });
   } else {
     //insert user_message into message table.

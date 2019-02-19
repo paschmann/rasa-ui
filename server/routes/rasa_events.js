@@ -47,7 +47,7 @@ async function insertNLUParseLogDB(nlulogData) {
     })
     .catch(function(err) {
       logger.winston.info('Exception while inserting NLU Parse log');
-      logger.winston.info(err);
+      logger.winston.error(err);
     });
 }
 
@@ -64,7 +64,7 @@ async function insertMessagesEntitiesDB(messagesEntitiesDataItem) {
     })
     .catch(function(err) {
       logger.winston.info('Exception while inserting MessagesEntities db');
-      logger.winston.info(err);
+      logger.winston.error(err);
     });
 }
 
@@ -186,7 +186,7 @@ async function insertlogEventMessageToDB(
     })
     .catch(function(err) {
       logger.winston.info('Exception while inserting inserting to DB');
-      logger.winston.info(err);
+      logger.winston.error(err);
     });
 }
 
@@ -308,7 +308,7 @@ async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
       success_callback();
     } catch (err) {
       logger.winston.info('Exception while inserting inserting to DB');
-      logger.winston.info(err);
+      logger.winston.error(err);
       failure_callback();
     }
   } else {

@@ -251,7 +251,7 @@ function updateAgent(req, res, next) {
         message: 'Updated agent'});
     })
     .catch(function(err) {
-      console.log(err);
+      logger.winston.error(err);
       return next(err);
     });
 }

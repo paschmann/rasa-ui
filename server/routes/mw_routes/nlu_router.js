@@ -17,14 +17,14 @@ function getRasaNluStatus(req, res, next) {
       if (body !== undefined) sendOutput(200, res, body);
       else sendOutput(500, res, '{"error" : "Server Error"}');
     } catch (err) {
-      logger.winston.info(err);
+      logger.winston.error(err);
       sendOutput(500, res, '{"error" : ' + err + "}");
     }
   });
 }
 
 function getRasaNluEndpoint(req, res, next) {
-  console.log("Rasa NLU Endpoint Request");
+  logger.winston.info("Rasa NLU Endpoint Request");
   sendOutput(200, res, '{"url" : "'+global.rasanluendpoint+'"}');
 }
 
@@ -37,7 +37,7 @@ function getRasaNluConfig(req, res, next) {
       if (body !== undefined) sendOutput(200, res, body);
       else sendOutput(500, res, '{"error" : "Server Error"}');
     } catch (err) {
-      logger.winston.info(err);
+      logger.winston.error(err);
       sendOutput(500, res, '{"error" : ' + err + "}");
     }
   });
@@ -52,7 +52,7 @@ function getRasaNluVersion(req, res, next) {
       if (body !== undefined) sendOutput(200, res, body);
       else sendOutput(500, res, '{"error" : "Server Error"}');
     } catch (err) {
-      logger.winston.info(err);
+      logger.winston.error(err);
       sendOutput(500, res, '{"error" : ' + err + "}");
     }
   });
@@ -170,7 +170,7 @@ function parseRequest(req, res, next, agentObj) {
           res
         );
       } catch (err) {
-        logger.winston.info(err);
+        logger.winston.error(err);
         sendOutput(500, res, '{"error" : ' + err + "}");
       }
     }
@@ -218,12 +218,12 @@ function finalizeCacheFlushToDbAndRespond(cacheKey, http_code, res, body) {
                 })
                 .catch(function(err) {
                   logger.winston.info('Exception while inserting Parse log');
-                  logger.winston.info(err);
+                  logger.winston.error(err);
                 });
             })
             .catch(function(err) {
               logger.winston.info('Exception in the DB log');
-              logger.winston.info(err);
+              logger.winston.error(err);
             });
         }
       }
@@ -258,7 +258,7 @@ function updateCacheWithRasaNluResponse(rasa_response, cacheKey) {
             Date.now() - nlu_parse_cache.createTime;
           nluParseLogCache.set(cacheKey, nlu_parse_cache);
         } catch (err) {
-          //logger.winston.info(err);
+          //logger.winston.error(err);
         }
       }
     } else {
@@ -321,7 +321,7 @@ function logRequest(req, type, data) {
         'values($(ip_address), $(query), $(event_type), $(event_data))',
         obj
     ).catch(function(err) {
-      logger.winston.info(err);
+      logger.winston.error(err);
     });
   } catch (err) {
     logger.winston.info('Error: ' + err);
@@ -412,7 +412,7 @@ function updateAndSendRasaResponse(
                   logger.winston.info(
                   'Error from Webhook. Respond back with Rasa NLU only'
                   );
-                logger.winston.info(err);
+                logger.winston.error(err);
                 finalizeCacheFlushToDbAndRespond(
                   cacheKey,
                   200,
@@ -456,7 +456,7 @@ function updateAndSendRasaResponse(
               logger.winston.info(
                 'Error occurred. Respond back with Rasa NLU only'
               );
-              logger.winston.info(err);
+              logger.winston.error(err);
               finalizeCacheFlushToDbAndRespond(
                 cacheKey,
                 200,

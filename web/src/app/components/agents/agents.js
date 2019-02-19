@@ -8,7 +8,7 @@ function AgentsController($scope, $rootScope, Agent) {
   });
 
   $scope.agentEncoded = function(agent) {
-    return btoa(JSON.stringify({agent_id:agent.agent_id, agent_name:agent.agent_name, client_secret: agent.client_secret_key, nlu_endpoint:"http://rasa-nlu-sandbox-bots-ai-sandbox-v2.origin-ctc-core.optum.com/"}));
+    return btoa(JSON.stringify({agent_id:agent.agent_id, agent_name:agent.agent_name, client_secret: agent.client_secret_key, nlu_endpoint:""}));
   }
 
   $scope.editAgentInfo = function(agent) {

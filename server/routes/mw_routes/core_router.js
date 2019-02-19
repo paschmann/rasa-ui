@@ -29,7 +29,7 @@ function restartRasaCoreConversation(req, res) {
       }
     );
   } catch (err) {
-    logger.winston.info(err);
+    logger.winston.error(err);
     sendHTTPResponse(500, res, '{"error" : "Exception caught !!"}');
   }
 }
@@ -90,7 +90,7 @@ function parseRequest(req, res, next, agentObj) {
       }
     );
   } catch (err) {
-    logger.winston.info(err);
+    logger.winston.error(err);
     sendHTTPResponse(
       500,
       res,

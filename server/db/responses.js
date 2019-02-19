@@ -41,7 +41,7 @@ function createActionResponse(req, res, next) {
         message: 'Inserted'});
     })
     .catch(function(err) {
-      logger.winston.info(err);
+      logger.winston.error(err);
       return next(err);
     });
 }

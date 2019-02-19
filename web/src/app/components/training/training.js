@@ -35,7 +35,7 @@ function TrainingController(
   });
 
   $scope.train = function() {
-    let agentToTrain = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
+    let agentToTrain = window.objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
     let dataToPost;
 
     let id = new XDate().toString('yyyyMMdd-HHmmss');
@@ -221,7 +221,7 @@ function TrainingController(
             $scope.endpoints_yml=yaml.stringify(endpoints_yml_obj);
           },
           function(errorResponse){
-            console.log("Error Message while Getting Messages." + errorResponse);
+            window.error("Error Message while Getting Messages." + errorResponse);
           });
     });
 
