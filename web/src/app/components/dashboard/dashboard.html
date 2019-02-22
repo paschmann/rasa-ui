@@ -52,15 +52,15 @@
                 </div>
             </div>
             <div class="col-xxs-12 col-xs-6 col-lg-3">
-                <div class="card" ng-click="showLoadedModels = !showLoadedModels" style="cursor: pointer;">
+                <div class="card">
                     <div class="card-block p-a-1 clearfix">
                         <div class="row">
                             <div class="col-sm-3">
                                 <i class="fa fa-database bg-primary p-a-1 font-2xl m-r-1 pull-left"></i>
                             </div>
                             <div class="col-sm-9">
-                                <div class="h5 text-gray-dark m-b-0 m-t-h">{{ available_models.length }}</div>
-                                <div class="text-muted text-uppercase font-weight-bold font-xs">Available Models</div>
+                                <div class="h5 text-gray-dark m-b-0 m-t-h">{{ available_models.length }}/{{ loaded_models.length }}</div>
+                                <div class="text-muted text-uppercase font-weight-bold font-xs">Available / <a href="" data-toggle="tooltip" data-placement="top" title="Show Loaded Models" tooltip ng-click="showLoadedModels = !showLoadedModels" >Loaded</a></div>
                             </div>
                         </div>
                     </div>
