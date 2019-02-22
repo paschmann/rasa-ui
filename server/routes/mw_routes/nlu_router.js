@@ -109,6 +109,29 @@ function trainRasaNlu(req, res, next) {
   }
 }
 
+function unloadRasaModel(req, res, next) {
+  const query = req.url.replace("/rasa/models","");
+  console.log("Delete Rasa NLU Model Request -> " + global.rasanluendpoint + "/models"+ query);
+  request({
+    method: "DELETE",
+    uri: global.rasanluendpoint + "/models" + query,
+  }, function (error, response, body) {
+    if (error) {
+      console.log(error);
+      sendOutput(500, res, '{"error" : ' + error + '}');
+    }
+    try {
+      if (body !== undefined) {
+        console.log("Delete Rasa Model Response:" + body);
+        sendOutput(200, res, body);
+      }
+    } catch (err) {
+      console.log(err);
+      sendOutput(500, res, '{"error" : ' + err + '}');
+    }
+  });
+}
+
 function parseRequest(req, res, next, agentObj) {
   logger.winston.info(
     'Routing to NLU Parse Request -> ' + global.rasanluendpoint + '/parse'
@@ -471,5 +494,6 @@ module.exports = {
   getRasaNluVersion: getRasaNluVersion,
   trainRasaNlu: trainRasaNlu,
   parseRequest: parseRequest,
-  getRasaNluEndpoint: getRasaNluEndpoint
+  getRasaNluEndpoint: getRasaNluEndpoint,
+  unloadRasaModel: unloadRasaModel
 };
