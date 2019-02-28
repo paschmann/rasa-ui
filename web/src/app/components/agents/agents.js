@@ -2,7 +2,7 @@ angular
 .module('app')
 .controller('AgentsController', AgentsController);
 
-function AgentsController($scope, $rootScope, Agent,$http) {
+function AgentsController($scope, $rootScope, Agent,$http,appConfig) {
   Agent.query(function(data) {
       $scope.agentList = data;
   });
