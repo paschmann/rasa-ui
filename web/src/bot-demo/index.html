@@ -2,9 +2,9 @@
 <html class=''>
 
 <head>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <link href="http:////netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http:////netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300' rel='stylesheet' type='text/css'>
 
@@ -734,7 +734,7 @@
         // NLU Data
         $.ajax({
             type: "GET",
-            url: agent_info.nlu_endpoint + "status",
+            url: agent_info.nlu_endpoint+ "/status",
             success: function (data) {
                 var models = data.available_projects[eval("agent_info.agent_name")].available_models;
                 models.forEach(function (element) {
