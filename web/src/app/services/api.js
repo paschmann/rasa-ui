@@ -84,7 +84,7 @@ app.factory('Parameters', function($resource, appConfig) {
 
 app.factory('ExpressionParameters', function($resource, appConfig) {
   return $resource(
-    appConfig.api_endpoint_v2 + '/expression_parameters/:expression_id'
+    appConfig.api_endpoint_v2 + '/expression_parameters'
   );
 });
 

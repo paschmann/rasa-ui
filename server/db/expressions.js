@@ -30,7 +30,7 @@ function getIntentExpressions(req, res, next) {
 function getIntentExpressionQuery(req, res, next) {
   logger.winston.info('expression.getIntentExpressionQuery');
   const IntentIds = req.query.intent_ids;
-  const sql =  `select * from expressions where intent_id in (${IntentIds})`;
+  const sql =  `select * from expressions where intent_id in (${IntentIds}) order by intent_id, expression_text`;
   db.any(sql)
     .then(function(data) {
       res.status(200).json(data);
