@@ -275,7 +275,7 @@ async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
     logger.winston.info(rasaCoreEvent);
 
     var event_timestamp = new Date(0);
-    d.setUTCSeconds(rasaCoreEvent.timestamp);
+    event_timestamp.setUTCSeconds(rasaCoreEvent.timestamp);
     message.timestamp = event_timestamp;
     message.user_id = rasaCoreEvent.sender_id;
 

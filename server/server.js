@@ -58,8 +58,8 @@ const OIDCBearerStrategy = require('passport-azure-ad').BearerStrategy;
 
 const logger = require('./util/logger');
 
-if(global.rasacoreeventconsumer === true){
-  rasa_envents.startRabbitMQConsumer();
+if(global.rasacoreeventconsumer === 'true'){
+  rasa_envents.startRabbitMQListener();
 }
 
 if (global.adalauthentication === 'true') {
