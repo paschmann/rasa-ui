@@ -4,6 +4,7 @@
   "description": "Rasa UI is a web application built on top of, and for, Rasa NLU.",
   "dependencies": {
     "adal-angular": "^1.0.17",
+    "amqplib": "^0.5.3",
     "angular": "1.7.2",
     "angular-chart.js": "^1.1.1",
     "angular-cookies": "1.7.2",
@@ -54,7 +55,10 @@
     "adaltenantid": "",
     "adalclientid": "",
     "adaltokenissuer": "https://sts.windows.net",
-    "loglevel": "info"
+    "loglevel": "info",
+    "rasacoreeventconsumer": false,
+    "rasacorerabbitmqhost": "rabbitmq",
+    "rasacorerabbitmqqueuename": "rasa-core-events"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

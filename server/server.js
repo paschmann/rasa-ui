@@ -36,6 +36,10 @@ global.rasacorerequestpath =
   process.env.rasacorerequestpath ||
   process.env.npm_package_config_rasacorerequestpath;
 
+global.rasacoreeventconsumer =process.env.rasacoreeventconsumer ||process.env.npm_package_config_rasacoreeventconsumer;
+global.rasacorerabbitmqhost =process.env.rasacorerabbitmqhost ||process.env.npm_package_config_rasacorerabbitmqhost;
+global.rasacorerabbitmqqueuename =process.env.rasacorerabbitmqqueuename ||process.env.npm_package_config_rasacorerabbitmqqueuename;
+
 const express = require('express');
 const proxy = require('http-proxy-middleware');
 const bodyParser = require('body-parser');
@@ -44,6 +48,7 @@ const request = require('request');
 const routes = require('./routes/index');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const rasa_envents = require('./routes/rasa_events');
 
 const db = require('./db/db');
 
@@ -53,8 +58,11 @@ const OIDCBearerStrategy = require('passport-azure-ad').BearerStrategy;
 
 const logger = require('./util/logger');
 
-if (global.adalauthentication === 'true') {
+if(global.rasacoreeventconsumer === true){
+  rasa_envents.startRabbitMQConsumer();
+}
 
+if (global.adalauthentication === 'true') {
   const options = {
     // Metadata/Azure AD tenantID/clientID
     identityMetadata:
