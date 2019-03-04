@@ -26,9 +26,11 @@ function getIntentParameters(req, res, next) {
 
 function getExpressionParametersQuery(req, res, next) {
   logger.winston.info('parameters.getExpressionParametersQuery');
-  const expressionIds = req.query.expression_ids;
-  const sql = `select * from expression_parameters where expression_id in (${expressionIds})`;
-  db.any(sql)
+  const agentId = req.query.agent_id;
+  db.any('select p.* from expression_parameters AS p ' +
+      'INNER JOIN expressions AS e ON p.expression_id = e.expression_id ' +
+      'INNER JOIN intents AS i on i.intent_id = e.intent_id ' +
+      'where i.agent_id = $1', agentId)
     .then(function(data) {
       res.status(200).json(data);
     })

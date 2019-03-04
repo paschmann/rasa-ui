@@ -1,6 +1,6 @@
 {
   "name": "RasaUI",
-  "version": "2.5.3",
+  "version": "2.5.4",
   "description": "Rasa UI is a web application built on top of, and for, Rasa NLU.",
   "dependencies": {
     "adal-angular": "^1.0.17",

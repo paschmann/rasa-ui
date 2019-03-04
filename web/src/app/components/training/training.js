@@ -145,7 +145,7 @@ function TrainingController(
                     .toString();
                   if (expressionIds.length > 0) {
                     ExpressionParameters.query(
-                      { expression_ids: expressionIds },
+                      { agent_id: agent_id },
                       function(params) {
                         let synonymsIds = synonyms.map(function(item) {
                           return item['synonym_id'];
