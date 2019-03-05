@@ -136,7 +136,7 @@ function TrainingController(
               .toString();
             if (intentIds.length > 0) {
               IntentExpressions.query(
-                { intent_ids: intentIds },
+                { agent_id: agent_id },
                 function(expressions) {
                   let expressionIds = expressions
                     .map(function(item) {
