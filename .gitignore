@@ -9,4 +9,4 @@ Jenkinsfile
 .idea
 *.swp
 *.iml
-
+*.vscode
