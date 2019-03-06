@@ -244,7 +244,7 @@ async function logEventsRoute(req, res, next) {
 
 function startRabbitMQListener(){
   logger.winston.info("Starting AMQP listener");
-  amqp.connect(global.rasacorerabbitmqhost, function (err, conn) {
+  amqp.connect("amqp://"+global.rasacorerabbitmqhost, function (err, conn) {
     conn.createChannel(function (err, ch) {
         ch.consume(global.rasacorerabbitmqqueuename, function (msg) {
             console.log(" [x] Received %s", msg.content.toString());

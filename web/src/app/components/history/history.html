@@ -50,13 +50,13 @@
     <div class="row">
       <div class="col-sm-12">
         <div class="card">
-          <div class="card-header"><strong>Available Models</strong></div>
+          <div class="card-header"><strong>Available Chat Sessions</strong></div>
           <div class="card-block">
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th>Session ID</th>
-                  <th>Date</th>
+                  <th>User ID</th>
+                  <th>Chat Date</th>
                   <th>No match</th>
                   <th>Intentions</th>
                 </tr>
@@ -72,8 +72,8 @@
                   <td>{{ conversation.user_id }}</td>
                   <td>
                     {{
-                      conversation.recent_active | date: "yyyy/MM/dd HH:mm:ss"
-                    }}
+                      conversation.recent_active | date: "dd MMM yyyy HH:mm:ss"
+                    }} GMT
                   </td>
                   <td ng-class="{'no-match': conversation.noMatchCount > 0 }">
                     {{ conversation.noMatchCount }}

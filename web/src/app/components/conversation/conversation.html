@@ -28,13 +28,13 @@
             <div class="separator"></div>
             <img src="assets/img/delete.svg" class="icon" title="Delete" ng-click="deleteEntity(selectedEntity)" />
           </div>
-          <div class="message-wrapper" ng-class="{bot: message.user_name === 'bot', user: message.user_name === 'user'}"
+          <div class="message-wrapper" ng-class="{bot: message.user_message_ind === false, user: message.user_message_ind === true}"
             ng-repeat="message in chatlog">
-            <div class="message-username">{{ message.user_name }}:</div>
+            <div class="message-username"><span ng-show="message.user_message_ind === false">bot:</span><span ng-show="message.user_message_ind === true">{{message.user_name}}:</span></div>
 
             <div class="message" id="message-{{ message.messages_id }}" ng-mouseover="highlightMessageEntites(message)"
               ng-mouseleave="highlightMessageEntites(undefined)">
-              <div class="intent" ng-if="message.user_name === 'user'" ng-class="{'no-match': !message.intent_name }"
+              <div class="intent" ng-if="message.user_message_ind === true" ng-class="{'no-match': !message.intent_name }"
                 ng-click="editIntent(message)">
                 <span ng-if="message.intent_name">{{ message.intent_name | noUnderscore }}
                   <img src="assets/img/edit.svg" class="icon" />

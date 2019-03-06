@@ -94,6 +94,7 @@
 .bot .message {
   background-color: #f2f2f2;
   border-radius: 15px;
+  font-weight: 500;
 }
 
 .user .message {
