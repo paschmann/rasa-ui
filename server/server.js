@@ -174,8 +174,6 @@ app.use(function(req, res, next) {
             message: 'No token provided.'});
         }
       }
-        }
-      }
     }
   }
 });
