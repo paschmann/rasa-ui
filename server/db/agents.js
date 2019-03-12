@@ -199,7 +199,7 @@ function uploadAgentFromFile(req, res, next) {
 }
 
 function getAllAgents(req, res, next) {
-  db.any('select * from agents')
+  db.any('select * from agents order by agent_id desc')
     .then(function(data) {
       res.status(200).json(data);
     })

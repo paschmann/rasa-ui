@@ -67,29 +67,32 @@ function trainRasaNlu(req, res, next) {
       '&model=' +
       req.query.name
   );
-  logRequest(req, 'train', {
+
+  var reqBody = YAML.stringify({
+    language: req.body.language,
+    pipeline: req.body.pipeline,
+    data: req.body.data
+  });
+  logRequest(req, "train", {
     project: req.query.project,
     model: req.query.name,
-    data: req.body
+    data: reqBody
   });
 
-  request(
-    {
-      method: 'POST',
-      uri:
-        global.rasanluendpoint +
-        '/train?project=' +
-        req.query.project +
-        '&model=' +
-        req.query.name,
-      json: req.body
-    },
-    function(error, response, body) {
+  try {
+    request({
+      method: "POST",
+      uri: global.rasanluendpoint + "/train?project=" + req.query.project + "&model=" + req.query.name,
+      headers: {
+        'Content-Type': 'application/x-yml'
+      },
+      body: reqBody
+    }, function (error, response, body) {
+      console.log("Done with Request");
+
       if (error) {
-        logger.winston.info(
-          'Error Occured when posting data to nlu endpoint. ' + error
-        );
-        sendOutput(500, res, '{"error" : ' + error + "}");
+        console.log("Error Occured when posting data to nlu endpoint. " + error);
+        sendOutput(500, res, '{"error" : ' + error + '}');
         return;
       }
       try {
@@ -111,6 +114,32 @@ function trainRasaNlu(req, res, next) {
           'Training Done !! Response Code : ' + response.statusCode
         );
         sendOutput(200, res, '');
+      } catch (err) {
+        console.log("Exception:" + err);
+        sendOutput(500, res, '{"error" : ' + err + '}');
+      }
+    });
+  } catch (err) {
+    console.log("Exception When sending Training Data to Rasa:" + err);
+  }
+}
+
+function unloadRasaModel(req, res, next) {
+  const query = req.url.replace("/rasa/models","");
+  console.log("Delete Rasa NLU Model Request -> " + global.rasanluendpoint + "/models"+ query);
+  request({
+    method: "DELETE",
+    uri: global.rasanluendpoint + "/models" + query,
+  }, function (error, response, body) {
+    if (error) {
+      console.log(error);
+      sendOutput(500, res, '{"error" : ' + error + '}');
+    }
+    try {
+      if (body !== undefined) {
+        console.log("Delete Rasa Model Response:" + body);
+        sendOutput(200, res, body);
+      }
       } catch (err) {
         logger.winston.info("Exception:" +err);
         sendOutput(500, res, '{"error" : ' + err + "}");
@@ -148,7 +177,7 @@ function parseRequest(req, res, next, agentObj) {
   }
 
   request(
-    {
+      {
       method: 'POST',
       uri: global.rasanluendpoint + '/parse',
       body: JSON.stringify(req.body)
@@ -200,25 +229,37 @@ function finalizeCacheFlushToDbAndRespond(cacheKey, http_code, res, body) {
         nlu_parse_cache.user_message_ind = false;
 
         if (nlu_parse_cache.agent_id !== undefined) {
+          //insert user message and nlu classification
           db.any(
-            'insert into messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
-              ' values($(agent_id), $(user_id),$(user_name), $(message_text), $(message_rich), $(user_message_ind)) RETURNING messages_id',
-            nlu_parse_cache
-          )
-            .then(function(returnData) {
+              'insert into messages(agent_id, user_id, user_name, message_text, user_message_ind, intent_id)' +
+              ' values($(agent_id), $(user_id),$(user_name), $(request_text), true, (SELECT intent_id FROM intents WHERE intent_name=$(intent_name) and agent_id=$(agent_id))) RETURNING messages_id',
+              nlu_parse_cache
+            )
+            .then(function (returnData) {
               nlu_parse_cache.messages_id = returnData[0].messages_id;
               db.none(
-                'INSERT INTO nlu_parse_log(intent_name, entity_data, messages_id,intent_confidence_pct, user_response_time_ms,nlu_response_time_ms) ' +
+                  'INSERT INTO nlu_parse_log(intent_name, entity_data, messages_id,intent_confidence_pct, user_response_time_ms,nlu_response_time_ms) ' +
                   ' values($(intent_name), $(entity_data), $(messages_id), $(intent_confidence_pct),$(user_response_time_ms),$(nlu_response_time_ms))',
-                nlu_parse_cache
-              )
-                .then(function() {
+                  nlu_parse_cache
+                )
+                .then(function () {
                   logger.winston.info('Cache inserted into db. Removing it');
                   nluParseLogCache.del(cacheKey);
                 })
-                .catch(function(err) {
+                .catch(function (err) {
                   logger.winston.info('Exception while inserting Parse log');
-                  logger.winston.error(err);
+                  logger.winston.info(err);
+                });
+                  //insert bot message
+                db.any(
+                  'insert into messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
+                  ' values($(agent_id), $(user_id),$(user_name), $(message_text), $(message_rich), false) RETURNING messages_id',
+                  nlu_parse_cache
+                ).then(function (returnData) {
+                  logger.winston.info('Message Inserter Successfully!!');
+                }).catch(function (err) {
+                  logger.winston.info('Exception in the DB log');
+                  logger.winston.info(err);
                 });
             })
             .catch(function(err) {
@@ -289,7 +330,7 @@ function createInitialCacheRequest(req, cacheKey, agentObj) {
     nluParseReqObj.agent_id = agentObj.agent_id;
   }
   //set it in the cache
-  nluParseLogCache.set(cacheKey, nluParseReqObj, function(err, success) {
+  nluParseLogCache.set(cacheKey, nluParseReqObj, function (err, success) {
     if (!err && success) {
       logger.winston.info('Object Inserted into Cache');
     }
@@ -481,5 +522,6 @@ module.exports = {
   getRasaNluVersion: getRasaNluVersion,
   trainRasaNlu: trainRasaNlu,
   parseRequest: parseRequest,
-  getRasaNluEndpoint: getRasaNluEndpoint
+  getRasaNluEndpoint: getRasaNluEndpoint,
+  unloadRasaModel: unloadRasaModel
 };

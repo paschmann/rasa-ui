@@ -9,21 +9,12 @@ function AsideController(
   Rasa_Version,
   Settings,
   Rasa_Status,
-  mySocket,
   appConfig
 ) {
   //$scope.test_text = 'I want italian food in new york';
   $scope.test_text_response = {};
   $rootScope.config = {}; //Initilize in case server is not online at startup
   let configcheck;
-
-  mySocket.on('on:responseMessage', function(message) {
-    if (message.next_action !== 'action_listen') {
-      $scope.response_text.push(message.response_text);
-    } else {
-      $scope.response_text.push('Listening ...');
-    }
-  });
 
   Rasa_Version.get().$promise.then(function(data) {
     $rootScope.rasa_version = data.version;
@@ -105,12 +96,6 @@ function AsideController(
         project: $scope.modelname.split('*')[0],
         model: $scope.modelname.split('*')[1]
       };
-    }
-
-    //mySocket.emit('send:message', {message: 'hello there'});
-    if ($scope.wsEnabled) {
-      //reponses will be streamed in websockets.
-      reqMessage.wsstream = true;
     }
 
     if ($scope.test_text) {

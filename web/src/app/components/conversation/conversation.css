@@ -79,7 +79,6 @@
 .message {
   padding: 10px 20px;
   max-width: 75%;
-  font-size: 18px;
 }
 .message p {
   margin-bottom: 0;
@@ -94,20 +93,24 @@
 
 .bot .message {
   background-color: #f2f2f2;
-  border: 1px solid #c2cfd6;
+  border-radius: 15px;
+  font-weight: 500;
 }
 
 .user .message {
   background-color: white;
   border: 1px solid #979797;
+  border-radius: 15px;
 }
 .user .message:hover {
   background-color: rgba(30, 168, 216, 0.3);
   border: 1px solid #979797;
+  border-radius: 15px;
 }
 .user .message.active {
   background-color: rgba(30, 168, 216, 0.3);
   border: 1px solid #979797;
+  border-radius: 15px;
 }
 
 #entities table th,

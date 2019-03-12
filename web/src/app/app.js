@@ -1,7 +1,6 @@
 var app = angular
   .module("app", [
     "ngCookies",
-    "btford.socket-io",
     "ng-jsyaml",
     "ngSanitize",
     "ngFileUpload",
@@ -15,11 +14,6 @@ var app = angular
     "angularModalService",
     "AdalAngular"
   ])
-  .factory("mySocket", function(socketFactory) {
-    return socketFactory({
-      ioSocket: window.io.connect()
-    });
-  })
   .run(function($rootScope, $http, $sessionStorage, appConfig, adalAuthenticationService) {
     $rootScope.adalauthentication = appConfig.adalauthentication;
 

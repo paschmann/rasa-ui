@@ -176,7 +176,8 @@ CREATE TABLE agents
   basic_auth_password character varying COLLATE pg_catalog."default",
   client_secret_key text NOT NULL default md5(random()::text),
   story_details text COLLATE pg_catalog."default",
-  rasa_nlu_pipeline character varying COLLATE pg_catalog."default",
+  rasa_nlu_pipeline character varying COLLATE pg_catalog."default" DEFAULT 'spacy_sklearn',
+  rasa_nlu_language character varying COLLATE pg_catalog."default" DEFAULT 'en',
   rasa_nlu_fixed_model_name character varying COLLATE pg_catalog."default",
   CONSTRAINT agent_pkey PRIMARY KEY (agent_id)
 )
@@ -222,8 +223,8 @@ CREATE TABLE synonyms
   agent_id integer NOT NULL,
   synonym_reference character varying COLLATE pg_catalog."default" NOT NULL,
   CONSTRAINT synonyms_pkey PRIMARY KEY (synonym_id),
-  CONSTRAINT agent_fkey FOREIGN KEY (agent_id) 
-      REFERENCES agents (agent_id) 
+  CONSTRAINT agent_fkey FOREIGN KEY (agent_id)
+      REFERENCES agents (agent_id)
       ON DELETE CASCADE
 )
 WITH (
@@ -416,7 +417,7 @@ WITH (
 )
 TABLESPACE pg_default;
 
--- nlu_parse_log correspondance table with entities table 
+-- nlu_parse_log correspondance table with entities table
 CREATE TABLE messages_entities
 (
   message_id integer,
@@ -506,9 +507,9 @@ GROUP BY (to_char(nlu_log."timestamp", 'MM/DD'::text))
 ORDER BY (to_char(nlu_log."timestamp", 'MM/DD'::text)) asc
 LIMIT 30;
 
-CREATE OR REPLACE VIEW messages_expressions AS 
-SELECT agents.agent_id, agents.agent_name, 
-msg.messages_id, msg.timestamp, msg.user_id, msg.user_name, msg.message_text, msg.message_rich, msg.user_message_ind, 
+CREATE OR REPLACE VIEW messages_expressions AS
+SELECT agents.agent_id, agents.agent_name,
+msg.messages_id, msg.timestamp, msg.user_id, msg.user_name, msg.message_text, msg.message_rich, msg.user_message_ind,
 intents.intent_id, intents.intent_name,
 expressions.expression_id
 FROM messages AS msg
@@ -517,17 +518,17 @@ LEFT OUTER JOIN intents ON msg.intent_id = intents.intent_id
 LEFT JOIN expressions ON (intents.intent_id = expressions.intent_id) AND (msg.message_text = expressions.expression_text)
 ORDER BY timestamp, user_id;
 
-CREATE OR REPLACE VIEW entities_parameters AS 
+CREATE OR REPLACE VIEW entities_parameters AS
 SELECT
 agents.agent_id, agents.agent_name,
-msg.messages_id, msg.timestamp, msg.user_id, msg.user_name, msg.message_text, msg.user_message_ind, 
+msg.messages_id, msg.timestamp, msg.user_id, msg.user_name, msg.message_text, msg.user_message_ind,
 entities.entity_id, entities.entity_name, entities.slot_data_type,
 msgEnt.entity_start, msgEnt.entity_end,
 param.parameter_value, param.parameter_id
 FROM messages AS msg
 INNER JOIN agents ON msg.agent_id = agents.agent_id
-LEFT OUTER JOIN messages_entities AS msgEnt ON msg.messages_id = msgEnt.message_id 
-LEFT OUTER JOIN entities ON msgEnt.entity_id = entities.entity_id 
+LEFT OUTER JOIN messages_entities AS msgEnt ON msg.messages_id = msgEnt.message_id
+LEFT OUTER JOIN entities ON msgEnt.entity_id = entities.entity_id
 LEFT OUTER JOIN intents ON msg.intent_id = intents.intent_id
 LEFT OUTER JOIN expressions ON (intents.intent_id = expressions.intent_id) AND (msg.message_text = expressions.expression_text)
 LEFT OUTER JOIN parameters AS param ON (msgEnt.entity_id = param.entity_id) AND (msgEnt.entity_value = param.parameter_value) AND (param.expression_id = expressions.expression_id)

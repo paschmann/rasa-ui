@@ -15,7 +15,7 @@ function getSingleIntent(req, res, next) {
 function getAgentIntents(req, res, next) {
   logger.winston.info('intents.getAgentIntents');
   const AgentID = Number(req.params.agent_id);
-  db.any('select * from intents where agent_id = $1', AgentID)
+  db.any('select * from intents where agent_id = $1 order by intent_id', AgentID)
     .then(function(data) {
       res.status(200).json(data);
     })

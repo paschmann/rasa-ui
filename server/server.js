@@ -36,6 +36,10 @@ global.rasacorerequestpath =
   process.env.rasacorerequestpath ||
   process.env.npm_package_config_rasacorerequestpath;
 
+global.rasacoreeventconsumer =process.env.rasacoreeventconsumer ||process.env.npm_package_config_rasacoreeventconsumer;
+global.rasacorerabbitmqhost =process.env.rasacorerabbitmqhost ||process.env.npm_package_config_rasacorerabbitmqhost;
+global.rasacorerabbitmqqueuename =process.env.rasacorerabbitmqqueuename ||process.env.npm_package_config_rasacorerabbitmqqueuename;
+
 const express = require('express');
 const proxy = require('http-proxy-middleware');
 const bodyParser = require('body-parser');
@@ -44,6 +48,7 @@ const request = require('request');
 const routes = require('./routes/index');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const rasa_envents = require('./routes/rasa_events');
 
 const db = require('./db/db');
 
@@ -53,8 +58,11 @@ const OIDCBearerStrategy = require('passport-azure-ad').BearerStrategy;
 
 const logger = require('./util/logger');
 
-if (global.adalauthentication === 'true') {
+if(global.rasacoreeventconsumer === 'true'){
+  rasa_envents.startRabbitMQListener();
+}
 
+if (global.adalauthentication === 'true') {
   const options = {
     // Metadata/Azure AD tenantID/clientID
     identityMetadata:
@@ -125,9 +133,8 @@ app.use(function(req, res, next) {
 
             // Azure AD token has no username field;Propagate sessionId
             req.jwt.username = 'admin';
-            next();
-          }
-        }
+          next();
+        } }
       })(req, res, next);
     } else {
       // Basic Authentication
@@ -138,7 +145,7 @@ app.use(function(req, res, next) {
         ) {
           logger.winston.info('No Token, but got an Auth request. Allowing it');
           next();
-        } else {
+        }else {
           return res.status(401).send({
             success: false,
             message: 'No Authorization header.'});
@@ -167,57 +174,13 @@ app.use(function(req, res, next) {
             message: 'No token provided.'});
         }
       }
+        }
+      }
     }
   }
 });
 
 const server = require('http').createServer(app);
-const io = require('socket.io').listen(server);
-
-const NodeCache = require('node-cache');
-//https://github.com/mpneuried/nodecache
-const socketCache = new NodeCache({ useClones: false });
-app.set('socketCache', socketCache);
-// Socket.io Communication
-io.sockets.on('connection', function(socket) {
-  let jwt0 = '';
-  try {
-    const cookieArr = socket.request.headers.cookie.split(';');
-    for (let i = 0; i < cookieArr.length; i++) {
-      if (cookieArr[i].split('=')[0].trim() === 'loggedinjwt') {
-        jwt0 = cookieArr[i].split('=')[1].split('.')[0];
-        break;
-      }
-    }
-    //logger.winston.info('Adding Socket to Sockets List');
-    app.get('socketCache').set(jwt0, socket);
-  } catch (err) {
-    logger.winston.info(
-      'Problem when parsing the cookies. Ignoring socket' + err
-    );
-  }
-
-  socket.on('disconnect', function() {
-    //logger.winston.info('Disconnecting All Cookies: '); // + socket.request.headers.cookie);
-    //logger.winston.info('Socket disconnected');
-    let discjwt0 = '';
-    try {
-      const cookieArr = socket.request.headers.cookie.split(';');
-      for (let i = 0; i < cookieArr.length; i++) {
-        if (cookieArr[i].split('=')[0].trim() === 'loggedinjwt') {
-          discjwt0 = cookieArr[i].split('=')[1].split('.')[0];
-          break;
-        }
-      }
-      //logger.winston.info('Removing SOCKET: ' + discjwt0 + ' from List: '+ JSON.stringify(app.get('socketCache').keys()));
-      app.get('socketCache').del(jwt0);
-    } catch (err) {
-      logger.winston.info(
-        'Problem when parsing the cookies. Unable to delete socket' + err
-      );
-    }
-  });
-});
 
 app.use('/api/v2/', routes);
 

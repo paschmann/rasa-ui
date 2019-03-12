@@ -46,7 +46,7 @@ function getNoOfTrainingJobs(statusData) {
   for (let project in statusData.available_projects) {
     if (!statusData.available_projects.hasOwnProperty(project)) continue;
     const projectObj = statusData.available_projects[project];
-    if (projectObj.status !== 'ready') {
+    if (projectObj.status ==== 'training') {
       count++;
     }
   }
@@ -81,22 +81,23 @@ function getAvailableModels(statusData) {
   return arrModels;
 }
 
-function getLoadedModels(models) {
-  const arrModels = [];
-  if (models instanceof Object) {
-    const arrVals = Object.keys(models).map(function(key) {
-      return models[key];
-    });
-    const arrKeys = Object.keys(models).map(function(key) {
-      return key;
-    });
-    for (let z = 0; z <= arrVals.length - 1; z++) {
-      arrModels.push({ name: arrKeys[z], folder: arrVals[z] });
+function getLoadedModels(statusData) {
+  let loadedModels = [];
+  if (statusData === undefined) return loadedModels;
+  const data = statusData.available_projects;
+  const models = Object.keys(data);
+  models.forEach(x => {
+    if (data[x].loaded_models.length > 0) {
+      const loadedProjectModels = data[x].loaded_models.map(y => {
+        return {
+          name: x,
+          id: y
+        }
+      });
+      loadedModels = [...loadedModels, ...loadedProjectModels]
     }
-  } else {
-    arrModels.push({ name: 'Default', folder: models });
-  }
-  return arrModels;
+  })
+  return loadedModels;
 }
 
 function pastelColors() {

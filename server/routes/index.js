@@ -109,8 +109,8 @@ router.get('/intent_usage_total', logs.getIntentUsageTotal);
 router.get('/request_usage_total', logs.getRequestUsageTotal);
 router.get('/avg_intent_usage_by_day', logs.getAvgIntentUsageByDay);
 router.get('/nlu_parse_log/:agent_id', logs.getNluParseLogByAgent);
-router.get('/agentsByIntentConfidencePct', logs.getAgentsByIntentConfidencePct);
-router.get('/intentsMostUsed', logs.getIntentsMostUsed);
+router.get('/agentsByIntentConfidencePct/:agent_id', logs.getAgentsByIntentConfidencePct);
+router.get('/intentsMostUsed/:agent_id', logs.getIntentsMostUsed);
 router.get(
   '/avgNluResponseTimesLast30Days',
   logs.getAvgNluResponseTimesLast30Days
@@ -127,6 +127,7 @@ router.get('/rasa/url', nlu_router.getRasaNluEndpoint);
 router.get('/rasa/config', nlu_router.getRasaNluConfig);
 router.get('/rasa/version', nlu_router.getRasaNluVersion);
 router.post('/rasa/train', nlu_router.trainRasaNlu);
+router.delete('/rasa/models', nlu_router.unloadRasaModel);
 //common middleware for parse
 router.post('/rasa/parse', middleware.parseRasaRequest);
 //rasa core API
