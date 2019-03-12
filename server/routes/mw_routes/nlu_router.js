@@ -61,9 +61,15 @@ function getRasaNluVersion(req, res, next) {
 function trainRasaNlu(req, res, next) {
   console.log("Rasa NLU Train Request -> " + global.rasanluendpoint + "/train?project=" + req.query.project + "&model=" + req.query.name);
 
-  var reqBody = YAML.stringify({
+  try {
+    nlu_pipeline = JSON.parse(req.body.pipeline)
+  } catch(err) {
+    nlu_pipeline = req.body.pipeline
+  }
+
+  var reqBody = JSON.stringify({
     language: req.body.language,
-    pipeline: req.body.pipeline,
+    pipeline: nlu_pipeline,
     data: req.body.data
   });
   logRequest(req, "train", {
@@ -77,7 +83,7 @@ function trainRasaNlu(req, res, next) {
       method: "POST",
       uri: global.rasanluendpoint + "/train?project=" + req.query.project + "&model=" + req.query.name,
       headers: {
-        'Content-Type': 'application/x-yml'
+        'Content-Type': 'application/json'
       },
       body: reqBody
     }, function (error, response, body) {
