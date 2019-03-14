@@ -46,7 +46,7 @@ function getNoOfTrainingJobs(statusData) {
   for (let project in statusData.available_projects) {
     if (!statusData.available_projects.hasOwnProperty(project)) continue;
     const projectObj = statusData.available_projects[project];
-    if (projectObj.status ==== 'training') {
+    if (projectObj.status === 'training') {
       count++;
     }
   }

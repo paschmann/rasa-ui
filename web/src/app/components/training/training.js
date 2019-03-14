@@ -35,7 +35,7 @@ function TrainingController(
   });
 
   $scope.train = function() {
-    let agentToTrain = window.objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
+    let agentToTrain = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
     let id = new XDate().toString('yyyyMMdd-HHmmss');
     reset();
     let modelName=agentToTrain.agent_name + "_" + id;
