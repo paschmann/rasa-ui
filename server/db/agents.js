@@ -235,7 +235,7 @@ function createAgent(req, res, next) {
 function updateAgent(req, res, next) {
   logger.winston.info('Agent.updateAgent');
   db.none(
-    'update agents set agent_name=$2, endpoint_enabled=$3, endpoint_url=$4, basic_auth_username=$5, basic_auth_password=$6, rasa_core_enabled=$7, rasa_nlu_pipeline=$8, rasa_nlu_fixed_model_name=$9 where agent_id=$1',
+    'update agents set agent_name=$2, endpoint_enabled=$3, endpoint_url=$4, basic_auth_username=$5, basic_auth_password=$6, rasa_core_enabled=$7, rasa_nlu_pipeline=$8, rasa_nlu_fixed_model_name=$9, rasa_nlu_language=$10 where agent_id=$1',
     [
       Number(req.params.agent_id),
       req.body.agent_name,
@@ -243,7 +243,11 @@ function updateAgent(req, res, next) {
       req.body.endpoint_url,
       req.body.basic_auth_username,
       req.body.basic_auth_password,
-      req.body.rasa_core_enabled, req.body.rasa_nlu_pipeline,req.body.rasa_nlu_fixed_model_name]
+      req.body.rasa_core_enabled,
+      req.body.rasa_nlu_pipeline,
+      req.body.rasa_nlu_fixed_model_name,
+      req.body.rasa_nlu_language
+    ]
   )
     .then(function() {
       res.status(200).json({

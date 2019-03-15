@@ -18,7 +18,7 @@ function AgentsController($scope, $rootScope, Agent,$http,appConfig,$window) {
       $scope.agentEncoded = function(agent) {
         return btoa(JSON.stringify({agent_id:agent.agent_id, agent_name:agent.agent_name, client_secret: agent.client_secret_key, nlu_endpoint:""}));
       }
-  }
+  };
   $scope.editAgentInfo = function(agent) {
     Agent.update({ agent_id:agent.agent_id }, agent).$promise.then(function() {
       $('#'+agent.agent_id).collapse('hide');
