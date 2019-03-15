@@ -68,11 +68,23 @@ function trainRasaNlu(req, res, next) {
       req.query.name
   );
 
-  var reqBody = YAML.stringify({
-    language: req.body.language,
-    pipeline: req.body.pipeline,
-    data: req.body.data
-  });
+  let reqBody;
+  let contentType;
+
+  if(req.body.language === "" || req.body.pipeline === "") {
+      logger.winston.info("No pipeline defined");
+      reqBody = JSON.stringify(req.body.data);
+      contentType = "application/json"
+  } else {
+      logger.winston.info("Use user Pipeline");
+      reqBody = YAML.stringify({
+          language: req.body.language,
+          pipeline: req.body.pipeline,
+          data: req.body.data
+      });
+      contentType = "application/x-yml"
+  }
+
   logRequest(req, "train", {
     project: req.query.project,
     model: req.query.name,
@@ -84,7 +96,7 @@ function trainRasaNlu(req, res, next) {
       method: "POST",
       uri: global.rasanluendpoint + "/train?project=" + req.query.project + "&model=" + req.query.name,
       headers: {
-        'Content-Type': 'application/x-yml'
+        'Content-Type': contentType
       },
       body: reqBody
     }, function (error, response, body) {
