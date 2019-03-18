@@ -5,14 +5,14 @@ const logger = require('../util/logger');
 function authenticateUser(req, res, next) {
   //authenticate user
   logger.winston.info('Authenticate User');
-  if (req.body.username === 'admin' && req.body.password === 'admin') {
+  if (req.body.username === global.adminusername && req.body.password === global.adminpassword) {
     //create token and send it back
-    const tokenData = { username: 'admin', name: 'Portal Administrator' };
+    const tokenData = { username: global.adminusername, name: 'Portal Administrator' };
     // if user is found and password is right
     // create a token
     const token = jwt.sign(tokenData, global.jwtsecret);
     // return the information including token as JSON
-    res.json({ username: 'admin', token });
+    res.json({ username: global.adminusername, token });
   } else {
     logger.winston.info('Information didnt match or not provided.');
     return res.status(401).send({

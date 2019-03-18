@@ -1,4 +1,8 @@
 // Global Variables
+global.adminusername =
+  process.env.adminusername || process.env.npm_package_config_adminusername;
+  global.adminpassword =
+  process.env.adminpassword || process.env.npm_package_config_adminpassword;
 global.postgresserver =
   process.env.postgresserver || process.env.npm_package_config_postgresserver;
 global.rasanluendpoint =
@@ -132,7 +136,7 @@ app.use(function(req, res, next) {
             //req.original_token=user;
 
             // Azure AD token has no username field;Propagate sessionId
-            req.jwt.username = 'admin';
+            req.jwt.username = global.adminusername;
           next();
         } }
       })(req, res, next);
