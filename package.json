@@ -41,11 +41,13 @@
     "yaml": "^1.3.2"
   },
   "config": {
+    "adminusername": "admin",
+    "adminpassword": "rasaui",
     "rasanluendpoint": "http://localhost:5000",
-    "rasacoreendpoint": "http://localhost:5002",
-    "rasacorerequestpath": "/webhooks/rest/webhook",
+    "rasacoreendpoint": "http://localhost:5005",
+    "rasacorerequestpath": "/webhooks/chatbot-rasa-core/v1/conversations/{id}/respond",
     "coresecuritytoken": "",
-    "corejwttoken": "",
+    "corejwttoken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InJvbGUiOiJhZG1pbiIsInVzZXJuYW1lIjoiZGVmYXVsdCJ9fQ.40IowTiwC10zJDDnrh8On8WS1uJVEUcc1Tip18sGWk4",
     "nlusecuritytoken": "",
     "cacheagents": false,
     "jwtsecret": "th1s1sn0t0nlyths3cr3tbutth3m0st1mp0rtAntp13c30f1nf0rmAt10nf0rth1sAppl1cAt10n",
