@@ -19,7 +19,7 @@
             <div class="card-header" role="tab" id="headingOne">
               <span><a ng-href="#/agent/{{agent.agent_id}}">{{ agent.agent_name }}</a></span>
               <span class="float-right">
-                <a style="border:0; padding: 0.2rem;" class="btn btn-outline-secondary" href="/bot-demo?id={{agentEncoded(agent)}}" target="_blank" data-toggle="tooltip" data-placement="top" title="Demo your Bot!!" tooltip>
+                <a style="border:0; padding: 0.2rem;" class="btn btn-outline-secondary" ng-click="botDemoClick(agent)" target="_blank" data-toggle="tooltip" data-placement="top" title="Demo your Bot!!" tooltip>
                   <i class="fa fa-desktop fa-lg header-buttons"></i></a>
                 <a style="border:0; padding: 0.2rem;" class="btn btn-outline-secondary" data-toggle="collapse"
                   data-target="#agent_{{agent.agent_id}}" aria-expanded="true" aria-controls="collapseOne">
@@ -43,6 +43,12 @@
                   </div>
                 </div>
                 <div class="form-group row">
+                    <label for="{{agent.agent_id}}_formgroupnlupipeline" class="col-sm-4 col-form-label">NLU Language</label>
+                    <div class="col-sm-8">
+                        <input type="text" autocomplete="off" class="form-control" ng-model="agent.rasa_nlu_language" value="{{agent.rasa_nlu_language}}" placeholder="NLU Language">
+                    </div>
+                  </div>
+                <div class="form-group row">
                   <label for="{{agent.agent_id}}_formgroupClientSecret" class="col-sm-4 col-form-label">NLU Fixed
                     ModelName</label>
                   <div class="col-sm-8">
@@ -50,9 +56,9 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label for="{{agent.agent_id}}_formgroupnlupipeline" class="col-sm-4 col-form-label">NLU Pipeline <a href="https://rasa.com/docs/nlu/choosing_pipeline/" target ="blank"><span style="font-size: x-small">How to Choose Pipeline >></span></a></label>
+                  <label for="{{agent.agent_id}}_formgroupnlupipeline" class="col-sm-4 col-form-label">NLU Pipeline Template <br><a href="https://rasa.com/docs/nlu/choosing_pipeline/" target ="blank"><span style="font-size: x-small">How to Choose Pipeline >></span></a></label>
                   <div class="col-sm-8">
-                    <textarea rows="5" cols="65" ng-model="agent.rasa_nlu_pipeline" placeholder="Update Default pipeline."></textarea>
+                      <input type="text" autocomplete="off" class="form-control" ng-model="agent.rasa_nlu_pipeline" placeholder="NLU Pipeline Template">
                   </div>
                 </div>
                 <div class="form-group row">

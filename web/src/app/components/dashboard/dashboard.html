@@ -59,8 +59,8 @@
                                 <i class="fa fa-database bg-primary p-a-1 font-2xl m-r-1 pull-left"></i>
                             </div>
                             <div class="col-sm-9">
-                                <div class="h5 text-gray-dark m-b-0 m-t-h">{{ available_models.length }}</div>
-                                <div class="text-muted text-uppercase font-weight-bold font-xs">Available Models</div>
+                                <div class="h5 text-gray-dark m-b-0 m-t-h">{{ available_models.length }}/{{ loaded_models.length }}</div>
+                                <div class="text-muted text-uppercase font-weight-bold font-xs">Available / <a href="" data-toggle="tooltip" data-placement="top" title="Show Loaded Models" tooltip ng-click="showLoadedModels = !showLoadedModels" >Loaded</a></div>
                             </div>
                         </div>
                     </div>
@@ -69,24 +69,61 @@
         </div>
 
 
-        <div class="card" ng-controller="usageChartCtrl">
-            <div class="card-block">
-                <div class="row">
-                    <div class="col-sm-5">
-                        <h4 class="card-title mb-0">Usage</h4>
-                        <div class="small text-muted">Last 30 days</div>
+        <div class="row" style="padding-left:15px;padding-right:15px;">
+            <div class="card" ng-class="{'col-lg-8': showLoadedModels}" ng-controller="usageChartCtrl" style="width:100%">
+                <div class="card-block">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <h4 class="card-title mb-0">Usage</h4>
+                            <div class="small text-muted">Last 30 days</div>
+                        </div>
+                        <!--/.col-->
                     </div>
-                    <!--/.col-->
+                    <!--/.row-->
+                    <div class="chart-wrapper" style="height:300px;margin-top:40px;">
+                        <canvas class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="false" chart-series="series" chart-click="onClick"
+                            chart-options="options" chart-colors="colors" height="300"></canvas>
+                    </div>
                 </div>
-                <!--/.row-->
-                <div class="chart-wrapper" style="height:300px;margin-top:40px;">
-                    <canvas class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="false" chart-series="series" chart-click="onClick"
-                        chart-options="options" chart-colors="colors" height="300"></canvas>
+            </div>
+
+            <div class="col-lg-1" ng-if="showLoadedModels"></div>
+            
+            <div class="card col-xxs-12 col-xs-6 col-lg-3" style="max-height:425px; overflow:auto;" ng-if="showLoadedModels" >
+                <table class="table table-responsive-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="border-top: 0px; padding:1rem">
+                                <div class="row">
+                                    <div>Loaded Models</div>
+                                    <input id="modelFilter" autocomplete="off" class="filtertext float-right" type="text" name="search" ng-model="modelFilterText" placeholder="Filter Models..." style="width:35%; font-size:.3rem">
+                                </div>                                    
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr 
+                            style="font-size: .75rem"
+                            dir-paginate="model in loaded_models| filter:modelFilterText  | itemsPerPage: 5"
+                            pagination-id="modelsList"
+                        >
+                            <th scope="row">
+                                {{model.name}} | {{model.id}}
+                                <i ng-click="unloadLoadedModel(model)" confirm-click-title="Unload Loaded Model" confirm-click="Are you sure? This will unload {{model.name}}'s loaded model: {{model.id}}." class="fa fa-trash float-right" style="cursor: pointer;"></i>
+                            </th>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <br/>
+                <div style="float:right">
+                    <dir-pagination-controls
+                    pagination-id="modelsList"
+                    ></dir-pagination-controls>
                 </div>
             </div>
         </div>
-        <!--/.card-->
-
+        
     </div>
 
 

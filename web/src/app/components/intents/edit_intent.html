@@ -136,7 +136,7 @@
                     &nbsp;&nbsp;&nbsp;
                     <span class="float-right">
                     <label class="switch switch-default switch-pill switch-success" data-toggle="tooltip" data-placement="top" title="{{agent.endpoint_enabled == false?'Webhook Not Enabled At Agent. Please enable it to select this Option':'Select this Option to get response from an External API'}}" tooltip>
-                        <input id="endpoint_switch" type="checkbox" class="switch-input" ng-model="intent.endpoint_enabled" ng-checked="agent.endpoint_enabled" ng-disabled="agent.endpoint_enabled == false">
+                        <input id="endpoint_switch" type="checkbox" class="switch-input" ng-model="intent.endpoint_enabled" ng-disabled="agent.endpoint_enabled == false">
                         <span class="switch-label"></span>
                         <span class="switch-handle"></span>
                     </label>

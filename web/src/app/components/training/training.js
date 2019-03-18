@@ -35,19 +35,13 @@ function TrainingController(
   });
 
   $scope.train = function() {
-    let agentToTrain = window.objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
-    let dataToPost;
-
+    let agentToTrain = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
     let id = new XDate().toString('yyyyMMdd-HHmmss');
     reset();
     let modelName=agentToTrain.agent_name + "_" + id;
+    //Add pipeline and language
+    let dataToPost = { language:agentToTrain.rasa_nlu_language, pipeline:agentToTrain.rasa_nlu_pipeline, data:exportData };
 
-    // Add Custome Pipeline if available
-    if(agentToTrain.rasa_nlu_pipeline!=null && agentToTrain.rasa_nlu_pipeline !== '') {
-      dataToPost = { pipeline:agentToTrain.rasa_nlu_pipeline, data:exportData };
-    } else {
-      dataToPost = exportData;
-    }
     // Use Fixed model name if available
     if(agentToTrain.rasa_nlu_fixed_model_name!=null && agentToTrain.rasa_nlu_fixed_model_name !== ''){
       modelName = agentToTrain.rasa_nlu_fixed_model_name;
