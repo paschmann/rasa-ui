@@ -68,6 +68,7 @@ function trainRasaNlu(req, res, next) {
       req.query.name
   );
 
+  let nlu_pipeline;
   try {
     nlu_pipeline = JSON.parse(req.body.pipeline)
   } catch(err) {
