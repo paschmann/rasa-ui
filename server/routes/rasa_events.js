@@ -311,7 +311,7 @@ async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
         rasaCoreEvent.parse_data.entities
       );
       nluLogData.intent_confidence_pct =
-        rasaCoreEvent.parse_data.intent.confidence.toFixed(2) * 100;
+          Math.trunc((rasaCoreEvent.parse_data.intent.confidence * 100));
       nluLogData.user_response_time_ms = 0;
       nluLogData.nlu_response_time_ms = 0;
 
