@@ -65,8 +65,14 @@
                 ng-class="{'no-match': !message.intent_name }"
                 ng-click="editIntent(message)"
               >
-                <span ng-if="message.intent_name"
+                <span ng-if="message.intent_name && message.expression_id"
+                      style = "color:#437B09;"
                   >{{ message.intent_name | noUnderscore }}
+                  <img src="assets/img/edit.svg" class="icon" />
+                </span>
+                <span ng-if="message.intent_name && !message.expression_id"
+                      style = "color:#9013FE;"
+                >{{ message.intent_name | noUnderscore }}
                   <img src="assets/img/edit.svg" class="icon" />
                 </span>
                 <span ng-if="!message.intent_name"
