@@ -36,6 +36,7 @@
 */
 const db = require('../db/db');
 const logger = require('../util/logger');
+const amqp = require('amqplib/callback_api');
 
 async function insertNLUParseLogDB(nlulogData) {
   db.none(
@@ -241,6 +242,28 @@ async function logEventsRoute(req, res, next) {
   );
 }
 
+function startRabbitMQListener(){
+  logger.winston.info("Starting AMQP listener");
+  amqp.connect("amqp://"+global.rasacorerabbitmqhost, function (err, conn) {
+    conn.createChannel(function (err, ch) {
+        ch.consume(global.rasacorerabbitmqqueuename, function (msg) {
+            console.log(" [x] Received %s", msg.content.toString());
+            logEvents(
+              JSON.parse(msg.content.toString()),
+              function() {
+                logger.winston.info("SuccessFully inserted rasa event to DB");
+              },
+              function(err) {
+                logger.winston.error("Failed to inserted rasa event to DB");
+              }
+            );
+        }, {
+            noAck: true
+        });
+    });
+  });
+}
+
 async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
   const message = {};
   let nluLogData = null;
@@ -251,7 +274,9 @@ async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
     logger.winston.info('user or bot event');
     logger.winston.info(rasaCoreEvent);
 
-    message.timestamp = rasaCoreEvent['@timestamp'];
+    var event_timestamp = new Date(0);
+    event_timestamp.setUTCSeconds(rasaCoreEvent.timestamp);
+    message.timestamp = event_timestamp;
     message.user_id = rasaCoreEvent.sender_id;
 
     message.user_name = rasaCoreEvent.event;
@@ -318,5 +343,5 @@ async function logEvents(rasaCoreEvent, success_callback, failure_callback) {
 }
 
 module.exports = {
-  logEventsRoute
+  logEventsRoute, startRabbitMQListener
 };

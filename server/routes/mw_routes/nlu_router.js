@@ -61,9 +61,15 @@ function getRasaNluVersion(req, res, next) {
 function trainRasaNlu(req, res, next) {
   console.log("Rasa NLU Train Request -> " + global.rasanluendpoint + "/train?project=" + req.query.project + "&model=" + req.query.name);
 
-  var reqBody = YAML.stringify({
+  try {
+    nlu_pipeline = JSON.parse(req.body.pipeline)
+  } catch(err) {
+    nlu_pipeline = req.body.pipeline
+  }
+
+  var reqBody = JSON.stringify({
     language: req.body.language,
-    pipeline: req.body.pipeline,
+    pipeline: nlu_pipeline,
     data: req.body.data
   });
   logRequest(req, "train", {
@@ -77,7 +83,7 @@ function trainRasaNlu(req, res, next) {
       method: "POST",
       uri: global.rasanluendpoint + "/train?project=" + req.query.project + "&model=" + req.query.name,
       headers: {
-        'Content-Type': 'application/x-yml'
+        'Content-Type': 'application/json'
       },
       body: reqBody
     }, function (error, response, body) {
@@ -212,9 +218,10 @@ function finalizeCacheFlushToDbAndRespond(cacheKey, http_code, res, body) {
         nlu_parse_cache.user_message_ind = false;
 
         if (nlu_parse_cache.agent_id !== undefined) {
+          //insert user message and nlu classification
           db.any(
-              'insert into messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
-              ' values($(agent_id), $(user_id),$(user_name), $(message_text), $(message_rich), $(user_message_ind)) RETURNING messages_id',
+              'insert into messages(agent_id, user_id, user_name, message_text, user_message_ind, intent_id)' +
+              ' values($(agent_id), $(user_id),$(user_name), $(request_text), true, (SELECT intent_id FROM intents WHERE intent_name=$(intent_name) and agent_id=$(agent_id))) RETURNING messages_id',
               nlu_parse_cache
             )
             .then(function (returnData) {
@@ -230,6 +237,17 @@ function finalizeCacheFlushToDbAndRespond(cacheKey, http_code, res, body) {
                 })
                 .catch(function (err) {
                   logger.winston.info('Exception while inserting Parse log');
+                  logger.winston.info(err);
+                });
+                  //insert bot message
+                db.any(
+                  'insert into messages(agent_id, user_id, user_name, message_text, message_rich, user_message_ind)' +
+                  ' values($(agent_id), $(user_id),$(user_name), $(message_text), $(message_rich), false) RETURNING messages_id',
+                  nlu_parse_cache
+                ).then(function (returnData) {
+                  logger.winston.info('Message Inserter Successfully!!');
+                }).catch(function (err) {
+                  logger.winston.info('Exception in the DB log');
                   logger.winston.info(err);
                 });
             })

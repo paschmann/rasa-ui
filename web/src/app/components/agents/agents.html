@@ -19,7 +19,7 @@
             <div class="card-header" role="tab" id="headingOne">
               <span><a ng-href="#/agent/{{agent.agent_id}}">{{ agent.agent_name }}</a></span>
               <span class="float-right">
-                <a style="border:0; padding: 0.2rem;" class="btn btn-outline-secondary" href="/bot-demo?id={{agentEncoded(agent)}}" target="_blank" data-toggle="tooltip" data-placement="top" title="Demo your Bot!!" tooltip>
+                <a style="border:0; padding: 0.2rem;" class="btn btn-outline-secondary" ng-click="botDemoClick(agent)" target="_blank" data-toggle="tooltip" data-placement="top" title="Demo your Bot!!" tooltip>
                   <i class="fa fa-desktop fa-lg header-buttons"></i></a>
                 <a style="border:0; padding: 0.2rem;" class="btn btn-outline-secondary" data-toggle="collapse"
                   data-target="#agent_{{agent.agent_id}}" aria-expanded="true" aria-controls="collapseOne">
