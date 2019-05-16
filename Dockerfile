@@ -3,6 +3,7 @@ FROM mhart/alpine-node:10 as builder
 RUN apk add --no-cache make gcc g++ python
 COPY ./package*.json ./
 RUN npm install --production
+RUN npm install -g db-migrate
 
 FROM mhart/alpine-node:10
 

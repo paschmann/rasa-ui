@@ -50,6 +50,15 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const rasa_envents = require('./routes/rasa_events');
 
+const envGenerator = require('./envGenerator');
+envGenerator.createEnvFile(global.postgresserver);
+require('dotenv').config();
+
+/* migration setup */
+const dbMigrate = require('db-migrate').getInstance(true);
+
+dbMigrate.up();
+
 const db = require('./db/db');
 
 // Passport for Azure AD
