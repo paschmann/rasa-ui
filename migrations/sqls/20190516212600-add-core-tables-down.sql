@@ -1,0 +1,17 @@
+DROP TABLE messages_entities;
+DROP TABLE nlu_log;
+DROP TABLE core_parse_log;
+DROP TABLE nlu_parse_log;
+DROP TABLE messages;
+DROP TABLE parameters;
+DROP TABLE expressions;
+DROP TABLE responses;
+DROP TABLE actions;
+DROP TABLE response_type;
+DROP TABLE regex;
+DROP TABLE settings;
+DROP TABLE synonym_variant;
+DROP TABLE synonyms;
+DROP TABLE entities;
+DROP TABLE intents;
+DROP TABLE agents;

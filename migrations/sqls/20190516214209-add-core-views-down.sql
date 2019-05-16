@@ -1,0 +1,12 @@
+/* Views */
+DROP VIEW intents_most_used;
+DROP VIEW avg_nlu_response_times_30_days;
+DROP VIEW avg_user_response_times_30_days;
+DROP VIEW active_user_count_12_months;
+DROP VIEW active_user_count_30_days;
+DROP VIEW expression_parameters;
+DROP VIEW intent_usage_total;
+DROP VIEW unique_intent_entities;
+DROP VIEW intent_usage_by_day;
+DROP VIEW messages_expressions;
+DROP VIEW entities_parameters;
