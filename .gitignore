@@ -10,3 +10,6 @@ Jenkinsfile
 *.swp
 *.iml
 
+# env
+.env
+
