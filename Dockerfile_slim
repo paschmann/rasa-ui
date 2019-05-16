@@ -9,6 +9,7 @@ WORKDIR /usr/src/app
 # Installation
 ADD . .
 RUN npm install
+RUN npm install -g db-migrate
 
 EXPOSE 5001
 CMD [ "npm", "start" ]
