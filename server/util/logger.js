@@ -1,6 +1,4 @@
 const winston = require('winston');
-global.loglevel =
-  process.env.loglevel || process.env.npm_package_config_loglevel;
 
 class Logger {
   constructor(appliName) {

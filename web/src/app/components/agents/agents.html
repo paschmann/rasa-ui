@@ -1,12 +1,11 @@
-
 <ol class="breadcrumb" breadcrumb="">
   <li class="breadcrumb-item ng-scope active"><span>Agents</span>  </li>
-  <li> <input id="agentFilter" autocomplete="off" class="filtertext" type="text" name="search" ng-model="agentFilterText" placeholder="Filter Agent.."></li>
   <!-- Breadcrumb Menu-->
   <li class="breadcrumb-menu">
     <div class="btn-group" role="group">
-      <a class="btn btn-outline-secondary" href="#/agent/import"><i class="fa fa-upload"></i> &nbsp;Import Agent</a>
-      <a class="btn btn-outline-secondary" href="#/agent/add"><i class="icon-plus"></i> &nbsp;Add Agent</a>
+      <!-- <a class="btn btn-outline-secondary" href="#/agent/import"><i class="fa fa-upload"></i> &nbsp;Import Agent</a> -->
+      <a class="btn btn-outline-secondary" href="#/agent/add" data-toggle="tooltip"
+      data-placement="top" title="Click to Add a New Agent" tooltip><i class="icon-plus"></i></a>
     </div>
   </li>
 </ol>
@@ -17,10 +16,8 @@
         <div id="accordion" role="tablist">
           <div class="card" dir-paginate="agent in agentList| filter: agentFilterText | itemsPerPage: 7" pagination-id="agentsList">
             <div class="card-header" role="tab" id="headingOne">
-              <span><a ng-href="#/agent/{{agent.agent_id}}">{{ agent.agent_name }}</a></span>
+              <span><a ng-href="#/agent/{{ agent.agent_id }}">{{ agent.agent_name }}</a></span>
               <span class="float-right">
-                <a style="border:0; padding: 0.2rem;" class="btn btn-outline-secondary" ng-click="botDemoClick(agent)" target="_blank" data-toggle="tooltip" data-placement="top" title="Demo your Bot!!" tooltip>
-                  <i class="fa fa-desktop fa-lg header-buttons"></i></a>
                 <a style="border:0; padding: 0.2rem;" class="btn btn-outline-secondary" data-toggle="collapse"
                   data-target="#agent_{{agent.agent_id}}" aria-expanded="true" aria-controls="collapseOne">
                   <i class="fa fa-cog fa-lg header-buttons"></i></a>
@@ -29,80 +26,20 @@
             <div id="agent_{{agent.agent_id}}" class="collapse" role="tabpanel" aria-labelledby="headingOne"
               data-parent="#accordion">
               <div class="card-block">
-                <div class="form-group row">
-                  <label for="{{agent.agent_id}}_formGroupExampleInput1" class="col-sm-4 col-form-label">Name</label>
-                  <div class="col-sm-8">
-                    <input ng-model="agent.agent_name" autocomplete="off" type="text" class="form-control" id="{{agent.agent_id}}_formGroupExampleInput1"
+                <div class="form-group">
+                  <label for="{{agent.agent_id}}_formGroupInput1">Name</label>
+                  <input ng-model="agent.agent_name" autocomplete="off" type="text" class="form-control" id="{{agent.agent_id}}_formGroupInput1"
                       placeholder="Agent Name" value="{{ agent.agent_name }}">
-                  </div>
                 </div>
-                <div class="form-group row">
-                  <label for="{{agent.agent_id}}_formgroupClientSecret" class="col-sm-4 col-form-label">Client Secret</label>
-                  <div class="col-sm-8">
-                    <input type="text" class="form-control" disabled value="{{ agent.client_secret_key }}">
-                  </div>
+                <div class="form-group">
+                  <label for="{{agent.agent_id}}_formGroupInput2">Rasa Config</label>
+                  <input ng-model="agent.agent_config" autocomplete="off" type="text" class="form-control" id="{{agent.agent_id}}_formGroupInput2"
+                      placeholder="Agent Config" value="{{ agent.agent_config}}">
                 </div>
-                <div class="form-group row">
-                    <label for="{{agent.agent_id}}_formgroupnlupipeline" class="col-sm-4 col-form-label">NLU Language</label>
-                    <div class="col-sm-8">
-                        <input type="text" autocomplete="off" class="form-control" ng-model="agent.rasa_nlu_language">
-                    </div>
-                  </div>
-                <div class="form-group row">
-                  <label for="{{agent.agent_id}}_formgroupClientSecret" class="col-sm-4 col-form-label">NLU Fixed
-                    ModelName</label>
-                  <div class="col-sm-8">
-                    <input type="text" autocomplete="off" class="form-control" placeholder="Fixed Name for NLU Model" ng-model="agent.rasa_nlu_fixed_model_name" value="{{agent.rasa_nlu_fixed_model_name}}">
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label for="{{agent.agent_id}}_formgroupnlupipeline" class="col-sm-4 col-form-label">NLU Pipeline Template <br><a href="https://rasa.com/docs/nlu/choosing_pipeline/" target ="blank"><span style="font-size: x-small">How to Choose Pipeline >></span></a></label>
-                  <div class="col-sm-8">
-                      <input type="text" autocomplete="off" class="form-control" ng-model="agent.rasa_nlu_pipeline">
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label for="{{agent.agent_id}}_formgrouprasacoreenable" data-toggle="tooltip" data-placement="top" title="Enabling Rasa Core will provide Natural Language Dialogue Management capabilities. Your webhook will recieve v2 format request.More information can be found in the documents."
-                    tooltip class="col-sm-4 col-form-label">Rasa Core Enablement</label>
-                  <div class="col-sm-8">
-                    <span>
-                      <label class="switch switch-default switch-pill switch-success">
-                        <input type="checkbox" class="switch-input" ng-model="agent.rasa_core_enabled" ng-checked="agent.rasa_core_enabled">
-                        <span class="switch-label"></span>
-                        <span class="switch-handle"></span>
-                      </label>
-                    </span>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label for="{{agent.agent_id}}_formgroupservicefulfilment"  data-toggle="tooltip" data-placement="top" title="Enabling Rasa Core will provide Natural Language Dialogue Management capabilities. Your webhook will recieve v2 format request.More information can be found in the documents."
-                    tooltip class="col-sm-4 col-form-label">Service Fullfillment</label>
-                  <div class="col-sm-8">
-                    <label class="switch switch-default switch-pill switch-success">
-                      <input type="checkbox" class="switch-input" ng-model="agent.endpoint_enabled" ng-checked="agent.endpoint_enabled">
-                      <span class="switch-label"></span>
-                      <span class="switch-handle"></span>
-                    </label>
-                  </div>
-                </div>
-                <div ng-show="agent.endpoint_enabled">
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{agent.agent_id}}_formGroupExampleInput">Service URL</label>
-                    <input ng-model="agent.endpoint_url" type="url" class="form-control" id="{{agent.agent_id}}_formGroupExampleInput"
-                      placeholder="Service Endpoint URL">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{agent.agent_id}}_formAuthUserNameId">Basic Auth Username</label>
-                    <input ng-model="agent.basic_auth_username" type="text" class="form-control" id="{{agent.agent_id}}_formAuthUserNameId"
-                      placeholder="Basic Auth Username">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{agent.agent_id}}_formAuthPasswordId">Basic Auth Password</label>
-                    <input ng-model="agent.basic_auth_password" type="password" class="form-control" id="{{agent.agent_id}}_formAuthPasswordId"
-                      placeholder="Basic Auth Password">
-                  </div>
-                </div>
-                <div>
+                <div class="form-group">
+                  <label for="{{agent.agent_id}}_formGroupInput3">Name</label>
+                  <input ng-model="agent.output_folder" autocomplete="off" type="text" class="form-control" id="{{agent.agent_id}}_formGroupInput3"
+                      placeholder="Output Folder" value="{{ agent.output_folder }}">
                 </div>
               </div>
               <div class="card-footer">

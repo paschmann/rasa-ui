@@ -2,13 +2,15 @@ angular
 .module('app')
 .controller('RasaConfigController', RasaConfigController);
 
-function RasaConfigController($scope, $rootScope, Rasa_Config) {
+function RasaConfigController($scope, $rootScope) {
   loadConfig();
 
   function loadConfig() {
+    /*
     Rasa_Config.get().$promise.then(function(data) {
       $scope.config = data.toJSON();
     });
+    */
   }
   /* TODO: Future feature
   $scope.updateConfigParam = function(param_name) {

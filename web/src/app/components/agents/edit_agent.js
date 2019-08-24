@@ -1,46 +1,35 @@
 angular.module('app').controller('EditAgentController', EditAgentController);
 
-function EditAgentController(
-  $scope,
-  Agent,
-  Intents,
-  AgentEntities,
-  Actions,
-  AgentActions,
-  AgentSynonyms,
-  AgentRegex
-) {
+function EditAgentController($scope, Agent, Intents, AgentEntities, Actions, AgentActions, AgentSynonyms, AgentRegex) {
   Agent.get({ agent_id: $scope.$routeParams.agent_id }, function(data) {
     $scope.agent = data;
+    /* Core feature
     $scope.storiesList = [];
     parseStories(data.story_details);
+    */
   });
 
   Intents.query({ agent_id: $scope.$routeParams.agent_id }, function(data) {
     $scope.intentList = data;
   });
 
-  AgentEntities.query({ agent_id: $scope.$routeParams.agent_id }, function(
-    data
-  ) {
-    $scope.entitiesList = data;
-  });
-
-  AgentActions.query({ agent_id: $scope.$routeParams.agent_id }, function(
-    data
-  ) {
-    $scope.actionsList = data;
-  });
-
-  AgentSynonyms.query({ agent_id: $scope.$routeParams.agent_id }, function(
-    data
-  ) {
+  AgentSynonyms.query({ agent_id: $scope.$routeParams.agent_id }, function(data) {
     $scope.synonymsList = data;
   });
 
   AgentRegex.query({ agent_id: $scope.$routeParams.agent_id }, function(data) {
     $scope.regexList = data;
   });
+
+  AgentEntities.query({ agent_id: $scope.$routeParams.agent_id }, function(data) {
+    $scope.entitiesList = data;
+  });
+
+  /* Core feature 
+  AgentActions.query({ agent_id: $scope.$routeParams.agent_id }, function(data) {
+    $scope.actionsList = data;
+  });
+  */
 
   function parseStories(story_details) {
     if (angular.isUndefined(story_details) || story_details === null) return;

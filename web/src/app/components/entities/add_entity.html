@@ -1,5 +1,6 @@
 <ol class="breadcrumb">
-  <li class="breadcrumb-item"><a href="#/entities">Entities</a></li>
+  <li class="breadcrumb-item"><a href="#/agents">Agents</a></li>
+  <li class="breadcrumb-item"><a ng-href="#/agent/{{agent.agent_id}}">{{ agent.agent_name }}</a></li>
   <li class="breadcrumb-item active">Add Entity</li>
 </ol>
 <div class="container-fluid">
@@ -15,15 +16,11 @@
                       <div class="row">
                         <div class="col-sm-12">
                           <div class="form-group">
-                            <label class="form-control-label" for="formGroupEntityNameInputId" data-toggle="tooltip" data-placement="right" title="Name of the Entity. NLU uses this name in structured response" tooltip><sup>*</sup>Entity Name</label>
+                            <label class="form-control-label" for="formGroupEntityNameInputId" data-toggle="tooltip" data-placement="right" title="Name of the Entity. NLU uses this name in structured response" tooltip>Entity Name</label>
                             <input ng-model="formData.entity_name" type="text" class="form-control" id="formGroupEntityNameInputId" placeholder="Enter the entity name" required >
                           </div>
                           <div class="form-group">
-                            <label class="form-control-label" for="formAgentSelectId" data-toggle="tooltip" data-placement="right" title="To which Agent this entity belong to?" tooltip><sup>*</sup>Agent</label>
-                            <select name="agentSelect" id="agentSelectId" ng-options="agent.agent_name for agent in agentsList track by agent.agent_id " ng-model="formData.agent" class="form-control"></select>
-                          </div>
-                          <div class="form-group">
-                            <label class="form-control-label" for="formSlottypeId" data-toggle="tooltip" data-placement="right" title="*Required* Data Type of the slot if used in Rasa core. A custom one can also be entered here and made it available in rasa core environment. Select NOT_USED if you dont want rasaCore to poplate it." tooltip><sup>*</sup>Slot Data Type</label>
+                            <label class="form-control-label" for="formSlottypeId" data-toggle="tooltip" data-placement="right" title="*Required* Data Type of the slot if used in Rasa core. A custom one can also be entered here and made it available in rasa core environment. Select NOT_USED if you dont want rasaCore to poplate it." tooltip>Slot Data Type</label>
                             <input ng-model="formData.slot_data_type" class="form-control" id="formSlottypeId" type="text" list="slot_data_typesList" required/>
                               <datalist id="slot_data_typesList">
                                 <option>NOT_USED</option>

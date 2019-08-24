@@ -1,7 +1,92 @@
 const db = require('./db');
 const logger = require('../util/logger');
 
+function getAllAgents(req, res, next) {
+  logger.winston.info('Agent.getAllAgents');
+  db.all('select * from agents order by agent_id desc', function(err, data) {
+    if (err) {
+      logger.winston.info(err);
+    } else {
+      res.status(200).json(data);
+    }
+  });
+}
+
+function getSingleAgent(req, res, next) {
+  logger.winston.info('Agent.getSingleAgent');
+  db.get('select * from agents where agent_id = ?', req.params.agent_id, function(err, data) {
+    if (err) {
+      logger.winston.info(err);
+    } else {
+      res.status(200).json(data);
+    }
+  });
+}
+
+function createAgent(req, res, next) {
+  logger.winston.info('Agent.createAgent');
+  db.run('insert into agents(agent_name, agent_config, output_folder)' + 'values (?,?,?)', [req.body.agent_name, req.body.agent_config, req.body.output_folder], function(err) {
+    if (err) {
+      logger.winston.info("Error inserting a new record");
+    } else {
+      res.status(200).json({ status: 'success', message: 'Inserted' });
+    }
+  });
+}
+
+function updateAgent(req, res, next) {
+  logger.winston.info('Agent.updateAgent');
+  db.run('update agents set agent_name = ?, output_folder = ?, agent_config = ? where agent_id = ?', [req.body.agent_name, req.body.output_folder, req.body.agent_config, req.body.agent_id], function(err) {
+    if (err) {
+      logger.winston.info("Error updating the record");
+    } else {
+      res.status(200).json({ status: 'success', message: 'Updated' });
+    }
+  });
+}
+
+function removeAgent(req, res) {
+  logger.winston.info('Agent.updateAgent');
+  db.run('delete from agents where agent_id = ?', req.params.agent_id, function(err) {
+    if (err) {
+      logger.winston.info("Error removing the record");
+    } else {
+      res.status(200).json({ status: 'success', message: 'Removed' });
+    }
+  });
+}
+
+module.exports = {
+  getSingleAgent,
+  getAllAgents,
+  createAgent,
+  updateAgent,
+  removeAgent,
+  uploadAgentFromFile,
+  updateAgentStory
+};
+
+
+function updateAgentStory(req, res, next) {
+  logger.winston.info('Agent.updateAgentStory -- Not done');
+  /*
+  db.none('update agents set story_details=$2 where agent_id=$1', [
+    Number(req.body.agent_id),
+    req.body.story_details])
+    .then(function() {
+      res.status(200).json({
+        status: 'success',
+        message: 'Updated Story For Agent'});
+    })
+    .catch(function(err) {
+      return next(err);
+    });
+    */
+}
+
+
 function uploadAgentFromFile(req, res, next) {
+  /*
   logger.winston.info('On server request' + JSON.stringify(req.body));
 
   //agent, intent,expressions, entities, , parameters(expression id, entity id)
@@ -196,102 +281,6 @@ function uploadAgentFromFile(req, res, next) {
       logger.winston.info('Error occured. Rollbacking all: ' + error);
       return res.status(500).json({ Error: 'Error Occurred' });
     });
+    */
 }
 
-function getAllAgents(req, res, next) {
-  db.any('select * from agents order by agent_id desc')
-    .then(function(data) {
-      res.status(200).json(data);
-    })
-    .catch(function(err) {
-      return next(err);
-    });
-}
-
-function getSingleAgent(req, res, next) {
-  const agentID = Number(req.params.agent_id);
-  db.one('select * from agents where agent_id = $1', agentID)
-    .then(function(data) {
-      res.status(200).json(data);
-    })
-    .catch(function(err) {
-      return next(err);
-    });
-}
-
-function createAgent(req, res, next) {
-  logger.winston.info('Agent.createAgent');
-  db.none('insert into agents(agent_name)' + 'values($(agent_name))', req.body)
-    .then(function() {
-      res.status(200).json({
-        status: 'success',
-        message: 'Inserted'});
-    })
-    .catch(function(err) {
-      return next(err);
-    });
-}
-
-function updateAgent(req, res, next) {
-  logger.winston.info('Agent.updateAgent');
-  db.none(
-    'update agents set agent_name=$2, endpoint_enabled=$3, endpoint_url=$4, basic_auth_username=$5, basic_auth_password=$6, rasa_core_enabled=$7, rasa_nlu_pipeline=$8, rasa_nlu_fixed_model_name=$9, rasa_nlu_language=$10 where agent_id=$1',
-    [
-      Number(req.params.agent_id),
-      req.body.agent_name,
-      req.body.endpoint_enabled,
-      req.body.endpoint_url,
-      req.body.basic_auth_username,
-      req.body.basic_auth_password,
-      req.body.rasa_core_enabled, req.body.rasa_nlu_pipeline,req.body.rasa_nlu_fixed_model_name, req.body.rasa_nlu_language]
-  )
-    .then(function() {
-      res.status(200).json({
-        status: 'success',
-        message: 'Updated agent'});
-    })
-    .catch(function(err) {
-      console.log(err);
-      return next(err);
-    });
-}
-
-function removeAgent(req, res) {
-  const agentID = Number(req.params.agent_id);
-  db.result(
-    'delete from intents where agent_id = $1; delete from actions where agent_id = $1; delete from entities where agent_id = $1; delete from agents where agent_id = $1;',
-    agentID
-  )
-    .then(function(result) {
-      res.status(200).json({
-        status: 'success',
-        message: `Removed ${result.rowCount}`});
-    })
-    .catch(function(err) {
-      logger.winston.info('Error removeAgent:  ' + err);
-      return res.status(500).json({ 'Error removeAgent': err });
-    });
-}
-
-function updateAgentStory(req, res, next) {
-  logger.winston.info('Agent.updateAgentStory');
-  db.none('update agents set story_details=$2 where agent_id=$1', [
-    Number(req.body.agent_id),
-    req.body.story_details])
-    .then(function() {
-      res.status(200).json({
-        status: 'success',
-        message: 'Updated Story For Agent'});
-    })
-    .catch(function(err) {
-      return next(err);
-    });
-}
-module.exports = {
-  getSingleAgent,
-  getAllAgents,
-  createAgent,
-  updateAgent,
-  removeAgent,
-  uploadAgentFromFile,
-  updateAgentStory};

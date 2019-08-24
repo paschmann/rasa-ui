@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
-  <li class="breadcrumb-item"><a href="#/agents">Agents</a></li>
-  <li class="breadcrumb-item active">Add Agent</li>
+    <li class="breadcrumb-item"><a href="#/agents">Agents</a></li>
+    <li class="breadcrumb-item active">Add Agent</li>
 </ol>
 
 <div class="container-fluid">
@@ -8,27 +8,39 @@
         <div class="row">
             <div class="col-sm-12 col-lg-12">
                 <form ng-submit="addAgent()">
-                            <div class="card">
-                                <div class="card-header">
-                                    <strong>New Agent</strong>
-                                </div>
-                                <div class="card-block">
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <div class="form-group">
-                                                <label for="name">Name</label>
-                                                <input type="text" autocomplete="off" ng-model="formData.agent_name" class="form-control" id="name" placeholder="Enter the agent name">
-                                            </div>
-                                        </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>New Agent</strong>
+                        </div>
+                        <div class="card-block">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" autocomplete="off" ng-model="formData.agent_name"
+                                            class="form-control" id="name" placeholder="Enter the agent name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">Config</label>
+                                        <input type="text" autocomplete="off" ng-model="formData.agent_config"
+                                            class="form-control" id="agent_config" placeholder="Enter the agent configuration for Rasa">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">Output Folder</label>
+                                        <input type="text" autocomplete="off" ng-model="formData.output_folder"
+                                            class="form-control" id="output_folder" placeholder="Server output folder for trained models (models)">
                                     </div>
                                 </div>
-
-                            <div class="card-footer">
-                                    <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i> Save</button>
                             </div>
-                          </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i>
+                                Save</button>
+                        </div>
+                    </div>
                 </form>
             </div>
-          </div>
         </div>
-      </div>
+    </div>
+</div>

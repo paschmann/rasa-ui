@@ -3,15 +3,12 @@
   <li class="breadcrumb-item">
     <a href="#/agent/{{ agent.agent_id }}">{{ agent.agent_name }}</a>
   </li>
-  <li class="breadcrumb-item active">New Regex</li>
+  <li class="breadcrumb-item active">Add Regex</li>
 </ol>
 <div class="container-fluid">
   <div class="animated fadeIn">
     <div class="row">
       <div class="col-sm-12 col-lg-12">
-        <div class="alert alert-warning" role="alert">
-          NB* please note that currently, only ner_crf supports regex.
-        </div>
         <form ng-submit="addRegex()">
           <div class="card">
             <div class="card-header"><strong>New Regex</strong></div>

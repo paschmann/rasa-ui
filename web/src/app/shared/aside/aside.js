@@ -1,17 +1,7 @@
 angular.module('app').controller('AsideController', AsideController);
 
-function AsideController(
-  $scope,
-  $rootScope,
-  $interval,
-  $http,
-  Rasa_Config,
-  Rasa_Version,
-  Settings,
-  Rasa_Status,
-  appConfig
-) {
-  //$scope.test_text = 'I want italian food in new york';
+function AsideController($scope, $rootScope, $interval, $http, Rasa_Version, Settings, Rasa_Status, appConfig) {
+  $scope.test_text = 'I want italian food in new york';
   $scope.test_text_response = {};
   $rootScope.config = {}; //Initilize in case server is not online at startup
   let configcheck;
@@ -19,23 +9,17 @@ function AsideController(
   Rasa_Version.get().$promise.then(function(data) {
     $rootScope.rasa_version = data.version;
   });
+  
   executeRefreshSettings();
 
   function executeRefreshSettings() {
     Settings.query().$promise.then(function(data) {
       $rootScope.settings = data;
       for (let key in data) {
-        $rootScope.settings[data[key]['setting_name']] =
-          data[key]['setting_value'];
+        $rootScope.settings[data[key]['setting_name']] = data[key]['setting_value'];
       }
-      if (
-        $rootScope.settings['refresh_time'] !== '-1' &&
-        $rootScope.settings['refresh_time'] !== undefined
-      ) {
-        configcheck = $interval(
-          getRasaConfig,
-          Number($rootScope.settings['refresh_time'])
-        );
+      if ($rootScope.settings['refresh_time'] !== '-1' && $rootScope.settings['refresh_time'] !== undefined ) {
+        configcheck = $interval(getRasaConfig, Number($rootScope.settings['refresh_time']));
       }
       getRasaConfig();
     });
@@ -57,15 +41,20 @@ function AsideController(
 
   function getRasaConfig() {
     Rasa_Status.get(function(statusdata) {
-
-          $rootScope.config.server_model_dirs_array = window.getAvailableModels(
-            statusdata
-          );
-          if ($rootScope.config.server_model_dirs_array.length > 0) {
-            $rootScope.modelname =
-              $rootScope.config.server_model_dirs_array[0].name;
-          }
-    });
+        $rootScope.config.isonline = 1;
+          /* load models available to query
+            $rootScope.config.server_model_dirs_array = window.getAvailableModels(
+              statusdata
+            );
+            if ($rootScope.config.server_model_dirs_array.length > 0) {
+              $rootScope.modelname =
+                $rootScope.config.server_model_dirs_array[0].name;
+            }
+            */
+      }, function(error) {
+        // error handler
+        $rootScope.config.isonline = 0;
+      });
   }
   $scope.restartConversation = function() {
     $scope.test_text_response = {};
@@ -88,22 +77,16 @@ function AsideController(
     $scope.response_text = [];
     $scope.test_text_response = {};
     let reqMessage = {};
-    if ($scope.modelname === 'default*fallback') {
-      reqMessage = { q: $scope.test_text };
-    } else {
-      reqMessage = {
-        q: $scope.test_text,
-        project: $scope.modelname.split('*')[0],
-        model: $scope.modelname.split('*')[1]
-      };
-    }
-
+    
+    reqMessage = { text: $scope.test_text };
+    
+    //We should use the factory method for this?
     if ($scope.test_text) {
       //make a httpcall
       addOverlay();
       $http
         .post(
-          appConfig.api_endpoint_v2 + '/rasa/parse',
+          appConfig.api_endpoint_v2 + '/rasa/model/parse',
           JSON.stringify(reqMessage)
         )
         .then(

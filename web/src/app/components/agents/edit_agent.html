@@ -4,13 +4,9 @@
   <!-- Breadcrumb Menu-->
   <li class="breadcrumb-menu">
     <div class="btn-group" role="group">
-      <a
-        class="btn btn-outline-secondary"
-        ng-click="deleteAgent()"
-        confirm-click-title="Delete Agent"
-        confirm-click="Are you sure? This will delete the agent, all its intents, expressions, and resolved entities."
-        ><i class="icon-trash"></i> &nbsp;Delete Agent</a
-      >
+      <a class="btn btn-outline-secondary" ng-click="deleteAgent()" confirm-click-title="Delete Agent"
+        confirm-click="Are you sure? This will delete the agent, all its intents, expressions, and resolved entities."><i
+          class="icon-trash"></i> &nbsp;Delete Agent</a>
     </div>
   </li>
 </ol>
@@ -18,91 +14,62 @@
 <div class="container-fluid">
   <div class="animated fadeIn">
     <div class="row">
-      <div class="col-sm-6 col-lg-6">
+      <div class="col-sm-12 col-lg-12">
         <div class="card">
           <div class="card-header">
             <strong>Intents</strong>
-            <input id="agentFilter" style="width:30%" autocomplete="off" class="filtertext" type="text" name="search" ng-model="intentFilterText" placeholder="Filter Intents..">
+            <input id="agentFilter" style="width:30%" autocomplete="off" class="filtertext" type="text" name="search"
+              ng-model="intentFilterText" placeholder="Filter Intents..">
             <span class="float-right">
-              <a
-                class="btn btn-outline-primary"
-                href="#/agent/{{ agent.agent_id }}/intent/add"
-                data-toggle="tooltip"
-                data-placement="top"
-                title="Click to Add a New Intent"
-                tooltip
-                ><i class="icon-plus"></i> &nbsp;Add Intent</a
-              >
+              <a class="btn btn-ghost-primary" href="#/agent/{{ agent.agent_id }}/intent/add" data-toggle="tooltip"
+                data-placement="top" title="Click to Add a New Intent" tooltip><i class="icon-plus"></i></a>
             </span>
           </div>
           <div class="card-block">
             <div class="row">
               <div class="col-sm-12">
-                <div
-                  class="list-group"
-                  dir-paginate="intent in intentList| filter:intentFilterText  | itemsPerPage: 5"
-                  pagination-id="intentsList"
-                >
+                <div class="list-group" dir-paginate="intent in intentList| filter:intentFilterText  | itemsPerPage: 5"
+                  pagination-id="intentsList">
                   <div class="list-group-item">
-                    <a
-                      href="#/agent/{{ intent.agent_id }}/intent/{{
+                    <a href="#/agent/{{ intent.agent_id }}/intent/{{
                         intent.intent_id
-                      }}"
-                      >{{ intent.intent_name }}</a
-                    >
+                      }}">{{ intent.intent_name }}</a>
                   </div>
                 </div>
               </div>
             </div>
             <br />
             <div style="float:right">
-              <dir-pagination-controls
-                pagination-id="intentsList"
-              ></dir-pagination-controls>
+              <dir-pagination-controls pagination-id="intentsList"></dir-pagination-controls>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-sm-6 col-lg-6">
+      <div class="col-sm-12 col-lg-12">
         <div class="card">
           <div class="card-header">
             <strong>Entities</strong>
             <span class="float-right">
-              <a
-                class="btn btn-outline-primary"
-                href="#/agent/{{ agent.agent_id }}/entity/add"
-                data-toggle="tooltip"
-                data-placement="top"
-                title="Click to Add a New Entity"
-                tooltip
-                ><i class="icon-plus"></i> &nbsp;Add Entity</a
-              >
+              <a class="btn btn-ghost-primary" href="#/agent/{{ agent.agent_id }}/entity/add" data-toggle="tooltip"
+                data-placement="top" title="Click to Add a New Entity" tooltip><i class="icon-plus"></i></a>
             </span>
           </div>
           <div class="card-block">
             <div class="row">
               <div class="col-sm-12">
-                <div
-                  class="list-group"
-                  dir-paginate="entity in entitiesList  | itemsPerPage: 5"
-                  pagination-id="entitiesList"
-                >
+                <div class="list-group" dir-paginate="entity in entitiesList  | itemsPerPage: 5"
+                  pagination-id="entitiesList">
                   <div class="list-group-item">
-                    <a
-                      href="#/agent/{{ agent.agent_id }}/entity/{{
+                    <a href="#/agent/{{ agent.agent_id }}/entity/{{
                         entity.entity_id
-                      }}"
-                      >{{ entity.entity_name }}</a
-                    >
+                      }}">{{ entity.entity_name }}</a>
                   </div>
                 </div>
               </div>
             </div>
             <br />
             <div style="float:right">
-              <dir-pagination-controls
-                pagination-id="entitiesList"
-              ></dir-pagination-controls>
+              <dir-pagination-controls pagination-id="entitiesList"></dir-pagination-controls>
             </div>
           </div>
         </div>
@@ -114,41 +81,26 @@
           <div class="card-header">
             <strong>Synonyms</strong>
             <span class="float-right">
-              <a
-                class="btn btn-outline-primary"
-                href="#/agent/{{ agent.agent_id }}/synonyms/add"
-                data-toggle="tooltip"
-                data-placement="top"
-                title="Click to Add a New Synonym"
-                tooltip
-                ><i class="icon-plus"></i> &nbsp;Add Synonym</a
-              >
+              <a class="btn btn-ghost-primary" href="#/agent/{{ agent.agent_id }}/synonyms/add" data-toggle="tooltip"
+                data-placement="top" title="Click to Add a New Synonym" tooltip><i class="icon-plus"></i></a>
             </span>
           </div>
           <div class="card-block">
             <div class="row">
               <div class="col-sm-12">
-                <div
-                  class="list-group"
-                  dir-paginate="synonym in synonymsList  | itemsPerPage: 5"
-                  pagination-id="synonymsList"
-                >
+                <div class="list-group" dir-paginate="synonym in synonymsList  | itemsPerPage: 5"
+                  pagination-id="synonymsList">
                   <div class="list-group-item">
-                    <a
-                      href="#/agent/{{ agent.agent_id }}/synonym/{{
+                    <a href="#/agent/{{ agent.agent_id }}/synonym/{{
                         synonym.synonym_id
-                      }}"
-                      >{{ synonym.synonym_reference }}</a
-                    >
+                      }}">{{ synonym.synonym_reference }}</a>
                   </div>
                 </div>
               </div>
             </div>
             <br />
             <div style="float:right">
-              <dir-pagination-controls
-                pagination-id="synonymsList"
-              ></dir-pagination-controls>
+              <dir-pagination-controls pagination-id="synonymsList"></dir-pagination-controls>
             </div>
           </div>
         </div>
@@ -158,61 +110,35 @@
           <div class="card-header">
             <strong>Regex</strong>
             <span class="float-right">
-              <a
-                class="btn btn-outline-primary"
-                href="#/agent/{{ agent.agent_id }}/regex/add"
-                data-toggle="tooltip"
-                data-placement="top"
-                title="Click to Add a New Regex"
-                tooltip
-                ><i class="icon-plus"></i> &nbsp;Add Regex</a
-              >
+              <a class="btn btn-ghost-primary" href="#/agent/{{ agent.agent_id }}/regex/add" data-toggle="tooltip"
+                data-placement="top" title="Click to Add a New Regex" tooltip><i class="icon-plus"></i></a>
             </span>
           </div>
           <div class="card-block">
             <div class="row">
               <div class="col-sm-12">
-                <div
-                  class="list-group"
-                  dir-paginate="regex in regexList  | itemsPerPage: 5"
-                  pagination-id="regexList"
-                >
+                <div class="list-group" dir-paginate="regex in regexList  | itemsPerPage: 5" pagination-id="regexList">
                   <div class="list-group-item">
-                    <a
-                      href="#/agent/{{ agent.agent_id }}/regex/{{
+                    <a href="#/agent/{{ agent.agent_id }}/regex/{{
                         regex.regex_id
-                      }}"
-                      >{{ regex.regex_name }}</a
-                    >
+                      }}">{{ regex.regex_name }}</a>
                   </div>
                 </div>
               </div>
             </div>
             <br />
             <div style="float:right">
-              <dir-pagination-controls
-                pagination-id="regexList"
-              ></dir-pagination-controls>
+              <dir-pagination-controls pagination-id="regexList"></dir-pagination-controls>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-sm-12 col-lg-12">
-        <div
-          id="headerInfo"
-          class="alert alert-warning"
-          role="alert"
-          style="text-align:center"
-        >
-          <b>Rasa Core Configurations</b>
-        </div>
-      </div>
-    </div>
+
+    <!-- Rasa Core
     <div class="row">
       <div class="col-sm-6 col-lg-6">
-        <div class="card border-warning">
+        <div class="card">
           <div
             class="card-header"
             data-toggle="tooltip"
@@ -225,7 +151,7 @@
             <span class="float-right">
               <button
                 type="button"
-                class="btn btn-outline-primary"
+                class="btn btn-ghost-primary"
                 data-toggle="modal"
                 data-target="#modal-add-actions"
               >
@@ -262,12 +188,12 @@
         </div>
       </div>
       <div class="col-sm-6 col-lg-6">
-        <div class="card border-warning">
+        <div class="card">
           <div class="card-header">
             <strong>Stories</strong>
             <span class="float-right">
               <a
-                class="btn btn-outline-primary"
+                class="btn btn-ghost-primary"
                 href="#/agent/{{ agent.agent_id }}/stories"
                 data-toggle="tooltip"
                 data-placement="top"
@@ -298,62 +224,41 @@
           </div>
         </div>
       </div>
-    </div>
+    -->
   </div>
+</div>
 
-  <div
-    class="modal fade"
-    id="modal-add-actions"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="addActionsModelLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="actionsModelLabel">Add Action</h5>
-          <button
-            type="button"
-            class="close"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <form name="actionsForm" novalidate>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="form-group">
-                  <label for="action-name" class="form-control-label"
-                    >Action Name:</label
-                  >
-                  <div class="input-group">
-                    <input
-                     autocomplete="off" type="text"
-                      class="form-control"
-                      id="action-name"
-                      ng-model="form.action_name"
-                      required
-                    />
-                  </div>
+<div class="modal fade" id="modal-add-actions" tabindex="-1" role="dialog" aria-labelledby="addActionsModelLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="actionsModelLabel">Add Action</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form name="actionsForm" novalidate>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="action-name" class="form-control-label">Action Name:</label>
+                <div class="input-group">
+                  <input autocomplete="off" type="text" class="form-control" id="action-name"
+                    ng-model="form.action_name" required />
                 </div>
               </div>
             </div>
           </div>
-          <div class="modal-footer">
-            <button
-              class="btn btn-primary"
-              ng-click="addAction(form,agent)"
-              ng-disabled="actionsForm.$invalid"
-            >
-              Submit
-            </button>
-          </div>
-        </form>
-      </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" ng-click="addAction(form,agent)" ng-disabled="actionsForm.$invalid">
+            Submit
+          </button>
+        </div>
+      </form>
     </div>
   </div>
+</div>
 </div>

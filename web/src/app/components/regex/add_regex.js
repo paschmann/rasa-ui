@@ -10,12 +10,8 @@ function AddRegexController($rootScope,$scope, Regex, Agent, $location) {
     Regex.save(this.formData).$promise.then(function(resp) {
       $scope.formData.regex_name = '';
       $scope.formData.regex_pattern = '';
-      if (resp.regex_id) {
-        $rootScope.$broadcast('setAlertText', "Regex added Sucessfully!!");
-        $location.path(
-          `/agent/${$scope.$routeParams.agent_id}`
-        );
-      }
+      $rootScope.$broadcast('setAlertText', "Regex added sucessfully!");
+      $scope.go('/agent/' + $scope.agent.agent_id);
     });
   };
 }

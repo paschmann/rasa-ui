@@ -1,28 +1,40 @@
 angular.module('app').controller('DashboardController', DashboardController);
 
 function DashboardController($scope, $http, Rasa_Status, NLU_log_stats, appConfig) {
-  $scope.showLoadedModels = false;
+  //$scope.showLoadedModels = false;
   getRasaStatus();
-  getIntentUsageTotalStatus();
+  //getIntentUsageTotalStatus();
+  getTotalLogEntries();
   getRequestUsageTotalStatus();
+
+  function getRequestUsageTotalStatus() {
+    NLU_log_stats.get({ path: 'request_usage_total' }, function(data) {
+      $scope.request_processed = data.total_request_usage;
+    });
+  }
+
+  function getTotalLogEntries() {
+    NLU_log_stats.get({ path: 'total_log_entries' }, function(data) {
+      $scope.total_log_entries = data.total_log_entries;
+    });
+  }
 
   function getRasaStatus() {
     Rasa_Status.get(function(data) {
-      $scope.trainings_under_this_process = window.getNoOfTrainingJobs(data);
-      $scope.available_models = window.getAvailableModels(data);
-      $scope.loaded_models = window.getLoadedModels(data);
+      $scope.model_file = data.model_file;
+      $scope.trained_at = window.timeConverter(data.fingerprint.trained_at);
+      
+      //$scope.trainings_under_this_process = window.getNoOfTrainingJobs(data);
+      //$scope.available_models = window.getAvailableModels(data);
+      //$scope.loaded_models = window.getLoadedModels(data);
     });
   }
 
-  function getRequestUsageTotalStatus() {
-    NLU_log_stats.query({ path: 'request_usage_total' }, function(data) {
-      $scope.request_processed = data[0].count;
-    });
-  }
-
+  /*
+  //Not able to due to DB changes?
   function getIntentUsageTotalStatus() {
-    NLU_log_stats.query({ path: 'intent_usage_total' }, function(data) {
-      $scope.intents_processed = data[0].count;
+    NLU_log_stats.get({ path: 'intent_usage_total' }, function(data) {
+      $scope.intents_processed = data.intent_usage;
     });
   }
 
@@ -39,4 +51,5 @@ function DashboardController($scope, $http, Rasa_Status, NLU_log_stats, appConfi
       }
     );
   }
+  */
 }

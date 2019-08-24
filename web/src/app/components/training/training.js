@@ -1,28 +1,12 @@
 angular.module('app').controller('TrainingController', TrainingController);
 
-function TrainingController(
-  $scope,
-  $rootScope,
-  $interval,
-  $http,
-  Rasa_Status,
-  Agent,
-  AgentRegex,
-  ExpressionParameters,
-  Rasa_Config,
-  IntentExpressions,
-  yaml,
-  AgentEntities,
-  AgentActions,
-  AgentSynonyms,
-  SynonymsVariants,
-  appConfig
-) {
-  let exportData;
+function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Agent, AgentRegex, ExpressionParameters, IntentExpressions, yaml, AgentEntities, AgentActions, AgentSynonyms, SynonymsVariants, appConfig) {
   let statuscheck = $interval(getRasaStatus, 5000);
+  let exportData;
   $scope.generateError = '';
   $scope.toLowercase = false;
   $scope.message = '';
+  $scope.raw_data = '';
 
   getRasaStatus();
 
@@ -34,8 +18,33 @@ function TrainingController(
     $scope.agentList = data;
   });
 
+  $scope.trainUsingRaw = function() {
+    //Working text: {"config":"language: en\npipeline: supervised_embeddings", "nlu": "## intent:greet \n- hey \n- hello \n ## intent:goodbye \n- cu \n- goodbye", "out": "models", "force": false }
+    //Need to figure out how to query and load/unload models after training them
+    $rootScope.trainings_under_this_process = 1;
+    $http.post(appConfig.api_endpoint_v2 + "/model/train", JSON.parse($scope.raw_data)).then(
+        function(response){
+          $scope.message = "Training for " + "test" + " completed successfully";
+          $rootScope.trainings_under_this_process = 0;
+        },
+        function(err) {
+          $scope.generateError = JSON.stringify(err.data.errorBody);
+          $rootScope.trainings_under_this_process = 0;
+        }
+      );
+
+  }
+
+
+
+
+
+
+
+
+
   $scope.train = function() {
-    let agentToTrain = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
+    
     let id = new XDate().toString('yyyyMMdd-HHmmss');
     reset();
     let modelName=agentToTrain.agent_name + "_" + id;
@@ -327,14 +336,7 @@ function TrainingController(
     });
   }
 
-  function generateData(
-    regex,
-    intents,
-    expressions,
-    params,
-    synonyms,
-    variants
-  ) {
+  function generateData(regex, intents, expressions, params, synonyms, variants) {
     let tmpData = {};
     let tmpIntent = {};
     let tmpExpression = {};
@@ -455,12 +457,20 @@ function TrainingController(
       delete tmpData.rasa_nlu_data.common_examples[i].expression_id;
     }
 
+    let agentToTrain = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
+
+    let dataToPost = {};
+    dataToPost.config = agentToTrain.agent_config;
+    dataToPost.out = agentToTrain.output_folder;
+    dataToPost.nlu = tmpData;
+
     exportData = tmpData;
     $scope.exportdata = tmpData;
+    $scope.raw_data = JSON.stringify(dataToPost);
     $scope.generateError = '';
   }
 
-  function getRasaStatus() {
+  function getRasaStatus() { //? We already have this?
     Rasa_Status.get(function(statusdata) {
       try {
         $rootScope.config.isonline = 1;

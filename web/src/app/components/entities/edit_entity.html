@@ -1,10 +1,7 @@
 <ol class="breadcrumb" breadcrumb="">
   <li class="breadcrumb-item"><a href="#/agent">Agents</a></li>
-  <li class="breadcrumb-item">
-    <a href="#/agent/{{ entity.agent.agent_id }}">{{
-      entity.agent.agent_name
-    }}</a>
-  </li>
+  <li class="breadcrumb-item"><a href="#/agent/{{ entity.agent.agent_id }}">{{ entity.agent.agent_name }}</a></li>
+  <li class="breadcrumb-item active">{{ entity.entity_name }}</li>
 
   <li class="breadcrumb-menu">
     <div class="btn-group" role="group">
@@ -30,7 +27,7 @@
             data-placement="right"
             title="Name of the Entity. NLU uses this name in structured response"
             tooltip
-            ><sup>*</sup>Entity Name</label
+            >Entity Name</label
           >
           <input
             ng-model="entity.entity_name"
@@ -44,30 +41,12 @@
         <div class="form-group">
           <label
             class="form-control-label"
-            for="formAgentSelectId"
-            data-toggle="tooltip"
-            data-placement="right"
-            title="To which Agent this entity belong to?"
-            tooltip
-            ><sup>*</sup>Agent</label
-          >
-          <select
-            name="agentSelect"
-            id="agentSelectId"
-            ng-options="agent.agent_name for agent in agentsList track by agent.agent_id "
-            ng-model="entity.agent"
-            class="form-control"
-          ></select>
-        </div>
-        <div class="form-group">
-          <label
-            class="form-control-label"
             for="formSlottypeId"
             data-toggle="tooltip"
             data-placement="right"
             title="*Required* Data Type of the slot if used in Rasa core. A custom one can also be entered here and made it available in rasa core environment. Select NOT_USED if you dont want rasaCore to poplate it."
             tooltip
-            ><sup>*</sup>Slot Data Type</label
+            >Slot Data Type</label
           >
           <input
             ng-model="entity.slot_data_type"

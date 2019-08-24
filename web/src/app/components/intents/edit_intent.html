@@ -5,7 +5,7 @@
   <li class="breadcrumb-item">
     <a ng-href="#/agent/{{agent.agent_id}}">{{ agent.agent_name }} </a>
   </li>
-  <li class="breadcrumb-item active">Intents Details</li>
+  <li class="breadcrumb-item active">{{intent.intent_name}}</li>
   <!-- Breadcrumb Menu-->
   <li class="breadcrumb-menu">
     <div class="btn-group" role="group">
@@ -25,9 +25,15 @@
             </div>
             <div class="card-block">
               <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-10">
                   <div class="form-group">
-                    <input ng-model="intent.intent_name" type="text" class="form-control" value="{{intent.intent_name}}" placeholder="Service Endpoint URL">
+                    <input ng-model="intent.intent_name" type="text" class="form-control" value="{{intent.intent_name}}">
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <button type="submit" class="btn btn-sm btn-primary" ng-click="updateIntentNameAndWebhook(intent)">
+                    <i class="fa fa-dot-circle-o"></i> Save</button>
                   </div>
                 </div>
               </div>
@@ -121,61 +127,5 @@
         </div>
       </div>
     </div>
-
-    <div class="row">
-      <div class="col-sm-12 col-lg-12">
-        <form>
-          <div class="card">
-            <div class="card-header">
-              <strong>Intent Reponses (Optional)</strong>
-            </div>
-
-            <div class="card-block">
-                <div class="form-check">
-                    <strong data-toggle="tooltip" data-placement="top" title="Ability to fetch data from External Server API." tooltip>Enable webhook</strong>
-                    &nbsp;&nbsp;&nbsp;
-                    <span class="float-right">
-                    <label class="switch switch-default switch-pill switch-success" data-toggle="tooltip" data-placement="top" title="{{agent.endpoint_enabled == false?'Webhook Not Enabled At Agent. Please enable it to select this Option':'Select this Option to get response from an External API'}}" tooltip>
-                        <input id="endpoint_switch" type="checkbox" class="switch-input" ng-model="intent.endpoint_enabled" ng-disabled="agent.endpoint_enabled == false">
-                        <span class="switch-label"></span>
-                        <span class="switch-handle"></span>
-                    </label>
-                    </span>
-                </div>
-                <hr>
-                <div class="form-check">
-                    <strong data-toggle="tooltip" data-placement="top" title="Send one of the Random Static response. If webhook is enabled, these will be ignored." tooltip>Static Responses</strong>
-                    <br><br>
-                    <input autocomplete="off" type="text" ng-model="formData.response_text" class="form-control" id="response_text" placeholder="Enter a response text and press enter" ng-keyup="$event.keyCode == 13 && saveNewResponse($event)">
-                    <ul class="list-group" ng-hide="responses.length == 0" style="margin-top: 20px;">
-                      <li class="list-group-item" ng-repeat="response in responses track by response.response_id">
-                        <span ng-bind-html="response.response_text | trusted"></span>
-                        <span class="float-right">
-                          <button type="button" class="btn btn btn-outline-danger" confirm-click-title="Delete Response" confirm-click="Are you sure? This will delete the response." ng-click="deleteResponse(response.response_id)">
-                            <span class="icon-trash"></span>
-                          </button>
-                        </span>
-                      </li>
-                    </ul>
-                </div>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-12 col-lg-12">
-        <form>
-          <div class="card">
-            <div class="card-block">
-              <button type="submit" class="btn btn-sm btn-primary" ng-click="updateIntentNameAndWebhook(intent)">
-                <i class="fa fa-dot-circle-o"></i> Save</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
 </div>
 </div>

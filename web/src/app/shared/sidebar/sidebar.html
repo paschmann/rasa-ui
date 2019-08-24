@@ -1,92 +1,49 @@
 <div class="sidebar" ng-controller="SideBarController">
   <nav class="sidebar-nav">
     <ul class="nav">
-      <!--
-            <li class="nav-item">
-              <a class="nav-link" ng-class="{active: $route.current.activePage == 'dashboard'}" href="#/dashboard"><i class="icon-speedometer"></i> Dashboard </a>
-              <select ng-options="model.name as model.name for model in $root.config.server_model_dirs_array" ng-model="modelname" class="nav-link"></select>
-            </li>
-          -->
       <li class="nav-item">
-        <a
-          class="nav-link"
-          ng-class="{active: $route.current.activePage == 'dashboard'}"
-          href="#/dashboard"
-          ><i class="icon-speedometer"></i> Dashboard
+        <a class="nav-link" ng-class="{active: $route.current.activePage == 'dashboard'}" href="#/dashboard"><i
+            class="icon-speedometer"></i> Dashboard
         </a>
       </li>
 
       <li class="nav-title">Interface</li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          ng-class="{active: $route.current.activePage == 'agents'}"
-          href="#/agents"
-          ><i class="icon-people"></i> Agents</a
-        >
+        <a class="nav-link" ng-class="{active: $route.current.activePage == 'agents' || $route.current.activePage == 'agent'}" href="#/agents"><i
+            class="icon-people"></i> Agents</a>
       </li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          ng-class="{active: $route.current.activePage == 'training'}"
-          href="#/training"
-          ><i class="icon-graduation"></i> Training</a
-        >
+        <a class="nav-link" ng-class="{active: $route.current.activePage == 'training'}" href="#/training"><i
+            class="icon-graduation"></i> Training</a>
       </li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          ng-class="{active: $route.current.activePage == 'settings'}"
-          href="#/settings"
-          ><i class="icon-settings"></i> Settings</a
-        >
+        <a class="nav-link" ng-class="{active: $route.current.activePage == 'settings'}" href="#/settings"><i
+            class="icon-settings"></i> Settings</a>
       </li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          ng-class="{active: $route.current.activePage == 'insights'}"
-          href="#/insights"
-          ><i class="fa fa-chart-bar"></i> Insights</a
-        >
+        <a class="nav-link" ng-class="{active: $route.current.activePage == 'insights'}" href="#/insights"><i
+            class="fa fa-chart-bar"></i> Insights</a>
       </li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          ng-class="{active: $route.current.activePage == 'history'}"
-          href="#/history"
-          ><i class="fa fa-comments"></i> Conversations</a
-        >
+        <a class="nav-link" ng-class="{active: $route.current.activePage == 'history'}" href="#/history"><i
+            class="fa fa-comments"></i> Conversations</a>
       </li>
       <li class="divider"></li>
 
-      <!--
-            <li class="nav-title">
-                Integration
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" ng-class="{active: $route.current.activePage == 'api'}" href="#/logs"><i class="icon-list"></i> API</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" ng-class="{active: $route.current.activePage == 'chat'}" href="#/logs"><i class="icon-list"></i> Chat</a>
-            </li>
-          -->
-
       <li class="nav-title">Rasa Components</li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          ng-class="{active: $route.current.activePage == 'logs'}"
-          href="#/logs"
-          ><i class="icon-list"></i> Logs</a
-        >
+        <a class="nav-link" ng-class="{active: $route.current.activePage == 'logs'}" href="#/logs"><i
+            class="icon-list"></i> Logs</a>
       </li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          ng-class="{active: $route.current.activePage == 'config'}"
-          href="#/rasaconfig"
-          ><i class="icon-wrench"></i> Configuration</a
-        >
+        <a class="nav-link" ng-class="{active: $route.current.activePage == 'config'}" href="#/rasaconfig"><i
+            class="icon-wrench"></i> Configuration</a>
+      </li>
+
+      <li class="nav-title">&nbsp;</li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" ng-click="logout()"><i
+            class="icon-logout"></i> Logout</a>
       </li>
     </ul>
   </nav>

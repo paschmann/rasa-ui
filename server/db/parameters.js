@@ -1,112 +1,106 @@
 const db = require('./db');
 const logger = require('../util/logger');
 
+/*
 function getSingleParameter(req, res, next) {
-  const parameterID = Number(req.params.parameter_id);
-  db.one('select * from parameters where parameter_id = $1', parameterID)
-    .then(function(data) {
-      res.status(200).json(data);
-    })
-    .catch(function(err) {
-      return next(err);
-    });
+  logger.winston.info('parameters.getSingleParameter');
+  const parameterID = req.params.parameter_id;
+
+  const data = db.get('parameters')
+    .filter({ parameter_id: parameterID })
+    .value()
+  res.status(200).json(data);
 }
 
-function getIntentParameters(req, res, next) {
-  logger.winston.info('parameters.getExpressionParameters');
-  const intentId = Number(req.params.intent_id);
-  db.any('select * from expression_parameters where intent_id = $1', intentId)
-    .then(function(data) {
-      res.status(200).json(data);
-    })
-    .catch(function(err) {
-      return next(err);
+function removeParameter(req, res, next) {
+  const parameterID = req.params.parameter_id;
+
+  db.get('parameters')
+    .remove({ parameter_id: parameterID })
+    .write()
+    
+    res.status(200).json({
+        status: 'success',
+        message: 'Removed'
     });
 }
+*/
 
 function getExpressionParametersQuery(req, res, next) {
   logger.winston.info('parameters.getExpressionParametersQuery');
   const expressionIds = req.query.expression_ids;
-  const sql = `select * from expression_parameters where expression_id in (${expressionIds})`;
-  db.any(sql)
-    .then(function(data) {
+  db.all('select * from expression_parameters where expression_id in (?)', expressionIds, function(err, data) {
+    if (err) {
+      logger.winston.info(err);
+    } else {
       res.status(200).json(data);
-    })
-    .catch(function(err) {
-      return next(err);
-    });
+    }
+  });
+  
 }
 
-function updateParameter(req, res, next) {
-  logger.winston.info('parameters.updateParameter');
-  db.none('update parameters set entity_id=$1 where parameter_id=$2', [
-    req.body.entity_id,
-    Number(req.params.parameter_id)])
-    .then(function() {
-      res.status(200).json({
-        status: 'success',
-        message: 'Updated parameter'});
-    })
-    .catch(function(err) {
-      return next(err);
-    });
+function getIntentParameters(req, res, next) {
+  logger.winston.info('parameters.getIntentParameters');
+  db.all('select * from expression_parameters where intent_id = ?', req.params.intent_id, function(err, data) {
+    if (err) {
+      logger.winston.info(err);
+    } else {
+      res.status(200).json(data);
+    }
+  });
 }
 
 function getExpressionParameters(req, res, next) {
   logger.winston.info('parameters.getExpressionParameters');
-  const expressionId = Number(req.params.expression_id);
-  db.any(
-    'select * from expression_parameters where expression_id = $1',
-    expressionId
-  )
-    .then(function(data) {
+  db.all('select * from expression_parameters where expression_id = ?', req.params.expression_id, function(err, data) {
+    if (err) {
+      logger.winston.info(err);
+    } else {
       res.status(200).json(data);
-    })
-    .catch(function(err) {
-      return next(err);
-    });
+    }
+  });
 }
 
 function createExpressionParameter(req, res, next) {
   logger.winston.info('parameters.createExpressionParameter');
-  if (!req.body.entity_id) {
-    req.body.entity_id = null;
-  }
-  db.any(
-    'insert into parameters (expression_id, parameter_end, parameter_start, parameter_value, entity_id)' +
-      'values($(expression_id), $(parameter_end), $(parameter_start), $(parameter_value), $(entity_id))',
-    req.body
-  )
-    .then(function() {
-      res.status(200).json({
-        status: 'success',
-        message: 'Inserted'});
-    })
-    .catch(function(err) {
-      return next(err);
-    });
+  db.run('insert into expression_parameters(expression_id, parameter_start, parameter_end, parameter_value, intent_id)' + 'values (?,?,?,?,?)', [req.body.expression_id, req.body.parameter_start, req.body.parameter_end, req.body.parameter_value, req.body.intent_id], function(err) {
+    if (err) {
+      logger.winston.info("Error inserting a new record");
+    } else {
+      res.status(200).json({ status: 'success', message: 'Inserted' });
+    }
+  });
 }
 
-function removeParameter(req, res, next) {
-  const parameterId = Number(req.params.parameter_id);
-  db.result('delete from parameters where parameter_id = $1', parameterId)
-    .then(function(result) {
-      /* jshint ignore:start */
-      res.status(200).json({
-        status: 'success',
-        message: `Removed ${result.rowCount}`});
-      /* jshint ignore:end */
-    })
-    .catch(function(err) {
-      return next(err);
-    });
+function updateParameter(req, res, next) {
+  //Sets the entity once a new parameter has been created
+  logger.winston.info('parameters.updateParameter');
+  db.run('update expression_parameters set entity_id = ? where parameter_id = ?', [req.body.entity_id, req.body.parameter_id], function(err) {
+    if (err) {
+      logger.winston.info("Error updating the record");
+    } else {
+      res.status(200).json({ status: 'success', message: 'Updated' });
+    }
+  });
+}
+
+function removeExpressionParameter(req, res, next) {
+  db.run('delete from expression_parameters where parameter_id = ?', req.params.parameter_id, function(err) {
+    if (err) {
+      logger.winston.info("Error removing the record");
+    } else {
+      res.status(200).json({ status: 'success', message: 'Removed' });
+    }
+  });
 }
 
 module.exports = {
-  getSingleParameter,
+  //getSingleParameter,
   getExpressionParameters,
   getIntentParameters,
   createExpressionParameter,
-  removeParameter,
+  removeExpressionParameter,
+  //removeParameter,
   updateParameter,
-  getExpressionParametersQuery};
+  getExpressionParametersQuery
+};

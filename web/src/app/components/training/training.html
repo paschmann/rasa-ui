@@ -29,6 +29,26 @@
           </div>
         </div>
 
+        <div class="row">
+        <div class="col-sm-12">
+          <div class="card">
+              <div class="card-header">
+                  <strong>Raw Training Data</strong>
+              </div>
+              <div class="card-block" style="min-height:400px;max-height:400px;overflow-y:scroll">
+              <div>
+                <textarea rows="10" cols="150" ng-model="raw_data">
+                  {{ raw_data }}
+                </textarea>
+              </div>
+              <div class="card-footer">
+                  <button type="button" class="btn btn-success" ng-show="exportdata !== undefined" ng-click="trainUsingRaw()"><i class="fa fa-magic"></i>&nbsp; Start Training</button>
+                  <button type="button" class="btn btn-secondary" ng-show="exportdata !== undefined" ng-click="saveRawToFile()"><i class="fa fa-file"></i>&nbsp; Download File</button>
+                  <a href="" id="a"></a>
+                </div>
+          </div>
+        </div>
+
         <div class="row"  ng-show="exportdata !== undefined">
           <div class="col-sm-6">
             <div class="card">

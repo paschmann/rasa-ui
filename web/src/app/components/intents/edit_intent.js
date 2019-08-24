@@ -1,27 +1,11 @@
 angular.module('app').controller('EditIntentController', EditIntentController);
 
-function EditIntentController(
-  $rootScope,
-  $scope,
-  Agent,
-  AgentEntities,
-  Intent,
-  Expressions,
-  Expression,
-  Parameter,
-  Parameters,
-  Entities,
-  UniqueIntentEntities,
-  Responses,
-  Response
-) {
+function EditIntentController($rootScope, $scope, Agent, AgentEntities, Intent, Expressions, Expression, Parameter, Parameters, Entities, Responses, Response) {
   Agent.get({ agent_id: $scope.$routeParams.agent_id }, function(data) {
     $scope.agent = data;
   });
 
-  AgentEntities.query({ agent_id: $scope.$routeParams.agent_id }, function(
-    data
-  ) {
+  AgentEntities.query({ agent_id: $scope.$routeParams.agent_id }, function(data) {
     $scope.entityList = data;
   });
 
@@ -30,21 +14,42 @@ function EditIntentController(
   });
 
   loadExpressions();
-  loadResponses();
-  loadUniqueIntentEntities();
+
+  //loadResponses(); <-- Not going to be used?
 
   function loadExpressions() {
-    Expressions.query({ intent_id: $scope.$routeParams.intent_id }, function(
-      data
-    ) {
+    Expressions.query({ intent_id: $scope.$routeParams.intent_id }, function(data) {
       $scope.expressionList = data;
-      loadParameters();
+      loadExpressionParameters();
     });
   }
-  function loadResponses() {
-    Responses.query({ intent_id: $scope.$routeParams.intent_id }, function(
+
+  function loadExpressionParameters() {
+    Parameters.query({ intent_id: $scope.$routeParams.intent_id }, function(
       data
     ) {
+      $scope.parameterList = data;
+      $scope.parameterFilterList = data;
+      //Loop through each parameter and highlight the words it is for
+      for (let z = 0; z <= $scope.expressionList.length; z++) {
+        if ($scope.expressionList[z] !== undefined) {
+          let text = $scope.expressionList[z].expression_text;
+          for (let i = 0; i <= data.length - 1; i++) {
+            if (
+              $scope.expressionList[z].expression_id === data[i].expression_id
+            ) {
+              text = highlight(text, data[i].parameter_value);
+            }
+          }
+          $scope.expressionList[z].expression_highlighted_text = text;
+        }
+      }
+    });
+  }
+
+  /* Core functions?
+  function loadResponses() {
+    Responses.query({ intent_id: $scope.$routeParams.intent_id }, function(data) {
       $scope.responses = data;
     });
   }
@@ -64,6 +69,8 @@ function EditIntentController(
       loadResponses();
     });
   };
+  */
+  
   $scope.updateIntentNameAndWebhook = function(intent) {
     Intent.update({ intent_id: intent.intent_id }, intent).$promise.then(
       function() {
@@ -111,37 +118,7 @@ function EditIntentController(
     }
   };
 
-  function loadUniqueIntentEntities() {
-    UniqueIntentEntities.query(
-      { intent_id: $scope.$routeParams.intent_id },
-      function(data) {
-        $scope.intentEntityList = data;
-      }
-    );
-  }
-
-  function loadParameters() {
-    Parameters.query({ intent_id: $scope.$routeParams.intent_id }, function(
-      data
-    ) {
-      $scope.parameterList = data;
-      $scope.parameterFilterList = data;
-      //Loop through each parameter and highlight the words it is for
-      for (let z = 0; z <= $scope.expressionList.length; z++) {
-        if ($scope.expressionList[z] !== undefined) {
-          let text = $scope.expressionList[z].expression_text;
-          for (let i = 0; i <= data.length - 1; i++) {
-            if (
-              $scope.expressionList[z].expression_id === data[i].expression_id
-            ) {
-              text = highlight(text, data[i].parameter_value);
-            }
-          }
-          $scope.expressionList[z].expression_highlighted_text = text;
-        }
-      }
-    });
-  }
+  
   $scope.addParameter = function(expression_id) {
     const selectedText = window.getSelection().toString();
     if (selectedText !== '') {
@@ -151,6 +128,7 @@ function EditIntentController(
       newObj.parameter_start = expressionText.indexOf(selectedText);
       newObj.parameter_end = newObj.parameter_start + selectedText.length;
       newObj.parameter_value = selectedText;
+      newObj.intent_id = Number($scope.$routeParams.intent_id);
       Parameter.save(newObj).$promise.then(function() {
         loadExpressions();
       });
@@ -182,7 +160,8 @@ function EditIntentController(
       { parameter_id: param_id },
       { parameter_id: param_id, entity_id: entity_id }
     ).$promise.then(function() {
-      loadUniqueIntentEntities();
+      //loadUniqueIntentEntities();
+      //loadExpressions();
     });
   };
 

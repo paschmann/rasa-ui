@@ -1,9 +1,14 @@
+
 .app-header.navbar .navbar-brand {
   background-image: url("../img/logo.png");
 }
 
 canvas.chart {
     display: inline-block!important;
+}
+
+.callout {
+    border-left-width: 0;
 }
 
 .header-buttons {

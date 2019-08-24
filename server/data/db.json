@@ -1,0 +1,385 @@
+{
+  "agents": [
+    {
+      "agent_id": "LAloGgFIj",
+      "agent_name": "xyz"
+    },
+    {
+      "agent_id": "2",
+      "agent_name": "12121"
+    }
+  ],
+  "settings": {
+    "refresh_time": "300000"
+  },
+  "intents": [
+    {
+      "intent_id": "n_hlitvYF",
+      "agent_id": "5HwSPeqZy",
+      "intent_name": "123"
+    },
+    {
+      "intent_id": "ZCaj-e_F1",
+      "agent_id": "5HwSPeqZy",
+      "intent_name": "ccc"
+    },
+    {
+      "intent_id": "Rf8khzYmN",
+      "agent_id": "5HwSPeqZy",
+      "intent_name": "x"
+    },
+    {
+      "intent_id": "5-5BZQEq0",
+      "agent_id": "5HwSPeqZy",
+      "intent_name": "x1"
+    },
+    {
+      "intent_id": "F2Y96--3D",
+      "agent_id": "5HwSPeqZy",
+      "intent_name": "v"
+    },
+    {
+      "intent_id": "OOsiCBPF3",
+      "agent_id": "5HwSPeqZy",
+      "intent_name": "b"
+    },
+    {
+      "intent_id": "U72YD8c7L",
+      "agent_id": "LAloGgFIj",
+      "intent_name": "1232"
+    },
+    {
+      "intent_id": "z4KDtMG2D",
+      "agent_id": "LAloGgFIj",
+      "intent_name": "zzzzzz"
+    },
+    {
+      "intent_id": "2",
+      "agent_id": "2",
+      "intent_name": "xxx"
+    }
+  ],
+  "unique_intent_entities": [],
+  "expressions": [
+    {
+      "expression_id": "167ax2N_J",
+      "intent_id": "5-5BZQEq0",
+      "expression_text": "123"
+    },
+    {
+      "expression_id": "mvJC8rJXS",
+      "intent_id": "5-5BZQEq0",
+      "expression_text": "xyz"
+    },
+    {
+      "expression_id": "BqBNQqXbH",
+      "intent_id": "U72YD8c7L",
+      "expression_text": "1111111111"
+    },
+    {
+      "expression_id": "PrXX1oSHa",
+      "intent_id": "U72YD8c7L",
+      "expression_text": "222222"
+    },
+    {
+      "expression_id": "Qzx1fH-0z",
+      "intent_id": "ZCaj-e_F1",
+      "expression_text": "what is my balance"
+    },
+    {
+      "expression_id": "UTwaXjq6a",
+      "intent_id": "2",
+      "expression_text": "hello"
+    },
+    {
+      "expression_id": "q2wEX150R",
+      "intent_id": "2",
+      "expression_text": "this is a test"
+    },
+    {
+      "expression_id": "__YKn8tJe",
+      "intent_id": "2",
+      "expression_text": "Hi"
+    }
+  ],
+  "entities": [
+    {
+      "entity_id": "5jx5mpuHP",
+      "agent_id": "LAloGgFIj",
+      "entity_name": "cuisine",
+      "slot_data_type": "NOT_USED"
+    },
+    {
+      "entity_id": "4JironLae",
+      "agent_id": "LAloGgFIj",
+      "entity_name": "111",
+      "slot_data_type": "NOT_USED"
+    },
+    {
+      "entity_id": "HIviCcaax",
+      "agent_id": "5HwSPeqZy",
+      "entity_name": "111",
+      "slot_data_type": "NOT_USED"
+    },
+    {
+      "entity_id": "_3wuatSGH",
+      "agent_id": "5HwSPeqZy",
+      "entity_name": "cuisine",
+      "slot_data_type": "c"
+    },
+    {
+      "entity_id": "i776JTxQ-",
+      "agent_id": "5HwSPeqZy",
+      "entity_name": "12112",
+      "slot_data_type": "categorical"
+    },
+    {
+      "entity_id": "3",
+      "agent_id": "2",
+      "entity_name": "12212",
+      "slot_data_type": "NOT_USED"
+    }
+  ],
+  "actions": [],
+  "synonyms": [
+    {
+      "synonym_id": "HY6ggK2nQ",
+      "agent_id": "5HwSPeqZy",
+      "synonym_reference": "zcx"
+    },
+    {
+      "synonym_id": "tLRpU711d",
+      "agent_id": "5HwSPeqZy",
+      "synonym_reference": "ccc"
+    },
+    {
+      "synonym_id": "1",
+      "agent_id": "2",
+      "synonym_reference": "ccc"
+    },
+    {
+      "synonym_id": "2",
+      "agent_id": "2",
+      "synonym_reference": "cccxxx"
+    },
+    {
+      "synonym_id": "3",
+      "agent_id": "2",
+      "synonym_reference": "cccxxxxxx"
+    },
+    {
+      "synonym_id": "4",
+      "agent_id": "2",
+      "synonym_reference": "cccxxxxxxxxxcccc111"
+    },
+    {
+      "synonym_id": "5",
+      "agent_id": "2",
+      "synonym_reference": "x"
+    }
+  ],
+  "synonym_variant": [
+    {
+      "synonym_variant_id": "1",
+      "synonym_id": "1",
+      "synonym_value": "1212"
+    },
+    {
+      "synonym_variant_id": "2",
+      "synonym_id": "1",
+      "synonym_value": "1212211"
+    },
+    {
+      "synonym_variant_id": "4",
+      "synonym_id": "2",
+      "synonym_value": "1212"
+    }
+  ],
+  "responses": [],
+  "messages": [],
+  "messages_entities": [],
+  "regex": [
+    {
+      "regex_id": "TjLsnB7RH",
+      "agent_id": "5HwSPeqZy",
+      "regex_name": "zipcode",
+      "regex_pattern": "[0-9]{5}"
+    },
+    {
+      "regex_id": "2",
+      "agent_id": "2",
+      "regex_name": "c",
+      "regex_pattern": "c"
+    },
+    {
+      "regex_id": "3",
+      "agent_id": "2",
+      "regex_name": "ccc",
+      "regex_pattern": "vvb"
+    }
+  ],
+  "expression_parameters": [
+    {
+      "parameter_id": "sYJdDX0xC",
+      "parameter_end": 2,
+      "parameter_start": 1,
+      "parameter_value": "2",
+      "expression_id": "167ax2N_J",
+      "intent_id": "5-5BZQEq0",
+      "entity_id": "HIviCcaax"
+    },
+    {
+      "parameter_id": "0JOxtnyvj",
+      "parameter_end": 18,
+      "parameter_start": 11,
+      "parameter_value": "balance",
+      "intent_id": "ZCaj-e_F1"
+    },
+    {
+      "parameter_id": "t_VqPc_Mj",
+      "parameter_end": 18,
+      "parameter_start": 11,
+      "parameter_value": "balance",
+      "expression_id": "Qzx1fH-0z",
+      "intent_id": "ZCaj-e_F1",
+      "entity_id": "HIviCcaax"
+    },
+    {
+      "parameter_id": "flOSKyU7t",
+      "parameter_end": 3,
+      "parameter_start": 0,
+      "parameter_value": "xyz",
+      "expression_id": "mvJC8rJXS",
+      "intent_id": "5-5BZQEq0",
+      "entity_id": "HIviCcaax"
+    },
+    {
+      "parameter_id": "1",
+      "parameter_end": 14,
+      "parameter_start": 10,
+      "parameter_value": "test",
+      "expression_id": "q2wEX150R",
+      "intent_id": "2",
+      "entity_id": "2"
+    },
+    {
+      "parameter_id": "2",
+      "parameter_end": 4,
+      "parameter_start": 2,
+      "parameter_value": "ll",
+      "expression_id": "UTwaXjq6a",
+      "intent_id": "2",
+      "entity_id": "2"
+    }
+  ],
+  "agent_id_sequence": 0,
+  "intent_id_sequence": 2,
+  "entity_id_sequence": 3,
+  "regex_id_sequence": 3,
+  "synonym_id_sequence": 5,
+  "synonym_variant_id_sequence": 5,
+  "parameter_id_sequence": 2,
+  "nlu_log_id_sequence": 24,
+  "nlu_log": [
+    {
+      "log_id": "15",
+      "ip_address": "::1",
+      "query": "/api/v2/rasa/parse",
+      "event_type": "parse",
+      "event_data": {
+        "server_response": "{\"intent\":{\"name\":\"greet\",\"confidence\":0.9666692024},\"entities\":[],\"intent_ranking\":[{\"name\":\"greet\",\"confidence\":0.9666692024},{\"name\":\"thankyou\",\"confidence\":0.0247260423},{\"name\":\"affirm\",\"confidence\":0.0047666572},{\"name\":\"deny\",\"confidence\":0.0014638595},{\"name\":\"request_info\",\"confidence\":0.0012050311},{\"name\":\"inform\",\"confidence\":0.0011692075}],\"text\":\"hello\"}"
+      },
+      "timestamp": "2019-08-23T14:56:05.028Z"
+    },
+    {
+      "log_id": "16",
+      "ip_address": "::1",
+      "query": "/api/v2/rasa/parse",
+      "event_type": "parse",
+      "event_data": {
+        "server_response": "{\"intent\":{\"name\":\"greet\",\"confidence\":0.9666692024},\"entities\":[],\"intent_ranking\":[{\"name\":\"greet\",\"confidence\":0.9666692024},{\"name\":\"thankyou\",\"confidence\":0.0247260423},{\"name\":\"affirm\",\"confidence\":0.0047666572},{\"name\":\"deny\",\"confidence\":0.0014638595},{\"name\":\"request_info\",\"confidence\":0.0012050311},{\"name\":\"inform\",\"confidence\":0.0011692075}],\"text\":\"hello\"}"
+      },
+      "timestamp": "2019-08-23T14:56:07.267Z"
+    },
+    {
+      "log_id": "17",
+      "ip_address": "::1",
+      "query": "/api/v2/rasa/parse",
+      "event_type": "parse",
+      "event_data": {
+        "server_response": "{\"intent\":{\"name\":\"greet\",\"confidence\":0.9666692024},\"entities\":[],\"intent_ranking\":[{\"name\":\"greet\",\"confidence\":0.9666692024},{\"name\":\"thankyou\",\"confidence\":0.0247260423},{\"name\":\"affirm\",\"confidence\":0.0047666572},{\"name\":\"deny\",\"confidence\":0.0014638595},{\"name\":\"request_info\",\"confidence\":0.0012050311},{\"name\":\"inform\",\"confidence\":0.0011692075}],\"text\":\"hello\"}"
+      },
+      "timestamp": "2019-08-23T14:56:07.704Z"
+    },
+    {
+      "log_id": "18",
+      "ip_address": "::1",
+      "query": "/api/v2/rasa/parse",
+      "event_type": "parse",
+      "event_data": {
+        "server_response": "{\"intent\":{\"name\":\"greet\",\"confidence\":0.9666692024},\"entities\":[],\"intent_ranking\":[{\"name\":\"greet\",\"confidence\":0.9666692024},{\"name\":\"thankyou\",\"confidence\":0.0247260423},{\"name\":\"affirm\",\"confidence\":0.0047666572},{\"name\":\"deny\",\"confidence\":0.0014638595},{\"name\":\"request_info\",\"confidence\":0.0012050311},{\"name\":\"inform\",\"confidence\":0.0011692075}],\"text\":\"hello\"}"
+      },
+      "timestamp": "2019-08-23T14:56:08.255Z"
+    },
+    {
+      "log_id": "19",
+      "ip_address": "::1",
+      "query": "/api/v2/rasa/parse",
+      "event_type": "parse",
+      "event_data": {
+        "server_response": "{\"intent\":{\"name\":\"greet\",\"confidence\":0.9666692024},\"entities\":[],\"intent_ranking\":[{\"name\":\"greet\",\"confidence\":0.9666692024},{\"name\":\"thankyou\",\"confidence\":0.0247260423},{\"name\":\"affirm\",\"confidence\":0.0047666572},{\"name\":\"deny\",\"confidence\":0.0014638595},{\"name\":\"request_info\",\"confidence\":0.0012050311},{\"name\":\"inform\",\"confidence\":0.0011692075}],\"text\":\"hello\"}"
+      },
+      "timestamp": "2019-08-23T14:56:08.731Z"
+    },
+    {
+      "log_id": "20",
+      "ip_address": "::1",
+      "query": "/api/v2/rasa/parse",
+      "event_type": "parse",
+      "event_data": {
+        "server_response": "{\"intent\":{\"name\":\"greet\",\"confidence\":0.9666692024},\"entities\":[],\"intent_ranking\":[{\"name\":\"greet\",\"confidence\":0.9666692024},{\"name\":\"thankyou\",\"confidence\":0.0247260423},{\"name\":\"affirm\",\"confidence\":0.0047666572},{\"name\":\"deny\",\"confidence\":0.0014638595},{\"name\":\"request_info\",\"confidence\":0.0012050311},{\"name\":\"inform\",\"confidence\":0.0011692075}],\"text\":\"hello\"}"
+      },
+      "timestamp": "2019-08-23T14:56:09.131Z"
+    },
+    {
+      "log_id": "21",
+      "ip_address": "::1",
+      "query": "/api/v2/rasa/parse",
+      "event_type": "parse",
+      "event_data": {
+        "server_response": "{\"intent\":{\"name\":\"greet\",\"confidence\":0.9666692024},\"entities\":[],\"intent_ranking\":[{\"name\":\"greet\",\"confidence\":0.9666692024},{\"name\":\"thankyou\",\"confidence\":0.0247260423},{\"name\":\"affirm\",\"confidence\":0.0047666572},{\"name\":\"deny\",\"confidence\":0.0014638595},{\"name\":\"request_info\",\"confidence\":0.0012050311},{\"name\":\"inform\",\"confidence\":0.0011692075}],\"text\":\"hello\"}"
+      },
+      "timestamp": "2019-08-23T14:56:09.550Z"
+    },
+    {
+      "log_id": "22",
+      "ip_address": "::1",
+      "query": "/api/v2/rasa/parse",
+      "event_type": "parse",
+      "event_data": {
+        "server_response": "{\"intent\":{\"name\":\"greet\",\"confidence\":0.9666692024},\"entities\":[],\"intent_ranking\":[{\"name\":\"greet\",\"confidence\":0.9666692024},{\"name\":\"thankyou\",\"confidence\":0.0247260423},{\"name\":\"affirm\",\"confidence\":0.0047666572},{\"name\":\"deny\",\"confidence\":0.0014638595},{\"name\":\"request_info\",\"confidence\":0.0012050311},{\"name\":\"inform\",\"confidence\":0.0011692075}],\"text\":\"hello\"}"
+      },
+      "timestamp": "2019-08-23T14:56:09.959Z"
+    },
+    {
+      "log_id": "23",
+      "ip_address": "::1",
+      "query": "/api/v2/rasa/model/parse",
+      "event_type": "parse",
+      "event_data": {
+        "server_response": "{\"intent\":{\"name\":\"inform\",\"confidence\":0.9972199889},\"entities\":[{\"start\":7,\"end\":14,\"value\":\"italian\",\"entity\":\"cuisine\",\"confidence\":0.893396886,\"extractor\":\"CRFEntityExtractor\"}],\"intent_ranking\":[{\"name\":\"inform\",\"confidence\":0.9972199889},{\"name\":\"affirm\",\"confidence\":0.0017196317},{\"name\":\"thankyou\",\"confidence\":0.0003558894},{\"name\":\"greet\",\"confidence\":0.0003037703},{\"name\":\"request_info\",\"confidence\":0.0002699554},{\"name\":\"deny\",\"confidence\":0.0001307644}],\"text\":\"I want italian food in new york\"}"
+      },
+      "timestamp": "2019-08-23T16:18:51.044Z"
+    },
+    {
+      "log_id": "24",
+      "ip_address": "::1",
+      "query": "/api/v2/rasa/model/parse",
+      "event_type": "parse",
+      "event_data": {
+        "server_response": "{\"intent\":{\"name\":\"inform\",\"confidence\":0.9972199889},\"entities\":[{\"start\":7,\"end\":14,\"value\":\"italian\",\"entity\":\"cuisine\",\"confidence\":0.893396886,\"extractor\":\"CRFEntityExtractor\"}],\"intent_ranking\":[{\"name\":\"inform\",\"confidence\":0.9972199889},{\"name\":\"affirm\",\"confidence\":0.0017196317},{\"name\":\"thankyou\",\"confidence\":0.0003558894},{\"name\":\"greet\",\"confidence\":0.0003037703},{\"name\":\"request_info\",\"confidence\":0.0002699554},{\"name\":\"deny\",\"confidence\":0.0001307644}],\"text\":\"I want italian food in new york\"}"
+      },
+      "timestamp": "2019-08-23T17:55:09.143Z"
+    }
+  ]
+}
