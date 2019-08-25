@@ -1,6 +1,8 @@
 [![Docker Automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/paschmann/rasa-ui/)
 
-# Important Note: Rasa UI v3 is currently under development, due to the major changes of Rasa 1.+ and the merge of Rasa NLU and Core (and addition of Rasa X) we are taking Rasa UI back to its core by simplifying the code base and focusing on providing a UI for the Rasa Framework. If you would like to see the progress/changes coming, please use the v3 branch.
+### Important Note: Rasa UI v3 is currently under development, due to the major changes of Rasa 1.+ and the merge of Rasa NLU and Core (and addition of Rasa X) we are taking Rasa UI back to its core by simplifying the code base and focusing on providing a UI for the Rasa Framework. If you would like to see the progress/changes coming, please use the v3 branch.
+
+If you are currently or were a Rasa UI user, please read [this](https://github.com/paschmann/rasa-ui/wiki/v3-Rasa-UI) about the future and goals of version 3 of Rasa UI
 
 # Rasa UI
 
