@@ -1,7 +1,7 @@
 .DS_Store
 npm-debug.log
 node_modules
-server/data/models
+server/data/db.sqlite3
 
 # editors
 .idea
