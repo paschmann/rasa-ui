@@ -1,0 +1,96 @@
+<ol class="breadcrumb" breadcrumb="">
+  <li class="breadcrumb-item ng-scope active"><span>Models</span></li>
+</ol>
+<div class="container-fluid">
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="alert alert-success" role="alert" ng-show="message !== ''">
+          {{ message }}
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <strong>Agents</strong>
+          </div>
+          <div class="card-block">
+            <div class="form-group row">
+              <label for="select" class="col-sm-2 col-form-label">Agent</label>
+              <div class="col-sm-10">
+                <select id="agent_name" ng-change="getData(agent.agent_id,agent)"
+                  ng-options="agent.agent_id as agent.agent_name for agent in agentList" ng-model="agent.agent_id"
+                  class="form-control">
+                  <option value="">Please select one</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <strong>Currently Loaded Model</strong>
+          </div>
+          <div class="card-block">
+            <div>
+              <json-formatter json="config" open="4"></json-formatter>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button type="button" class="btn btn-danger" ng-click="unloadRasaModel()"><i class="fa fa-magic"></i>&nbsp;
+              Unload Model</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <strong>Models</strong>
+          </div>
+          <div class="card-block">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Create Date/Time</th>
+                  <th>File</th>
+                  <th>Comment</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="model in modelList | orderBy: timestamp : true">
+                  <td>{{ model.timestamp }}</td>
+                  <td>File: {{ model.model_name }}<br>Local Path: {{ model.local_path }}<br>Rasa Server Path:
+                    {{ selectedAgent.output_folder + "/" + model.server_path }}</td>
+                  <td>{{ model.comment }}</td>
+                  <td>
+                    <button class="btn btn-outline-secondary" ng-click="loadRasaModel(model.server_path)">
+                      <span class="icon-energy"></span>
+                    </button>
+                    <button class="btn btn btn-outline-danger" confirm-click-title="Delete Model"
+                      confirm-click="Are you sure? This will delete local model."
+                      ng-click="deleteModel(model.model_id)">
+                      <span class="icon-trash"></span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer" ng-show="selectedAgent">
+            <button type="button" class="btn btn-primary" ng-click="saveManuallyCreatedModel()"><i
+                class="fa fa-magic"></i>&nbsp; Add a manually created Model</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

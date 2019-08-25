@@ -1,18 +1,5 @@
 var app = angular
-  .module("app", [
-    "ngCookies",
-    "ng-jsyaml",
-    "ngSanitize",
-    "ngFileUpload",
-    "angularUtils.directives.dirPagination",
-    "ngRoute",
-    "chart.js",
-    "ngResource",
-    "ngTagsInput",
-    "jsonFormatter",
-    "angularModalService",
-    "ngStorage"
-  ])
+  .module("app", ["ngCookies", "ng-jsyaml", "ngSanitize", "ngFileUpload", "angularUtils.directives.dirPagination", "ngRoute", "chart.js", "ngResource", "ngTagsInput", "jsonFormatter", "angularModalService", "ngStorage"])
   .run(function ($rootScope, $http, $sessionStorage, appConfig) {
 
     // keep user logged in after page refresh
@@ -39,19 +26,7 @@ var app = angular
 
 angular
   .module("app")
-  .controller("appCtrl", function (
-    $rootScope,
-    $scope,
-    $route,
-    $routeParams,
-    $location,
-    $timeout,
-    $http,
-    $sessionStorage,
-    $cookies,
-    appConfig, 
-    Auth
-  ) {
+  .controller("appCtrl", function ($rootScope, $scope, $route, $routeParams, $location, $timeout, $http, $sessionStorage, $cookies, appConfig, Auth) {
     $scope.$route = $route;
     $scope.$location = $location;
     $scope.$routeParams = $routeParams;
@@ -72,7 +47,7 @@ angular
 
     $scope.loginUser = function (user) {
 
-      Auth.save(JSON.stringify(user)).$promise.then(function(response) {
+      Auth.save(JSON.stringify(user)).$promise.then(function (response) {
         $sessionStorage.jwt = response.token;
         $cookies.put("loggedinjwt", $sessionStorage.jwt);
         $rootScope.$broadcast("USER_AUTHENTICATED");

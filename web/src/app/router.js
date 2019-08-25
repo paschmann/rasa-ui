@@ -138,5 +138,10 @@ angular
         templateUrl: '/app/components/settings/settings.html',
         activePage: 'settings'
       })
+      .when('/models', {
+        controller: 'ModelController',
+        templateUrl: '/app/components/models/models.html',
+        activePage: 'models'
+      })
       .otherwise({ redirectTo: '/' });
   });

@@ -7,30 +7,33 @@
         </a>
       </li>
 
-      <li class="nav-title">Interface</li>
+      <li class="nav-title">Components</li>
       <li class="nav-item">
-        <a class="nav-link" ng-class="{active: $route.current.activePage == 'agents' || $route.current.activePage == 'agent'}" href="#/agents"><i
-            class="icon-people"></i> Agents</a>
+        <a class="nav-link"
+          ng-class="{active: $route.current.activePage == 'agents' || $route.current.activePage == 'agent'}"
+          href="#/agents"><i class="icon-people"></i> Agents</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" ng-class="{active: $route.current.activePage == 'training'}" href="#/training"><i
             class="icon-graduation"></i> Training</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" ng-class="{active: $route.current.activePage == 'models'}" href="#/models"><i
+            class="icon-layers"></i> Models</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" ng-class="{active: $route.current.activePage == 'settings'}" href="#/settings"><i
             class="icon-settings"></i> Settings</a>
       </li>
+      <!-- TODO: Need to fix Insights page then add back 
       <li class="nav-item">
         <a class="nav-link" ng-class="{active: $route.current.activePage == 'insights'}" href="#/insights"><i
             class="fa fa-chart-bar"></i> Insights</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" ng-class="{active: $route.current.activePage == 'history'}" href="#/history"><i
-            class="fa fa-comments"></i> Conversations</a>
-      </li>
+      -->
       <li class="divider"></li>
 
-      <li class="nav-title">Rasa Components</li>
+      <li class="nav-title">Rasa</li>
       <li class="nav-item">
         <a class="nav-link" ng-class="{active: $route.current.activePage == 'logs'}" href="#/logs"><i
             class="icon-list"></i> Logs</a>
@@ -42,8 +45,7 @@
 
       <li class="nav-title">&nbsp;</li>
       <li class="nav-item">
-        <a class="nav-link" href="#" ng-click="logout()"><i
-            class="icon-logout"></i> Logout</a>
+        <a class="nav-link" href="#" ng-click="logout()"><i class="icon-logout"></i> Logout</a>
       </li>
     </ul>
   </nav>

@@ -24,6 +24,16 @@ canvas.chart {
     width: 350px;
 }
 
+.datainput {
+    width: 100%;
+    height: 250px;
+    color: #3e515b;
+}
+
+textarea {
+    border: 1px solid #c2cfd6;
+}
+
 .dimmed {
     position: relative;
   }

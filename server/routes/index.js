@@ -3,7 +3,6 @@ const router = express.Router();
 
 const agents = require('../db/agents');
 const intents = require('../db/intents');
-const actions = require('../db/actions');
 const expressions = require('../db/expressions');
 const parameters = require('../db/parameters');
 const entities = require('../db/entities');
@@ -12,11 +11,15 @@ const synonyms = require('../db/synonyms');
 const variants = require('../db/variants');
 const settings = require('../db/settings');
 const responses = require('../db/responses');
-const messages = require('../db/messages');
+const models = require('../db/models');
 
-const nlu_router = require('./mw_routes/nlu_router');
+const rasa_router = require('./rasa_router');
 const auth = require('./auth');
 const logs = require('../db/logs');
+
+//routes model
+router.get('/models/:agent_id', models.getAgentModels);
+router.delete('/models', models.removeModel);
  
 //routes agent
 router.get('/agents', agents.getAllAgents);
@@ -26,12 +29,6 @@ router.put('/agents/:agent_id', agents.updateAgent);
 router.post('/agentStory', agents.updateAgentStory);
 router.delete('/agents/:agent_id', agents.removeAgent);
 router.post('/agents/upload', agents.uploadAgentFromFile);
-//routes action
-router.get('/actions/:action_id', actions.getSingleAction);
-router.put('/actions/:action_id', actions.updateAction);
-router.delete('/actions/:action_id', actions.removeAction);
-router.post('/actions', actions.createAgentAction);
-router.get('/agents/:agent_id/actions', actions.getAgentActions);
 //routes intents
 router.get('/agents/:agent_id/intents', intents.getAgentIntents);
 router.get('/intents/:intent_id', intents.getSingleIntent);
@@ -84,9 +81,6 @@ router.delete('/synonyms/:synonym_id/variants', variants.removeSynonymVariants);
 router.get('/settings', settings.getSettings);
 router.get('/settings/:setting_name', settings.getSingleSetting);
 router.put('/settings/:setting_name', settings.updateSetting);
-//routes actions responses
-router.get('/actionresponse/:action_id', responses.getActionResponses);
-router.post('/actionresponse', responses.createActionResponse);
 //routes intent responses
 router.get('/response/:intent_id', responses.getIntentResponses);
 router.post('/response', responses.createIntentResponse);
@@ -107,26 +101,18 @@ router.get('/avgNluResponseTimesLast30Days', logs.getAvgNluResponseTimesLast30Da
 router.get('/avgUserResponseTimesLast30Days', logs.getAvgUserResponseTimesLast30Days);
 router.get('/activeUserCountLast12Months', logs.getActiveUserCountLast12Months);
 router.get('/activeUserCountLast30Days', logs.getActiveUserCountLast30Days);
-//rasa nlu api's
-router.get('/rasa/status', nlu_router.getRasaNluStatus);
-router.get('/rasa/url', nlu_router.getRasaNluEndpoint);
-//router.get('/rasa/config', nlu_router.getRasaNluConfig);
-router.get('/rasa/version', nlu_router.getRasaNluVersion);
-router.post('/model/train', nlu_router.trainRasaNlu);
-router.delete('/rasa/models', nlu_router.unloadRasaModel);
-//common middleware for parse
-router.post('/rasa/model/parse', nlu_router.parseRequest);
 
-//rasa core events logging API
-//messages api
-router.get('/agent/:agent_id/messages', messages.getUniqueUsersList);
-router.get('/agent/:agent_id/recent9UniqueUsersList', messages.getRecent9UniqueUsersList);
-router.post('/messages/list', messages.getMessagesListByUser);
-router.put('/messages/:messages_id', messages.updateMessage);
-router.get('/messages/:messages_id', messages.getMessageDetails);
-router.delete('/messages/:message_id/entities', messages.deleteMessageEntities);
-router.put('/messages/:message_id/entities/:entity_id', messages.updateMessageEntities);
-router.post('/messages/:message_id/entities', messages.addMessageEntities);
+//rasa api's
+router.get('/rasa/status', rasa_router.getRasaNluStatus);
+router.get('/rasa/url', rasa_router.getRasaNluEndpoint);
+//router.get('/rasa/config', rasa_router.getRasaNluConfig);
+router.get('/rasa/version', rasa_router.getRasaNluVersion);
+router.post('/rasa/model/train', rasa_router.trainRasaNlu);
+router.put('/rasa/model', rasa_router.loadRasaModel);
+router.delete('/rasa/model', rasa_router.unloadRasaModel);
+//common middleware for parse
+router.post('/rasa/model/parse', rasa_router.parseRequest);
+
 //authentication js
 router.post('/auth', auth.authenticateUser);
 router.post('/authclient', auth.authenticateClient);

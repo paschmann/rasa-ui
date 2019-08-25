@@ -21,23 +21,6 @@
                     </div>
                 </div>
             </div>
-            <!--
-            <div class="col-xs-6 col-lg-4">
-                <div class="card">
-                    <div class="card-block p-a-1 clearfix">
-                        <div class="row">
-                            <div class="col-sm-4 text-center">
-                                <i class="fa fa-tag bg-info p-a-1 font-2xl m-r-1"></i>
-                            </div>
-                            <div class="col-sm-8">
-                                <div class="h5 text-gray-dark m-b-0 m-t-h">{{ intents_processed }}</div>
-                                <div class="text-muted text-uppercase font-weight-bold font-xs">Intents Processed</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        -->
             <div class="col-xs-6 col-lg-4">
                 <div class="card">
                     <div class="card-block p-a-1 clearfix">
@@ -62,7 +45,8 @@
                             </div>
                             <div class="col-sm-8">
                                 <div class="h5 text-gray-dark m-b-0 m-t-h">{{ trained_at }}</div>
-                                <div class="text-muted text-uppercase font-weight-bold font-xs">Model: {{ model_file }}</div>
+                                <div class="text-muted text-uppercase font-weight-bold font-xs">Model: {{ model_file }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -70,26 +54,26 @@
             </div>
         </div>
 
-        
+
         <div class="row" style="padding-left:15px;padding-right:15px;">
-            <div class="card" ng-class="{'col-lg-8': showLoadedModels}" ng-controller="usageChartCtrl" style="width:100%">
+            <div class="card" ng-class="{'col-lg-8': showLoadedModels}" ng-controller="usageChartCtrl"
+                style="width:100%">
                 <div class="card-block">
                     <div class="row">
                         <div class="col-sm-5">
                             <h4 class="card-title mb-0">Usage</h4>
                             <div class="small text-muted">Last 30 days</div>
                         </div>
-                        <!--/.col-->
                     </div>
-                    <!--/.row-->
                     <div class="chart-wrapper" style="height:300px;margin-top:40px;">
-                        <canvas class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="false" chart-series="series" chart-click="onClick"
-                            chart-options="options" chart-colors="colors" height="300"></canvas>
+                        <canvas class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="false"
+                            chart-series="series" chart-click="onClick" chart-options="options" chart-colors="colors"
+                            height="300"></canvas>
                     </div>
                 </div>
             </div>
         </div>
-        
+
     </div>
 
 

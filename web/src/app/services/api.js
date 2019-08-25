@@ -230,3 +230,10 @@ app.factory('Response', function ($resource, appConfig) {
 app.factory('IntentResponse', function ($resource, appConfig) {
   return $resource(appConfig.api_endpoint_v2 + '/rndmresponse');
 });
+
+app.factory('Model', function ($resource, appConfig) {
+  return $resource(
+    appConfig.api_endpoint_v2 + '/models/:agent_id',
+    { agent_id: '@id', path: '@path' }
+  );
+});

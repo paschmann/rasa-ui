@@ -1,9 +1,7 @@
 .DS_Store
 npm-debug.log
 node_modules
-rasa-app-data/
-
-Jenkinsfile
+server/data/models
 
 # editors
 .idea

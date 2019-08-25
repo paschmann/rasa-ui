@@ -1,31 +1,31 @@
 angular.module('app').controller('EditIntentController', EditIntentController);
 
 function EditIntentController($rootScope, $scope, Agent, AgentEntities, Intent, Expressions, Expression, Parameter, Parameters, Entities, Responses, Response) {
-  Agent.get({ agent_id: $scope.$routeParams.agent_id }, function(data) {
+  Agent.get({ agent_id: $scope.$routeParams.agent_id }, function (data) {
     $scope.agent = data;
   });
 
-  AgentEntities.query({ agent_id: $scope.$routeParams.agent_id }, function(data) {
+  AgentEntities.query({ agent_id: $scope.$routeParams.agent_id }, function (data) {
     $scope.entityList = data;
   });
 
-  Intent.get({ intent_id: $scope.$routeParams.intent_id }, function(data) {
+  Intent.get({ intent_id: $scope.$routeParams.intent_id }, function (data) {
     $scope.intent = data;
   });
 
   loadExpressions();
 
-  //loadResponses(); <-- Not going to be used?
+  //TODO: loadResponses(); <-- Not going to be used?
 
   function loadExpressions() {
-    Expressions.query({ intent_id: $scope.$routeParams.intent_id }, function(data) {
+    Expressions.query({ intent_id: $scope.$routeParams.intent_id }, function (data) {
       $scope.expressionList = data;
       loadExpressionParameters();
     });
   }
 
   function loadExpressionParameters() {
-    Parameters.query({ intent_id: $scope.$routeParams.intent_id }, function(
+    Parameters.query({ intent_id: $scope.$routeParams.intent_id }, function (
       data
     ) {
       $scope.parameterList = data;
@@ -47,7 +47,7 @@ function EditIntentController($rootScope, $scope, Agent, AgentEntities, Intent, 
     });
   }
 
-  /* Core functions?
+  /* TODO: Core functions?
   function loadResponses() {
     Responses.query({ intent_id: $scope.$routeParams.intent_id }, function(data) {
       $scope.responses = data;
@@ -70,10 +70,10 @@ function EditIntentController($rootScope, $scope, Agent, AgentEntities, Intent, 
     });
   };
   */
-  
-  $scope.updateIntentNameAndWebhook = function(intent) {
+
+  $scope.updateIntentNameAndWebhook = function (intent) {
     Intent.update({ intent_id: intent.intent_id }, intent).$promise.then(
-      function() {
+      function () {
         $rootScope.$broadcast(
           'setAlertText',
           'Intent information updated Sucessfully!!'
@@ -82,13 +82,13 @@ function EditIntentController($rootScope, $scope, Agent, AgentEntities, Intent, 
     );
   };
 
-  $scope.runExpression = function(expression_text) {
+  $scope.runExpression = function (expression_text) {
     $rootScope.$broadcast('executeTestRequest', expression_text);
   };
 
-  $scope.deleteIntent = function() {
+  $scope.deleteIntent = function () {
     Intent.remove({ intent_id: $scope.$routeParams.intent_id }).$promise.then(
-      function() {
+      function () {
         $scope.go('/agent/' + $scope.$routeParams.agent_id);
       }
     );
@@ -98,15 +98,15 @@ function EditIntentController($rootScope, $scope, Agent, AgentEntities, Intent, 
     const highlighted = str.replace(
       word,
       '<span style="padding: 3px; background-color: ' +
-        window.pastelColors() +
-        '">' +
-        word +
-        "</span>"
+      window.pastelColors() +
+      '">' +
+      word +
+      "</span>"
     );
     return highlighted;
   }
 
-  $scope.toggleArrow = function(expression_id) {
+  $scope.toggleArrow = function (expression_id) {
     if ($('#table_expression_' + expression_id).hasClass('show')) {
       $('#icon_expression_' + expression_id)
         .removeClass('icon-arrow-up')
@@ -118,8 +118,8 @@ function EditIntentController($rootScope, $scope, Agent, AgentEntities, Intent, 
     }
   };
 
-  
-  $scope.addParameter = function(expression_id) {
+
+  $scope.addParameter = function (expression_id) {
     const selectedText = window.getSelection().toString();
     if (selectedText !== '') {
       const expressionText = $('#expression_' + expression_id).text();
@@ -129,7 +129,7 @@ function EditIntentController($rootScope, $scope, Agent, AgentEntities, Intent, 
       newObj.parameter_end = newObj.parameter_start + selectedText.length;
       newObj.parameter_value = selectedText;
       newObj.intent_id = Number($scope.$routeParams.intent_id);
-      Parameter.save(newObj).$promise.then(function() {
+      Parameter.save(newObj).$promise.then(function () {
         loadExpressions();
       });
 
@@ -138,36 +138,36 @@ function EditIntentController($rootScope, $scope, Agent, AgentEntities, Intent, 
     }
   };
 
-  $scope.deleteParameter = function(parameter_id) {
-    Parameter.remove({ parameter_id: parameter_id }).$promise.then(function() {
+  $scope.deleteParameter = function (parameter_id) {
+    Parameter.remove({ parameter_id: parameter_id }).$promise.then(function () {
       loadExpressions();
     });
   };
 
-  $scope.addExpression = function() {
+  $scope.addExpression = function () {
     const newObj = {};
     newObj.intent_id = $scope.$routeParams.intent_id;
     newObj.expression_text = this.expression_text;
 
-    Expression.save(newObj).$promise.then(function() {
+    Expression.save(newObj).$promise.then(function () {
       $scope.expression_text = '';
       loadExpressions();
     });
   };
 
-  $scope.updateParameterEntity = function(param_id, entity_id) {
+  $scope.updateParameterEntity = function (param_id, entity_id) {
     Parameter.update(
       { parameter_id: param_id },
       { parameter_id: param_id, entity_id: entity_id }
-    ).$promise.then(function() {
+    ).$promise.then(function () {
       //loadUniqueIntentEntities();
       //loadExpressions();
     });
   };
 
-  $scope.deleteExpression = function(expression_id) {
+  $scope.deleteExpression = function (expression_id) {
     Expression.remove({ expression_id: expression_id }).$promise.then(
-      function() {
+      function () {
         loadExpressions();
       }
     );

@@ -40,8 +40,8 @@ function createDBSchema() {
     db.run("CREATE TABLE IF NOT EXISTS regex (regex_id INTEGER PRIMARY KEY AUTOINCREMENT, regex_name TEXT, regex_pattern TEXT, agent_id INTEGER)");
     db.run("CREATE TABLE IF NOT EXISTS responses (response_id INTEGER PRIMARY KEY AUTOINCREMENT, response_text TEXT, response_type TEXT, intent_id INTEGER)");
     db.run("CREATE TABLE IF NOT EXISTS synonym_variants (synonym_variant_id INTEGER PRIMARY KEY AUTOINCREMENT, synonym_value TEXT, synonym_id INTEGER)");
-
     db.run("CREATE TABLE IF NOT EXISTS nlu_log (log_id INTEGER PRIMARY KEY AUTOINCREMENT, ip_address TEXT, query TEXT, event_type TEXT, event_data TEXT, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)");
+    db.run("CREATE TABLE IF NOT EXISTS models (model_id INTEGER PRIMARY KEY AUTOINCREMENT, model_name TEXT, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, comment TEXT, agent_id INTEGER, local_path TEXT, server_path TEXT, server_response TEXT)");
     
     db.run("CREATE TABLE IF NOT EXISTS settings (setting_name TEXT, setting_value TEXT)", function() {
       db.run("INSERT into settings (setting_name, setting_value) values ('refresh_time', '60000')"); 

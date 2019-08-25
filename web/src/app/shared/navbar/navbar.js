@@ -1,7 +1,7 @@
 angular.module("app").controller("NavBarController", NavBarController);
 
 function NavBarController($scope, $rootScope, appConfig, $route) {
-  $scope.toggleAside = function() {
+  $scope.toggleAside = function () {
     if (angular.element("body").hasClass("aside-menu-hidden")) {
       angular
         .element("body")
@@ -15,7 +15,7 @@ function NavBarController($scope, $rootScope, appConfig, $route) {
     }
   };
 
-  $scope.toggleSidebar = function() {
+  $scope.toggleSidebar = function () {
     if (angular.element("body").hasClass("sidebar-fixed")) {
       angular
         .element("body")
@@ -29,7 +29,7 @@ function NavBarController($scope, $rootScope, appConfig, $route) {
     }
   };
 
-  $scope.logout = function() {
+  $scope.logout = function () {
     $rootScope.$broadcast("INVALID_JWT_TOKEN");
     $route.reload();
   };

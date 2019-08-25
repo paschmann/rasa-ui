@@ -4,30 +4,31 @@
   <li class="breadcrumb-item active">Add Intent</li>
 </ol>
 <div class="container-fluid">
-    <div class="animated fadeIn">
-        <div class="row">
-            <div class="col-sm-12 col-lg-12">
-                <form ng-submit="addIntent()">
-                    <div class="card">
-                        <div class="card-header">
-                            <strong>New Intent</strong>
-                        </div>
-                        <div class="card-block">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label for="name">Name</label>
-                                        <input autocomplete="off" type="text" ng-model="formData.intent_name" class="form-control" id="name" placeholder="Enter the intent name">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                      <div class="card-footer">
-                        <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i> Save</button>
-                    </div>
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12 col-lg-12">
+        <form ng-submit="addIntent()">
+          <div class="card">
+            <div class="card-header">
+              <strong>New Intent</strong>
+            </div>
+            <div class="card-block">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="name">Name</label>
+                    <input autocomplete="off" type="text" ng-model="formData.intent_name" class="form-control" id="name"
+                      placeholder="Enter the intent name">
                   </div>
-                </form>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i> Save</button>
             </div>
           </div>
-        </div>
+        </form>
       </div>
+    </div>
+  </div>
+</div>

@@ -7,14 +7,9 @@
   <!-- Breadcrumb Menu-->
   <li class="breadcrumb-menu">
     <div class="btn-group" role="group">
-      <a
-        class="btn btn-outline-secondary"
-        ng-click="deleteRegex()"
-        confirm-click-title="Delete Regex"
-        confirm-click="Are you sure? This will delete the regex."
-      >
-        <i class="icon-trash"></i> &nbsp;Delete Regex</a
-      >
+      <a class="btn btn-outline-secondary" ng-click="deleteRegex()" confirm-click-title="Delete Regex"
+        confirm-click="Are you sure? This will delete the regex.">
+        <i class="icon-trash"></i> &nbsp;Delete Regex</a>
     </div>
   </li>
 </ol>
@@ -33,36 +28,22 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="name">Name</label>
-                    <input
-                      type="text"
-                      ng-model="regex.regex_name"
-                      class="form-control"
-                      id="name"
-                      placeholder="Enter the regex name"
-                    />
+                    <input type="text" ng-model="regex.regex_name" class="form-control" id="name"
+                      placeholder="Enter the regex name" />
                   </div>
                 </div>
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="name">Pattern</label>
-                    <input
-                      type="text"
-                      ng-model="regex.regex_pattern"
-                      class="form-control"
-                      id="name"
-                      placeholder="Enter the regex pattern"
-                    />
+                    <input type="text" ng-model="regex.regex_pattern" class="form-control" id="name"
+                      placeholder="Enter the regex pattern" />
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="card-footer">
-              <button
-                type="submit"
-                ng-click="editRegex()"
-                class="btn btn-sm btn-primary"
-              >
+              <button type="submit" ng-click="editRegex()" class="btn btn-sm btn-primary">
                 <i class="fa fa-dot-circle-o"></i> Save
               </button>
             </div>
