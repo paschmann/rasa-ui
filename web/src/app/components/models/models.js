@@ -2,6 +2,7 @@ angular.module('app').controller('ModelController', ModelController);
 
 function ModelController($scope, $rootScope, appConfig, Model, Agent, Rasa_Status, $http) {
   $scope.message = '';
+  $scope.loading_model = 0;
 
   checkRasaStatus();
 
@@ -41,16 +42,19 @@ function ModelController($scope, $rootScope, appConfig, Model, Agent, Rasa_Statu
 
   $scope.loadRasaModel = function (server_model) {
     let agentToTrain = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
+    $scope.loading_model = 1;
     /* TODO: Replace with factory methods */
     $http.put(appConfig.api_endpoint_v2 + "/rasa/model", { "model_file": agentToTrain.output_folder + "/" + server_model }).then(
       function (response) {
         $scope.message = "Loaded model " + server_model;
         loadAgentModels(agentToTrain.agent_id);
+        $scope.loading_model = 0;
       },
       function (err) {
         $scope.message = "Loading for " + agentToTrain.agent_name + " failed";
         $scope.generateError = JSON.stringify(err);
         $rootScope.trainings_under_this_process = 0;
+        $scope.loading_model = 0;
       }
     );
   }

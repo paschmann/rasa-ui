@@ -28,7 +28,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
   $scope.trainUsingRawData = function () {
     let agentToTrain = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
     $rootScope.trainings_under_this_process = 1;
-    $http.post(appConfig.api_endpoint_v2 + "/rasa/model/train?agent_name=" + agentToTrain.agent_name + "&agent_id=" + agentToTrain.agent_id + "&comment=" + $scope.comment, JSON.parse($scope.raw_data_stringified)).then(
+    $http.post(appConfig.api_endpoint_v2 + "/rasa/model/train?agent_name=" + agentToTrain.agent_name + "&agent_id=" + agentToTrain.agent_id + "&comment=" + $scope.comment, $scope.raw_data_stringified).then(
       function (response) {
         $scope.message = "Training for " + agentToTrain.agent_name + " completed successfully, open models to view and load the agents models";
         $rootScope.trainings_under_this_process = 0;
