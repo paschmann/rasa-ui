@@ -1,6 +1,6 @@
 angular.module('app').controller('EditAgentController', EditAgentController);
 
-function EditAgentController($scope, Agent, Intents, AgentEntities, Actions, AgentActions, AgentSynonyms, AgentRegex) {
+function EditAgentController($scope, Agent, Intents, AgentEntities, Actions, AgentActions, AgentSynonyms, AgentRegex, $rootScope) {
   Agent.get({ agent_id: $scope.$routeParams.agent_id }, function(data) {
     $scope.agent = data;
     /* Core feature
@@ -24,6 +24,12 @@ function EditAgentController($scope, Agent, Intents, AgentEntities, Actions, Age
   AgentEntities.query({ agent_id: $scope.$routeParams.agent_id }, function(data) {
     $scope.entitiesList = data;
   });
+
+  $scope.editAgentInfo = function(agent) {
+    Agent.update({ agent_id: agent.agent_id }, agent).$promise.then(function() {
+      $rootScope.$broadcast('setAlertText', "Agent information updated Sucessfully!!");
+    });
+  };
 
   /* Core feature 
   AgentActions.query({ agent_id: $scope.$routeParams.agent_id }, function(data) {

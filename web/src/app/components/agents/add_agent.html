@@ -18,12 +18,11 @@
                                     <div class="form-group">
                                         <label for="name">Name</label>
                                         <input type="text" autocomplete="off" ng-model="formData.agent_name"
-                                            class="form-control" id="name" placeholder="Enter the agent name">
+                                            class="form-control" id="name" placeholder="Enter the agent name" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="name">Config</label>
-                                        <input type="text" autocomplete="off" ng-model="formData.agent_config"
-                                            class="form-control" id="agent_config" placeholder="Enter the agent configuration for Rasa">
+                                        <textarea class="datainput form-control" id="agent_config" ng-model="formData.agent_config"></textarea>
                                     </div>
                                     <div class="form-group">
                                         <label for="name">Server Output Folder</label>

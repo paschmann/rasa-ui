@@ -43,11 +43,12 @@ function createAgentSynonym(req, res, next) {
 
 function removeSynonym(req, res, next) {
   logger.winston.info('synonym.removeExpression');
-  db.run('delete from synonyms where agent_id = ?', req.params.synonym_id, function(err) {
+  db.run("delete from synonym_variants where synonym_id = ?", req.params.synonym_id);
+  db.run('delete from synonyms where synonym_id = ?', req.params.synonym_id, function(err) {
     if (err) {
       logger.winston.info("Error removing the record");
     } else {
-      res.status(200).json({ status: 'success', message: 'Removed', synonym_id: data });
+      res.status(200).json({ status: 'success', message: 'Removed' });
     }
   });
 }

@@ -65,10 +65,13 @@ function trainRasaNlu(req, res, next) {
         if (response.statusCode != 200) {
           logger.winston.info("Error occured while training. Rasa Server Response Code : " + response.statusCode);
           sendOutput(response.statusCode, res, JSON.stringify({ errorBody: body }));
+          return;
         } else {
           model.server_file_name = response.headers["filename"];
           model.response = response;
           logger.winston.info("Training Completed, Rasa Server Response Code : " + response.statusCode);
+
+          sendOutput(200, res, "");
 
           logs.logRequest(req, 'train', {
             server_response: response.headers["filename"],
@@ -82,14 +85,15 @@ function trainRasaNlu(req, res, next) {
     }).pipe(fs.createWriteStream(model.file_path + model.file_name));
 
     stream.on('finish', function () {
-      db.run('insert into models(model_name, comment, agent_id, local_path, server_path, server_response)' + 'values (?,?,?,?,?,?)', [model.file_name, req.query.comment, req.query.agent_id, model.file_path + model.file_name, model.server_file_name, "response"], function (err) {
-        if (err) {
-          logger.winston.info("Error inserting a new record: " + err);
-        } else {
-          logger.winston.info("Model saved to models table");
-        }
-      });
-      sendOutput(200, res, "");
+      if (model.server_file_name) {
+        db.run('insert into models(model_name, comment, agent_id, local_path, server_path, server_response)' + 'values (?,?,?,?,?,?)', [model.file_name, req.query.comment, req.query.agent_id, model.file_path + model.file_name, model.server_file_name, "response"], function (err) {
+          if (err) {
+            logger.winston.info("Error inserting a new record: " + err);
+          } else {
+            logger.winston.info("Model saved to models table");
+          }
+        });
+      }
     });
   } catch (err) {
     logger.winston.info("Exception When sending Training Data to Rasa:" + err);
@@ -139,7 +143,7 @@ function parseRequest(req, res, next) {
   request({ method: 'POST', uri: global.rasa_endpoint + '/model/parse', body: JSON.stringify(req.body) },
     function (error, response, body) {
       try {
-        logger.winston.info('rasa_response:+++ ' + body);
+        logger.winston.info('Rasa Response: ' + body);
         logs.logRequest(req, 'parse', 
         {
           server_response: body,

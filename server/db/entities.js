@@ -59,7 +59,8 @@ function updateEntity(req, res, next) {
 }
 
 function removeEntity(req, res, next) {
-  db.run('delete from entities where agent_id = ?', req.params.entity_id, function(err) {
+  logger.winston.info('entities.updateEntity');
+  db.run('delete from entities where entity_id = ?', req.params.entity_id, function(err) {
     if (err) {
       logger.winston.info("Error removing the record");
     } else {
@@ -74,4 +75,5 @@ module.exports = {
   getSingleEntity,
   createEntity,
   updateEntity,
-  removeEntity};
+  removeEntity
+};

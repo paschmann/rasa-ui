@@ -1,5 +1,5 @@
 var app = angular
-  .module("app", ["ngCookies", "ng-jsyaml", "ngSanitize", "ngFileUpload", "angularUtils.directives.dirPagination", "ngRoute", "chart.js", "ngResource", "ngTagsInput", "jsonFormatter", "angularModalService", "ngStorage"])
+  .module("app", ["ngCookies", "ngSanitize", "ngFileUpload", "angularUtils.directives.dirPagination", "ngRoute", "chart.js", "ngResource", "ngTagsInput", "jsonFormatter", "angularModalService", "ngStorage"])
   .run(function ($rootScope, $http, $sessionStorage, appConfig) {
 
     // keep user logged in after page refresh

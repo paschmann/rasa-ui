@@ -16,6 +16,42 @@
       <div class="col-sm-12 col-lg-12">
         <div class="card">
           <div class="card-header">
+            <strong>Settings</strong>
+            <span class="float-right">
+              <a class="btn btn-ghost-primary" data-toggle="collapse" data-target="#agent_settings" aria-expanded="true"
+                aria-controls="collapseOne"><i class="icon-arrow-down"></i></a>
+            </span>
+          </div>
+          <div id="accordion" role="tablist">
+            <div id="agent_settings" class="collapse" role="tabpanel" aria-labelledby="headingOne"
+              data-parent="#accordion">
+              <div class="card-block">
+                <div class="form-group">
+                  <label for="{{agent.agent_id}}_formGroupInput1">Name</label>
+                  <input ng-model="agent.agent_name" autocomplete="off" type="text" class="form-control"
+                    id="{{agent.agent_id}}_formGroupInput1" placeholder="Agent Name" value="{{ agent.agent_name }}">
+                </div>
+                <div class="form-group">
+                  <label for="{{agent.agent_id}}_formGroupInput2">Rasa Config</label>
+                  <textarea class="datainput form-control" id="{{agent.agent_id}}_formGroupInput2" ng-model="agent.agent_config">{{ agent.agent_config}}</textarea>
+                </div>
+                <div class="form-group">
+                  <label for="{{agent.agent_id}}_formGroupInput3">Server Output Folder</label>
+                  <input ng-model="agent.output_folder" autocomplete="off" type="text" class="form-control"
+                    id="{{agent.agent_id}}_formGroupInput3" placeholder="Output Folder"
+                    value="{{ agent.output_folder }}">
+                </div>
+              </div>
+              <div class="card-footer">
+                <button type="submit" class="btn btn-sm btn-primary" ng-click="editAgentInfo(agent)"><i class="fa fa-dot-circle-o"></i>Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-lg-12">
+        <div class="card">
+          <div class="card-header">
             <strong>Intents</strong>
             <input id="agentFilter" style="width:30%" autocomplete="off" class="filtertext" type="text" name="search"
               ng-model="intentFilterText" placeholder="Filter Intents..">

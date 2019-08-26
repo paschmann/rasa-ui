@@ -4,43 +4,48 @@
   <li class="breadcrumb-item active">Add Entity</li>
 </ol>
 <div class="container-fluid">
-    <div class="animated fadeIn">
-        <div class="row">
-            <div class="col-sm-12 col-lg-12">
-              <form name="newEntitiesForm" novalidate  ng-submit="addEntity()">
-                <div class="card">
-                    <div class="card-header">
-                        <strong>New Entity</strong>
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12 col-lg-12">
+        <form ng-submit="addEntity()">
+          <div class="card">
+            <div class="card-header">
+              <strong>Entity</strong>
+            </div>
+            <div class="card-block">
+              <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="form-control-label" for="formGroupEntityNameInputId" data-toggle="tooltip"
+                          data-placement="right" title="Name of the Entity. NLU uses this name in structured response"
+                          tooltip>Entity Name</label>
+                        <input ng-model="formData.entity_name" type="text" class="form-control"
+                          id="formGroupEntityNameInputId" placeholder="Enter the entity name" required>
+                      </div>
+                      <div class="form-group">
+                        <label class="form-control-label" for="formSlottypeId" data-toggle="tooltip" data-placement="right"
+                          title="*Required* Data Type of the slot if used in Rasa core. A custom one can also be entered here and made it available in rasa core environment. Select NOT_USED if you dont want rasaCore to poplate it."
+                          tooltip>Slot Data Type</label>
+                        <input ng-model="formData.slot_data_type" class="form-control" id="formSlottypeId" type="text"
+                          list="slot_data_typesList" required />
+                        <datalist id="slot_data_typesList">
+                          <option>NOT_USED</option>
+                          <option>text</option>
+                          <option>bool</option>
+                          <option>categorical</option>
+                          <option>float</option>
+                          <option>list</option>
+                          <option>unfeaturized</option>
+                        </datalist>
+                      </div>
                     </div>
-                    <div class="card-block">
-                      <div class="row">
-                        <div class="col-sm-12">
-                          <div class="form-group">
-                            <label class="form-control-label" for="formGroupEntityNameInputId" data-toggle="tooltip" data-placement="right" title="Name of the Entity. NLU uses this name in structured response" tooltip>Entity Name</label>
-                            <input ng-model="formData.entity_name" type="text" class="form-control" id="formGroupEntityNameInputId" placeholder="Enter the entity name" required >
-                          </div>
-                          <div class="form-group">
-                            <label class="form-control-label" for="formSlottypeId" data-toggle="tooltip" data-placement="right" title="*Required* Data Type of the slot if used in Rasa core. A custom one can also be entered here and made it available in rasa core environment. Select NOT_USED if you dont want rasaCore to poplate it." tooltip>Slot Data Type</label>
-                            <input ng-model="formData.slot_data_type" class="form-control" id="formSlottypeId" type="text" list="slot_data_typesList" required/>
-                              <datalist id="slot_data_typesList">
-                                <option>NOT_USED</option>
-                                <option>text</option>
-                                <option>bool</option>
-                                <option>categorical</option>
-                                <option>float</option>
-                                <option>list</option>
-                                <option>unfeaturized</option>
-                              </datalist>
-                          </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <button type="submit" class="btn btn-sm btn-primary" ng-disabled="newEntitiesForm.$invalid"><i class="fa fa-dot-circle-o"></i> Save</button>
                 </div>
               </div>
-          </form>
-        </div>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-sm btn-primary" ng-disabled="newEntitiesForm.$invalid"><i class="fa fa-dot-circle-o"></i> Save</button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
