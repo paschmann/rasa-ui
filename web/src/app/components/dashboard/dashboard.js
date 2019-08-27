@@ -21,7 +21,7 @@ function DashboardController($scope, $http, Rasa_Status, NLU_log_stats, appConfi
     Rasa_Status.get(function(data) {
       $scope.model_file = data.model_file;
       if (data.fingerprint) {
-        $scope.trained_at = window.timeConverter(data.fingerprint.trained_at);
+        $scope.trained_at = $scope.timeConverter(data.fingerprint.trained_at);
       } else {
         $scope.model_file = "No model loaded";
         $scope.trained_at = "Unavailable";

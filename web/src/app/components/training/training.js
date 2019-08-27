@@ -26,7 +26,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
   }
 
   $scope.trainUsingRawData = function () {
-    let agentToTrain = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
+    let agentToTrain = $scope.objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
     $rootScope.trainings_under_this_process = 1;
     $http.post(appConfig.api_endpoint_v2 + "/rasa/model/train?agent_name=" + agentToTrain.agent_name + "&agent_id=" + agentToTrain.agent_id + "&comment=" + $scope.comment, $scope.raw_data_stringified).then(
       function (response) {
@@ -34,7 +34,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
         $rootScope.trainings_under_this_process = 0;
       },
       function (err) {
-        $scope.message = "Training for " + agentToTrain.agent_name + " failed";
+        //$scope.message = "Training for " + agentToTrain.agent_name + " failed";
         $scope.generateError = JSON.stringify(err);
         $rootScope.trainings_under_this_process = 0;
       }
@@ -52,7 +52,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
   };
 
   $scope.getData = function (agent_id) {
-    $scope.selectedAgent = window.objectFindByKey($scope.agentList, 'agent_id', agent_id);
+    $scope.selectedAgent = $scope.objectFindByKey($scope.agentList, 'agent_id', agent_id);
 
     reset();
 
@@ -65,6 +65,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
 
       AgentRegex.query({ agent_id: agent_id }, function (regex) {
         AgentSynonyms.query({ agent_id: agent_id }, function (synonyms) {
+          synonyms = $scope.cleanResponse(synonyms);
           let intentIds = intents
             .map(function (item) {
               return item['intent_id'];
@@ -72,6 +73,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
             .toString();
           if (intentIds.length > 0) {
             IntentExpressions.query({ intent_ids: intentIds }, function (expressions) {
+              expressions = $scope.cleanResponse(expressions);
               let expressionIds = expressions
                 .map(function (item) {
                   return item['expression_id'];
@@ -84,6 +86,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
                   if (synonymsIds.length > 0) {
                     SynonymsVariants.query({ synonyms_id: synonymsIds },
                       function (variants) {
+                        variants = $scope.cleanResponse(variants);
                         generateData(regex, intents, expressions, params, synonyms, variants);
                       },
                       function (error) {
@@ -127,28 +130,48 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
   function generateData(regex, intents, expressions, params, synonyms, variants) {
     let tmpData = "";
 
-    for (let intent_i = 0; intent_i <= intents.length - 1; intent_i++) {
+    //Loop through Intents --> Examples (expressions) --> Entities --> Parameters
+    for (let intent_i = 0; intent_i < intents.length; intent_i++) {
       let expressionList = expressions.filter(
         expression => expression.intent_id === intents[intent_i].intent_id
       );
       tmpData += "## intent:" + intents[intent_i].intent_name + "\n"; 
       if (expressionList.length > 0) {
-        for (let expression_i = 0; expression_i <= expressionList.length - 1; expression_i++) {
+        for (let expression_i = 0; expression_i < expressionList.length; expression_i++) {
           //Add parameters to expression
           var expression = expressionList[expression_i].expression_text;
           let parameterList = params.filter(
             param => param.expression_id === expressionList[expression_i].expression_id
           );
           if (parameterList.length > 0) {
-            for (let parameter_i = 0; parameter_i <= parameterList.length - 1; parameter_i++) {
-              expression = expression.splice(parameterList[parameter_i].parameter_end, 0, "(" + parameterList[parameter_i].entity_name + ")");
+            for (let parameter_i = 0; parameter_i < parameterList.length; parameter_i++) {
+              expression = expression.splice(parameterList[parameter_i].parameter_end, 0, "](" + parameterList[parameter_i].entity_name + ")").splice(parameterList[parameter_i].parameter_start, 0, "[");
             }
           }
-          tmpData += "- " + expression + "\n";
+          tmpData += "- " + expression + "\n\n";
         }
       }
     }
 
+    if (synonyms) {
+      for (let synonym_i = 0; synonym_i < synonyms.length; synonym_i++) {
+        tmpData += "## synonym:" + synonyms[synonym_i].synonym_reference + "\n";
+        for (let synonym_variant_i = 0; synonym_variant_i < variants.length; synonym_variant_i++) {
+          //The additional properties of the factory method is causing problems
+          if (variants[synonym_variant_i].synonym_id == synonyms[synonym_i].synonym_id) {
+            tmpData += "- " + variants[synonym_variant_i].synonym_value + "\n";
+          }
+        }
+      }
+      tmpData += "\n";
+    }
+
+    if (regex) {
+      for (let regex_i = 0; regex_i < regex.length; regex_i++) {
+        tmpData += "## regex:" + regex[regex_i].regex_name;
+        tmpData += "- " + regex[regex_i].regex_pattern + "\n\n";
+      }
+    }
 
     /*
     //Check data formats of examples and match output to MD format.
@@ -328,7 +351,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
       delete tmpData.rasa_nlu_data.common_examples[i].expression_id;
     }
 
-    let agentToTrain = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
+    let agentToTrain = $scope.objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
 
     let dataToPost = {};
     dataToPost.config = agentToTrain.agent_config;

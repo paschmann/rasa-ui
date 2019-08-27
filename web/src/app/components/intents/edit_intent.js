@@ -98,7 +98,7 @@ function EditIntentController($rootScope, $scope, Agent, AgentEntities, Intent, 
     const highlighted = str.replace(
       word,
       '<span style="padding: 3px; background-color: ' +
-      window.pastelColors() +
+      $scope.pastelColors() +
       '">' +
       word +
       "</span>"

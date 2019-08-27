@@ -138,9 +138,19 @@ angular
         templateUrl: '/app/components/settings/settings.html',
         activePage: 'settings'
       })
+      .when('/models/:agent_id', {
+        controller: 'ModelController',
+        templateUrl: '/app/components/models/models.html',
+        activePage: 'models'
+      })
       .when('/models', {
         controller: 'ModelController',
         templateUrl: '/app/components/models/models.html',
+        activePage: 'models'
+      })
+      .when('/models/:agent_id/add', {
+        controller: 'AddModelController',
+        templateUrl: '/app/components/models/add_model.html',
         activePage: 'models'
       })
       .otherwise({ redirectTo: '/' });

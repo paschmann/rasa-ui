@@ -64,7 +64,7 @@ function trainRasaNlu(req, res, next) {
       try {
         if (response.statusCode != 200) {
           logger.winston.info("Error occured while training. Rasa Server Response Code : " + response.statusCode);
-          sendOutput(response.statusCode, res, JSON.stringify({ errorBody: body }));
+          sendOutput(500, res, '{"error" : ' + body + '}');
           return;
         } else {
           model.server_file_name = response.headers["filename"];

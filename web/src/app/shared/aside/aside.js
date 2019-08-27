@@ -41,7 +41,7 @@ function AsideController($scope, $rootScope, $interval, $http, Rasa_Version, Set
 
   function getRasaStatus() {
     Rasa_Status.get(function (statusdata) {
-      $rootScope.config = JSON.parse(angular.toJson(statusdata));;
+      $rootScope.config = statusdata.toJSON();
       $rootScope.config.isonline = 1;
     }, function (error) {
       $rootScope.config.isonline = 0;

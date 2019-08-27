@@ -20,6 +20,7 @@ const logs = require('../db/logs');
 //routes model
 router.get('/models/:agent_id', models.getAgentModels);
 router.delete('/models', models.removeModel);
+router.post('/models', models.createModel);
  
 //routes agent
 router.get('/agents', agents.getAllAgents);

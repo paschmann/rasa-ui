@@ -13,6 +13,19 @@ function getAgentModels(req, res, next) {
   });
 }
 
+function createModel(req, res, next) {
+  logger.winston.info('Agent.createAgent');
+  console.log(req.body);
+  db.run('insert into models(model_name, comment, agent_id, server_path, local_path)' + 'values (?,?,?,?,?)', [req.body.file_name, req.body.comment, req.body.agent_id, req.body.server_path, 'Manually added'], function (err) {
+    if (err) {
+      logger.winston.info("Error inserting a new record: " + err);
+    } else {
+      logger.winston.info("Model saved to models table");
+      res.status(200).json({ status: 'success', message: 'Inserted' });
+    }
+  });
+}
+
 function removeModel(req, res, next) {
   logger.winston.info('Model.removeModel');
 
@@ -20,7 +33,7 @@ function removeModel(req, res, next) {
     if (err) {
       logger.winston.info("Error removing the record");
     } else {
-      if (req.query.local_path != "Manually Added") {
+      if (req.query.local_path && req.query.local_path != "Manually Added") {
         fs.unlink(req.query.local_path, (err) => {
           if (err) {
             logger.winston.info(err)
@@ -35,5 +48,6 @@ function removeModel(req, res, next) {
 
 module.exports = {
   getAgentModels,
-  removeModel
+  removeModel,
+  createModel
 };

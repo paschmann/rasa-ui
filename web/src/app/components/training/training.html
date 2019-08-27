@@ -8,6 +8,9 @@
         <div class="alert alert-success" role="alert" ng-show="message !== ''">
           {{message}}
         </div>
+        <div class="alert alert-danger" role="alert" ng-show="generateError !== ''">
+            {{ generateError }}
+          </div>
         <div class="alert alert-info" role="alert" ng-show="$root.trainings_under_this_process > 0">
           <strong>Training</strong> is currently running.
         </div>
