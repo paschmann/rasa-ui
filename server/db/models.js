@@ -2,9 +2,9 @@ const db = require('./db');
 const logger = require('../util/logger');
 const fs = require('fs');
 
-function getAgentModels(req, res, next) {
-  logger.winston.info('Model.getAgentModels');
-  db.all('select * from models where agent_id = ?', req.params.agent_id, function(err, data) {
+function getBotModels(req, res, next) {
+  logger.winston.info('Model.getBotModels');
+  db.all('select * from models where bot_id = ?', req.params.bot_id, function(err, data) {
     if (err) {
       logger.winston.info(err);
     } else {
@@ -14,9 +14,9 @@ function getAgentModels(req, res, next) {
 }
 
 function createModel(req, res, next) {
-  logger.winston.info('Agent.createAgent');
+  logger.winston.info('Bot.createBot');
   console.log(req.body);
-  db.run('insert into models(model_name, comment, agent_id, server_path, local_path)' + 'values (?,?,?,?,?)', [req.body.file_name, req.body.comment, req.body.agent_id, req.body.server_path, 'Manually added'], function (err) {
+  db.run('insert into models(model_name, comment, bot_id, server_path, local_path)' + 'values (?,?,?,?,?)', [req.body.file_name, req.body.comment, req.body.bot_id, req.body.server_path, 'Manually added'], function (err) {
     if (err) {
       logger.winston.info("Error inserting a new record: " + err);
     } else {
@@ -47,7 +47,7 @@ function removeModel(req, res, next) {
 }
 
 module.exports = {
-  getAgentModels,
+  getBotModels,
   removeModel,
   createModel
 };

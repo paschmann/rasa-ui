@@ -27,42 +27,42 @@ angular
         templateUrl: '/app/components/dashboard/dashboard.html',
         activePage: 'dashboard'
       })
-      .when('/agents', {
-        controller: 'AgentsController as agent',
-        templateUrl: '/app/components/agents/agents.html',
-        activePage: 'agents'
+      .when('/bots', {
+        controller: 'BotsController as bot',
+        templateUrl: '/app/components/bots/bots.html',
+        activePage: 'bots'
       })
-      .when('/agent/add', {
-        controller: 'AddAgentController as addagent',
-        templateUrl: '/app/components/agents/add_agent.html',
-        activePage: 'agents'
+      .when('/bot/add', {
+        controller: 'AddBotController as addbot',
+        templateUrl: '/app/components/bots/add_bot.html',
+        activePage: 'bots'
       })
-      .when('/agent/import', {
-        controller: 'ImportAgentController as importagent',
-        templateUrl: '/app/components/agents/import_agent.html',
-        activePage: 'agents'
+      .when('/bot/import', {
+        controller: 'ImportBotController as importbot',
+        templateUrl: '/app/components/bots/import_bot.html',
+        activePage: 'bots'
       })
-      .when('/agent/:agent_id', {
-        controller: 'EditAgentController as editagent',
-        templateUrl: '/app/components/agents/edit_agent.html',
-        activePage: 'agent'
+      .when('/bot/:bot_id', {
+        controller: 'EditBotController as editbot',
+        templateUrl: '/app/components/bots/edit_bot.html',
+        activePage: 'bot'
       })
-      .when('/agent/:agent_id/action/edit/:action_id', {
+      .when('/bot/:bot_id/action/edit/:action_id', {
         controller: 'ActionsController as actionsController',
         templateUrl: '/app/components/actions/actions.html',
-        activePage: 'agent'
+        activePage: 'bot'
       })
-      .when('/agent/:agent_id/intent/add', {
+      .when('/bot/:bot_id/intent/add', {
         controller: 'AddIntentController as addintent',
         templateUrl: '/app/components/intents/add_intent.html',
-        activePage: 'agent'
+        activePage: 'bot'
       })
-      .when('/agent/:agent_id/intent/:intent_id', {
+      .when('/bot/:bot_id/intent/:intent_id', {
         controller: 'EditIntentController as editintent',
         templateUrl: '/app/components/intents/edit_intent.html',
-        activePage: 'agent'
+        activePage: 'bot'
       })
-      .when('/agent/:agent_id/stories/', {
+      .when('/bot/:bot_id/stories/', {
         controller: 'StoriesController as stories',
         templateUrl: '/app/components/stories/stories.html',
         activePage: 'stories'
@@ -72,35 +72,35 @@ angular
         templateUrl: '/app/components/entities/entities.html',
         activePage: 'entities'
       })
-      .when('/agent/:agent_id/entity/add', {
+      .when('/bot/:bot_id/entity/add', {
         controller: 'AddEntityController as addentity',
         templateUrl: '/app/components/entities/add_entity.html',
         activePage: 'entities'
       })
-      .when('/agent/:agent_id/entity/:entity_id', {
+      .when('/bot/:bot_id/entity/:entity_id', {
         controller: 'EntityController as entity',
         templateUrl: '/app/components/entities/edit_entity.html',
-        activePage: 'agent'
+        activePage: 'bot'
       })
-      .when('/agent/:agent_id/regex/add', {
+      .when('/bot/:bot_id/regex/add', {
         controller: 'AddRegexController as addentity',
         templateUrl: '/app/components/regex/add_regex.html',
-        activePage: 'agent'
+        activePage: 'bot'
       })
-      .when('/agent/:agent_id/regex/:regex_id', {
+      .when('/bot/:bot_id/regex/:regex_id', {
         controller: 'EditRegexController as editregex',
         templateUrl: '/app/components/regex/edit_regex.html',
-        activePage: 'agent'
+        activePage: 'bot'
       })
-      .when('/agent/:agent_id/synonym/:synonym_id', {
+      .when('/bot/:bot_id/synonym/:synonym_id', {
         controller: 'SynonymController',
         templateUrl: '/app/components/synonyms/edit_synonym.html',
-        activePage: 'agent'
+        activePage: 'bot'
       })
-      .when('/agent/:agent_id/synonyms/add', {
+      .when('/bot/:bot_id/synonyms/add', {
         controller: 'AddSynonymController',
         templateUrl: '/app/components/synonyms/add_synonym.html',
-        activePage: 'agent'
+        activePage: 'bot'
       })
       .when('/rasaconfig', {
         controller: 'RasaConfigController',
@@ -117,7 +117,7 @@ angular
         templateUrl: '/app/components/history/history.html',
         activePage: 'history'
       })
-      .when('/conversation/:agent_id/:user_id', {
+      .when('/conversation/:bot_id/:user_id', {
         //name: 'conversation',
         controller: 'ConversationController',
         templateUrl: '/app/components/conversation/conversation.html',
@@ -138,7 +138,7 @@ angular
         templateUrl: '/app/components/settings/settings.html',
         activePage: 'settings'
       })
-      .when('/models/:agent_id', {
+      .when('/models/:bot_id', {
         controller: 'ModelController',
         templateUrl: '/app/components/models/models.html',
         activePage: 'models'
@@ -148,7 +148,7 @@ angular
         templateUrl: '/app/components/models/models.html',
         activePage: 'models'
       })
-      .when('/models/:agent_id/add', {
+      .when('/models/:bot_id/add', {
         controller: 'AddModelController',
         templateUrl: '/app/components/models/add_model.html',
         activePage: 'models'

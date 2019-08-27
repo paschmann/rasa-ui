@@ -4,9 +4,9 @@ angular
 
 function AddModelController($scope, Model) {
   $scope.addModel = function(params) {
-    this.formData.agent_id = $scope.$routeParams.agent_id;
+    this.formData.bot_id = $scope.$routeParams.bot_id;
     Model.save(this.formData).$promise.then(function() {
-      $scope.go('/models/' + $scope.$routeParams.agent_id)
+      $scope.go('/models/' + $scope.$routeParams.bot_id)
     });
   };
 }

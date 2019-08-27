@@ -47,10 +47,10 @@
   <!-- Components/pages -->
   <script src="app/components/dashboard/dashboard.js"></script>
   <script src="app/components/dashboard/widgets.js"></script>
-  <script src="app/components/agents/agents.js"></script>
-  <script src="app/components/agents/edit_agent.js"></script>
-  <script src="app/components/agents/add_agent.js"></script>
-  <script src="app/components/agents/import_agent.js"></script>
+  <script src="app/components/bots/bots.js"></script>
+  <script src="app/components/bots/edit_bot.js"></script>
+  <script src="app/components/bots/add_bot.js"></script>
+  <script src="app/components/bots/import_bot.js"></script>
   <script src="app/components/intents/add_intent.js"></script>
   <script src="app/components/intents/edit_intent.js"></script>
   <script src="app/components/entities/edit_entity.js"></script>
@@ -81,10 +81,10 @@
   <link href="assets/css/style.css" rel="stylesheet" />
 </head>
 
-<!-- If the route is the agent, we should show the aside -->
+<!-- If the route is the bot, we should show the aside -->
 
 <body class="app header-fixed sidebar-fixed"
-  ng-class="$route.current.activePage == 'agent' ? 'aside-menu-fixed' : 'aside-menu-hidden'" ng-controller="appCtrl">
+  ng-class="$route.current.activePage == 'bot' ? 'aside-menu-fixed' : 'aside-menu-hidden'" ng-controller="appCtrl">
 
   <div id="alertTextDiv" class="alert alert-warning alert-dismissible fade alert-div" role="alert">
     <button style="padding: 0px !important" type="button" class="close" data-dismiss="alert" aria-label="Close">

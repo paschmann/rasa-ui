@@ -1,11 +1,11 @@
 angular.module('app').controller('EditIntentController', EditIntentController);
 
-function EditIntentController($rootScope, $scope, Agent, AgentEntities, Intent, Expressions, Expression, Parameter, Parameters, Entities, Responses, Response) {
-  Agent.get({ agent_id: $scope.$routeParams.agent_id }, function (data) {
-    $scope.agent = data;
+function EditIntentController($rootScope, $scope, Bot, BotEntities, Intent, Expressions, Expression, Parameter, Parameters, Entities, Responses, Response) {
+  Bot.get({ bot_id: $scope.$routeParams.bot_id }, function (data) {
+    $scope.bot = data;
   });
 
-  AgentEntities.query({ agent_id: $scope.$routeParams.agent_id }, function (data) {
+  BotEntities.query({ bot_id: $scope.$routeParams.bot_id }, function (data) {
     $scope.entityList = data;
   });
 
@@ -89,7 +89,7 @@ function EditIntentController($rootScope, $scope, Agent, AgentEntities, Intent, 
   $scope.deleteIntent = function () {
     Intent.remove({ intent_id: $scope.$routeParams.intent_id }).$promise.then(
       function () {
-        $scope.go('/agent/' + $scope.$routeParams.agent_id);
+        $scope.go('/bot/' + $scope.$routeParams.bot_id);
       }
     );
   };

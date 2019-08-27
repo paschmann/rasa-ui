@@ -49,7 +49,7 @@ function checkDirectoryExists(filePath) {
 
 function trainRasaNlu(req, res, next) {
   var model = {};
-  model.file_path = "server/data/models/" + req.query.agent_name + "/";
+  model.file_path = "server/data/models/" + req.query.bot_name + "/";
   model.file_name = Math.floor(Date.now()) + ".tar.gz";
 
   logger.winston.info("Rasa NLU Train Request -> " + global.rasa_endpoint + "/model/train");
@@ -86,7 +86,7 @@ function trainRasaNlu(req, res, next) {
 
     stream.on('finish', function () {
       if (model.server_file_name) {
-        db.run('insert into models(model_name, comment, agent_id, local_path, server_path, server_response)' + 'values (?,?,?,?,?,?)', [model.file_name, req.query.comment, req.query.agent_id, model.file_path + model.file_name, model.server_file_name, "response"], function (err) {
+        db.run('insert into models(model_name, comment, bot_id, local_path, server_path, server_response)' + 'values (?,?,?,?,?,?)', [model.file_name, req.query.comment, req.query.bot_id, model.file_path + model.file_name, model.server_file_name, "response"], function (err) {
           if (err) {
             logger.winston.info("Error inserting a new record: " + err);
           } else {

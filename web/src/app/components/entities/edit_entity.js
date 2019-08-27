@@ -1,23 +1,23 @@
 angular.module('app').controller('EntityController', EntityController);
 
-function EntityController($rootScope, $scope, Agent, Entity) {
+function EntityController($rootScope, $scope, Bot, Entity) {
   $scope.tags = [{}];
 
   Entity.get({ entity_id: $scope.$routeParams.entity_id }, function(data) {
     $scope.entity = data;
   });
 
-  Agent.query(function(data) {
-    $scope.agentsList = data;
+  Bot.query(function(data) {
+    $scope.botsList = data;
   });
 
-  Agent.get({ agent_id: $scope.$routeParams.agent_id }, function(data) {
-    $scope.entity.agent = data;
+  Bot.get({ bot_id: $scope.$routeParams.bot_id }, function(data) {
+    $scope.entity.bot = data;
   });
 
   $scope.deleteEntity = function() {
     Entity.remove({ entity_id: $scope.$routeParams.entity_id }, function(data) {
-      $scope.go('/agent/' + $scope.entity.agent.agent_id);
+      $scope.go('/bot/' + $scope.entity.bot.bot_id);
     });
   };
 

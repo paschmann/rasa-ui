@@ -17,10 +17,10 @@
         <div class="card">
           <div class="card-block">
             <div class="form-group row">
-              <label for="select" class="col-sm-2 col-form-label">Agent</label>
+              <label for="select" class="col-sm-2 col-form-label">Bot</label>
               <div class="col-sm-10">
-                <select id="agent_name" ng-change="getData(agent.agent_id,agent)" ng-options="agent.agent_id as agent.agent_name for agent in agentList" ng-model="agent.agent_id" class="form-control">
-                  <option value="">Please select a agent</option>
+                <select id="bot_name" ng-change="getData(bot.bot_id,bot)" ng-options="bot.bot_id as bot.bot_name for bot in botList" ng-model="bot.bot_id" class="form-control">
+                  <option value="">Please select a bot</option>
                 </select>
               </div>
             </div>
@@ -106,10 +106,10 @@
               <div class="card-header">
                 <strong>Rasa Core Config</strong>
               </div>
-              <div class="card-block" style="min-height:400px;max-height:400px;overflow-y:scroll" ng-show="selectedAgent.rasa_core_enabled!=true">
-                Rasa Core is not enabled for this Agent.
+              <div class="card-block" style="min-height:400px;max-height:400px;overflow-y:scroll" ng-show="selectedBot.rasa_core_enabled!=true">
+                Rasa Core is not enabled for this Bot.
               </div>
-              <div id="accordion" class="card-block" style="min-height:400px;max-height:400px;overflow-y:scroll" ng-show="selectedAgent.rasa_core_enabled==true">
+              <div id="accordion" class="card-block" style="min-height:400px;max-height:400px;overflow-y:scroll" ng-show="selectedBot.rasa_core_enabled==true">
                 <div class="card-header" role="tab" id="heading1">
                     <h5 class="mb-0">
                       <a data-target="#collapseOne" data-toggle="collapse">
@@ -180,14 +180,14 @@
                           </li>
                           <li>Custom policy can be included in yml file and provided as an argument "-c policies.yml" to above command</li>
                           <li><strong>Start Rasa Core REST Channel</strong>
-                            <pre>python -m rasa_core.run -d models/dialogue -u {{selectedAgent.agent_name}}/model_name_to_be_selected --endpoints data/endpoints.yml  --port 5002 --credentials data/credentials.yml </pre>
+                            <pre>python -m rasa_core.run -d models/dialogue -u {{selectedBot.bot_name}}/model_name_to_be_selected --endpoints data/endpoints.yml  --port 5002 --credentials data/credentials.yml </pre>
                           </li>
                         </ul>
                     </div>
                   </div>
                 </div>
               <div class="card-footer">
-                <button type="button" class="btn btn-secondary" ng-show="exportdata !== undefined" ng-click="savecoretofiles()" ng-disabled="selectedAgent.rasa_core_enabled!=true"><i class="fa fa-file"></i>&nbsp; Download Files</button>
+                <button type="button" class="btn btn-secondary" ng-show="exportdata !== undefined" ng-click="savecoretofiles()" ng-disabled="selectedBot.rasa_core_enabled!=true"><i class="fa fa-file"></i>&nbsp; Download Files</button>
                 <a href="" id="core_domain"></a>
                 <a href="" id="core_stories"></a>
                 <a href="" id="core_credentials"></a>

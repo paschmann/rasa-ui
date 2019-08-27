@@ -1,13 +1,13 @@
 /* TODO: */
 angular.module('app').controller('InsightsController', InsightsController);
 
-function InsightsController($scope, $http, $sce, NLU_log_stats, Agent, appConfig) {
+function InsightsController($scope, $http, $sce, NLU_log_stats, Bot, appConfig) {
   $scope.option = 'Daily';
   loadDailyActiveUsers();
 
-  Agent.query(function (data) {
-    $scope.agentList = data;
-    $scope.selectedAgent = data[0].agent_id;
+  Bot.query(function (data) {
+    $scope.botList = data;
+    $scope.selectedBot = data[0].bot_id;
     $scope.drawCharts();
   });
   //chart options
@@ -64,7 +64,7 @@ function InsightsController($scope, $http, $sce, NLU_log_stats, Agent, appConfig
   };
 
   $scope.drawCharts = function () {
-    $http({ method: 'GET', url: appConfig.api_endpoint_v2 + '/intentsMostUsed/' + $scope.selectedAgent }).then(
+    $http({ method: 'GET', url: appConfig.api_endpoint_v2 + '/intentsMostUsed/' + $scope.selectedBot }).then(
       function (response) {
         console.log("Resp " + JSON.stringify(response));
 
@@ -83,22 +83,22 @@ function InsightsController($scope, $http, $sce, NLU_log_stats, Agent, appConfig
       function (errorResponse) {
         console.log("Error Message while Getting Messages." + errorResponse);
       });
-    $http({ method: 'GET', url: appConfig.api_endpoint_v2 + '/agentsByIntentConfidencePct/' + $scope.selectedAgent }).then(
+    $http({ method: 'GET', url: appConfig.api_endpoint_v2 + '/botsByIntentConfidencePct/' + $scope.selectedBot }).then(
       function (response) {
-        $scope.agentResults = response.data;
-        var agentNameForBarChart = response.data[0].agent_name;
+        $scope.botResults = response.data;
+        var botNameForBarChart = response.data[0].bot_name;
         $scope.bar_chart_labels = [];
         $scope.bar_chart_series = ['Passed', 'Failed'];
         let passed_conter = 0;
         let failed_conter = 0;
-        for (let j = 0; j < $scope.agentResults.length; j++) {
-          if ($scope.agentResults[j].intent_confidence_pct > $scope.confidencePercent) {
+        for (let j = 0; j < $scope.botResults.length; j++) {
+          if ($scope.botResults[j].intent_confidence_pct > $scope.confidencePercent) {
             passed_conter++;
           } else {
             failed_conter++;
           }
         }
-        $scope.bar_chart_labels = ["Agent:" + agentNameForBarChart];
+        $scope.bar_chart_labels = ["Bot:" + botNameForBarChart];
         $scope.bar_chart_series = ['Passed', 'Failed'];
         $scope.barchar_data = [[passed_conter], [failed_conter]];
       },
@@ -152,8 +152,8 @@ function InsightsController($scope, $http, $sce, NLU_log_stats, Agent, appConfig
   $scope.updateBarChart = function () {
     let passed_conter = 0;
     let failed_conter = 0;
-    for (let j = 0; j < $scope.agentResults.length; j++) {
-      if ($scope.agentResults[j].intent_confidence_pct > $scope.confidencePercent) {
+    for (let j = 0; j < $scope.botResults.length; j++) {
+      if ($scope.botResults[j].intent_confidence_pct > $scope.confidencePercent) {
         passed_conter++;
       } else {
         failed_conter++;

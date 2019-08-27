@@ -1,17 +1,17 @@
 angular.module('app').controller('AddRegexController', AddRegexController);
 
-function AddRegexController($rootScope, $scope, Regex, Agent, $location) {
-  Agent.get({ agent_id: $scope.$routeParams.agent_id }, function (data) {
-    $scope.agent = data;
+function AddRegexController($rootScope, $scope, Regex, Bot, $location) {
+  Bot.get({ bot_id: $scope.$routeParams.bot_id }, function (data) {
+    $scope.bot = data;
   });
 
   $scope.addRegex = function () {
-    this.formData.agent_id = $scope.$routeParams.agent_id;
+    this.formData.bot_id = $scope.$routeParams.bot_id;
     Regex.save(this.formData).$promise.then(function (resp) {
       $scope.formData.regex_name = '';
       $scope.formData.regex_pattern = '';
       $rootScope.$broadcast('setAlertText', "Regex added sucessfully!");
-      $scope.go('/agent/' + $scope.agent.agent_id);
+      $scope.go('/bot/' + $scope.bot.bot_id);
     });
   };
 }

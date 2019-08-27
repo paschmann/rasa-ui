@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const agents = require('../db/agents');
+const bots = require('../db/bots');
 const intents = require('../db/intents');
 const expressions = require('../db/expressions');
 const parameters = require('../db/parameters');
@@ -18,24 +18,24 @@ const auth = require('./auth');
 const logs = require('../db/logs');
 
 //routes model
-router.get('/models/:agent_id', models.getAgentModels);
+router.get('/models/:bot_id', models.getBotModels);
 router.delete('/models', models.removeModel);
 router.post('/models', models.createModel);
  
-//routes agent
-router.get('/agents', agents.getAllAgents);
-router.get('/agents/:agent_id', agents.getSingleAgent);
-router.post('/agents', agents.createAgent);
-router.put('/agents/:agent_id', agents.updateAgent);
-router.post('/agentStory', agents.updateAgentStory);
-router.delete('/agents/:agent_id', agents.removeAgent);
-router.post('/agents/upload', agents.uploadAgentFromFile);
+//routes bot
+router.get('/bots', bots.getAllBots);
+router.get('/bots/:bot_id', bots.getSingleBot);
+router.post('/bots', bots.createBot);
+router.put('/bots/:bot_id', bots.updateBot);
+router.post('/botStory', bots.updateBotStory);
+router.delete('/bots/:bot_id', bots.removeBot);
+router.post('/bots/upload', bots.uploadBotFromFile);
 //routes intents
-router.get('/agents/:agent_id/intents', intents.getAgentIntents);
+router.get('/bots/:bot_id/intents', intents.getBotIntents);
 router.get('/intents/:intent_id', intents.getSingleIntent);
 router.put('/intents/:intent_id', intents.updateIntent);
-router.post('/agents/:agent_id/intents', intents.createAgentIntent);
-router.post('/intents', intents.createAgentIntent);
+router.post('/bots/:bot_id/intents', intents.createBotIntent);
+router.post('/intents', intents.createBotIntent);
 router.delete('/intents/:intent_id', intents.removeIntent);
 //routes expression
 router.get('/intent_expressions', expressions.getIntentExpressionQuery); //Used for training
@@ -54,21 +54,21 @@ router.put('/parameters/:parameter_id', parameters.updateParameter);
 router.delete('/parameters/:parameter_id', parameters.removeExpressionParameter);
 //routes entities
 router.get('/entities', entities.getAllEntities);
-router.get('/entities/agent/:agent_id', entities.getAllEntitiesForAgent);
+router.get('/entities/bot/:bot_id', entities.getAllEntitiesForBot);
 router.get('/entities/:entity_id', entities.getSingleEntity);
 router.post('/entities', entities.createEntity);
 router.put('/entities/:entity_id', entities.updateEntity);
 router.delete('/entities/:entity_id', entities.removeEntity);
 //routes regex
-router.get('/agent/:agent_id/regex', regex.getAgentRegex);
+router.get('/bot/:bot_id/regex', regex.getBotRegex);
 router.get('/regex/:regex_id', regex.getSingleRegex);
 router.post('/regex', regex.createRegex);
 router.put('/regex/:regex_id', regex.updateRegex);
 router.delete('/regex/:regex_id', regex.removeRegex);
 //routes synonymes
-router.get('/agent/:agent_id/synonyms', synonyms.getAgentSynonyms);
+router.get('/bot/:bot_id/synonyms', synonyms.getBotSynonyms);
 router.get('/synonyms/:synonym_id', synonyms.getSingleSynonym);
-router.post('/synonyms', synonyms.createAgentSynonym);
+router.post('/synonyms', synonyms.createBotSynonym);
 router.delete('/synonyms/:synonym_id', synonyms.removeSynonym);
 //routes variants
 router.get('/synonyms_variants/:synonyms_id', variants.getSynonymsVariants); //Used for training
@@ -95,9 +95,9 @@ router.get('/intent_usage_total', logs.getIntentUsageTotal);
 router.get('/request_usage_total', logs.getRequestUsageTotal);
 router.get('/total_log_entries', logs.getTotalLogEntries);
 router.get('/avg_intent_usage_by_day', logs.getAvgIntentUsageByDay);
-router.get('/nlu_parse_log/:agent_id', logs.getNluParseLogByAgent);
-router.get('/agentsByIntentConfidencePct/:agent_id', logs.getAgentsByIntentConfidencePct);
-router.get('/intentsMostUsed/:agent_id', logs.getIntentsMostUsed);
+router.get('/nlu_parse_log/:bot_id', logs.getNluParseLogByBot);
+router.get('/botsByIntentConfidencePct/:bot_id', logs.getBotsByIntentConfidencePct);
+router.get('/intentsMostUsed/:bot_id', logs.getIntentsMostUsed);
 router.get('/avgNluResponseTimesLast30Days', logs.getAvgNluResponseTimesLast30Days);
 router.get('/avgUserResponseTimesLast30Days', logs.getAvgUserResponseTimesLast30Days);
 router.get('/activeUserCountLast12Months', logs.getActiveUserCountLast12Months);

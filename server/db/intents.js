@@ -12,9 +12,9 @@ function getSingleIntent(req, res, next) {
   });
 }
 
-function getAgentIntents(req, res, next) {
-  logger.winston.info('intents.getAgentIntents');
-  db.all('select * from intents where agent_id = ?', req.params.agent_id, function(err, data) {
+function getBotIntents(req, res, next) {
+  logger.winston.info('intents.getBotIntents');
+  db.all('select * from intents where bot_id = ?', req.params.bot_id, function(err, data) {
     if (err) {
       logger.winston.info(err);
     } else {
@@ -23,9 +23,9 @@ function getAgentIntents(req, res, next) {
   });
 }
 
-function createAgentIntent(req, res, next) {
-  logger.winston.info('intents.createAgentIntent');
-  db.run('insert into intents (agent_id, intent_name)' + 'values (?,?)', [req.body.agent_id, req.body.intent_name], function(err) {
+function createBotIntent(req, res, next) {
+  logger.winston.info('intents.createBotIntent');
+  db.run('insert into intents (bot_id, intent_name)' + 'values (?,?)', [req.body.bot_id, req.body.intent_name], function(err) {
     if (err) {
       logger.winston.info("Error inserting a new record");
     } else {
@@ -60,8 +60,8 @@ function removeIntent(req, res, next) {
 }
 
 module.exports = {
-  getAgentIntents,
-  createAgentIntent,
+  getBotIntents,
+  createBotIntent,
   getSingleIntent,
   updateIntent,
   removeIntent

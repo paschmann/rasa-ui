@@ -28,11 +28,11 @@ function authenticateUser(req, res, next) {
 
 function authenticateClient(req, res, next) {
   //authenticate client based on client secret key
-  //username,user_fullname,agent_name,client_secret_key should all be present in the body
+  //username,user_fullname,bot_name,client_secret_key should all be present in the body
   logger.winston.info('Authenticate Client');
   db.one(
-    'select * from agents where agent_name = $1 and client_secret_key=$2',
-    [req.body.agent_name, req.body.client_secret_key]
+    'select * from bots where bot_name = $1 and client_secret_key=$2',
+    [req.body.bot_name, req.body.client_secret_key]
   )
     .then(function(data) {
       const tokenData = {

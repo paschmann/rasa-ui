@@ -65,13 +65,13 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">
-                        <strong>Agent Insights</strong>
+                        <strong>Bot Insights</strong>
                     </div>
                     <div class="card-block">
                         <div class="form-group row">
-                            <label for="select" class="col-sm-2 col-form-label">Agent</label>
+                            <label for="select" class="col-sm-2 col-form-label">Bot</label>
                             <div class="col-sm-10">
-                                <select id="agent_name" ng-change="drawCharts()" ng-options="agent.agent_id as agent.agent_name for agent in agentList" ng-model="selectedAgent" class="form-control">
+                                <select id="bot_name" ng-change="drawCharts()" ng-options="bot.bot_id as bot.bot_name for bot in botList" ng-model="selectedBot" class="form-control">
                                 </select>
                             </div>
                         </div><br><br>

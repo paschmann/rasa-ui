@@ -12,9 +12,9 @@ function getAllEntities(req, res, next) {
   });
 }
 
-function getAllEntitiesForAgent(req, res, next) {
-  logger.winston.info('Entities.getAllEntitiesForAgent');
-  db.all('select * from entities where agent_id = ?', req.params.agent_id, function(err, data) {
+function getAllEntitiesForBot(req, res, next) {
+  logger.winston.info('Entities.getAllEntitiesForBot');
+  db.all('select * from entities where bot_id = ?', req.params.bot_id, function(err, data) {
     if (err) {
       logger.winston.info(err);
     } else {
@@ -37,7 +37,7 @@ function getSingleEntity(req, res, next) {
 function createEntity(req, res, next) {
   logger.winston.info('Entities.createEntity');
   
-  db.run('insert into entities(agent_id, entity_name, slot_data_type)' + 'values (?,?,?)', [req.body.agent_id, req.body.entity_name, req.body.slot_data_type], function(err) {
+  db.run('insert into entities(bot_id, entity_name, slot_data_type)' + 'values (?,?,?)', [req.body.bot_id, req.body.entity_name, req.body.slot_data_type], function(err) {
     if (err) {
       logger.winston.info("Error inserting a new record");
     } else {
@@ -71,7 +71,7 @@ function removeEntity(req, res, next) {
 
 module.exports = {
   getAllEntities,
-  getAllEntitiesForAgent,
+  getAllEntitiesForBot,
   getSingleEntity,
   createEntity,
   updateEntity,

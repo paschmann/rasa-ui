@@ -1,9 +1,9 @@
 const db = require('./db');
 const logger = require('../util/logger');
 
-function getAgentRegex(req, res, next) {
-  logger.winston.info('regex.getAgentRegex');
-  db.all('select * from regex where agent_id = ?', req.params.agent_id, function(err, data) {
+function getBotRegex(req, res, next) {
+  logger.winston.info('regex.getBotRegex');
+  db.all('select * from regex where bot_id = ?', req.params.bot_id, function(err, data) {
     if (err) {
       logger.winston.info(err);
     } else {
@@ -25,7 +25,7 @@ function getSingleRegex(req, res, next) {
 
 function createRegex(req, res, next) {
   logger.winston.info('regex.createRegex');
-  db.run('insert into regex(agent_id, regex_name, regex_pattern)' + 'values (?,?,?)', [req.body.agent_id, req.body.regex_name, req.body.regex_pattern], function(err) {
+  db.run('insert into regex(bot_id, regex_name, regex_pattern)' + 'values (?,?,?)', [req.body.bot_id, req.body.regex_name, req.body.regex_pattern], function(err) {
     if (err) {
       logger.winston.info("Error inserting a new record");
     } else {
@@ -57,7 +57,7 @@ function removeRegex(req, res, next) {
 }
 
 module.exports = {
-  getAgentRegex,
+  getBotRegex,
   getSingleRegex,
   createRegex,
   updateRegex,

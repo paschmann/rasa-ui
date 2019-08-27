@@ -7,8 +7,8 @@ module.exports = {
   getIntentUsageTotal,
   getIntentUsageByDay,
   getAvgIntentUsageByDay,
-  getNluParseLogByAgent,
-  getAgentsByIntentConfidencePct,
+  getNluParseLogByBot,
+  getBotsByIntentConfidencePct,
   getIntentsMostUsed,
   getAvgNluResponseTimesLast30Days,
   getAvgUserResponseTimesLast30Days,
@@ -132,8 +132,8 @@ function getAvgNluResponseTimesLast30Days(req, res, next) {
 }
 
 function getIntentsMostUsed(req, res, next) {
-  const agent_id = req.params.agent_id;
-  db.any('select * from intents_most_used where agent_id=$1', agent_id)
+  const bot_id = req.params.bot_id;
+  db.any('select * from intents_most_used where bot_id=$1', bot_id)
     .then(function (data) {
       res.status(200)
         .json(data);
@@ -143,11 +143,11 @@ function getIntentsMostUsed(req, res, next) {
     });
 }
 
-function getAgentsByIntentConfidencePct(req, res, next) {
-  const agent_id = req.params.agent_id;
-  db.any('select count(*),intent_confidence_pct, agents.agent_id, agents.agent_name from nlu_parse_log, agents, messages '
-    + ' where messages.agent_id = agents.agent_id and messages.messages_id=nlu_parse_log.messages_id '
-    + ' and agents.agent_id=$1 group by intent_confidence_pct, agents.agent_id, agents.agent_name ', agent_id)
+function getBotsByIntentConfidencePct(req, res, next) {
+  const bot_id = req.params.bot_id;
+  db.any('select count(*),intent_confidence_pct, bots.bot_id, bots.bot_name from nlu_parse_log, bots, messages '
+    + ' where messages.bot_id = bots.bot_id and messages.messages_id=nlu_parse_log.messages_id '
+    + ' and bots.bot_id=$1 group by intent_confidence_pct, bots.bot_id, bots.bot_name ', bot_id)
     .then(function (data) {
       res.status(200)
         .json(data);
@@ -157,9 +157,9 @@ function getAgentsByIntentConfidencePct(req, res, next) {
     });
 }
 
-function getNluParseLogByAgent(req, res, next) {
-  const agent_id = req.params.agent_id;
-  db.any('select * from nlu_parse_log where agent_id = $1 order by timestamp desc', agent_id)
+function getNluParseLogByBot(req, res, next) {
+  const bot_id = req.params.bot_id;
+  db.any('select * from nlu_parse_log where bot_id = $1 order by timestamp desc', bot_id)
     .then(function (data) {
       res.status(200)
         .json(data);

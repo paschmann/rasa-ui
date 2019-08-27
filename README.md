@@ -1,13 +1,19 @@
 # Rasa UI
 
-Rasa UI is a web application built on top of, and for [Rasa] (https://github.com/RasaHQ/rasa). Rasa UI provides a web application to quickly and easily be able to create agents, define intents and entities. It also provides some convenience features for Rasa, like training and loading your models, monitoring usage or viewing logs.
+Rasa UI is a web application built on top of, and for [Rasa] (https://github.com/RasaHQ/rasa). Rasa UI provides a web application to quickly and easily be able to create and manage bots, intents, entities, synonyms and regex statements through a web interface. It also provides some convenience features for Rasa, like training and loading your models, monitoring usage or viewing logs.
+
+Currently Rasa UI can be used to manage the NLU features of Rasa, with Rasa Core features currently under development.
 
 ## Features
 
 - UI for creating and managing training data - Examples, Intents, Entities, Synonyms, Regex
-- Log requests for usage tracking, history, improvements
+- Manage multiple bots from a single UI/instance of Rasa UI
+- Create, manage and load different versions of your models for testing and optimizing
+- Log requests for usage tracking, history, improvements to your models.
 - Easily execute intent parsing using different models
-- Manage Multiple Agents in one place
+- Manage Multiple Bots in one place
+- Data is stored in a SQLite DB
+- Can be used with or without a Rasa backend to manage your training data
 
 ## Getting Started
 
@@ -33,12 +39,17 @@ cd rasaui && npm install
 Please see the [wiki](https://github.com/paschmann/rasa-ui/wiki/Rasa-UI-Install-Guide) for more detailed instructions.
 
 ## Running
+
 Run npm start from the server folder (rasa-ui)
 
 ```
 npm start
 ```
 Your web application should be available on http://localhost:5001
+
+## Upgrading
+
+Because Rasa UI uses a Database to store training data, and other content, in the event the database schema changes, you will need to modify your database when upgrading to newer versions of Rasa UI. Please review the server/db migration folder for upgrade scripts from and to newer versions if you have existing data and want to maintain it. If you are upgrading from Rasa UI prior to v.3.0.0 there is no data migration path as previously postgres was used, and now sqlite is being used.
 
 ## Logging
 

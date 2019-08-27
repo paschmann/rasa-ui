@@ -1,10 +1,10 @@
 angular.module('app').controller('SynonymController', SynonymController);
 
-function SynonymController($scope, Synonym, EntitySynonymVariants, Agent, SynonymVariant, $location) {
+function SynonymController($scope, Synonym, EntitySynonymVariants, Bot, SynonymVariant, $location) {
   $scope.tags = [{}];
 
-  Agent.get({ agent_id: $scope.$routeParams.agent_id }, function (data) {
-    $scope.agent = data;
+  Bot.get({ bot_id: $scope.$routeParams.bot_id }, function (data) {
+    $scope.bot = data;
   });
 
   if ($scope.$routeParams.synonym_id) {
@@ -46,7 +46,7 @@ function SynonymController($scope, Synonym, EntitySynonymVariants, Agent, Synony
     //First delete all synonym variants, then the synonym
     EntitySynonymVariants.remove({ synonym_id: synonym_id }, function (data) {
       Synonym.remove({ synonym_id: synonym_id }, function (data) {
-        $location.path(`/agent/${$scope.$routeParams.agent_id}`);
+        $location.path(`/bot/${$scope.$routeParams.bot_id}`);
       });
     });
   };

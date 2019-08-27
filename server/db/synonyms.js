@@ -12,10 +12,10 @@ function getSingleSynonym(req, res, next) {
   });
 }
 
-function getAgentSynonyms(req, res, next) {
-  logger.winston.info('synonym.getAgentSynonyms');
+function getBotSynonyms(req, res, next) {
+  logger.winston.info('synonym.getBotSynonyms');
 
-  db.all('select * from synonyms where agent_id = ?', req.params.agent_id, function(err, data) {
+  db.all('select * from synonyms where bot_id = ?', req.params.bot_id, function(err, data) {
     if (err) {
       logger.winston.info(err);
     } else {
@@ -24,9 +24,9 @@ function getAgentSynonyms(req, res, next) {
   });
 }
 
-function createAgentSynonym(req, res, next) {
-  logger.winston.info('synonym.createAgentSynonym');
-  db.run('insert into synonyms(agent_id, synonym_reference, regex_pattern)' + 'values (?,?,?)', [req.body.agent_id, req.body.synonym_reference, req.body.regex_pattern], function(err) {
+function createBotSynonym(req, res, next) {
+  logger.winston.info('synonym.createBotSynonym');
+  db.run('insert into synonyms(bot_id, synonym_reference, regex_pattern)' + 'values (?,?,?)', [req.body.bot_id, req.body.synonym_reference, req.body.regex_pattern], function(err) {
     if (err) {
       logger.winston.info("Error inserting a new record");
     } else {
@@ -55,6 +55,6 @@ function removeSynonym(req, res, next) {
 
 module.exports = {
   getSingleSynonym,
-  getAgentSynonyms,
-  createAgentSynonym,
+  getBotSynonyms,
+  createBotSynonym,
   removeSynonym};

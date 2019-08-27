@@ -1,9 +1,9 @@
 const db = require('./db');
 const logger = require('../util/logger');
 
-function getAllAgents(req, res, next) {
-  logger.winston.info('Agent.getAllAgents');
-  db.all('select * from agents order by agent_id desc', function(err, data) {
+function getAllBots(req, res, next) {
+  logger.winston.info('Bot.getAllBots');
+  db.all('select * from bots order by bot_id desc', function(err, data) {
     if (err) {
       logger.winston.info(err);
     } else {
@@ -12,9 +12,9 @@ function getAllAgents(req, res, next) {
   });
 }
 
-function getSingleAgent(req, res, next) {
-  logger.winston.info('Agent.getSingleAgent');
-  db.get('select * from agents where agent_id = ?', req.params.agent_id, function(err, data) {
+function getSingleBot(req, res, next) {
+  logger.winston.info('Bot.getSingleBot');
+  db.get('select * from bots where bot_id = ?', req.params.bot_id, function(err, data) {
     if (err) {
       logger.winston.info(err);
     } else {
@@ -23,9 +23,9 @@ function getSingleAgent(req, res, next) {
   });
 }
 
-function createAgent(req, res, next) {
-  logger.winston.info('Agent.createAgent');
-  db.run('insert into agents(agent_name, agent_config, output_folder)' + 'values (?,?,?)', [req.body.agent_name, req.body.agent_config, req.body.output_folder], function(err) {
+function createBot(req, res, next) {
+  logger.winston.info('Bot.createBot');
+  db.run('insert into bots(bot_name, bot_config, output_folder)' + 'values (?,?,?)', [req.body.bot_name, req.body.bot_config, req.body.output_folder], function(err) {
     if (err) {
       logger.winston.info("Error inserting a new record");
     } else {
@@ -34,9 +34,9 @@ function createAgent(req, res, next) {
   });
 }
 
-function updateAgent(req, res, next) {
-  logger.winston.info('Agent.updateAgent');
-  db.run('update agents set agent_name = ?, output_folder = ?, agent_config = ? where agent_id = ?', [req.body.agent_name, req.body.output_folder, req.body.agent_config, req.body.agent_id], function(err) {
+function updateBot(req, res, next) {
+  logger.winston.info('Bot.updateBot');
+  db.run('update bots set bot_name = ?, output_folder = ?, bot_config = ? where bot_id = ?', [req.body.bot_name, req.body.output_folder, req.body.bot_config, req.body.bot_id], function(err) {
     if (err) {
       logger.winston.info("Error updating the record");
     } else {
@@ -45,9 +45,9 @@ function updateAgent(req, res, next) {
   });
 }
 
-function removeAgent(req, res) {
-  logger.winston.info('Agent.updateAgent');
-  db.run('delete from agents where agent_id = ?', req.params.agent_id, function(err) {
+function removeBot(req, res) {
+  logger.winston.info('Bot.updateBot');
+  db.run('delete from bots where bot_id = ?', req.params.bot_id, function(err) {
     if (err) {
       logger.winston.info("Error removing the record");
     } else {
@@ -57,26 +57,26 @@ function removeAgent(req, res) {
 }
 
 module.exports = {
-  getSingleAgent,
-  getAllAgents,
-  createAgent,
-  updateAgent,
-  removeAgent,
-  uploadAgentFromFile,
-  updateAgentStory
+  getSingleBot,
+  getAllBots,
+  createBot,
+  updateBot,
+  removeBot,
+  uploadBotFromFile,
+  updateBotStory
 };
 
 
-function updateAgentStory(req, res, next) {
-  logger.winston.info('Agent.updateAgentStory -- Not done');
+function updateBotStory(req, res, next) {
+  logger.winston.info('Bot.updateBotStory -- Not done');
   /*
-  db.none('update agents set story_details=$2 where agent_id=$1', [
-    Number(req.body.agent_id),
+  db.none('update bots set story_details=$2 where bot_id=$1', [
+    Number(req.body.bot_id),
     req.body.story_details])
     .then(function() {
       res.status(200).json({
         status: 'success',
-        message: 'Updated Story For Agent'});
+        message: 'Updated Story For Bot'});
     })
     .catch(function(err) {
       return next(err);
@@ -85,11 +85,11 @@ function updateAgentStory(req, res, next) {
 }
 
 
-function uploadAgentFromFile(req, res, next) {
+function uploadBotFromFile(req, res, next) {
   /*
   logger.winston.info('On server request' + JSON.stringify(req.body));
 
-  //agent, intent,expressions, entities, , parameters(expression id, entity id)
+  //bot, intent,expressions, entities, , parameters(expression id, entity id)
   const intents_map = new Map();
   const entities_map = new Map();
   const entities_set = new Set();
@@ -140,17 +140,17 @@ function uploadAgentFromFile(req, res, next) {
   db.tx(function(t) {
     // t.ctx = transaction context object
     return t
-      .one('insert into agents(agent_name) values($1) RETURNING agent_id', [
-        req.body.agent_name])
-      .then(agent => {
+      .one('insert into bots(bot_name) values($1) RETURNING bot_id', [
+        req.body.bot_name])
+      .then(bot => {
         logger.winston.info(
-          'Agent Inserted. Inserting Entites First. These ids are needed for Intents.'
+          'Bot Inserted. Inserting Entites First. These ids are needed for Intents.'
         );
         const entity_queries_arr = [];
         entities_set.forEach(function(entity) {
             const entity_query = t.one(
-              'insert into entities(entity_name, agent_id, slot_data_type) values($1,$2,$3) RETURNING entity_id',
-              [entity, agent.agent_id, 'NOT_USED']
+              'insert into entities(entity_name, bot_id, slot_data_type) values($1,$2,$3) RETURNING entity_id',
+              [entity, bot.bot_id, 'NOT_USED']
             )
             .then(function(return_entity) {
               logger.winston.info(
@@ -172,8 +172,8 @@ function uploadAgentFromFile(req, res, next) {
             intents_map.forEach(function(expressionsArray, key) {
               logger.winston.info('Inserting Intent ' + key);
                 const intent_query = t.one(
-                  'insert into intents(agent_id, intent_name) VALUES($1, $2) RETURNING intent_id',
-                  [agent.agent_id, key]
+                  'insert into intents(bot_id, intent_name) VALUES($1, $2) RETURNING intent_id',
+                  [bot.bot_id, key]
                 )
                 .then(intent => {
                   const expressions_query_arr = [];
@@ -231,8 +231,8 @@ function uploadAgentFromFile(req, res, next) {
             for (let i = 0; i < regex_set.length; i++) {
               const regex = regex_set[i];
               const regex_query = t.none(
-                'insert into regex(regex_name, regex_pattern, agent_id) values($1,$2,$3)',
-                [regex.name, regex.pattern, agent.agent_id]
+                'insert into regex(regex_name, regex_pattern, bot_id) values($1,$2,$3)',
+                [regex.name, regex.pattern, bot.bot_id]
               );
               regex_query_arr.push(regex_query);
             }
@@ -246,9 +246,9 @@ function uploadAgentFromFile(req, res, next) {
             for (let i = 0; i < synonyms_set.length; i++) {
               const synonym = synonyms_set[i];
               const synonym_query = t.one(
-                  'insert into synonyms(agent_id, synonym_reference) values($1, $2) ' +
+                  'insert into synonyms(bot_id, synonym_reference) values($1, $2) ' +
                     'RETURNING synonym_id',
-                  [agent.agent_id, synonym.value]
+                  [bot.bot_id, synonym.value]
                 )
                 .then(synonym_inserted => {
                   const variant_query_arr = [];

@@ -1,9 +1,9 @@
 var app = angular.module('app');
 
-app.factory('Agent', function ($resource, appConfig) {
+app.factory('Bot', function ($resource, appConfig) {
   return $resource(
-    appConfig.api_endpoint_v2 + '/agents/:agent_id/:path',
-    { agent_id: '@id', path: '@path' },
+    appConfig.api_endpoint_v2 + '/bots/:bot_id/:path',
+    { bot_id: '@id', path: '@path' },
     {
       update: { method: 'PUT' }
     }
@@ -20,9 +20,9 @@ app.factory('Actions', function ($resource, appConfig) {
   );
 });
 
-app.factory('AgentActions', function ($resource, appConfig) {
-  return $resource(appConfig.api_endpoint_v2 + '/agents/:agent_id/actions', {
-    agent_id: '@id'
+app.factory('BotActions', function ($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + '/bots/:bot_id/actions', {
+    bot_id: '@id'
   });
 });
 
@@ -30,8 +30,8 @@ app.factory('Auth', function ($resource, appConfig) {
   return $resource(appConfig.api_endpoint_v2 + '/auth');
 });
 
-app.factory('AgentStories', function ($resource, appConfig) {
-  return $resource(appConfig.api_endpoint_v2 + '/agentStory');
+app.factory('BotStories', function ($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + '/botStory');
 });
 
 app.factory('Intent', function ($resource, appConfig) {
@@ -45,8 +45,8 @@ app.factory('Intent', function ($resource, appConfig) {
 });
 
 app.factory('Intents', function ($resource, appConfig) {
-  return $resource(appConfig.api_endpoint_v2 + '/agents/:agent_id/intents', {
-    agent_id: '@id'
+  return $resource(appConfig.api_endpoint_v2 + '/bots/:bot_id/intents', {
+    bot_id: '@id'
   });
 });
 
@@ -131,25 +131,25 @@ app.factory('Regex', [
   }
 ]);
 
-app.factory('AgentRegex', [
+app.factory('BotRegex', [
   '$resource',
   'appConfig',
   function ($resource, appConfig) {
-    return $resource(appConfig.api_endpoint_v2 + '/agent/:agent_id/regex', {
-      agent_id: '@id'
+    return $resource(appConfig.api_endpoint_v2 + '/bot/:bot_id/regex', {
+      bot_id: '@id'
     });
   }
 ]);
 
-app.factory('AgentSynonyms', function ($resource, appConfig) {
-  return $resource(appConfig.api_endpoint_v2 + '/agent/:agent_id/synonyms', {
-    agent_id: '@id'
+app.factory('BotSynonyms', function ($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + '/bot/:bot_id/synonyms', {
+    bot_id: '@id'
   });
 });
 
-app.factory('AgentEntities', function ($resource, appConfig) {
-  return $resource(appConfig.api_endpoint_v2 + '/entities/agent/:agent_id', {
-    agent_id: '@id'
+app.factory('BotEntities', function ($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + '/entities/bot/:bot_id', {
+    bot_id: '@id'
   });
 });
 
@@ -233,7 +233,7 @@ app.factory('IntentResponse', function ($resource, appConfig) {
 
 app.factory('Model', function ($resource, appConfig) {
   return $resource(
-    appConfig.api_endpoint_v2 + '/models/:agent_id',
-    { agent_id: '@id', path: '@path' }
+    appConfig.api_endpoint_v2 + '/models/:bot_id',
+    { bot_id: '@id', path: '@path' }
   );
 });

@@ -5,7 +5,7 @@ function getSingleSetting(req, res, next) {
   logger.winston.info('settings.getSingleSetting');
   const settingName = req.params.setting_name;
 
-  db.get('select * from settings where setting_name = ?', req.params.agent_id, function(err, data) {
+  db.get('select * from settings where setting_name = ?', req.params.bot_id, function(err, data) {
     if (err) {
       logger.winston.info(err);
     } else {
