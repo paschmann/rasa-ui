@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3');
+const sqlite3 = require('sqlite3').verbose();
 const logger = require('../util/logger');
 
 let db = new sqlite3.Database("server/data/db.sqlite3", (err) => { 

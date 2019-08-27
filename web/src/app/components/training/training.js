@@ -19,7 +19,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
   $scope.updateData = function() {
     $scope.raw_data.config = $scope.selectedAgent.agent_config;
     $scope.raw_data.out = $scope.selectedAgent.output_folder;
-    $scope.raw_data.nlu = "## intent:greet \n- hey \n- hello \n ## intent:goodbye \n- cu \n- goodbye";
+    //$scope.raw_data.nlu = "## intent:greet \n- hey \n- hello \n ## intent:goodbye \n- cu \n- goodbye";
     $scope.raw_data.force = $scope.bool_force_model_update ? "true" : "false";
 
     $scope.raw_data_stringified = JSON.stringify($scope.raw_data);
@@ -125,8 +125,33 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
 
   //MD Version
   function generateData(regex, intents, expressions, params, synonyms, variants) {
-    //Check data formats of examples and match output to MD format.
+    let tmpData = "";
 
+    for (let intent_i = 0; intent_i <= intents.length - 1; intent_i++) {
+      let expressionList = expressions.filter(
+        expression => expression.intent_id === intents[intent_i].intent_id
+      );
+      tmpData += "## intent:" + intents[intent_i].intent_name + "\n"; 
+      if (expressionList.length > 0) {
+        for (let expression_i = 0; expression_i <= expressionList.length - 1; expression_i++) {
+          //Add parameters to expression
+          var expression = expressionList[expression_i].expression_text;
+          let parameterList = params.filter(
+            param => param.expression_id === expressionList[expression_i].expression_id
+          );
+          if (parameterList.length > 0) {
+            for (let parameter_i = 0; parameter_i <= parameterList.length - 1; parameter_i++) {
+              expression = expression.splice(parameterList[parameter_i].parameter_end, 0, "(" + parameterList[parameter_i].entity_name + ")");
+            }
+          }
+          tmpData += "- " + expression + "\n";
+        }
+      }
+    }
+
+
+    /*
+    //Check data formats of examples and match output to MD format.
     let tmpData = {};
     let tmpIntent = {};
     let tmpExpression = {};
@@ -162,44 +187,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
       });
     }
 
-    for (let intent_i = 0; intent_i <= intents.length - 1; intent_i++) {
-      let expressionList = expressions.filter(
-        expression => expression.intent_id === intents[intent_i].intent_id
-      );
-      if (expressionList !== undefined) {
-        for (let expression_i = 0; expression_i <= expressionList.length - 1; expression_i++) {
-          tmpIntent = {};
-          tmpExpression = {};
-
-          tmpIntent.text = expressionList[expression_i].expression_text;
-          tmpIntent.intent = intents[intent_i].intent_name;
-
-          tmpIntent.entities = [];
-          tmpIntent.expression_id = expressionList[expression_i].expression_id;
-
-          let parameterList = params.filter(
-            param =>
-              param.expression_id === expressionList[expression_i].expression_id
-          );
-          if (parameterList !== undefined) {
-            for (let parameter_i = 0; parameter_i <= parameterList.length - 1; parameter_i++) {
-              tmpParam = {};
-              tmpParam.start = parameterList[parameter_i].parameter_start;
-              tmpParam.end = parameterList[parameter_i].parameter_end;
-              tmpParam.value = parameterList[parameter_i].parameter_value;
-              tmpParam.entity = parameterList[parameter_i].entity_name;
-              tmpIntent.entities.push(tmpParam);
-
-              //Check for common errors
-              if (tmpParam.entity === null) {
-                $scope.generateError = 'Entity is null';
-              }
-            }
-            tmpData.rasa_nlu_data.common_examples.push(tmpIntent);
-          }
-        }
-      }
-    }
+    
 
     for (let i = 0; i <= tmpData.rasa_nlu_data.common_examples.length - 1; i++) {
       let parameterList = params.filter(
@@ -229,17 +217,10 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, A
       }
       delete tmpData.rasa_nlu_data.common_examples[i].expression_id;
     }
+    */
 
-    let agentToTrain = objectFindByKey($scope.agentList, 'agent_id', $scope.agent.agent_id);
-
-    let dataToPost = {};
-    dataToPost.config = agentToTrain.agent_config;
-    dataToPost.out = agentToTrain.output_folder;
-    dataToPost.nlu = tmpData;
-
-    exportData = tmpData;
-    $scope.exportdata = tmpData;
-    $scope.generateError = '';
+    $scope.raw_data.nlu = tmpData;
+    $scope.updateData();
   }
 
 
