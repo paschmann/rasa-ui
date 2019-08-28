@@ -1,17 +1,11 @@
-angular.module('app').controller('AsideController', AsideController);
+angular.module('app').controller('ChatController', ChatController);
 
-function AsideController($scope, $rootScope, $interval, $http, Rasa_Version, Settings, Rasa_Status, appConfig, Rasa_Parse) {
+function ChatController($scope, $rootScope, $interval, $http, Rasa_Version, Settings, Rasa_Status, appConfig, Rasa_Parse) {
   $scope.test_text = 'I want italian food in new york';
   $scope.test_text_response = {};
   $rootScope.config = {}; //Initilize in case server is not online at startup
   let configcheck;
 
-  $scope.$on('executeTestRequest', function (event, expression_text) {
-    $scope.test_text = expression_text;
-    $scope.executeTestRequest();
-  });
-
-  
   /* TODO: Currently do not have support for conversations in v3, coming soon.
   $scope.restartConversation = function() {
     $scope.test_text_response = {};

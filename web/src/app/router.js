@@ -153,5 +153,15 @@ angular
         templateUrl: '/app/components/models/add_model.html',
         activePage: 'models'
       })
+      .when('/chat/:bot_id', {
+        controller: 'ChatController',
+        templateUrl: '/app/components/chat/chat.html',
+        activePage: 'chat'
+      })
+      .when('/chat', {
+        controller: 'ChatController',
+        templateUrl: '/app/components/chat/chat.html',
+        activePage: 'chat'
+      })
       .otherwise({ redirectTo: '/' });
   });

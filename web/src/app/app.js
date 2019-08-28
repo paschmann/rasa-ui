@@ -26,7 +26,7 @@ var app = angular
 
 angular
   .module("app")
-  .controller("appCtrl", function ($rootScope, $scope, $route, $routeParams, $location, $timeout, $http, $sessionStorage, $cookies, appConfig, Auth) {
+  .controller("appCtrl", function ($rootScope, $scope, $route, $routeParams, $location, $timeout, $http, $sessionStorage, $cookies, appConfig, Auth, Settings, Rasa_Status) {
     $scope.$route = $route;
     $scope.$location = $location;
     $scope.$routeParams = $routeParams;
@@ -64,6 +64,37 @@ angular
         }
       }
       return null;
+    }
+
+    $scope.$on('refreshIntervelUpdate', function (event, expression_text) {
+      $interval.cancel(configcheck);
+      executeRefreshSettings();
+    });
+
+    $scope.executeRefreshSettings = function() {
+      Settings.query(function (data) {
+        $rootScope.settings = data;
+        for (let key in data) {
+          $rootScope.settings[data[key]['setting_name']] = data[key]['setting_value'];
+        }
+        if ($rootScope.settings['refresh_time'] !== '-1' && $rootScope.settings['refresh_time'] !== undefined) {
+          configcheck = $interval(getRasaStatus, Number($rootScope.settings['refresh_time']));
+        }
+        getRasaStatus();
+      });
+    }
+  
+    $scope.$on('$destroy', function () {
+      $interval.cancel(configcheck);
+    });
+  
+    $scope.getRasaStatus = function() {
+      Rasa_Status.get(function (statusdata) {
+        $rootScope.config = statusdata.toJSON();
+        $rootScope.config.isonline = 1;
+      }, function (error) {
+        $rootScope.config.isonline = 0;
+      });
     }
 
     $scope.timeConverter = function(UNIX_timestamp) {
