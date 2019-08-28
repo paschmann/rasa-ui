@@ -1,5 +1,5 @@
 <ol class="breadcrumb" breadcrumb="">
-  <li class="breadcrumb-item ng-scope active"><span>Settings</span></li>
+  <li class="breadcrumb-item ng-scope active"><span>UI Settings</span></li>
 </ol>
 <div class="container-fluid">
   <div class="animated fadeIn">
@@ -7,47 +7,23 @@
       <div class="col-sm-12 col-lg-12">
         <form ng-submit="addIntent()" class="form-horizontal">
           <div class="card">
-            <div class="card-header">
-              <strong>UI</strong>
-            </div>
             <div class="card-block">
-
-              <!--
               <div class="form-group row">
-                <label class="col-md-3 form-control-label" for="hf-email">Model Selection Enabled</label>
+                <label class="col-md-3 col-form-label" for="select">Rasa status check poll interval</label>
                 <div class="col-md-9">
-                  <label class="switch switch-text switch-success-outline-alt">
-                    <input type="checkbox" class="switch-input" checked="">
-                    <span class="switch-label" data-on="On" data-off="Off"></span>
-                    <span class="switch-handle"></span>
-                  </label>
-                </div>
-              </div>
-
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label" for="hf-email">Authorization Token</label>
-                <div class="col-md-8">
-                  <input type="text" ng-model="settings.auth_token" ng-model-options="{ debounce: 3000 }" class="form-control" ng-change="updateSettings('auth_token', settings.auth_token)" id="auth_token" placeholder="Only use this if you have specified an auth token in your config file.">
-                </div>
-              </div>
-              -->
-
-
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label" for="hf-email">Status check poll interval</label>
-                <div class="col-md-2">
-                  <select class="form-control" ng-change="updateSettings('refresh_time', settings.refresh_time)" ng-model="settings.refresh_time">
+                  <select class="form-control" ng-change="updateSettings('refresh_time', settings.refresh_time)"
+                    ng-model="settings.refresh_time">
                     <option value="5000">5 Seconds</option>
                     <option value="30000">30 Seconds</option>
                     <option value="60000">1 min</option>
                     <option value="300000">5 mins</option>
                     <option value="-1">Disabled</option>
-                  </div>
                 </div>
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+</div>

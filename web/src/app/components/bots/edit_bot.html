@@ -1,0 +1,299 @@
+<ol class="breadcrumb" breadcrumb="">
+  <li class="breadcrumb-item"><a href="#/bots">Bots</a></li>
+  <li class="breadcrumb-item active">{{ bot.bot_name }}</li>
+  <li class="breadcrumb-menu">
+    <div class="btn-group" role="group">
+      <a class="btn btn-outline-secondary" ng-click="deleteBot()" confirm-click-title="Delete Bot"
+        confirm-click="Are you sure? This will delete the bot, all its intents, expressions, and resolved entities."><i
+          class="icon-trash"></i> &nbsp;Delete Bot</a>
+    </div>
+  </li>
+</ol>
+
+<div class="container-fluid">
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12 col-lg-12">
+        <div class="card">
+          <div class="card-header">
+            <strong>Settings</strong>
+            <span class="float-right">
+              <a class="btn btn-ghost-primary" data-toggle="collapse" data-target="#bot_settings" aria-expanded="true"
+                aria-controls="collapseOne"><i class="icon-arrow-down"></i></a>
+            </span>
+          </div>
+          <div id="accordion" role="tablist">
+            <div id="bot_settings" class="collapse" role="tabpanel" aria-labelledby="headingOne"
+              data-parent="#accordion">
+              <div class="card-block">
+                <div class="form-group">
+                  <label for="{{bot.bot_id}}_formGroupInput1">Name</label>
+                  <input ng-model="bot.bot_name" autocomplete="off" type="text" class="form-control"
+                    id="{{bot.bot_id}}_formGroupInput1" placeholder="Bot Name" value="{{ bot.bot_name }}">
+                </div>
+                <div class="form-group">
+                  <label for="{{bot.bot_id}}_formGroupInput2">Rasa Config</label>
+                  <textarea class="datainput form-control" id="{{bot.bot_id}}_formGroupInput2" ng-model="bot.bot_config">{{ bot.bot_config}}</textarea>
+                </div>
+                <div class="form-group">
+                  <label for="{{bot.bot_id}}_formGroupInput3">Server Output Folder</label>
+                  <input ng-model="bot.output_folder" autocomplete="off" type="text" class="form-control"
+                    id="{{bot.bot_id}}_formGroupInput3" placeholder="Output Folder"
+                    value="{{ bot.output_folder }}">
+                </div>
+              </div>
+              <div class="card-footer">
+                <button type="submit" class="btn btn-sm btn-primary" ng-click="editBotInfo(bot)"><i class="fa fa-dot-circle-o"></i>Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-lg-12">
+        <div class="card">
+          <div class="card-header">
+            <strong>Intents</strong>
+            <input id="botFilter" style="width:30%" autocomplete="off" class="filtertext" type="text" name="search"
+              ng-model="intentFilterText" placeholder="Filter Intents..">
+            <span class="float-right">
+              <a class="btn btn-ghost-primary" href="#/bot/{{ bot.bot_id }}/intent/add" data-toggle="tooltip"
+                data-placement="top" title="Click to Add a New Intent" tooltip><i class="icon-plus"></i></a>
+            </span>
+          </div>
+          <div class="card-block">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="list-group" dir-paginate="intent in intentList| filter:intentFilterText  | itemsPerPage: 5"
+                  pagination-id="intentsList">
+                  <div class="list-group-item">
+                    <a href="#/bot/{{ intent.bot_id }}/intent/{{
+                        intent.intent_id
+                      }}">{{ intent.intent_name }}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br />
+            <div style="float:right">
+              <dir-pagination-controls pagination-id="intentsList"></dir-pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-lg-12">
+        <div class="card">
+          <div class="card-header">
+            <strong>Entities</strong>
+            <span class="float-right">
+              <a class="btn btn-ghost-primary" href="#/bot/{{ bot.bot_id }}/entity/add" data-toggle="tooltip"
+                data-placement="top" title="Click to Add a New Entity" tooltip><i class="icon-plus"></i></a>
+            </span>
+          </div>
+          <div class="card-block">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="list-group" dir-paginate="entity in entitiesList  | itemsPerPage: 5"
+                  pagination-id="entitiesList">
+                  <div class="list-group-item">
+                    <a href="#/bot/{{ bot.bot_id }}/entity/{{
+                        entity.entity_id
+                      }}">{{ entity.entity_name }}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br />
+            <div style="float:right">
+              <dir-pagination-controls pagination-id="entitiesList"></dir-pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 col-lg-6">
+        <div class="card">
+          <div class="card-header">
+            <strong>Synonyms</strong>
+            <span class="float-right">
+              <a class="btn btn-ghost-primary" href="#/bot/{{ bot.bot_id }}/synonyms/add" data-toggle="tooltip"
+                data-placement="top" title="Click to Add a New Synonym" tooltip><i class="icon-plus"></i></a>
+            </span>
+          </div>
+          <div class="card-block">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="list-group" dir-paginate="synonym in synonymsList  | itemsPerPage: 5"
+                  pagination-id="synonymsList">
+                  <div class="list-group-item">
+                    <a href="#/bot/{{ bot.bot_id }}/synonym/{{
+                        synonym.synonym_id
+                      }}">{{ synonym.synonym_reference }}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br />
+            <div style="float:right">
+              <dir-pagination-controls pagination-id="synonymsList"></dir-pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-6">
+        <div class="card">
+          <div class="card-header">
+            <strong>Regex</strong>
+            <span class="float-right">
+              <a class="btn btn-ghost-primary" href="#/bot/{{ bot.bot_id }}/regex/add" data-toggle="tooltip"
+                data-placement="top" title="Click to Add a New Regex" tooltip><i class="icon-plus"></i></a>
+            </span>
+          </div>
+          <div class="card-block">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="list-group" dir-paginate="regex in regexList  | itemsPerPage: 5" pagination-id="regexList">
+                  <div class="list-group-item">
+                    <a href="#/bot/{{ bot.bot_id }}/regex/{{
+                        regex.regex_id
+                      }}">{{ regex.regex_name }}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br />
+            <div style="float:right">
+              <dir-pagination-controls pagination-id="regexList"></dir-pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TODO: Rasa Core features
+    <div class="row">
+      <div class="col-sm-6 col-lg-6">
+        <div class="card">
+          <div
+            class="card-header"
+            data-toggle="tooltip"
+            data-placement="top"
+            title="Actions are the things your bot can actually do. They can have predefined response templates."
+            tooltip
+          >
+            <strong>Actions</strong>
+            <input id="botFilter" autocomplete="off"  style="width:30%" class="filtertext" type="text" name="search" ng-model="actionsFilterText" placeholder="Filter Actions..">
+            <span class="float-right">
+              <button
+                type="button"
+                class="btn btn-ghost-primary"
+                data-toggle="modal"
+                data-target="#modal-add-actions"
+              >
+                <i class="icon-plus"></i>&nbsp;Add Action
+              </button>
+            </span>
+          </div>
+          <div class="card-block">
+            <div class="row">
+              <div class="col-sm-12">
+                <div
+                  class="list-group"
+                  dir-paginate="action in actionsList |filter:actionsFilterText | itemsPerPage: 5"
+                  pagination-id="actionsList"
+                >
+                  <div class="list-group-item">
+                    <a
+                      href="#/bot/{{ bot.bot_id }}/action/edit/{{
+                        action.action_id
+                      }}"
+                      >{{ action.action_name }}</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br />
+            <div style="float:right">
+              <dir-pagination-controls
+                pagination-id="actionsList"
+              ></dir-pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-6">
+        <div class="card">
+          <div class="card-header">
+            <strong>Stories</strong>
+            <span class="float-right">
+              <a
+                class="btn btn-ghost-primary"
+                href="#/bot/{{ bot.bot_id }}/stories"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Click to change a story"
+                tooltip
+                ><i class="fa fa-hand-o-right"></i> &nbsp;Stories Editor</a
+              >
+            </span>
+          </div>
+          <div class="card-block">
+            <div class="row">
+              <div class="col-sm-12">
+                <div
+                  class="list-group"
+                  dir-paginate="story in storiesList  | itemsPerPage: 5"
+                  pagination-id="storiesList"
+                >
+                  <div class="list-group-item">{{ story }}</div>
+                </div>
+              </div>
+            </div>
+            <br />
+            <div style="float:right">
+              <dir-pagination-controls
+                pagination-id="storiesList"
+              ></dir-pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    -->
+  </div>
+</div>
+
+<div class="modal fade" id="modal-add-actions" tabindex="-1" role="dialog" aria-labelledby="addActionsModelLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="actionsModelLabel">Add Action</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form name="actionsForm" novalidate>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="action-name" class="form-control-label">Action Name:</label>
+                <div class="input-group">
+                  <input autocomplete="off" type="text" class="form-control" id="action-name"
+                    ng-model="form.action_name" required />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" ng-click="addAction(form,bot)" ng-disabled="actionsForm.$invalid">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</div>

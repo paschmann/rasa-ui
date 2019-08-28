@@ -1,0 +1,43 @@
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="#/models">Models</a></li>
+    <li class="breadcrumb-item active">Add Model</li>
+</ol>
+
+<div class="container-fluid">
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-sm-12 col-lg-12">
+                <form ng-submit="addModel()">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Model</strong>
+                        </div>
+                        <div class="card-block">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="name">Filename</label>
+                                        <input type="text" class="form-control" id="file_name" ng-model="formData.file_name"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">Server Path</label>
+                                        <input type="text" autocomplete="off" ng-model="formData.server_path"
+                                            class="form-control" id="server_path" placeholder="This is the path of the model relative to where the rasa server is running." required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">Comments</label>
+                                        <input type="text" class="form-control" id="comment" ng-model="formData.comment"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i>Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -30,85 +30,12 @@
         </form>
         <div class="card">
           <div class="card-header">
-            <strong>Current Running Configuration</strong>
+            <strong>Raw Config</strong>
           </div>
           <div class="card-block">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th class="col-md-2">Property</th>
-                  <th>Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>config</td>
-                  <td>{{ config.config }}</td>
-                </tr>
-                <tr>
-                  <td>data</td>
-                  <td>{{ config.data }}</td>
-                </tr>
-                <tr>
-                  <td>emulate</td>
-                  <td>{{ config.emulate }}</td>
-                </tr>
-                <tr>
-                  <td>fine tune spacy ner</td>
-                  <td>{{ config.fine_tune_spacy_ner }}</td>
-                </tr>
-                <tr>
-                  <td>language</td>
-                  <td>{{ config.language }}</td>
-                </tr>
-                <tr>
-                  <td>mitie file</td>
-                  <td>{{ config.mitie_file }}</td>
-                </tr>
-                <tr>
-                  <td>num threads</td>
-                  <td>{{ config.num_threads }}</td>
-                </tr>
-                <tr>
-                  <td>path</td>
-                  <td>{{ config.path }}</td>
-                </tr>
-                <tr>
-                  <td>pipeline</td>
-                  <td>{{ config.pipeline }}</td>
-                </tr>
-                <tr>
-                  <td>port</td>
-                  <td>{{ config.port }}</td>
-                </tr>
-                <tr>
-                  <td>response log dir</td>
-                  <td>{{ config.response_log }}</td>
-                </tr>
-                <tr>
-                  <td>server log</td>
-                  <td>{{ config.log_file }}</td>
-                </tr>
-                <tr>
-                  <td>server model dirs</td>
-                  <td>{{ config.server_model_dirs }}</td>
-                </tr>
-                <tr>
-                  <td>spacy model name</td>
-                  <td>{{ config.spacy_model_name }}</td>
-                </tr>
-              </tbody>
-            </table>
+            <json-formatter json="config" open="0"></json-formatter>
           </div>
         </div>
-          <div class="card">
-            <div class="card-header">
-              <strong>Raw Config</strong>
-            </div>
-            <div class="card-block">
-              <json-formatter json="config" open="0"></json-formatter>
-            </div>
-          </div>
       </div>
     </div>
   </div>

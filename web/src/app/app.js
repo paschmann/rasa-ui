@@ -1,21 +1,6 @@
 var app = angular
-  .module("app", [
-    "ngCookies",
-    "ng-jsyaml",
-    "ngSanitize",
-    "ngFileUpload",
-    "angularUtils.directives.dirPagination",
-    "ngRoute",
-    "chart.js",
-    "ngResource",
-    "ngStorage",
-    "ngTagsInput",
-    "jsonFormatter",
-    "angularModalService",
-    "AdalAngular"
-  ])
-  .run(function($rootScope, $http, $sessionStorage, appConfig, adalAuthenticationService) {
-    $rootScope.adalauthentication = appConfig.adalauthentication;
+  .module("app", ["ngCookies", "ngSanitize", "ngFileUpload", "angularUtils.directives.dirPagination", "ngRoute", "chart.js", "ngResource", "ngTagsInput", "jsonFormatter", "angularModalService", "ngStorage"])
+  .run(function ($rootScope, $http, $sessionStorage, appConfig) {
 
     // keep user logged in after page refresh
     if ($sessionStorage.jwt) {
@@ -27,129 +12,128 @@ var app = angular
       $rootScope.$broadcast("INVALID_JWT_TOKEN");
     }
 
-    $rootScope.$on("USER_AUTHENTICATED", function(event) {
+    $rootScope.$on("USER_AUTHENTICATED", function (event) {
       $rootScope.authenticated = true;
       $http.defaults.headers.common.Authorization =
         "Bearer " + $sessionStorage.jwt;
     });
 
-    $rootScope.$on("INVALID_JWT_TOKEN", function(event) {
+    $rootScope.$on("INVALID_JWT_TOKEN", function (event) {
       $rootScope.authenticated = false;
       $sessionStorage.$reset();
-
-      if (appConfig.adalauthentication) {
-          adalAuthenticationService.logOut();
-      }
     });
   });
 
 angular
   .module("app")
-  .controller("appCtrl", function(
-    $rootScope,
-    $scope,
-    $route,
-    $routeParams,
-    $location,
-    $timeout,
-    $http,
-    $sessionStorage,
-    $cookies,
-    adalAuthenticationService,
-    appConfig
-  ) {
+  .controller("appCtrl", function ($rootScope, $scope, $route, $routeParams, $location, $timeout, $http, $sessionStorage, $cookies, appConfig, Auth, Settings, Rasa_Status) {
     $scope.$route = $route;
     $scope.$location = $location;
     $scope.$routeParams = $routeParams;
 
-    $scope.go = function(path) {
+    $scope.go = function (path) {
       $location.path(path);
     };
 
     $scope.formData = {};
 
-    $scope.$on("setAlertText", function(event, alert_text) {
+    $scope.$on("setAlertText", function (event, alert_text) {
       $("#alertTextDiv").addClass("show");
       $scope.alert_text = alert_text;
-      $timeout(function() {
+      $timeout(function () {
         $("#alertTextDiv").removeClass("show");
       }, 2000);
     });
 
-    $scope.loginUser = function(user) {
-      $http
-        .post(appConfig.api_endpoint_v2 + "/auth", JSON.stringify(user))
-        .then(
-          function(response) {
-            // success callback
-            $sessionStorage.jwt = response.data.token;
-            $cookies.put("loggedinjwt", $sessionStorage.jwt);
-            $rootScope.$broadcast("USER_AUTHENTICATED");
-          },
-          function(errorResponse) {
-            // failure callback
-            $("#alertTextDiv").addClass("show");
-            $scope.alert_text =
-              "Invalid Username and Password. Please try again.";
-            $timeout(function() {
-              $("#alertTextDiv").removeClass("show");
-            }, 2000);
-          }
-        );
-    };
-
-    // ADAL
-    if (appConfig.adalauthentication) {
-      // this is referencing adal module to do login
-      //userInfo is defined at the $rootscope with adalAngular module
-      $scope.testMessage = "";
-      $scope.init = function() {
-        $scope.testMessage = "";
-      };
-
-      $scope.logout = function() {
-        adalAuthenticationService.logOut();
-        $rootScope.$broadcast("INVALID_JWT_TOKEN");
-      };
-
-      $scope.login = function() {
-        adalAuthenticationService.login();
-      };
-
-      // optional
-      $scope.$on("adal:loginSuccess", function() {
-        $scope.testMessage = "loginSuccess";
-
-        // Inject Azure Token_ID as JWT Token
-        $sessionStorage.jwt = adalAuthenticationService.getCachedToken(appConfig.adalclientid);
+    $scope.loginUser = function (user) {
+      Auth.save(JSON.stringify(user)).$promise.then(function (response) {
+        $sessionStorage.jwt = response.token;
         $cookies.put("loggedinjwt", $sessionStorage.jwt);
         $rootScope.$broadcast("USER_AUTHENTICATED");
-      });
-
-      // optional
-      $scope.$on("adal:loginFailure", function() {
-        $scope.testMessage = "loginFailure";
-        $location.path("/login");
-      });
-
-      // optional
-      $scope.$on("adal:notAuthorized", function(event, rejection, forResource) {
-        $scope.testMessage = "It is not Authorized for resource:" + forResource;
-      });
-
-      $scope.$on("adal:acquireTokenSuccess", function() {
-        $scope.testMessage = "acquireTokenSuccess";
-
-        // When ADAL.js refreshes token after expiration, $sessionStorage.jwt is desynchronized
-        $sessionStorage.jwt = adalAuthenticationService.getCachedToken(appConfig.adalclientid);
-        $cookies.put("loggedinjwt", $sessionStorage.jwt);
-        $rootScope.$broadcast("USER_AUTHENTICATED");
-      });
-
-      $scope.$on("adal:acquireTokenFailure", function() {
-       $scope.testMessage = "acquireTokenFailure";
-       adalAuthenticationService.logOut();
-       $rootScope.$broadcast("INVALID_JWT_TOKEN");
       });
     }
+
+    $scope.cleanResponse = function (data) {
+      return JSON.parse(angular.toJson(data));
+    }
+  
+    $scope.objectFindByKey = function (array, key, value) {
+      for (let i = 0; i < array.length; i++) {
+        if (array[i][key] === value) {
+          return array[i];
+        }
+      }
+      return null;
+    }
+
+    $scope.$on('refreshIntervelUpdate', function (event, expression_text) {
+      $interval.cancel(configcheck);
+      executeRefreshSettings();
+    });
+
+    $scope.executeRefreshSettings = function() {
+      Settings.query(function (data) {
+        $rootScope.settings = data;
+        for (let key in data) {
+          $rootScope.settings[data[key]['setting_name']] = data[key]['setting_value'];
+        }
+        if ($rootScope.settings['refresh_time'] !== '-1' && $rootScope.settings['refresh_time'] !== undefined) {
+          configcheck = $interval(getRasaStatus, Number($rootScope.settings['refresh_time']));
+        }
+        getRasaStatus();
+      });
+    }
+  
+    $scope.$on('$destroy', function () {
+      $interval.cancel(configcheck);
+    });
+  
+    $scope.getRasaStatus = function() {
+      Rasa_Status.get(function (statusdata) {
+        $rootScope.config = statusdata.toJSON();
+        $rootScope.config.isonline = 1;
+      }, function (error) {
+        $rootScope.config.isonline = 0;
+      });
+    }
+
+    $scope.timeConverter = function(UNIX_timestamp) {
+      var a = new Date(UNIX_timestamp * 1000);
+      var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      var year = a.getFullYear();
+      var month = months[a.getMonth()];
+      var date = a.getDate();
+      var hour = a.getHours();
+      var min = a.getMinutes();
+      var sec = a.getSeconds();
+      var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+      return time;
+    }
+    
+    $scope.pastelColors = function() {
+      const hue = Math.floor(Math.random() * 360);
+      return 'hsl(' + hue + ', 100%, 87.5%)';
+    }
+    
+    if (!String.prototype.splice) {
+      /**
+       * {JSDoc}
+       *
+       * The splice() method changes the content of a string by removing a range of
+       * characters and/or adding new characters.
+       *
+       * @this {String}
+       * @param {number} start Index at which to start changing the string.
+       * @param {number} delCount An integer indicating the number of old chars to remove.
+       * @param {string} newSubStr The String that is spliced in.
+       * @return {string} A new string with the spliced substring.
+       */
+      String.prototype.splice = function(start, delCount, newSubStr) {
+          return this.slice(0, start) + newSubStr + this.slice(start + Math.abs(delCount));
+      };
+    }
+    
+
+
+
   });

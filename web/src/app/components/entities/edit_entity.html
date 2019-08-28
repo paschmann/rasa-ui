@@ -1,0 +1,53 @@
+<ol class="breadcrumb" breadcrumb="">
+  <li class="breadcrumb-item"><a href="#/bot">Bots</a></li>
+  <li class="breadcrumb-item"><a href="#/bot/{{ entity.bot.bot_id }}">{{ entity.bot.bot_name }}</a></li>
+  <li class="breadcrumb-item active">{{ entity.entity_name }}</li>
+
+  <li class="breadcrumb-menu">
+    <div class="btn-group" role="group">
+      <a class="btn btn-outline-secondary" ng-click="deleteEntity()" confirm-click-title="Delete Entity"
+        confirm-click="Are you sure? This will delete the entity."><i class="icon-trash"></i> &nbsp;Delete Entity</a>
+    </div>
+  </li>
+</ol>
+
+<div class="container-fluid">
+    <div class="animated fadeIn">
+      <div class="row">
+        <div class="col-sm-12 col-lg-12">
+          <form ng-submit="addEntity()">
+            <div class="card">
+              <div class="card-header">
+                <strong>Entity</strong>
+              </div>
+              <div class="card-block">
+                <div class="row">
+                  <div class="col-sm-12">
+                      <div class="form-group">
+                          <label class="form-control-label" for="formGroupEntityNameInputId" data-toggle="tooltip" data-placement="right" title="Name of the Entity. NLU uses this name in structured response" tooltip>Entity Name</label>
+                          <input ng-model="entity.entity_name" type="text" class="form-control" id="formGroupEntityNameInputId" value="{{ entity.entity_name }}" placeholder="Service Endpoint URL" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label" for="formSlottypeId" data-toggle="tooltip" data-placement="right" title="*Required* Data Type of the slot if used in Rasa core. A custom one can also be entered here and made it available in rasa core environment. Select NOT_USED if you dont want rasaCore to poplate it." tooltip>Slot Data Type</label>
+                            <input ng-model="entity.slot_data_type" type="text" class="form-control" id="formSlottypeId" value="{{ entity.slot_data_type }}" type="text" list="slot_data_typesList" required />
+                            <datalist id="slot_data_typesList">
+                              <option>NOT_USED</option>
+                              <option>text</option>
+                              <option>bool</option>
+                              <option>categorical</option>
+                              <option>float</option>
+                              <option>list</option>
+                              <option>unfeaturized</option>
+                            </datalist>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+              <div class="card-footer">
+                <button ng-click="updateEntity(entity)" class="btn btn-sm btn-primary" ng-disabled="entitiesForm.$invalid"><i class="fa fa-dot-circle-o"></i> Save</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>

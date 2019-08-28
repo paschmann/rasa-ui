@@ -1,12 +1,7 @@
 angular.module("app").controller("NavBarController", NavBarController);
 
-function NavBarController(
-  $scope,
-  $rootScope,
-  adalAuthenticationService,
-  appConfig
-) {
-  $scope.toggleAside = function() {
+function NavBarController($scope, $rootScope, appConfig, $route) {
+  $scope.toggleAside = function () {
     if (angular.element("body").hasClass("aside-menu-hidden")) {
       angular
         .element("body")
@@ -20,7 +15,7 @@ function NavBarController(
     }
   };
 
-  $scope.toggleSidebar = function() {
+  $scope.toggleSidebar = function () {
     if (angular.element("body").hasClass("sidebar-fixed")) {
       angular
         .element("body")
@@ -34,10 +29,8 @@ function NavBarController(
     }
   };
 
-  $scope.logout = function() {
-    if (appConfig.adalauthentication) {
-      adalAuthenticationService.logOut();
-    }
+  $scope.logout = function () {
     $rootScope.$broadcast("INVALID_JWT_TOKEN");
+    $route.reload();
   };
 }

@@ -1,0 +1,29 @@
+<ol class="breadcrumb" breadcrumb="">
+  <li class="breadcrumb-item ng-scope active"><span>Bots</span>  </li>
+  <!-- Breadcrumb Menu-->
+  <li class="breadcrumb-menu">
+    <div class="btn-group" role="group">
+      <!-- <a class="btn btn-outline-secondary" href="#/bot/import"><i class="fa fa-upload"></i> &nbsp;Import Bot</a> -->
+      <a class="btn btn-outline-secondary" href="#/bot/add" data-toggle="tooltip"
+      data-placement="top" title="Click to Add a New Bot" tooltip><i class="icon-plus"></i></a>
+    </div>
+  </li>
+</ol>
+<div class="container-fluid">
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12 col-lg-12">
+          <div class="card" dir-paginate="bot in botList| filter: botFilterText | itemsPerPage: 5" pagination-id="botsList">
+            <div class="card-header" role="tab" id="headingOne">
+              <span><a ng-href="#/bot/{{ bot.bot_id }}">{{ bot.bot_name }}</a></span>
+              
+            </div>
+        </div>
+        <div style="float:right">
+            <dir-pagination-controls pagination-id="botsList"></dir-pagination-controls>
+          </div>
+      </div>
+    </div>
+    <br><br>
+  </div>
+</div>

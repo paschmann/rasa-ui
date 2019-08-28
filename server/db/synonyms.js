@@ -3,64 +3,58 @@ const logger = require('../util/logger');
 
 function getSingleSynonym(req, res, next) {
   logger.winston.info('synonym.getSingleSynonym');
-  const synonymId = Number(req.params.synonym_id);
-  db.one('select * from synonyms where synonym_id = $1', synonymId)
-    .then(function(data) {
+  db.get('select * from synonyms where synonym_id = ?', req.params.synonym_id, function(err, data) {
+    if (err) {
+      logger.winston.info(err);
+    } else {
       res.status(200).json(data);
-    })
-    .catch(function(err) {
-      return next(err);
-    });
+    }
+  });
 }
 
-function getAgentSynonyms(req, res, next) {
-  logger.winston.info('synonym.getAgentSynonyms');
-  const agentId = Number(req.params.agent_id);
-  db.any('select * from synonyms where agent_id = $1', agentId)
-    .then(function(data) {
+function getBotSynonyms(req, res, next) {
+  logger.winston.info('synonym.getBotSynonyms');
+
+  db.all('select * from synonyms where bot_id = ?', req.params.bot_id, function(err, data) {
+    if (err) {
+      logger.winston.info(err);
+    } else {
       res.status(200).json(data);
-    })
-    .catch(function(err) {
-      return next(err);
-    });
+    }
+  });
 }
 
-function createAgentSynonym(req, res, next) {
-  logger.winston.info('synonym.createAgentSynonym');
-  db.any(
-    'insert into synonyms(agent_id, synonym_reference)' +
-      'values($(agent_id), $(synonym_reference)) RETURNING synonym_id',
-    req.body
-  )
-    .then(function(data) {
-      res.status(200).json({
-        status: 'success',
-        message: 'Inserted',
-        synonym_id: data[0].synonym_id});
-    })
-    .catch(function(err) {
-      return next(err);
-    });
+function createBotSynonym(req, res, next) {
+  logger.winston.info('synonym.createBotSynonym');
+  db.run('insert into synonyms(bot_id, synonym_reference, regex_pattern)' + 'values (?,?,?)', [req.body.bot_id, req.body.synonym_reference, req.body.regex_pattern], function(err) {
+    if (err) {
+      logger.winston.info("Error inserting a new record");
+    } else {
+      db.get('SELECT last_insert_rowid()', function(err, data) {
+        if (err) {
+          res.status(500).json({ status: 'error', message: '' });
+        } else {
+          res.status(200).json({ status: 'success', message: 'Inserted', synonym_id: data['last_insert_rowid()'] });
+        }
+      });
+    }
+  });
 }
 
 function removeSynonym(req, res, next) {
   logger.winston.info('synonym.removeExpression');
-  const synonymId = Number(req.params.synonym_id);
-  db.result('delete from synonyms where synonym_id = $1', synonymId)
-    .then(function(result) {
-      /* jshint ignore:start */
-      res.status(200).json({
-        status: 'success',
-        message: `Removed ${result.rowCount}`});
-      /* jshint ignore:end */
-    })
-    .catch(function(err) {
-      return next(err);
-    });
+  db.run("delete from synonym_variants where synonym_id = ?", req.params.synonym_id);
+  db.run('delete from synonyms where synonym_id = ?', req.params.synonym_id, function(err) {
+    if (err) {
+      logger.winston.info("Error removing the record");
+    } else {
+      res.status(200).json({ status: 'success', message: 'Removed' });
+    }
+  });
 }
 
 module.exports = {
   getSingleSynonym,
-  getAgentSynonyms,
-  createAgentSynonym,
+  getBotSynonyms,
+  createBotSynonym,
   removeSynonym};

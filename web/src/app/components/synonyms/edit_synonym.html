@@ -1,0 +1,41 @@
+<ol class="breadcrumb" breadcrumb="">
+  <li class="breadcrumb-item"><a href="#/bot">Bots</a></li>
+  <li class="breadcrumb-item">
+    <a href="#/bot/{{ bot.bot_id }}">{{ bot.bot_name }}</a>
+  </li>
+  <li class="breadcrumb-item active">
+    <span>{{ synonym.synonym_reference }}</span>
+  </li>
+</ol>
+<div class="container-fluid">
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12 col-lg-12">
+        <div class="card">
+          <div class="card-header"><strong>Synonyms</strong></div>
+
+          <div class="card-block">
+            <table class="table table-bordered">
+              <tbody>
+                <tr>
+                  <td>{{ synonym.synonym_reference }}</td>
+                  <td class="col-md-10">
+                    <tags-input replace-spaces-with-dashes="false" on-tag-removed="synonymRemoved($tag)"
+                      on-tag-added="synonymAdded($tag, synonym.synonym_id)" add-on-comma="true"
+                      id="synonym_values_{{ synonym.synonym_id }}" ng-model="tags[synonym.synonym_id]"
+                      placeholder="Enter synonyms comma seperated ..."></tags-input>
+                  </td>
+                  <td>
+                    <button class="btn btn btn-outline-danger" ng-click="deleteSynonym(synonym.synonym_id)">
+                      <span class="icon-trash"></span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

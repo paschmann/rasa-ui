@@ -1,0 +1,44 @@
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="#/bots">Bots</a></li>
+    <li class="breadcrumb-item active">Add Bot</li>
+</ol>
+
+<div class="container-fluid">
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-sm-12 col-lg-12">
+                <form ng-submit="addBot()">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Bot</strong>
+                        </div>
+                        <div class="card-block">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" autocomplete="off" ng-model="formData.bot_name"
+                                            class="form-control" id="name" placeholder="Enter the bot name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">Config</label>
+                                        <textarea class="datainput form-control" id="bot_config" ng-model="formData.bot_config"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">Server Output Folder</label>
+                                        <input type="text" autocomplete="off" ng-model="formData.output_folder"
+                                            class="form-control" id="output_folder" placeholder="Server output folder for trained models (models)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i>Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,15 +1,16 @@
 <ol class="breadcrumb" breadcrumb="">
   <li class="breadcrumb-item">
-    <a href="#/agents">Agents</a>
+    <a href="#/bots">Bots</a>
   </li>
   <li class="breadcrumb-item">
-    <a ng-href="#/agent/{{agent.agent_id}}">{{ agent.agent_name }} </a>
+    <a ng-href="#/bot/{{bot.bot_id}}">{{ bot.bot_name }} </a>
   </li>
-  <li class="breadcrumb-item active">Intents Details</li>
+  <li class="breadcrumb-item active">{{intent.intent_name}}</li>
   <!-- Breadcrumb Menu-->
   <li class="breadcrumb-menu">
     <div class="btn-group" role="group">
-      <a class="btn btn-outline-secondary" ng-click="deleteIntent()" confirm-click-title="Delete Intent" confirm-click="Are you sure? This will delete the intent and all its expressions, and their resolved entities.">
+      <a class="btn btn-outline-secondary" ng-click="deleteIntent()" confirm-click-title="Delete Intent"
+        confirm-click="Are you sure? This will delete the intent and all its expressions, and their resolved entities.">
         <i class="icon-trash"></i> &nbsp;Delete Intent</a>
     </div>
   </li>
@@ -27,11 +28,15 @@
               <div class="row">
                 <div class="col-sm-12">
                   <div class="form-group">
-                    <input ng-model="intent.intent_name" type="text" class="form-control" value="{{intent.intent_name}}" placeholder="Service Endpoint URL">
+                    <input ng-model="intent.intent_name" type="text" class="form-control"
+                      value="{{intent.intent_name}}">
                   </div>
                 </div>
               </div>
             </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-sm btn-primary" ng-click="updateIntentNameAndWebhook(intent)"><i class="fa fa-dot-circle-o"></i>Save</button>
+              </div>
           </div>
         </form>
       </div>
@@ -47,8 +52,9 @@
               <div class="row">
                 <div class="col-sm-12">
                   <div class="form-group">
-                    <label>User Says ...</label>
-                    <input type="text" autocomplete="off" ng-model="expression_text" class="form-control" id="text" placeholder="Enter an expression and press enter"
+                    <label for="text">User Says ...</label>
+                    <input type="text" autocomplete="off" ng-model="expression_text" class="form-control" id="text"
+                      placeholder="Enter an expression and press enter"
                       ng-keyup="$event.keyCode == 13 && addExpression($event)">
                   </div>
                 </div>
@@ -60,30 +66,36 @@
           <div class="card-block" ng-hide="expressionList.length == 0">
             <div class="row">
               <div class="col-sm-12">
-                  <label>Highlight the word you want to reference as a entity value ...</label>
+                <label>Highlight the word you want to reference as a entity value ...</label>
                 <div class="list-group" dir-paginate="expression in expressionList  | itemsPerPage: 6">
                   <div class="list-group-item">
-                    <span id="expression_{{expression.expression_id}}" ng-bind-html="expression.expression_highlighted_text | trusted"></span>
+                    <span id="expression_{{expression.expression_id}}"
+                      ng-bind-html="expression.expression_highlighted_text | trusted"></span>
                     <span class="float-right">
-                      <span class="badge badge-default badge-pill mr-2" ng-hide="parameterFilterList.length == 0">{{ parameterFilterList.length }}</span>
+                      <span class="badge badge-default badge-pill mr-2"
+                        ng-hide="parameterFilterList.length == 0">{{ parameterFilterList.length }}</span>
                       <button class="btn btn-outline-secondary" ng-click="runExpression(expression.expression_text)">
                         <span class="icon-energy"></span>
                       </button>
                       <button class="btn btn-outline-secondary" ng-click="addParameter(expression.expression_id)">
                         <span class="icon-link"></span>
                       </button>
-                      <button class="btn btn-outline-secondary mr-2" data-toggle="collapse" ng-click="toggleArrow(expression.expression_id)" data-target="#table_expression_{{expression.expression_id}}"
-                        aria-expanded="false" aria-controls="table_expression_{{expression.expression_id}}">
+                      <button class="btn btn-outline-secondary mr-2" data-toggle="collapse"
+                        ng-click="toggleArrow(expression.expression_id)"
+                        data-target="#table_expression_{{expression.expression_id}}" aria-expanded="false"
+                        aria-controls="table_expression_{{expression.expression_id}}">
                         <span class="icon-arrow-down" id="icon_expression_{{expression.expression_id}}"></span>
                       </button>
-                      <button class="btn btn btn-outline-danger" confirm-click-title="Delete Expression" confirm-click="Are you sure? This will delete the expression and all its resolved entities."
+                      <button class="btn btn btn-outline-danger" confirm-click-title="Delete Expression"
+                        confirm-click="Are you sure? This will delete the expression and all its resolved entities."
                         ng-click="deleteExpression(expression.expression_id)">
                         <span class="icon-trash"></span>
                       </button>
                     </span>
                   </div>
                   <div class="collapse" id="table_expression_{{expression.expression_id}}">
-                    <table class="table table-bordered" ng-hide="parameterFilterList == null || parameterFilterList.length == 0">
+                    <table class="table table-bordered"
+                      ng-hide="parameterFilterList == null || parameterFilterList.length == 0">
                       <thead>
                         <tr>
                           <th>Entity</th>
@@ -92,16 +104,19 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr ng-repeat="parameter in parameterFilterList = (parameterList | orderBy: parameter_id  | filter: { expression_id: expression.expression_id })">
+                        <tr
+                          ng-repeat="parameter in parameterFilterList = (parameterList | orderBy: parameter_id  | filter: { expression_id: expression.expression_id })">
                           <td class="col-md-3">
-                            <select ng-options="entity.entity_id as entity.entity_name for entity in entityList" ng-change="updateParameterEntity(parameter.parameter_id, parameter.entity_id)"
+                            <select ng-options="entity.entity_id as entity.entity_name for entity in entityList"
+                              ng-change="updateParameterEntity(parameter.parameter_id, parameter.entity_id)"
                               ng-model="parameter.entity_id" class="form-control">
                               <option value="">Please select one</option>
                             </select>
                           </td>
                           <td class="td-middle">{{ parameter.parameter_value }}</td>
                           <td class="col-md-1">
-                            <button class="btn btn btn-outline-danger" ng-click="deleteParameter(parameter.parameter_id)">
+                            <button class="btn btn btn-outline-danger"
+                              ng-click="deleteParameter(parameter.parameter_id)">
                               <span class="icon-trash"></span>
                             </button>
                           </td>
@@ -117,65 +132,9 @@
               </div>
             </div>
         </form>
-        </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-12 col-lg-12">
-        <form>
-          <div class="card">
-            <div class="card-header">
-              <strong>Intent Reponses (Optional)</strong>
-            </div>
-
-            <div class="card-block">
-                <div class="form-check">
-                    <strong data-toggle="tooltip" data-placement="top" title="Ability to fetch data from External Server API." tooltip>Enable webhook</strong>
-                    &nbsp;&nbsp;&nbsp;
-                    <span class="float-right">
-                    <label class="switch switch-default switch-pill switch-success" data-toggle="tooltip" data-placement="top" title="{{agent.endpoint_enabled == false?'Webhook Not Enabled At Agent. Please enable it to select this Option':'Select this Option to get response from an External API'}}" tooltip>
-                        <input id="endpoint_switch" type="checkbox" class="switch-input" ng-model="intent.endpoint_enabled" ng-disabled="agent.endpoint_enabled == false">
-                        <span class="switch-label"></span>
-                        <span class="switch-handle"></span>
-                    </label>
-                    </span>
-                </div>
-                <hr>
-                <div class="form-check">
-                    <strong data-toggle="tooltip" data-placement="top" title="Send one of the Random Static response. If webhook is enabled, these will be ignored." tooltip>Static Responses</strong>
-                    <br><br>
-                    <input autocomplete="off" type="text" ng-model="formData.response_text" class="form-control" id="response_text" placeholder="Enter a response text and press enter" ng-keyup="$event.keyCode == 13 && saveNewResponse($event)">
-                    <ul class="list-group" ng-hide="responses.length == 0" style="margin-top: 20px;">
-                      <li class="list-group-item" ng-repeat="response in responses track by response.response_id">
-                        <span ng-bind-html="response.response_text | trusted"></span>
-                        <span class="float-right">
-                          <button type="button" class="btn btn btn-outline-danger" confirm-click-title="Delete Response" confirm-click="Are you sure? This will delete the response." ng-click="deleteResponse(response.response_id)">
-                            <span class="icon-trash"></span>
-                          </button>
-                        </span>
-                      </li>
-                    </ul>
-                </div>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-12 col-lg-12">
-        <form>
-          <div class="card">
-            <div class="card-block">
-              <button type="submit" class="btn btn-sm btn-primary" ng-click="updateIntentNameAndWebhook(intent)">
-                <i class="fa fa-dot-circle-o"></i> Save</button>
-            </div>
-          </div>
-        </form>
       </div>
     </div>
   </div>
+</div>
 </div>
 </div>

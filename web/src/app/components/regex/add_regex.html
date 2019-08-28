@@ -1,44 +1,29 @@
 <ol class="breadcrumb">
-  <li class="breadcrumb-item"><a href="#/agent">Agents</a></li>
+  <li class="breadcrumb-item"><a href="#/bot">Bots</a></li>
   <li class="breadcrumb-item">
-    <a href="#/agent/{{ agent.agent_id }}">{{ agent.agent_name }}</a>
+    <a href="#/bot/{{ bot.bot_id }}">{{ bot.bot_name }}</a>
   </li>
-  <li class="breadcrumb-item active">New Regex</li>
+  <li class="breadcrumb-item active">Add Regex</li>
 </ol>
 <div class="container-fluid">
   <div class="animated fadeIn">
     <div class="row">
       <div class="col-sm-12 col-lg-12">
-        <div class="alert alert-warning" role="alert">
-          NB* please note that currently, only ner_crf supports regex.
-        </div>
         <form ng-submit="addRegex()">
           <div class="card">
-            <div class="card-header"><strong>New Regex</strong></div>
+            <div class="card-header"><strong>Regex</strong></div>
             <div class="card-block">
               <div class="row">
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="name">Name</label>
-                    <input autocomplete="off"
-                      type="text"
-                      ng-model="formData.regex_name"
-                      class="form-control"
-                      id="name"
-                      placeholder="Enter the regex name"
-                    />
+                    <input autocomplete="off" type="text" ng-model="formData.regex_name" class="form-control" id="name" placeholder="Enter the regex name" />
                   </div>
                 </div>
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label for="name">Pattern</label>
-                    <input autocomplete="off"
-                      type="text"
-                      ng-model="formData.regex_pattern"
-                      class="form-control"
-                      id="pattern"
-                      placeholder="Enter the regex pattern"
-                    />
+                    <input autocomplete="off" type="text" ng-model="formData.regex_pattern" class="form-control" id="pattern" placeholder="Enter the regex pattern" />
                   </div>
                 </div>
               </div>

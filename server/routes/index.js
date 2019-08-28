@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const agents = require('../db/agents');
+const bots = require('../db/bots');
 const intents = require('../db/intents');
-const actions = require('../db/actions');
 const expressions = require('../db/expressions');
 const parameters = require('../db/parameters');
 const entities = require('../db/entities');
@@ -12,38 +11,31 @@ const synonyms = require('../db/synonyms');
 const variants = require('../db/variants');
 const settings = require('../db/settings');
 const responses = require('../db/responses');
-const messages = require('../db/messages');
-const middleware = require('./middleware');
-const health = require('./health');
-const rasa_events = require('./rasa_events');
-const core_router = require('./mw_routes/core_router');
-const nlu_router = require('./mw_routes/nlu_router');
+const models = require('../db/models');
+
+const rasa_router = require('./rasa_router');
 const auth = require('./auth');
 const logs = require('../db/logs');
-//routes agent
-router.get('/agents', agents.getAllAgents);
-router.get('/agents/:agent_id', agents.getSingleAgent);
-router.post('/agents', agents.createAgent);
-router.put('/agents/:agent_id', agents.updateAgent);
-router.post('/agentStory', agents.updateAgentStory);
-router.delete('/agents/:agent_id', agents.removeAgent);
-router.post('/agents/upload', agents.uploadAgentFromFile);
-//routes action
-router.get('/actions/:action_id', actions.getSingleAction);
-router.put('/actions/:action_id', actions.updateAction);
-router.delete('/actions/:action_id', actions.removeAction);
-router.post('/actions', actions.createAgentAction);
-router.get('/agents/:agent_id/actions', actions.getAgentActions);
+
+//routes model
+router.get('/models/:bot_id', models.getBotModels);
+router.delete('/models', models.removeModel);
+router.post('/models', models.createModel);
+ 
+//routes bot
+router.get('/bots', bots.getAllBots);
+router.get('/bots/:bot_id', bots.getSingleBot);
+router.post('/bots', bots.createBot);
+router.put('/bots/:bot_id', bots.updateBot);
+router.post('/botStory', bots.updateBotStory);
+router.delete('/bots/:bot_id', bots.removeBot);
+router.post('/bots/upload', bots.uploadBotFromFile);
 //routes intents
-router.get('/agents/:agent_id/intents', intents.getAgentIntents);
+router.get('/bots/:bot_id/intents', intents.getBotIntents);
 router.get('/intents/:intent_id', intents.getSingleIntent);
-router.get(
-  '/intents/:intent_id/unique_intent_entities',
-  intents.getUniqueIntents
-);
 router.put('/intents/:intent_id', intents.updateIntent);
-router.post('/agents/:agent_id/intents', intents.createAgentIntent);
-router.post('/intents', intents.createAgentIntent);
+router.post('/bots/:bot_id/intents', intents.createBotIntent);
+router.post('/intents', intents.createBotIntent);
 router.delete('/intents/:intent_id', intents.removeIntent);
 //routes expression
 router.get('/intent_expressions', expressions.getIntentExpressionQuery); //Used for training
@@ -54,32 +46,29 @@ router.post('/expressions', expressions.createIntentExpression);
 router.delete('/expressions/:expression_id', expressions.removeExpression);
 //routes parameters
 router.get('/expression_parameters', parameters.getExpressionParametersQuery); //Used for training
-router.get(
-  '/expresions/:expression_id/parameters',
-  parameters.getExpressionParameters
-);
-router.get('/parameters/:parameter_id', parameters.getSingleParameter);
+router.get('/expresions/:expression_id/parameters', parameters.getExpressionParameters);
+//router.get('/parameters/:parameter_id', parameters.getSingleParameter);
 router.get('/intent/:intent_id/parameters', parameters.getIntentParameters);
 router.post('/parameters', parameters.createExpressionParameter);
 router.put('/parameters/:parameter_id', parameters.updateParameter);
-router.delete('/parameters/:parameter_id', parameters.removeParameter);
+router.delete('/parameters/:parameter_id', parameters.removeExpressionParameter);
 //routes entities
 router.get('/entities', entities.getAllEntities);
-router.get('/entities/agent/:agent_id', entities.getAllEntitiesForAgent);
+router.get('/entities/bot/:bot_id', entities.getAllEntitiesForBot);
 router.get('/entities/:entity_id', entities.getSingleEntity);
 router.post('/entities', entities.createEntity);
 router.put('/entities/:entity_id', entities.updateEntity);
 router.delete('/entities/:entity_id', entities.removeEntity);
 //routes regex
-router.get('/agent/:agent_id/regex', regex.getAgentRegex);
+router.get('/bot/:bot_id/regex', regex.getBotRegex);
 router.get('/regex/:regex_id', regex.getSingleRegex);
 router.post('/regex', regex.createRegex);
 router.put('/regex/:regex_id', regex.updateRegex);
 router.delete('/regex/:regex_id', regex.removeRegex);
 //routes synonymes
-router.get('/agent/:agent_id/synonyms', synonyms.getAgentSynonyms);
+router.get('/bot/:bot_id/synonyms', synonyms.getBotSynonyms);
 router.get('/synonyms/:synonym_id', synonyms.getSingleSynonym);
-router.post('/synonyms', synonyms.createAgentSynonym);
+router.post('/synonyms', synonyms.createBotSynonym);
 router.delete('/synonyms/:synonym_id', synonyms.removeSynonym);
 //routes variants
 router.get('/synonyms_variants/:synonyms_id', variants.getSynonymsVariants); //Used for training
@@ -93,9 +82,6 @@ router.delete('/synonyms/:synonym_id/variants', variants.removeSynonymVariants);
 router.get('/settings', settings.getSettings);
 router.get('/settings/:setting_name', settings.getSingleSetting);
 router.put('/settings/:setting_name', settings.updateSetting);
-//routes actions responses
-router.get('/actionresponse/:action_id', responses.getActionResponses);
-router.post('/actionresponse', responses.createActionResponse);
 //routes intent responses
 router.get('/response/:intent_id', responses.getIntentResponses);
 router.post('/response', responses.createIntentResponse);
@@ -107,51 +93,29 @@ router.get('/nlu_log/:query', logs.getLogs);
 router.get('/intent_usage_by_day', logs.getIntentUsageByDay);
 router.get('/intent_usage_total', logs.getIntentUsageTotal);
 router.get('/request_usage_total', logs.getRequestUsageTotal);
+router.get('/total_log_entries', logs.getTotalLogEntries);
 router.get('/avg_intent_usage_by_day', logs.getAvgIntentUsageByDay);
-router.get('/nlu_parse_log/:agent_id', logs.getNluParseLogByAgent);
-router.get('/agentsByIntentConfidencePct/:agent_id', logs.getAgentsByIntentConfidencePct);
-router.get('/intentsMostUsed/:agent_id', logs.getIntentsMostUsed);
-router.get(
-  '/avgNluResponseTimesLast30Days',
-  logs.getAvgNluResponseTimesLast30Days
-);
-router.get(
-  '/avgUserResponseTimesLast30Days',
-  logs.getAvgUserResponseTimesLast30Days
-);
+router.get('/nlu_parse_log/:bot_id', logs.getNluParseLogByBot);
+router.get('/botsByIntentConfidencePct/:bot_id', logs.getBotsByIntentConfidencePct);
+router.get('/intentsMostUsed/:bot_id', logs.getIntentsMostUsed);
+router.get('/avgNluResponseTimesLast30Days', logs.getAvgNluResponseTimesLast30Days);
+router.get('/avgUserResponseTimesLast30Days', logs.getAvgUserResponseTimesLast30Days);
 router.get('/activeUserCountLast12Months', logs.getActiveUserCountLast12Months);
 router.get('/activeUserCountLast30Days', logs.getActiveUserCountLast30Days);
-//rasa nlu api's
-router.get('/rasa/status', nlu_router.getRasaNluStatus);
-router.get('/rasa/url', nlu_router.getRasaNluEndpoint);
-router.get('/rasa/config', nlu_router.getRasaNluConfig);
-router.get('/rasa/version', nlu_router.getRasaNluVersion);
-router.post('/rasa/train', nlu_router.trainRasaNlu);
-router.delete('/rasa/models', nlu_router.unloadRasaModel);
+
+//rasa api's
+router.get('/rasa/status', rasa_router.getRasaNluStatus);
+router.get('/rasa/url', rasa_router.getRasaNluEndpoint);
+//router.get('/rasa/config', rasa_router.getRasaNluConfig);
+router.get('/rasa/version', rasa_router.getRasaNluVersion);
+router.post('/rasa/model/train', rasa_router.trainRasaNlu);
+router.put('/rasa/model', rasa_router.loadRasaModel);
+router.delete('/rasa/model', rasa_router.unloadRasaModel);
 //common middleware for parse
-router.post('/rasa/parse', middleware.parseRasaRequest);
-//rasa core API
-router.post('/rasa/restart', core_router.restartRasaCoreConversation);
-//rasa core events logging API
-router.post('/rasa/logEvents', rasa_events.logEventsRoute);
-//messages api
-router.get('/agent/:agent_id/messages', messages.getUniqueUsersList);
-router.get(
-  '/agent/:agent_id/recent9UniqueUsersList',
-  messages.getRecent9UniqueUsersList
-);
-router.post('/messages/list', messages.getMessagesListByUser);
-router.put('/messages/:messages_id', messages.updateMessage);
-router.get('/messages/:messages_id', messages.getMessageDetails);
-router.delete('/messages/:message_id/entities', messages.deleteMessageEntities);
-router.put(
-  '/messages/:message_id/entities/:entity_id',
-  messages.updateMessageEntities
-);
-router.post('/messages/:message_id/entities', messages.addMessageEntities);
+router.post('/rasa/model/parse', rasa_router.parseRequest);
+
 //authentication js
 router.post('/auth', auth.authenticateUser);
 router.post('/authclient', auth.authenticateClient);
-router.get('/health', health.liveness);
 
 module.exports = router;

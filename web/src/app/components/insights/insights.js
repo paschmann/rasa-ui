@@ -1,12 +1,13 @@
+/* TODO: */
 angular.module('app').controller('InsightsController', InsightsController);
 
-function InsightsController($scope, $http, $sce, NLU_log_stats, Agent,appConfig) {
+function InsightsController($scope, $http, $sce, NLU_log_stats, Bot, appConfig) {
   $scope.option = 'Daily';
   loadDailyActiveUsers();
-  
-  Agent.query(function(data) {
-    $scope.agentList = data;
-    $scope.selectedAgent=data[0].agent_id;
+
+  Bot.query(function (data) {
+    $scope.botList = data;
+    $scope.selectedBot = data[0].bot_id;
     $scope.drawCharts();
   });
   //chart options
@@ -17,11 +18,12 @@ function InsightsController($scope, $http, $sce, NLU_log_stats, Agent,appConfig)
         {
           ticks: {
             suggestedMin: 0,
-            stepSize:1
-        }
+            stepSize: 1
+          }
         }
       ]
-    }};
+    }
+  };
   $scope.piechart_options = {
     legend: { display: true, position: 'top' },
     backgroundColor: [
@@ -34,10 +36,13 @@ function InsightsController($scope, $http, $sce, NLU_log_stats, Agent,appConfig)
         {
           gridLines: {
             color: 'transparent',
-            zeroLineColor: 'transparent'},
+            zeroLineColor: 'transparent'
+          },
           ticks: {
             fontSize: 2,
-            fontColor: 'transparent'}}
+            fontColor: 'transparent'
+          }
+        }
       ],
       yAxes: [
         {
@@ -48,22 +53,25 @@ function InsightsController($scope, $http, $sce, NLU_log_stats, Agent,appConfig)
     elements: {
       line: {
         tension: 0.00001,
-        borderWidth: 2},
+        borderWidth: 2
+      },
       point: {
         radius: 1,
         hitRadius: 10,
-        hoverRadius: 4}
-    }};
-    
-  $scope.drawCharts = function(){
-    $http({method: 'GET', url: appConfig.api_endpoint_v2 + '/intentsMostUsed/'+$scope.selectedAgent}).then(
-      function(response){
-        console.log("Resp "+JSON.stringify(response));
-        
-        $scope.intents_pie_labels=[];
-        $scope.intents_pie_data=[];
-        let results= response.data;
-        for(var i=0; i< results.length;i++){
+        hoverRadius: 4
+      }
+    }
+  };
+
+  $scope.drawCharts = function () {
+    $http({ method: 'GET', url: appConfig.api_endpoint_v2 + '/intentsMostUsed/' + $scope.selectedBot }).then(
+      function (response) {
+        console.log("Resp " + JSON.stringify(response));
+
+        $scope.intents_pie_labels = [];
+        $scope.intents_pie_data = [];
+        let results = response.data;
+        for (var i = 0; i < results.length; i++) {
           $scope.intents_pie_labels.push(results[i].intent_name);
           if (results[i].grp_intent_count == null || results[i].grp_intent_count === '') {
             $scope.intents_pie_data.push(0);
@@ -72,36 +80,36 @@ function InsightsController($scope, $http, $sce, NLU_log_stats, Agent,appConfig)
           }
         }
       },
-      function(errorResponse){
+      function (errorResponse) {
         console.log("Error Message while Getting Messages." + errorResponse);
       });
-      $http({method: 'GET', url: appConfig.api_endpoint_v2 + '/agentsByIntentConfidencePct/'+$scope.selectedAgent}).then(
-        function(response){
-          $scope.agentResults = response.data;
-          var agentNameForBarChart = response.data[0].agent_name;
-          $scope.bar_chart_labels = [];
-          $scope.bar_chart_series = ['Passed', 'Failed'];
-          let passed_conter = 0;
-          let failed_conter = 0;
-          for (let j = 0; j < $scope.agentResults.length; j++) {
-            if ($scope.agentResults[j].intent_confidence_pct > $scope.confidencePercent) {
-              passed_conter++;
-            } else {
-              failed_conter++;
-            }
+    $http({ method: 'GET', url: appConfig.api_endpoint_v2 + '/botsByIntentConfidencePct/' + $scope.selectedBot }).then(
+      function (response) {
+        $scope.botResults = response.data;
+        var botNameForBarChart = response.data[0].bot_name;
+        $scope.bar_chart_labels = [];
+        $scope.bar_chart_series = ['Passed', 'Failed'];
+        let passed_conter = 0;
+        let failed_conter = 0;
+        for (let j = 0; j < $scope.botResults.length; j++) {
+          if ($scope.botResults[j].intent_confidence_pct > $scope.confidencePercent) {
+            passed_conter++;
+          } else {
+            failed_conter++;
           }
-          $scope.bar_chart_labels=["Agent:" +agentNameForBarChart];
-          $scope.bar_chart_series = ['Passed', 'Failed'];
-          $scope.barchar_data = [[passed_conter], [failed_conter]];
-        },
-        function(errorResponse){
-          console.log("Error Message while Getting Messages." + errorResponse);
         }
-      )
+        $scope.bar_chart_labels = ["Bot:" + botNameForBarChart];
+        $scope.bar_chart_series = ['Passed', 'Failed'];
+        $scope.barchar_data = [[passed_conter], [failed_conter]];
+      },
+      function (errorResponse) {
+        console.log("Error Message while Getting Messages." + errorResponse);
+      }
+    )
   }
 
 
-  NLU_log_stats.query({ path: 'avgNluResponseTimesLast30Days' }, function(
+  NLU_log_stats.query({ path: 'avgNluResponseTimesLast30Days' }, function (
     data
   ) {
     const nlu_response_data = [];
@@ -117,7 +125,7 @@ function InsightsController($scope, $http, $sce, NLU_log_stats, Agent,appConfig)
     $scope.nlu_response_data = [nlu_response_data];
   });
 
-  NLU_log_stats.query({ path: 'avgUserResponseTimesLast30Days' }, function(
+  NLU_log_stats.query({ path: 'avgUserResponseTimesLast30Days' }, function (
     data
   ) {
     const response_data = [];
@@ -133,7 +141,7 @@ function InsightsController($scope, $http, $sce, NLU_log_stats, Agent,appConfig)
     $scope.users_response_data = [response_data];
   });
 
-  $scope.updateData = function(option) {
+  $scope.updateData = function (option) {
     if (option === 'Daily') {
       loadDailyActiveUsers();
     } else {
@@ -141,11 +149,11 @@ function InsightsController($scope, $http, $sce, NLU_log_stats, Agent,appConfig)
     }
   };
 
-  $scope.updateBarChart = function() {
+  $scope.updateBarChart = function () {
     let passed_conter = 0;
     let failed_conter = 0;
-    for (let j = 0; j < $scope.agentResults.length; j++) {
-      if ($scope.agentResults[j].intent_confidence_pct > $scope.confidencePercent) {
+    for (let j = 0; j < $scope.botResults.length; j++) {
+      if ($scope.botResults[j].intent_confidence_pct > $scope.confidencePercent) {
         passed_conter++;
       } else {
         failed_conter++;
@@ -167,7 +175,8 @@ function InsightsController($scope, $http, $sce, NLU_log_stats, Agent,appConfig)
           ticks: {
             fontSize: 2,
             fontColor: 'transparent'
-          }}
+          }
+        }
       ],
       yAxes: [
         {
@@ -178,15 +187,18 @@ function InsightsController($scope, $http, $sce, NLU_log_stats, Agent,appConfig)
     elements: {
       line: {
         tension: 0.00001,
-        borderWidth: 2},
+        borderWidth: 2
+      },
       point: {
         radius: 1,
         hitRadius: 10,
-        hoverRadius: 4}
-    }};
+        hoverRadius: 4
+      }
+    }
+  };
 
   function loadDailyActiveUsers() {
-    NLU_log_stats.query({ path: 'activeUserCountLast30Days' }, function(data) {
+    NLU_log_stats.query({ path: 'activeUserCountLast30Days' }, function (data) {
       const users_data = [];
       let avg_act_users = 0;
       $scope.activeusers_labels = [];
@@ -202,7 +214,7 @@ function InsightsController($scope, $http, $sce, NLU_log_stats, Agent,appConfig)
   }
 
   function loadMonthlyActiveUsers() {
-    NLU_log_stats.query({ path: 'activeUserCountLast12Months' }, function(
+    NLU_log_stats.query({ path: 'activeUserCountLast12Months' }, function (
       data
     ) {
       const users_data = [];
