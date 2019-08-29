@@ -62,27 +62,8 @@ module.exports = {
   createBot,
   updateBot,
   removeBot,
-  uploadBotFromFile,
-  updateBotStory
+  uploadBotFromFile
 };
-
-
-function updateBotStory(req, res, next) {
-  logger.winston.info('Bot.updateBotStory -- Not done');
-  /*
-  db.none('update bots set story_details=$2 where bot_id=$1', [
-    Number(req.body.bot_id),
-    req.body.story_details])
-    .then(function() {
-      res.status(200).json({
-        status: 'success',
-        message: 'Updated Story For Bot'});
-    })
-    .catch(function(err) {
-      return next(err);
-    });
-    */
-}
 
 
 function uploadBotFromFile(req, res, next) {

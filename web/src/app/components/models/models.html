@@ -12,9 +12,6 @@
           {{ loading_model }}  
         </div>
         <div class="card">
-          <div class="card-header">
-            <strong>Bots</strong>
-          </div>
           <div class="card-block">
             <div class="form-group row">
               <label for="select" class="col-sm-2 col-form-label">Bot</label>
@@ -72,7 +69,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr dir-paginate="model in modelList | orderBy: timestamp : true  | itemsPerPage: 10"
+                <tr dir-paginate="model in modelList | itemsPerPage: 10"
                 pagination-id="modelList">
                   <td>{{ model.timestamp }}</td>
                   <td>File: {{ model.model_name }}<br>Local Path: {{ model.local_path }}<br>Rasa Server Path:

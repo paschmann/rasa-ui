@@ -9,8 +9,8 @@
           {{message}}
         </div>
         <div class="alert alert-danger" role="alert" ng-show="generateError !== ''">
-            {{ generateError }}
-          </div>
+          {{ generateError }}
+        </div>
         <div class="alert alert-info" role="alert" ng-show="$root.trainings_under_this_process > 0">
           <strong>Training</strong> is currently running.
         </div>
@@ -19,7 +19,8 @@
             <div class="form-group row">
               <label for="select" class="col-sm-2 col-form-label">Bot</label>
               <div class="col-sm-10">
-                <select id="bot_name" ng-change="getData(bot.bot_id,bot)" ng-options="bot.bot_id as bot.bot_name for bot in botList" ng-model="bot.bot_id" class="form-control">
+                <select id="bot_name" ng-change="getData(bot.bot_id,bot)"
+                  ng-options="bot.bot_id as bot.bot_name for bot in botList" ng-model="bot.bot_id" class="form-control">
                   <option value="">Please select a bot</option>
                 </select>
               </div>
@@ -29,18 +30,55 @@
       </div>
     </div>
 
+    <div class="row" ng-show="bot.bot_id">
+      <div class="col-md-12">
+        <tabset class="tab-container">
+          <ul class="nav nav-tabs">
+            <li class="nav-item active"><a class="nav-link active" data-target="#raw_data"
+                data-toggle="tab"><span></span><i class="icon-feed"></i> Raw Training Data</a></li>
+            <li class="nav-item"><a class="nav-link" data-target="#config" data-toggle="tab"><span></span><i
+                  class="icon-settings"></i> Config</a></li>
+            <li class="nav-item"><a class="nav-link" data-target="#nlu_data" data-toggle="tab"><span></span><i
+                  class="icon-speech"></i> NLU Data</a></li>
+            <li class="nav-item"><a class="nav-link" data-target="#stories" data-toggle="tab"><span></span><i
+                  class="icon-directions"></i> Stories</a></li>
+            <li class="nav-item"><a class="nav-link" data-target="#domain" data-toggle="tab"><span></span><i
+                  class="icon-compass"></i> Domain</a></li>
+          </ul>
+          <div class="tab-content">
+            <tab class="tab-pane active" id="raw_data">
+              <textarea class="datainput" ng-model="raw_data_stringified">{{ raw_data_stringified }}</textarea>
+            </tab>
+            <tab class="tab-pane" id="config">
+              <textarea class="datainput" ng-model="raw_data.config" ng-change="stringifyData()">{{ raw_data.config }}</textarea>
+            </tab>
+            <tab class="tab-pane" id="nlu_data">
+              <textarea class="datainput" ng-model="raw_data.nlu" ng-change="stringifyData()">{{ raw_data.nlu }}</textarea>
+            </tab>
+            <tab class="tab-pane" id="stories">
+              <textarea class="datainput" ng-model="raw_data.stories" ng-change="stringifyData()">{{ raw_data.stories }}</textarea>
+            </tab>
+            <tab class="tab-pane" id="domain">
+              <textarea class="datainput" ng-model="raw_data.domain" ng-change="stringifyData()">{{ raw_data.domain }}</textarea>
+            </tab>
+          </div>
+        </tabset>
+      </div>
+    </div>
+
     <div class="row">
+        <div class="col-md-12">
+          &nbsp;
+        </div>
+    </div>
+
+    <div class="row" ng-show="bot.bot_id">
       <div class="col-sm-12">
         <div class="card">
           <div class="card-header">
-            <strong>Raw Training Data</strong>
+            <strong>Training</strong>
           </div>
           <div class="card-block">
-            <div class="form-group row">
-              <div class="col-sm-12">
-                <textarea class="datainput" ng-model="raw_data_stringified">{{ raw_data_stringified }}</textarea>
-              </div>
-            </div>
             <div class="form-group row">
               <label class="col-sm-3 col-form-label">Comment</label>
               <div class="col-sm-9">
@@ -51,152 +89,23 @@
               <label class="col-sm-3 col-form-label">Force Model Update</label>
               <div class="col-sm-9">
                 <label class="switch switch-3d switch-success">
-                    <input type="checkbox" class="switch-input" ng-model="bool_force_model_update" ng-change="updateData()">
-                    <span class="switch-label"></span>
-                    <span class="switch-handle"></span>
+                  <input type="checkbox" class="switch-input" ng-model="bool_force_model_update"
+                    ng-change="updateData()">
+                  <span class="switch-label"></span>
+                  <span class="switch-handle"></span>
                 </label>
               </div>
-          </div>
+            </div>
           </div>
           <div class="card-footer" ng-show="raw_data !== undefined">
-            <button type="button" class="btn btn-success"
-              ng-click="trainUsingRawData()"><i class="fa fa-magic"></i>&nbsp; Start Training</button>
-            <button type="button" class="btn btn-secondary"
-              ng-click="saveRawDataToFile()"><i class="fa fa-file"></i>&nbsp; Download File</button>
+            <button type="button" class="btn btn-success" ng-click="trainUsingRawData()"><i
+                class="fa fa-magic"></i>&nbsp; Start Training</button>
+            <button type="button" class="btn btn-secondary" ng-click="saveRawDataToFile()"><i
+                class="fa fa-file"></i>&nbsp; Download File</button>
             <a href="" id="a"></a>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- TODO: Show core feature raw files 
-        <div class="row"  ng-show="exportdata !== undefined">
-          <div class="col-sm-6">
-            <div class="card">
-                <div class="card-header">
-                    <strong>Rasa NLU Config</strong>
-                </div>
-                <div class="card-block" style="min-height:400px;max-height:400px;overflow-y:scroll">
-                  <div>
-                    <span ng-show="exportdata !== undefined" >To Lower case  <label class="switch switch-3d switch-success" ng-show="exportdata !== undefined">
-                        <input type="checkbox" class="switch-input" ng-model="toLowercase" ng-change="convertToLowerCase()">
-                        <span class="switch-label"></span>
-                        <span class="switch-handle"></span>
-                    </label>
-                  </span>
-                </div>
-                <div ng-show="exportdata !== undefined">
-                  <div class="col-sm-12">
-                    <div class="alert alert-danger" role="alert" ng-show="generateError !== ''">
-                      <strong>Error</strong> seems some data is missing. ({{generateError}})
-                    </div>
-                    <json-formatter json="exportdata" open="4"></json-formatter>
-                  </div>
-                </div>
-              </div>
-               <div class="card-footer">
-                 <button type="button" class="btn btn-success" ng-show="exportdata !== undefined" ng-click="train()"><i class="fa fa-magic"></i>&nbsp; Start Training</button>
-                 <button type="button" class="btn btn-secondary" ng-show="exportdata !== undefined" ng-click="savetofile()"><i class="fa fa-file"></i>&nbsp; Download File</button>
-                 <a href="" id="a"></a>
-               </div>
-            </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="card">
-              <div class="card-header">
-                <strong>Rasa Core Config</strong>
-              </div>
-              <div class="card-block" style="min-height:400px;max-height:400px;overflow-y:scroll" ng-show="selectedBot.rasa_core_enabled!=true">
-                Rasa Core is not enabled for this Bot.
-              </div>
-              <div id="accordion" class="card-block" style="min-height:400px;max-height:400px;overflow-y:scroll" ng-show="selectedBot.rasa_core_enabled==true">
-                <div class="card-header" role="tab" id="heading1">
-                    <h5 class="mb-0">
-                      <a data-target="#collapseOne" data-toggle="collapse">
-                        _domain.yml
-                      </a>
-                    </h5>
-                  </div>
-
-                  <div id="collapseOne" class="collapse hide" role="tabpanel" aria-labelledby="heading1" data-parent="#accordion">
-                      <div class="card-block" style="max-height:400px">
-                        <textarea readonly style="width: 100%;height: 300px;">{{domain_yml}}</textarea>
-                      </div>
-                  </div><br>
-                  <div class="card-header" role="tab" id="heading2">
-                    <h5 class="mb-0">
-                      <a data-target="#collapse2" data-toggle="collapse">
-                        _stories.md
-                      </a>
-                    </h5>
-                  </div>
-                  <div id="collapse2" class="collapse hide" role="tabpanel" aria-labelledby="heading2" data-parent="#accordion">
-                      <div class="card-block" style="max-height:400px">
-                        <textarea readonly style="width: 100%;height: 300px;">{{stories_md}}</textarea>
-                    </div>
-                  </div>
-                  <br>
-                  <div class="card-header" role="tab" id="heading3">
-                      <h5 class="mb-0">
-                        <a data-target="#collapse3" data-toggle="collapse">
-                          credentials.yml
-                        </a>
-                      </h5>
-                    </div>
-  
-                <div id="collapse3" class="collapse hide" role="tabpanel" aria-labelledby="heading3" data-parent="#accordion">
-                    <div class="card-block" style="max-height:400px">
-                      <textarea readonly style="width: 100%;height: 50px;">{{credentials_yml}}</textarea>
-                    </div>
-                </div>
-                <br>
-                <div class="card-header" role="tab" id="heading4">
-                    <h5 class="mb-0">
-                      <a data-target="#collapse4" data-toggle="collapse">
-                        endpoints.yml
-                      </a>
-                    </h5>
-                  </div>
-
-                  <div id="collapse4" class="collapse hide" role="tabpanel" aria-labelledby="heading4" data-parent="#accordion">
-                      <div class="card-block" style="max-height:400px">
-                        <textarea readonly style="width: 100%;height: 50px;">{{endpoints_yml}}</textarea>
-                      </div>
-                  </div>
-                  <br>
-                  <div class="card-header" role="tab" id="heading5">
-                    <h5 class="mb-0">
-                      <a data-target="#collapse5" data-toggle="collapse">
-                        Instructions
-                      </a>
-                    </h5>
-                  </div>
-                  <div id="collapse5" class="collapse hide" role="tabpanel" aria-labelledby="heading5" data-parent="#accordion">
-                      <div class="card-block" style="max-height:400px">
-                        <ul class="list-style">
-                          <li>Download and Copy above files to a directory (Ex. /data)</li>
-                          <li><strong>Training</strong>
-                            <pre>python -m rasa_core.train -s data/_stories.md -d data/_domain.yml -o models/dialogue</pre>
-                          </li>
-                          <li>Custom policy can be included in yml file and provided as an argument "-c policies.yml" to above command</li>
-                          <li><strong>Start Rasa Core REST Channel</strong>
-                            <pre>python -m rasa_core.run -d models/dialogue -u {{selectedBot.bot_name}}/model_name_to_be_selected --endpoints data/endpoints.yml  --port 5002 --credentials data/credentials.yml </pre>
-                          </li>
-                        </ul>
-                    </div>
-                  </div>
-                </div>
-              <div class="card-footer">
-                <button type="button" class="btn btn-secondary" ng-show="exportdata !== undefined" ng-click="savecoretofiles()" ng-disabled="selectedBot.rasa_core_enabled!=true"><i class="fa fa-file"></i>&nbsp; Download Files</button>
-                <a href="" id="core_domain"></a>
-                <a href="" id="core_stories"></a>
-                <a href="" id="core_credentials"></a>
-                <a href="" id="endpoints_yml"></a>
-              </div>
-            </div>
-          </div>
-        </div>
-        -->
-
   </div>
 </div>

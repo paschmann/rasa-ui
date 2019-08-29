@@ -1,0 +1,35 @@
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="#/responses/{{bot_id}}">Responses</a></li>
+    <li class="breadcrumb-item active">Add Action</li>
+</ol>
+
+<div class="container-fluid">
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-sm-12 col-lg-12">
+                <form ng-submit="addAction()">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Action</strong>
+                        </div>
+                        <div class="card-block">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" autocomplete="off" ng-model="formData.action_name"
+                                            class="form-control" id="action_name" placeholder="Enter the action name" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i>Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

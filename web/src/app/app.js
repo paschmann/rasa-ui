@@ -26,7 +26,7 @@ var app = angular
 
 angular
   .module("app")
-  .controller("appCtrl", function ($rootScope, $scope, $route, $routeParams, $location, $timeout, $http, $sessionStorage, $cookies, appConfig, Auth, Settings, Rasa_Status) {
+  .controller("appCtrl", function ($rootScope, $scope, $route, $routeParams, $location, $timeout, $http, $sessionStorage, $cookies, appConfig, Auth, Settings, Rasa_Status, $interval) {
     $scope.$route = $route;
     $scope.$location = $location;
     $scope.$routeParams = $routeParams;
@@ -34,6 +34,8 @@ angular
     $scope.go = function (path) {
       $location.path(path);
     };
+
+    executeRefreshSettings();
 
     $scope.formData = {};
 
@@ -71,7 +73,7 @@ angular
       executeRefreshSettings();
     });
 
-    $scope.executeRefreshSettings = function() {
+    function executeRefreshSettings() {
       Settings.query(function (data) {
         $rootScope.settings = data;
         for (let key in data) {
@@ -88,7 +90,7 @@ angular
       $interval.cancel(configcheck);
     });
   
-    $scope.getRasaStatus = function() {
+    function getRasaStatus() {
       Rasa_Status.get(function (statusdata) {
         $rootScope.config = statusdata.toJSON();
         $rootScope.config.isonline = 1;
