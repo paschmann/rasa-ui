@@ -39,7 +39,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server/server.js --ignore 'server/data/'"
+    "start": "node server/server.js"
   },
   "author": "Paul Aschmann",
   "url": "https://github.com/paschmann/rasa-ui",
