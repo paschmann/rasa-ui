@@ -41,7 +41,6 @@
   <script src="app/directives.js"></script>
 
   <!-- general js scripts -->
-  <script src="app/utils.js"></script>
   <script src="app/config/app.config.js"></script>
 
   <!-- Components/pages -->
@@ -67,6 +66,10 @@
   <script src="app/components/models/models.js"></script>
   <script src="app/components/models/add_model.js"></script>
   <script src="app/components/chat/chat.js"></script>
+  <script src="app/components/stories/stories.js"></script>
+  <script src="app/components/stories/add_story.js"></script>
+  <script src="app/components/responses/responses.js"></script>
+  <script src="app/components/responses/add_action.js"></script>
   
   <!-- Shared components -->
   <script src="app/shared/sidebar/sidebar.js"></script>
@@ -85,7 +88,7 @@
 <!-- If the route is the bot, we should show the aside -->
 
 <body class="app header-fixed sidebar-fixed"
-  ng-class="$route.current.activePage == 'bot' ? 'aside-menu-fixed' : 'aside-menu-hidden'" ng-controller="appCtrl">
+  ng-class="$route.current.activePage == 'intent' ? 'aside-menu-fixed' : 'aside-menu-hidden'" ng-controller="appCtrl">
 
   <div id="alertTextDiv" class="alert alert-warning alert-dismissible fade alert-div" role="alert">
     <button style="padding: 0px !important" type="button" class="close" data-dismiss="alert" aria-label="Close">

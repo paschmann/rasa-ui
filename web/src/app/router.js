@@ -60,7 +60,7 @@ angular
       .when('/bot/:bot_id/intent/:intent_id', {
         controller: 'EditIntentController as editintent',
         templateUrl: '/app/components/intents/edit_intent.html',
-        activePage: 'bot'
+        activePage: 'intent'
       })
       .when('/bot/:bot_id/stories/', {
         controller: 'StoriesController as stories',
@@ -162,6 +162,41 @@ angular
         controller: 'ChatController',
         templateUrl: '/app/components/chat/chat.html',
         activePage: 'chat'
+      })
+      .when('/stories', {
+        controller: 'StoriesController',
+        templateUrl: '/app/components/stories/stories.html',
+        activePage: 'stories'
+      })
+      .when('/stories/:bot_id', {
+        controller: 'StoriesController',
+        templateUrl: '/app/components/stories/stories.html',
+        activePage: 'stories'
+      })
+      .when('/stories/:bot_id/add', {
+        controller: 'AddStoryController',
+        templateUrl: '/app/components/stories/add_story.html',
+        activePage: 'stories'
+      })
+      .when('/responses', {
+        controller: 'ResponseController',
+        templateUrl: '/app/components/responses/responses.html',
+        activePage: 'responses'
+      })
+      .when('/responses/:bot_id', {
+        controller: 'ResponseController',
+        templateUrl: '/app/components/responses/responses.html',
+        activePage: 'responses'
+      })
+      .when('/responses/:bot_id/add', {
+        controller: 'AddActionController',
+        templateUrl: '/app/components/responses/add_action.html',
+        activePage: 'responses'
+      })
+      .when('/stories/:bot_id', {
+        controller: 'StoriesController',
+        templateUrl: '/app/components/stories/stories.html',
+        activePage: 'stories'
       })
       .otherwise({ redirectTo: '/' });
   });

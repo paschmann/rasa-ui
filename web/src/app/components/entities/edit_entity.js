@@ -24,10 +24,7 @@ function EntityController($rootScope, $scope, Bot, Entity) {
   $scope.updateEntity = function(entity) {
     Entity.update({ entity_id: entity.entity_id }, entity).$promise.then(
       function() {
-        $rootScope.$broadcast(
-          'setAlertText',
-          'Entity information updated Sucessfully!!'
-        );
+        $rootScope.$broadcast('setAlertText', 'Entity information updated sucessfully');
       }
     );
   };

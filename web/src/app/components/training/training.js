@@ -1,12 +1,13 @@
 angular.module('app').controller('TrainingController', TrainingController);
 
-function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Bot, BotRegex, ExpressionParameters, IntentExpressions, BotEntities, BotActions, BotSynonyms, SynonymsVariants, appConfig) {
+function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Bot, BotRegex, ExpressionParameters, IntentExpressions, BotEntities, BotActions, BotSynonyms, SynonymsVariants, appConfig, Stories, Response, Actions) {
   $scope.generateError = '';
   $scope.message = '';
   $scope.comment = '';
   
   $scope.raw_data = {};
   $scope.bool_force_model_update = false;
+  $scope.bot_data = {}; //Save all bot details in a data object so we can reuse it in various places
   
   //TODO: All http functions need to be replaced with factory methods
   Bot.query(function (data) {
@@ -14,6 +15,12 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, B
   });
 
   $scope.updateData = function() {
+    if ($scope.bot_data.stories) {
+      $scope.raw_data.stories = $scope.bot_data.stories;
+    }
+    if ($scope.bot_data.domain) {
+      $scope.raw_data.domain = $scope.bot_data.domain;
+    }
     $scope.raw_data.config = $scope.selectedBot.bot_config;
     $scope.raw_data.out = $scope.selectedBot.output_folder;
     $scope.raw_data.force = $scope.bool_force_model_update ? "true" : "false";
@@ -45,21 +52,39 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, B
     a.click();
   };
 
+  $scope.getCoreData = function() {
+    //Need to create domain (slots, entities, intents, templates, actions) and stories
+    Stories.query({ bot_id: $scope.selectedBot.bot_id }, function (stories) {
+      for (var i = 0; i < stories.length; i++) {
+        if (stories[i].story) {
+          $scope.bot_data.stories += stories[i].story;
+        }
+      }
+      Actions.query({ bot_id: $scope.selectedBot.bot_id }, function(data) {
+        $scope.bot_data.actions = data[0].actions;
+        $scope.bot_data.responses = data[0].responses;
+        BotEntities.query({ bot_id: $scope.selectedBot.bot_id }, function(bot_entities) {
+          $scope.bot_data.entities = bot_entities;
+          $scope.generateCoreData();
+        });
+      });
+    });
+  }
+
   $scope.getData = function (bot_id) {
     $scope.selectedBot = $scope.objectFindByKey($scope.botList, 'bot_id', bot_id);
 
     reset();
 
     Bot.query({ bot_id: bot_id, path: 'intents' }, function (intents) {
-      //Fetch rasa core data only if its enabled
-      //if ($scope.selectedBot.rasa_core_enabled === true)
-      //  populateCoreDomainYaml(bot_id, intents);
-
       $scope.updateData();
+      $scope.bot_data.intents = intents;
 
       BotRegex.query({ bot_id: bot_id }, function (regex) {
+        $scope.bot_data.regex = regex;
         BotSynonyms.query({ bot_id: bot_id }, function (synonyms) {
           synonyms = $scope.cleanResponse(synonyms);
+          $scope.bot_data.synonyms = synonyms;
           let intentIds = intents
             .map(function (item) {
               return item['intent_id'];
@@ -68,20 +93,23 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, B
           if (intentIds.length > 0) {
             IntentExpressions.query({ intent_ids: intentIds }, function (expressions) {
               expressions = $scope.cleanResponse(expressions);
+              $scope.bot_data.expressions = expressions;
               let expressionIds = expressions
                 .map(function (item) {
                   return item['expression_id'];
                 }).toString();
               if (expressionIds.length > 0) {
                 ExpressionParameters.query({ expression_ids: expressionIds }, function (params) {
+                  $scope.bot_data.parameters = params;
                   let synonymsIds = synonyms.map(function (item) {
                     return item['synonym_id'];
                   });
                   if (synonymsIds.length > 0) {
                     SynonymsVariants.query({ synonyms_id: synonymsIds },
                       function (variants) {
+                        $scope.bot_data.variants = variants;
                         variants = $scope.cleanResponse(variants);
-                        generateData(regex, intents, expressions, params, synonyms, variants);
+                        generateNLUData(regex, intents, expressions, params, synonyms, variants);
                       },
                       function (error) {
                         $scope.generateError = error;
@@ -89,7 +117,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, B
                       }
                     );
                   } else {
-                    generateData(regex, intents, expressions, params);
+                    generateNLUData(regex, intents, expressions, params);
                   }
                 },
                   function (error) {
@@ -98,7 +126,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, B
                   }
                 );
               } else {
-                generateData(regex, intents, expressions);
+                generateNLUData(regex, intents, expressions);
               }
             },
               function (error) {
@@ -121,9 +149,9 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, B
   };
 
   //MD Version
-  function generateData(regex, intents, expressions, params, synonyms, variants) {
+  function generateNLUData(regex, intents, expressions, params, synonyms, variants) {
     let tmpData = "";
-
+    
     //Loop through Intents --> Examples (expressions) --> Entities --> Parameters
     for (let intent_i = 0; intent_i < intents.length; intent_i++) {
       let expressionList = expressions.filter(
@@ -168,6 +196,59 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, B
     }
 
     $scope.raw_data.nlu = tmpData;
+    $scope.getCoreData();
+  }
+
+  //MD Version
+  $scope.generateCoreData = function() {
+    //Need to create domain (slots, entities, intents, templates, actions) and stories
+    let tmpData = "";
+    let intents = $scope.bot_data.intents;
+    let entities = $scope.bot_data.entities;
+    let actions = $scope.bot_data.actions;
+    let responses = $scope.bot_data.responses;
+
+    tmpData += "\nslots:\n"
+    for (let entity_i = 0; entity_i < entities.length; entity_i++) {
+      if (entities[entity_i].slot_data_type) {
+        tmpData += "  " + entities[entity_i].entity_name + ":\n";
+        tmpData += "    type:" + entities[entity_i].slot_data_type + ":\n";
+      }
+    }
+
+    tmpData += "\nentities:\n"
+    for (let entity_i = 0; entity_i < entities.length; entity_i++) {
+      tmpData += "-" + entities[entity_i].entity_name + "\n"; 
+    }
+    
+    tmpData += "\nintents:\n"
+    for (let intent_i = 0; intent_i < intents.length; intent_i++) {
+      tmpData += "-" + intents[intent_i].intent_name + "\n"; 
+    }
+
+    tmpData += "\ntemplates:\n"
+    for (let action_i = 0; action_i < actions.length; action_i++) {
+      var responses_array = [];
+      for (let response_i = 0; response_i < responses.length; response_i++) {
+        //if action has responses list it
+        if (responses[response_i].action_id == actions[action_i].action_id) {
+          responses_array.push(responses[response_i]);
+        }
+        if (responses_array.length > 0) {
+          tmpData += "  " + actions[action_i].action_name + "\n"; 
+          for (let response of responses_array) {
+            tmpData += "    " + response.response_text + "\n"; 
+          }
+        }
+      }
+    }
+
+    tmpData += "\nactions:\n"
+    for (let action_i = 0; action_i < actions.length; action_i++) {
+      tmpData += "-" + actions[action_i].action_name + "\n"; 
+    }
+
+    $scope.raw_data.domain = tmpData;
     $scope.updateData();
   }
 

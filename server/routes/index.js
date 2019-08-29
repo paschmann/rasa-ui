@@ -12,6 +12,8 @@ const variants = require('../db/variants');
 const settings = require('../db/settings');
 const responses = require('../db/responses');
 const models = require('../db/models');
+const stories = require('../db/stories');
+const actions = require('../db/actions');
 
 const rasa_router = require('./rasa_router');
 const auth = require('./auth');
@@ -27,7 +29,6 @@ router.get('/bots', bots.getAllBots);
 router.get('/bots/:bot_id', bots.getSingleBot);
 router.post('/bots', bots.createBot);
 router.put('/bots/:bot_id', bots.updateBot);
-router.post('/botStory', bots.updateBotStory);
 router.delete('/bots/:bot_id', bots.removeBot);
 router.post('/bots/upload', bots.uploadBotFromFile);
 //routes intents
@@ -82,12 +83,26 @@ router.delete('/synonyms/:synonym_id/variants', variants.removeSynonymVariants);
 router.get('/settings', settings.getSettings);
 router.get('/settings/:setting_name', settings.getSingleSetting);
 router.put('/settings/:setting_name', settings.updateSetting);
-//routes intent responses
-router.get('/response/:intent_id', responses.getIntentResponses);
-router.post('/response', responses.createIntentResponse);
-router.delete('/response/:response_id', responses.removeResponse);
-router.get('/rndmresponse', responses.getRandomResponseForIntent);
-router.get('/action_responses', responses.getActionResponsesQuery);
+
+//routes for core functions //////////////////////////////
+router.get('/stories/:bot_id', stories.getAllBotStories);
+router.get('/stories/:story_id', stories.getSingleStory);
+router.post('/stories', stories.createStory);
+router.put('/stories', stories.updateStory);
+router.delete('/stories', stories.removeStory);
+
+//routes responses
+router.post('/response', responses.createResponse);
+router.put('/response', responses.updateResponse);
+router.delete('/response', responses.deleteResponse);
+
+//routes actions
+router.get('/actions', actions.getBotActionsAndResponses);
+router.post('/actions', actions.createAction);
+router.delete('/actions', actions.removeAction);
+
+
+
 //routes logs
 router.get('/nlu_log/:query', logs.getLogs);
 router.get('/intent_usage_by_day', logs.getIntentUsageByDay);

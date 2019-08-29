@@ -1,0 +1,115 @@
+<ol class="breadcrumb" breadcrumb="">
+  <li class="breadcrumb-item ng-scope active"><span>Responses</span></li>
+</ol>
+<div class="container-fluid">
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="alert alert-{{message.type}}" role="alert" ng-show="message.text !== ''">
+          {{message.text}}
+        </div>
+        <div class="card">
+          <div class="card-block">
+            <div class="form-group row">
+              <label for="select" class="col-sm-2 col-form-label">Bot</label>
+              <div class="col-sm-10">
+                <select id="bot_name" ng-change="loadBotActionsAndResponses(bot.bot_id)"
+                  ng-options="bot.bot_id as bot.bot_name for bot in botList" ng-model="bot.bot_id" class="form-control">
+                  <option value="">Please select one</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row" ng-show="selectedBot.bot_id">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <strong>Actions</strong>
+          <span class="float-right">
+            <a class="btn btn-ghost-primary" href="#/responses/{{ selectedBot.bot_id }}/add"><i class="icon-plus"></i></a>
+          </span>
+        </div>
+        <div class="card-block">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="list-group" dir-paginate="action in actionsList  | itemsPerPage: 10">
+                <div class="list-group-item">
+                  <span>{{ action.action_name }}</span>
+                  <span class="float-right">
+                      <button class="btn btn-outline-secondary mr-2" data-toggle="collapse"
+                      ng-click="toggleArrow(action.action_id)"
+                      data-target="#table_action_{{action.action_id}}" aria-expanded="false"
+                      aria-controls="table_action_{{action.action_id}}">
+                      <span class="icon-plus" id="icon_action_{{action.action_id}}"></span>
+                    </button>
+                    <button class="btn btn btn-outline-danger" confirm-click-title="Delete Action"
+                      confirm-click="Are you sure? This will delete the action."
+                      ng-click="deleteAction(action.action_id)">
+                      <span class="icon-trash"></span>
+                    </button>
+                  </span>
+                </div>
+                  <table class="table table-bordered">
+                    <tbody>
+                      <tr class="collapse" id="table_action_{{action.action_id}}">
+                        <td>
+                          <select ng-options="responseType.id as responseType.type for responseType in responseTypeList" ng-model="action.new_response.response_type" class="form-control">
+                            <option value="">Please select one</option>
+                          </select>
+                        </td>
+                        <td>
+                            <input ng-model="action.new_response.response_text" type="text" class="form-control" placeholder="Enter the response text" required>
+                        </td>
+                        <td>
+                            <span class="float-right">
+                              <button ng-click="saveResponse(action, action.action_id)"  class="btn btn btn-outline-success">
+                                <span class="icon-check"></span>
+                              </button>
+                            </span>
+                        </td>
+                      </tr>
+                    
+                          <tr ng-repeat="response in responseFilteredList = (responseList | orderBy: response_id  | filter: { action_id: action.action_id })">
+                            <td>
+                              <select ng-options="responseType.type as responseType.type for responseType in responseTypeList"
+                                ng-change="updateResponse(response.response_id, response.response_type, response.response_text)"
+                                ng-model="response.response_type" class="form-control">
+                                <option value="">Please select one</option>
+                              </select>
+                            </td>
+                            <td>
+                                <input ng-model="response.response_text" type="text" class="form-control" placeholder="Enter the response text" required>
+                            </td>
+                            <td>
+                                <span class="float-right">
+                                   <button ng-click="updateResponse(response.response_id, response.response_type, response.response_text)"  class="btn btn btn-outline-success">
+                                      <span class="icon-check"></span>
+                                    </button>
+                                    <button ng-click="deleteResponse(response.response_id)"  class="btn btn btn-outline-danger">
+                                        <span class="icon-trash"></span>
+                                    </button>
+                                </span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+              </div>
+              <br>
+              <div style="float:right">
+                <dir-pagination-controls></dir-pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

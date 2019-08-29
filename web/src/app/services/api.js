@@ -10,9 +10,18 @@ app.factory('Bot', function ($resource, appConfig) {
   );
 });
 
-app.factory('Actions', function ($resource, appConfig) {
+/* Core API's */
+app.factory('Stories', function ($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + '/stories/:bot_id',
+  { bot_id: '@id' },
+  {
+    update: { method: 'PUT' }
+  });
+});
+
+app.factory('Response', function ($resource, appConfig) {
   return $resource(
-    appConfig.api_endpoint_v2 + '/actions/:action_id',
+    appConfig.api_endpoint_v2 + '/response',
     { action_id: '@id' },
     {
       update: { method: 'PUT' }
@@ -20,18 +29,37 @@ app.factory('Actions', function ($resource, appConfig) {
   );
 });
 
+app.factory('Actions', function ($resource, appConfig) {
+  return $resource(
+    appConfig.api_endpoint_v2 + '/actions',
+    { action_id: '@id' },
+    {
+      update: { method: 'PUT' }
+    }
+  );
+});
+
+
 app.factory('BotActions', function ($resource, appConfig) {
   return $resource(appConfig.api_endpoint_v2 + '/bots/:bot_id/actions', {
     bot_id: '@id'
   });
 });
 
-app.factory('Auth', function ($resource, appConfig) {
-  return $resource(appConfig.api_endpoint_v2 + '/auth');
+app.factory('ActionResponses', function ($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + '/actionresponse/:action_id', {
+    action_id: '@id'
+  });
 });
 
-app.factory('BotStories', function ($resource, appConfig) {
-  return $resource(appConfig.api_endpoint_v2 + '/botStory');
+app.factory('IntentResponse', function ($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + '/rndmresponse');
+});
+
+/* End Core API's */
+
+app.factory('Auth', function ($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + '/auth');
 });
 
 app.factory('Intent', function ($resource, appConfig) {
@@ -209,27 +237,6 @@ app.factory('Settings', [
     );
   }
 ]);
-
-app.factory('ActionResponses', function ($resource, appConfig) {
-  return $resource(appConfig.api_endpoint_v2 + '/actionresponse/:action_id', {
-    action_id: '@id'
-  });
-});
-//All responses for an intent
-app.factory('Responses', function ($resource, appConfig) {
-  return $resource(appConfig.api_endpoint_v2 + '/response/:intent_id', {
-    intent_id: '@id'
-  });
-});
-//Reponse actions: create and delete
-app.factory('Response', function ($resource, appConfig) {
-  return $resource(appConfig.api_endpoint_v2 + '/response/:response_id', {
-    response_id: '@id'
-  });
-});
-app.factory('IntentResponse', function ($resource, appConfig) {
-  return $resource(appConfig.api_endpoint_v2 + '/rndmresponse');
-});
 
 app.factory('Model', function ($resource, appConfig) {
   return $resource(

@@ -1,6 +1,6 @@
 angular.module('app').controller('EditIntentController', EditIntentController);
 
-function EditIntentController($rootScope, $scope, Bot, BotEntities, Intent, Expressions, Expression, Parameter, Parameters, Entities, Responses, Response) {
+function EditIntentController($rootScope, $scope, Bot, BotEntities, Intent, Expressions, Expression, Parameter, Parameters, Entities, Response, Response) {
   Bot.get({ bot_id: $scope.$routeParams.bot_id }, function (data) {
     $scope.bot = data;
   });
@@ -14,8 +14,6 @@ function EditIntentController($rootScope, $scope, Bot, BotEntities, Intent, Expr
   });
 
   loadExpressions();
-
-  //TODO: loadResponses(); <-- Not going to be used?
 
   function loadExpressions() {
     Expressions.query({ intent_id: $scope.$routeParams.intent_id }, function (data) {
@@ -46,30 +44,6 @@ function EditIntentController($rootScope, $scope, Bot, BotEntities, Intent, Expr
       }
     });
   }
-
-  /* TODO: Core functions?
-  function loadResponses() {
-    Responses.query({ intent_id: $scope.$routeParams.intent_id }, function(data) {
-      $scope.responses = data;
-    });
-  }
-  $scope.saveNewResponse = function(event) {
-    this.formData.intent_id = $scope.$routeParams.intent_id;
-    this.formData.response_type = 1; //DEFAULT type
-    Response.save(this.formData).$promise.then(function() {
-      //update list
-      loadResponses();
-      //empty formData
-      $scope.formData.response_text='';
-      $scope.formData = {};
-    });
-  };
-  $scope.deleteResponse = function(response_id) {
-    Response.remove({ response_id: response_id }).$promise.then(function(resp) {
-      loadResponses();
-    });
-  };
-  */
 
   $scope.updateIntentNameAndWebhook = function (intent) {
     Intent.update({ intent_id: intent.intent_id }, intent).$promise.then(

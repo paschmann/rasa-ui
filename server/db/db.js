@@ -38,10 +38,12 @@ function createDBSchema() {
     db.run("CREATE TABLE IF NOT EXISTS expressions (expression_id INTEGER PRIMARY KEY AUTOINCREMENT, expression_text TEXT, intent_id INTEGER)");
     db.run("CREATE TABLE IF NOT EXISTS expression_parameters (parameter_id INTEGER PRIMARY KEY AUTOINCREMENT, parameter_start INTEGER, parameter_end INTEGER, parameter_value TEXT, expression_id INTEGER, intent_id INTEGER, entity_id INTEGER)");
     db.run("CREATE TABLE IF NOT EXISTS regex (regex_id INTEGER PRIMARY KEY AUTOINCREMENT, regex_name TEXT, regex_pattern TEXT, bot_id INTEGER)");
-    db.run("CREATE TABLE IF NOT EXISTS responses (response_id INTEGER PRIMARY KEY AUTOINCREMENT, response_text TEXT, response_type TEXT, intent_id INTEGER)");
+    db.run("CREATE TABLE IF NOT EXISTS responses (response_id INTEGER PRIMARY KEY AUTOINCREMENT, response_text TEXT, response_type TEXT, action_id INTEGER)");
     db.run("CREATE TABLE IF NOT EXISTS synonym_variants (synonym_variant_id INTEGER PRIMARY KEY AUTOINCREMENT, synonym_value TEXT, synonym_id INTEGER)");
     db.run("CREATE TABLE IF NOT EXISTS nlu_log (log_id INTEGER PRIMARY KEY AUTOINCREMENT, ip_address TEXT, query TEXT, event_type TEXT, event_data TEXT, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)");
     db.run("CREATE TABLE IF NOT EXISTS models (model_id INTEGER PRIMARY KEY AUTOINCREMENT, model_name TEXT, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, comment TEXT, bot_id INTEGER, local_path TEXT, server_path TEXT, server_response TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS actions (action_id INTEGER PRIMARY KEY AUTOINCREMENT, action_name TEXT, bot_id INTEGER)");
+    db.run("CREATE TABLE IF NOT EXISTS stories (story_id INTEGER PRIMARY KEY AUTOINCREMENT, story_name TEXT, story TEXT, bot_id INTEGER, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)");
     
     db.run("CREATE TABLE IF NOT EXISTS settings (setting_name TEXT, setting_value TEXT)", function() {
       db.run("INSERT into settings (setting_name, setting_value) values ('refresh_time', '60000')"); 

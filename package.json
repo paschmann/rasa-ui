@@ -35,7 +35,7 @@
     "jwtsecret": "mysecret",
     "admin_username": "admin",
     "admin_password": "admin",
-    "db_schema": "1.0.0"
+    "db_schema": "3.0.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
