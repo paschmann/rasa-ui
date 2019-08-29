@@ -1,24 +1,20 @@
 # Rasa UI
 
-Rasa UI is a web application built on top of, and for [Rasa] (https://github.com/RasaHQ/rasa). Rasa UI provides a web application to quickly and easily be able to create and manage bots, intents, entities, synonyms and regex statements through a web interface. It also provides some convenience features for Rasa, like training and loading your models, monitoring usage or viewing logs.
-
-Currently Rasa UI can be used to manage the NLU features of Rasa, with Rasa Core features currently under development.
+Rasa UI is a web application built on top of, and for [Rasa] (https://github.com/RasaHQ/rasa). Rasa UI provides a web application to quickly and easily be able to create and manage bots, NLU components (Regex, Examples, Entities, Intents, etc.) and Core components (Stories, Actions, Responses, etc.) through a web interface. It also provides some convenience features for Rasa, like training and loading your models, monitoring usage or viewing logs.
 
 ## Features
 
-- UI for creating and managing training data - Examples, Intents, Entities, Synonyms, Regex
+- UI for creating and managing training data - Examples, Intents, Entities, Synonyms, Regex, Stories, Actions, Responses
 - Manage multiple bots from a single UI/instance of Rasa UI
 - Create, manage and load different versions of your models for testing and optimizing
-- Log requests for usage tracking, history, improvements to your models.
+- Log requests for usage tracking, history and improvements to your models
 - Easily execute intent parsing using different models
-- Manage Multiple Bots in one place
-- Data is stored in a SQLite DB
+- Data is stored in a SQLite DB for backing up/sharing
 - Can be used with or without a Rasa backend to manage your training data
 
 ## Getting Started
 
 Rasa UI can run on your Rasa instance, or on a separate machine. Technically Rasa is not required, you could just use the UI for managing training data.
-
 
 ### Prerequisites
 
@@ -27,12 +23,12 @@ Rasa UI can run on your Rasa instance, or on a separate machine. Technically Ras
 
 ### Installing
 
-Clone/download the Rasa UI repository
+Clone/download the Rasa UI repository or a [release](https://www.github.com/paschmann/rasa-ui)
 Install npm packages.
 Set Rasa Server variable in package.json
 
 ```
-git clone https://github.com/paschmann/rasaui.git
+git clone https://github.com/paschmann/rasa-ui.git
 cd rasaui && npm install
 ```
 
@@ -55,7 +51,7 @@ Because Rasa UI uses a Database to store training data, and other content, in th
 
 Since Rasa UI can be used to log events/intent parsing/training etc. we would suggest changing your endpoints for your API calls to "pass through" Rasa UI. All API requests are simply logged, forwarded to Rasa and then returned.
 
-e.g. Instead of POST'ing to your Rasa instance (e.g. http://localhost:5005/model/parse?q=hello) you can POST to Rasa UI (e.g. http://localhost:5001/api/v2/rasa/model/parse?q=hello)
+e.g. Instead of POST'ing to your Rasa instance which is normally something like http://localhost:5005/model/parse?q=hello you can POST to Rasa UI (e.g. http://localhost:5001/api/v2/rasa/model/parse?q=hello)
 
 ## Contributing
 
