@@ -66,7 +66,7 @@ function checkRasaUI() {
 }
 
 function checkRasa() {
-  request(global.rasa_endpoint + '/status', function(error, response, body) {
+  request(global.rasa_endpoint + '/status', {timeout: 12000}, function(error, response, body) {
     try {
       logger.winston.info('Rasa Server: ' + global.rasa_endpoint);
       if (body !== undefined) {
