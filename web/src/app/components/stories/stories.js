@@ -5,6 +5,7 @@ function StoriesController($rootScope, $scope, $sce, Bot, Stories, Intents ) {
   $scope.message.text = "";
   $scope.bot = {};
   $scope.selectedBot = {};
+  $scope.searchText = "";
 
   $scope.graphData = '';
 
@@ -17,6 +18,37 @@ function StoriesController($rootScope, $scope, $sce, Bot, Stories, Intents ) {
       $scope.loadBotStories(Number($scope.$routeParams.bot_id));
     }
   });
+
+  $scope.search = function(story) {
+    if (story.searchText.length > 3) {
+      Stories.query({bot_id: $scope.bot.bot_id, path: "search", search_text: story.searchText}, function (data) {
+        story.searchList = data;
+      });
+    } else {
+      story.searchList = [];
+    }
+  }
+
+  $scope.addToStory = function(item, story) {
+    if (item.type == "intent") {
+      story.story += "* " + item.text + "\n";
+    } else if (item.type == "action") {
+      story.story += " - " + item.text + "\n";
+    } else if (item.type == "entity") {
+      story.story += "{\"" + item.text + "\": \"___________\"}";
+    }
+  }
+
+  $scope.addStory = function(params) {
+    var newStory = {};
+    newStory.bot_id = $scope.bot.bot_id
+    newStory.story_name = "story_" + Math.floor(Date.now() / 1000);
+    newStory.story = "## " + newStory.story_name + "\n";
+    
+    Stories.save(newStory).$promise.then(function() {
+      $scope.loadBotStories(Number($scope.bot.bot_id));
+    });
+  };
 
   $scope.deleteStory = function(story_id) {
     Stories.delete({story_id: story_id }, data => {

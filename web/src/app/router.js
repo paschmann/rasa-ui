@@ -173,11 +173,6 @@ angular
         templateUrl: '/app/components/stories/stories.html',
         activePage: 'stories'
       })
-      .when('/stories/:bot_id/add', {
-        controller: 'AddStoryController',
-        templateUrl: '/app/components/stories/add_story.html',
-        activePage: 'stories'
-      })
       .when('/responses', {
         controller: 'ResponseController',
         templateUrl: '/app/components/responses/responses.html',

@@ -15,7 +15,7 @@ function getSingleExpression(req, res, next) {
 
 function getIntentExpressions(req, res, next) {
   logger.winston.info('expression.getIntentExpressions');
-  db.all('select * from expressions where intent_id = ?', req.params.intent_id, function(err, data) {
+  db.all('select * from expressions where intent_id = ?  order by expression_id desc', req.params.intent_id, function(err, data) {
     if (err) {
       logger.winston.info(err);
     } else {
@@ -27,7 +27,7 @@ function getIntentExpressions(req, res, next) {
 function getIntentExpressionQuery(req, res, next) {
   logger.winston.info('expression.getIntentExpressionQuery');
   var array_intentIds = req.query.intent_ids.split(","); //Very hacky due to the node-sqlite not supporting IN from an array
-  db.all('select * from expressions where intent_id in (' + array_intentIds + ')', function(err, data) {
+  db.all('select * from expressions where intent_id in (' + array_intentIds + ')  order by expression_id desc', function(err, data) {
     if (err) {
       logger.winston.info(err);
     } else {

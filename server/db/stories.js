@@ -12,17 +12,6 @@ function getAllBotStories(req, res, next) {
   });
 }
 
-function getSingleStory(req, res, next) {
-  logger.winston.info('Stories.getSingleStory');
-  db.get('select * from stories where story_id = ?', req.params.story_id, function(err, data) {
-    if (err) {
-      logger.winston.info(err);
-    } else {
-      res.status(200).json(data);
-    }
-  });
-}
-
 function createStory(req, res, next) {
   logger.winston.info('Stories.createStory');
   console.log(req.body);
@@ -57,8 +46,55 @@ function removeStory(req, res) {
   });
 }
 
+function searchStoryAttributes(req, res, next) {
+  logger.winston.info('Stories.searchStoryAttributes');
+  var search_string = "%" + req.query.search_text + "%";
+  db.all("select * from intents where intent_name like ? and bot_id = ?", [search_string, req.params.bot_id], function(err, intents) {
+    if (err) {
+      logger.winston.info(err);
+    } else {
+      db.all("select * from entities where entity_name like ? and bot_id = ?", [search_string, req.params.bot_id], function(err, entities) {
+        if (err) {
+          logger.winston.info(err);
+        } else {
+          db.all("select * from actions where action_name like ? and bot_id = ?", [search_string, req.params.bot_id], function(err, actions) {
+            if (err) {
+              logger.winston.info(err);
+            } else {
+              var data = [];
+              console.log(actions);
+              try {
+                for (action of actions) {
+                  data.push({text: action.action_name, type: "action"});
+                }
+              } catch (err) {
+                console.log(err);
+              }
+              try {
+                for (entity of entities) {
+                  data.push({text: entity.entity_name, type: "entity"});
+                }
+              } catch (err) {
+                console.log(err);
+              }
+              try {
+                for (intent of intents) {
+                  data.push({text: intent.intent_name, type: "intent"});
+                }
+              } catch (err) {
+                console.log(err);
+              }
+              res.status(200).json(data);
+            }
+          });
+        }
+      });
+    }
+  });
+}
+
 module.exports = {
-  getSingleStory,
+  searchStoryAttributes,
   getAllBotStories,
   createStory,
   updateStory,

@@ -12,8 +12,8 @@ app.factory('Bot', function ($resource, appConfig) {
 
 /* Core API's */
 app.factory('Stories', function ($resource, appConfig) {
-  return $resource(appConfig.api_endpoint_v2 + '/stories/:bot_id',
-  { bot_id: '@id' },
+  return $resource(appConfig.api_endpoint_v2 + '/stories/:bot_id/:path',
+  { bot_id: '@id', path: '@path' },
   {
     update: { method: 'PUT' }
   });

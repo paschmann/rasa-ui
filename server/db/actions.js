@@ -21,7 +21,7 @@ if (!String.prototype.splice) {
 
 function getBotActionsAndResponses(req, res, next) {
   logger.winston.info('actions.getBotActions');
-  db.all('select * from actions where bot_id = ?', req.query.bot_id, function(err, actions) {
+  db.all('select * from actions where bot_id = ? order by action_id desc', req.query.bot_id, function(err, actions) {
     if (err) {
       logger.winston.info(err);
     } else {
@@ -30,7 +30,7 @@ function getBotActionsAndResponses(req, res, next) {
         actionIds.push(actions[i].action_id);
       }
       if (actionIds.length > 0) {
-        db.all('select * from responses where action_id in (' + actionIds.splice(",") + ')', function(err, responses) {
+        db.all('select * from responses where action_id in (' + actionIds.splice(",") + ')  order by action_id desc', function(err, responses) {
           if (err) {
             logger.winston.info(err);
           } else {

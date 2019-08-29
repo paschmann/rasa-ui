@@ -86,10 +86,11 @@ router.put('/settings/:setting_name', settings.updateSetting);
 
 //routes for core functions //////////////////////////////
 router.get('/stories/:bot_id', stories.getAllBotStories);
-router.get('/stories/:story_id', stories.getSingleStory);
 router.post('/stories', stories.createStory);
 router.put('/stories', stories.updateStory);
 router.delete('/stories', stories.removeStory);
+router.get('/stories/:bot_id', stories.getAllBotStories);
+router.get('/stories/:bot_id/search', stories.searchStoryAttributes);
 
 //routes responses
 router.post('/response', responses.createResponse);

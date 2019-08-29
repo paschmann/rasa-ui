@@ -3,7 +3,7 @@ const logger = require('../util/logger');
 
 function getBotRegex(req, res, next) {
   logger.winston.info('regex.getBotRegex');
-  db.all('select * from regex where bot_id = ?', req.params.bot_id, function(err, data) {
+  db.all('select * from regex where bot_id = ? order by regex_id desc', req.params.bot_id, function(err, data) {
     if (err) {
       logger.winston.info(err);
     } else {

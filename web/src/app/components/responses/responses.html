@@ -26,7 +26,7 @@
   </div>
 
 
-  <div class="row" ng-show="selectedBot.bot_id">
+  <div class="row" ng-show="bot.bot_id">
     <div class="col-sm-12">
       <div class="card">
         <div class="card-header">
@@ -57,22 +57,26 @@
                 </div>
                   <table class="table table-bordered">
                     <tbody>
+                      <!-- this form is for creating a new response to a action -->
                       <tr class="collapse" id="table_action_{{action.action_id}}">
-                        <td>
-                          <select ng-options="responseType.id as responseType.type for responseType in responseTypeList" ng-model="action.new_response.response_type" class="form-control">
-                            <option value="">Please select one</option>
-                          </select>
-                        </td>
-                        <td>
-                            <input ng-model="action.new_response.response_text" type="text" class="form-control" placeholder="Enter the response text" required>
-                        </td>
-                        <td>
-                            <span class="float-right">
-                              <button ng-click="saveResponse(action, action.action_id)"  class="btn btn btn-outline-success">
-                                <span class="icon-check"></span>
-                              </button>
-                            </span>
-                        </td>
+                          <td>
+                            <select ng-options="responseType.id as responseType.type for responseType in responseTypeList" ng-model="action.new_response.response_type" class="form-control">
+                              <option value="">Please select one</option>
+                            </select>
+                          </td>
+                          <td>
+                              <form ng-submit="saveResponse(action, action.action_id)">
+                                <input ng-model="action.new_response.response_text" type="text" class="form-control" placeholder="Enter the response text" required>
+                              </form>
+                          </td>
+                          <td>
+                              <span class="float-right">
+                                <button ng-click="saveResponse(action, action.action_id)"  class="btn btn btn-outline-success">
+                                  <span class="icon-check"></span>
+                                </button>
+                              </span>
+                          </td>
+                        
                       </tr>
                     
                           <tr ng-repeat="response in responseFilteredList = (responseList | orderBy: response_id  | filter: { action_id: action.action_id })">

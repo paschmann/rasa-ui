@@ -4,18 +4,18 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, B
   $scope.generateError = '';
   $scope.message = '';
   $scope.comment = '';
-  
-  $scope.raw_data = {};
-  $scope.bool_force_model_update = false;
+
+  $scope.raw_data = {}; //this is the formatted data for each compoennt
   $scope.bot_data = {}; //Save all bot details in a data object so we can reuse it in various places
+
+  $scope.bool_force_model_update = false;
   
-  //TODO: All http functions need to be replaced with factory methods
   Bot.query(function (data) {
     $scope.botList = data;
   });
 
   $scope.updateData = function() {
-    if ($scope.bot_data.stories) {
+    if ($scope.bot_data.stories != "") {
       $scope.raw_data.stories = $scope.bot_data.stories;
     }
     if ($scope.bot_data.domain) {
@@ -24,12 +24,18 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, B
     $scope.raw_data.config = $scope.selectedBot.bot_config;
     $scope.raw_data.out = $scope.selectedBot.output_folder;
     $scope.raw_data.force = $scope.bool_force_model_update ? "true" : "false";
+
+    $scope.stringifyData();
+  }
+
+  $scope.stringifyData = function() {
     $scope.raw_data_stringified = JSON.stringify($scope.raw_data);
   }
 
   $scope.trainUsingRawData = function () {
     let botToTrain = $scope.objectFindByKey($scope.botList, 'bot_id', $scope.bot.bot_id);
     $rootScope.trainings_under_this_process = 1;
+    //TODO: Replace with API Factory method
     $http.post(appConfig.api_endpoint_v2 + "/rasa/model/train?bot_name=" + botToTrain.bot_name + "&bot_id=" + botToTrain.bot_id + "&comment=" + $scope.comment, $scope.raw_data_stringified).then(
       function (response) {
         $scope.message = "Training for " + botToTrain.bot_name + " completed successfully, open models to view and load the bots models";
@@ -55,6 +61,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, B
   $scope.getCoreData = function() {
     //Need to create domain (slots, entities, intents, templates, actions) and stories
     Stories.query({ bot_id: $scope.selectedBot.bot_id }, function (stories) {
+      $scope.bot_data.stories = "";
       for (var i = 0; i < stories.length; i++) {
         if (stories[i].story) {
           $scope.bot_data.stories += stories[i].story;
@@ -77,7 +84,7 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, B
     reset();
 
     Bot.query({ bot_id: bot_id, path: 'intents' }, function (intents) {
-      $scope.updateData();
+      //$scope.updateData();
       $scope.bot_data.intents = intents;
 
       BotRegex.query({ bot_id: bot_id }, function (regex) {
@@ -170,10 +177,11 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, B
               expression = expression.splice(parameterList[parameter_i].parameter_end, 0, "](" + parameterList[parameter_i].entity_name + ")").splice(parameterList[parameter_i].parameter_start, 0, "[");
             }
           }
-          tmpData += "- " + expression + "\n\n";
+          tmpData += "- " + expression + "\n";
         }
       }
     }
+    tmpData += "\n";
 
     if (synonyms) {
       for (let synonym_i = 0; synonym_i < synonyms.length; synonym_i++) {
@@ -208,22 +216,22 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, B
     let actions = $scope.bot_data.actions;
     let responses = $scope.bot_data.responses;
 
-    tmpData += "\nslots:\n"
+    tmpData += "slots:\n"
     for (let entity_i = 0; entity_i < entities.length; entity_i++) {
       if (entities[entity_i].slot_data_type) {
         tmpData += "  " + entities[entity_i].entity_name + ":\n";
-        tmpData += "    type:" + entities[entity_i].slot_data_type + ":\n";
+        tmpData += "    type: " + entities[entity_i].slot_data_type + "\n";
       }
     }
 
     tmpData += "\nentities:\n"
     for (let entity_i = 0; entity_i < entities.length; entity_i++) {
-      tmpData += "-" + entities[entity_i].entity_name + "\n"; 
+      tmpData += "- " + entities[entity_i].entity_name + "\n"; 
     }
     
     tmpData += "\nintents:\n"
     for (let intent_i = 0; intent_i < intents.length; intent_i++) {
-      tmpData += "-" + intents[intent_i].intent_name + "\n"; 
+      tmpData += "- " + intents[intent_i].intent_name + "\n"; 
     }
 
     tmpData += "\ntemplates:\n"
@@ -234,18 +242,18 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, B
         if (responses[response_i].action_id == actions[action_i].action_id) {
           responses_array.push(responses[response_i]);
         }
-        if (responses_array.length > 0) {
-          tmpData += "  " + actions[action_i].action_name + "\n"; 
-          for (let response of responses_array) {
-            tmpData += "    " + response.response_text + "\n"; 
-          }
+      }
+      if (responses_array.length > 0) {
+        tmpData += "  " + actions[action_i].action_name + ":\n"; 
+        for (let response of responses_array) {
+          tmpData += "    - " + response.response_type + ": \"" + response.response_text + "\"\n"; 
         }
       }
     }
 
     tmpData += "\nactions:\n"
     for (let action_i = 0; action_i < actions.length; action_i++) {
-      tmpData += "-" + actions[action_i].action_name + "\n"; 
+      tmpData += "- " + actions[action_i].action_name + "\n"; 
     }
 
     $scope.raw_data.domain = tmpData;
