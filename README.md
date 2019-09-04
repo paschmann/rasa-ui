@@ -14,9 +14,8 @@ Rasa UI is a web application built on top of, and for [Rasa] (https://github.com
 - Data is stored in a SQLite DB for backing up/sharing
 - Can be used with or without a Rasa backend to manage your training data
 
-![Screenshot 1](/web/src/assets/img/screenshot1_small.png)
-
-![Screenshot 2](/web/src/assets/img/screenshot2_small.png)
+<img src="/web/src/assets/img/screenshot1.png" width="500">
+<img src="/web/src/assets/img/screenshot2.png" width="500">
 
 ## Getting Started
 
@@ -25,20 +24,19 @@ Rasa UI can run on your Rasa instance, or on a separate machine. Technically Ras
 ### Prerequisites
 
 [Node.js/npm](https://nodejs.org/en/) - Serves Rasa UI - Required
+
 [Rasa](https://github.com/RasaHQ/rasa) - Developed against Version 1.2+ - Optional
 
 ### Installing
 
-Clone/download the Rasa UI repository or a [release](https://www.github.com/paschmann/rasa-ui)
-Install npm packages.
-Set Rasa Server variable in package.json
+1. Clone/download the Rasa UI repository or a [release](https://www.github.com/paschmann/rasa-ui)
+2. Install npm packages.
+3. Set Rasa Server variable in package.json
 
 ```
 git clone https://github.com/paschmann/rasa-ui.git
 cd rasaui && npm install
 ```
-
-Please see the [wiki](https://github.com/paschmann/rasa-ui/wiki/Rasa-UI-Install-Guide) for more detailed instructions.
 
 ## Running
 
