@@ -10,7 +10,7 @@ services:
     volumes:
     - "./rasa-app-data/models:/app/models"
     - "./rasa-app-data/logs:/app/logs"
-    command: "run --enable-api --debug -m examples/resturantbot"
+    command: "run --enable-api --debug"
 
   rasa_ui:       
     image: paschmann/rasa-ui:latest
