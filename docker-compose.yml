@@ -1,0 +1,26 @@
+version: '3.0'
+
+services:
+  rasa:
+    image: rasa/rasa:latest-full
+    container_name: rasa
+    networks: ['rasa-network']
+    ports:
+    - "5005:5005"
+    volumes:
+    - "./rasa-app-data/models:/app/models"
+    - "./rasa-app-data/logs:/app/logs"
+    command: "run --enable-api --debug -m examples/resturantbot"
+
+  rasa_ui:       
+    image: paschmann/rasa-ui:latest
+    container_name: rasa_ui
+    networks: ['rasa-network']
+    ports:
+      - "5001:5001"
+    depends_on:
+      - "rasa"
+    environment:
+      rasa_endpoint: "http://rasa:5005"
+
+networks: {rasa-network: {}}
