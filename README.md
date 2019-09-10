@@ -47,6 +47,16 @@ npm start
 ```
 Your web application should be available on http://localhost:5001
 
+## Running from Docker
+
+If you already have a Rasa instance setup and running, you can run Rasa UI from docker hub using [paschmann/rasa-ui](https://hub.docker.com/r/paschmann/rasa-ui/).
+
+If you dont have a Rasa instance setup, you can run both Rasa and Rasa UI using the [docker-compose file](https://github.com/paschmann/rasa-ui/blob/master/docker-compose.yml), copy the file to a local directory and run the command below:
+
+```
+docker-compose up
+```
+
 ## Upgrading
 
 Because Rasa UI uses a Database to store training data, and other content, in the event the database schema changes, you will need to modify your database when upgrading to newer versions of Rasa UI. Please review the server/db migration folder for upgrade scripts from and to newer versions if you have existing data and want to maintain it. If you are upgrading from Rasa UI prior to v.3.0.0 there is no data migration path as previously postgres was used, and now sqlite is being used.
