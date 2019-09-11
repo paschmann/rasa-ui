@@ -122,8 +122,126 @@ tags-input .tags .tag-item .remove-button {
   top: 5px;
 }
 .alert-text{
-@media (max-width: 991px) {
-  .sidebar-hidden .sidebar {
-      margin-left: -200px;
+    @media (max-width: 991px) {
+    .sidebar-hidden .sidebar {
+        margin-left: -200px;
+    }
   }
+}
+
+
+.incoming_msg {
+  overflow:hidden; 
+  margin:26px 0 26px;
+  width: 100%
+}
+
+.received_msg {
+  padding: 0 0 0 10px;
+  float: left;
+  max-width: 50%;
+ }
+
+ .received_withd_msg p {
+  background: #ebebeb none repeat scroll 0 0;
+  border-radius: 10px;
+  color: #646464;
+  font-size: 14px;
+  margin: 0;
+  padding: 5px 10px 5px 12px;
+  width: 100%;
+}
+
+.time_date {
+  color: #747474;
+  display: block;
+  font-size: 12px;
+  margin: 8px 0 0;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+.sent {
+  text-align: right;
+}
+
+.sent_msg {
+  float: right;
+  max-width: 50%;
+}
+
+ .sent_msg p {
+  background: #20a8d8 none repeat scroll 0 0;
+  border-radius: 10px;
+  font-size: 14px;
+  margin: 0; color:#fff;
+  padding: 5px 10px 5px 12px;
+  width:100%;
+  text-align: right;
+}
+
+.outgoing_msg {
+  overflow:hidden; 
+  margin:26px 0 26px;
+  width: 100%
+}
+
+
+.input_msg_write input {
+  border: medium;
+  color: #4c4c4c;
+  font-size: 15px;
+  min-height: 48px;
+  width: 100%;
+  padding-left: 5px;
+}
+
+.type_msg {
+  border: 1px solid #c4c4c4;
+  position: relative;
+}
+
+.msg_btn {
+  background: #20a8d8 none repeat scroll 0 0;
+  border: medium none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  font-size: 17px;
+  height: 33px;
+  position: absolute;
+  right: 5px;
+  top: 8px;
+  width: 33px;
+  padding-top:5px;
+  padding-right:8px;
+}
+
+.send {
+  margin-right: 50px;
+}
+
+.reset {
+  padding-right:8px;
+}
+
+.msg_history {
+  height: 800px;
+  display: table-cell;
+  vertical-align: bottom;
+  width: 100%;
+  overflow: auto;
+  table-layout: fixed;
+}
+
+#chat {
+  display: table;
+  height: 800px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.wrapper {
+  max-height: 800px;
+  overflow-y: scroll;
 }

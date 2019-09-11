@@ -1,7 +1,7 @@
 angular.module('app').controller('AsideController', AsideController);
 
 function AsideController($scope, $rootScope, $interval, $http, Rasa_Version, Settings, Rasa_Status, appConfig, Rasa_Parse) {
-  $scope.test_text = 'I want italian food in new york';
+  $scope.test_text = '';
   $scope.test_text_response = {};
   $rootScope.config = {}; //Initilize in case server is not online at startup
   let configcheck;

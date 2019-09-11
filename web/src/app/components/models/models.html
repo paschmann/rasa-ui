@@ -5,11 +5,8 @@
   <div class="animated fadeIn">
     <div class="row">
       <div class="col-sm-12">
-        <div class="alert alert-success" role="alert" ng-show="message !== ''">
-          {{ message }}
-        </div>
-        <div class="alert alert-info" role="alert" ng-show="loading_model !== ''">
-          {{ loading_model }}  
+        <div class="alert alert-{{message.type}}" role="alert" ng-show="message.text !== ''">
+          {{message.text}}
         </div>
         <div class="card">
           <div class="card-block">

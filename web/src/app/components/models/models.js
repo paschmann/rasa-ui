@@ -1,8 +1,8 @@
 angular.module('app').controller('ModelController', ModelController);
 
 function ModelController($scope, $rootScope, appConfig, Model, Bot, Rasa_Status, $http) {
-  $scope.message = "";
-  $scope.loading_model = "";
+  $scope.message = {};
+  $scope.message.text = "";
   $scope.botList = {};
   $scope.bot = {};
   
@@ -47,34 +47,35 @@ function ModelController($scope, $rootScope, appConfig, Model, Bot, Rasa_Status,
 
   $scope.loadRasaModel = function (server_model) {
     let botToTrain = $scope.objectFindByKey($scope.botList, 'bot_id', $scope.bot.bot_id);
-    $scope.loading_model = "Loading model: " + server_model;
+    $scope.message = {text: "Loading model: " + server_model, type: "info"};
     /* TODO: Replace with factory methods */
     $http.put(appConfig.api_endpoint_v2 + "/rasa/model", { "model_file": botToTrain.output_folder + "/" + server_model }).then(
       function (response) {
-        $scope.message = "Loaded model " + server_model;
+        if (response.data.code && response.data.code == 400) {
+          $scope.message = {text: "Error loading model: " +  JSON.stringify(response), type: "danger"};
+        } else {
+          $scope.message = {text: "Loaded model: " + server_model, type: "success"};
+        }
         loadBotModels(botToTrain.bot_id);
-        $scope.loading_model = "";
       },
       function (err) {
-        $scope.message = "Loading for " + botToTrain.bot_name + " failed";
-        $scope.generateError = JSON.stringify(err);
+        $scope.message = {text: "Loading for: " +  botToTrain.bot_name + " failed", type: "danger"};
         $rootScope.trainings_under_this_process = 0;
-        $scope.loading_model = "";
       }
     );
   }
 
   $scope.unloadRasaModel = function (server_model) {
     let botToTrain = $scope.objectFindByKey($scope.botList, 'bot_id', $scope.bot.bot_id);
+    $scope.message = {text: "Unloading model: " + server_model, type: "info"};
     /* TODO: Replace with factory methods */
     $http.delete(appConfig.api_endpoint_v2 + "/rasa/model").then(
       function (response) {
-        $scope.message = "Unloaded model";
+        $scope.message = {text: "Unloaded the model", type: "success"};
         loadBotModels(botToTrain.bot_id);
       },
       function (err) {
-        $scope.message = "Unloading failed";
-        $scope.generateError = JSON.stringify(err);
+        $scope.message = {text: "Unloading the model failed", type: "danger"};
       }
     );
   }

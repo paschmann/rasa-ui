@@ -127,8 +127,9 @@ router.get('/rasa/version', rasa_router.getRasaNluVersion);
 router.post('/rasa/model/train', rasa_router.trainRasaNlu);
 router.put('/rasa/model', rasa_router.loadRasaModel);
 router.delete('/rasa/model', rasa_router.unloadRasaModel);
-//common middleware for parse
-router.post('/rasa/model/parse', rasa_router.parseRequest);
+router.post('/rasa/model/parse', rasa_router.modelParseRequest);
+router.post('/rasa/webhooks/rest/webhook', rasa_router.conversationParseRequest);
+router.post('/rasa/restart', rasa_router.restartRasaCoreConversation);
 
 //authentication js
 router.post('/auth', auth.authenticateUser);

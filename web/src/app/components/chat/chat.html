@@ -5,28 +5,41 @@
   <div class="animated fadeIn">
     <div class="row">
       <div class="col-sm-12">
-        <form ng-submit="executeTestRequest()">
+        <form ng-submit="executeCoreRequest()">
           <div class="card">
             <div class="card-block">
               <div class="form-group row">
-                <div class="col-sm-12">
-                  <json-formatter json="test_text_response" open="3"></json-formatter>
+                <div class="col-sm-12 wrapper" id="container">
+                  <div id="chat">
+                      <div class="msg_history" id="message_history">
+                        <div ng-repeat="transaction in transactions" ng-if="transaction.text">
+                          <div ng-class=" transaction.source == 'server' ? 'incoming_msg' : 'outgoing_msg' ">
+                            <div ng-class=" transaction.source == 'server' ? 'received_msg' : 'sent_msg' ">
+                              <div ng-class=" transaction.source == 'server' ? 'received_withd_msg' : '' ">
+                                <p>{{ transaction.text }}</p>
+                              </div>
+                              <div ng-class=" transaction.source == 'server' ? 'received_withd_msg' : '' ">
+                                <span class="time_date" ng-class=" transaction.source != 'server' ? 'sent' : '' "> {{ transaction.transaction_date | date: 'MM/dd/yyyy h:mm:ss a' }}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                 </div>
               </div>
-              <div class="form-group row">
-                <div class="col-sm-12" style="height: 100%">
-                  <div class="input-group">
-                    <input ng-model="test_text" type="text" class="form-control" id="test_text" required>
-                    <span class="input-group-btn">
-                      <button class="btn btn btn-primary" ng-click="executeTestRequest()"><i
-                          class="icon-paper-plane"></i></button>
-                    </span>
-
+              <div class="col-sm-12"></div>
+                <div class="type_msg">
+                  <div class="input_msg_write">
+                    <input type="text" class="write_msg" ng-model="test_text" placeholder="Type a message" />
+                    <button class="msg_btn reset" id="msg_send_btn" type="button" ng-click="resetConversation()"><i class="icon-refresh"
+                      aria-hidden="true"></i></button>
+                    <button class="msg_btn send" id="msg_send_btn" type="submit"><i class="icon-paper-plane"
+                        aria-hidden="true"></i></button>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
         </form>
       </div>
 
