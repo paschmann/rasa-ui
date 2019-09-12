@@ -5,7 +5,7 @@ function createResponse(req, res, next) {
   logger.winston.info('responses.createResponse');
   db.run('insert into responses (response_text, action_id, response_type)' + 'values (?,?,?)', [req.body.response_text, req.body.action_id, req.body.response_type], function(err) {
     if (err) {
-      logger.winston.info("Error inserting a new record");
+      logger.winston.error("Error inserting a new record");
     } else {
       res.status(200).json({ status: 'success', message: 'Inserted' });
     }
@@ -14,10 +14,9 @@ function createResponse(req, res, next) {
 
 function updateResponse(req, res, next) {
   logger.winston.info('responses.updateResponse');
-  console.log(req.body);
   db.run('update responses set response_text = ?, response_type = ? where response_id = ?', [req.body.response_text, req.body.response_type, req.body.response_id], function(err) {
     if (err) {
-      logger.winston.info("Error updating the record");
+      logger.winston.error("Error updating the record");
     } else {
       res.status(200).json({ status: 'success', message: 'Updated' });
     }
@@ -28,7 +27,7 @@ function deleteResponse(req, res, next) {
   logger.winston.info('responses.removeResponse');
   db.run('delete from responses where response_id = ?', req.query.response_id, function(err) {
     if (err) {
-      logger.winston.info("Error removing the record");
+      logger.winston.error("Error removing the record");
     } else {
       res.status(200).json({ status: 'success', message: 'Removed' });
     }

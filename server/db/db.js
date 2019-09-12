@@ -3,7 +3,7 @@ const logger = require('../util/logger');
 
 let db = new sqlite3.Database("server/data/db.sqlite3", (err) => { 
   if (err) { 
-    logger.winston.info('Error when connecting to the Database.', err) 
+    logger.winston.error('Error when connecting to the Database.', err) 
   } else { 
     logger.winston.info('Database connected!');
     checkDBSchema();
@@ -23,11 +23,11 @@ function checkDBSchema() {
         if (rows.length > 0) {
           current_version = rows[0].version;
         }
-        logger.winston.info("Schema version v" + current_version + " DOES NOT match package.json schema version v" + global.db_schema);
+        logger.winston.warn("Schema version v" + current_version + " DOES NOT match package.json schema version v" + global.db_schema);
         if (global.db_autoupdate == "true") {
           createDBSchema();
         } else {
-          logger.winston.info("Please upgrade your schema");
+          logger.winston.error("Please upgrade your schema");
         }
       }
     }
@@ -61,13 +61,13 @@ function createDBSchema() {
 
     db.run("CREATE TABLE  version(version)", function(error) { setDBSchemaVersion(error); });
   } catch (err) {
-    console.log(err); 
+    logger.winston.error(err);
   }
 }
 
 function sqlOutput(error, table_name) {
   if (!error) {
-    logger.winston.info("Table: " + table_name + " created");
+    logger.winston.error("Table: " + table_name + " created");
   }
 }
 

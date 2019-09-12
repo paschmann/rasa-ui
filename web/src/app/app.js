@@ -26,7 +26,7 @@ var app = angular
 
 angular
   .module("app")
-  .controller("appCtrl", function ($rootScope, $scope, $route, $routeParams, $location, $timeout, $http, $sessionStorage, $cookies, appConfig, Auth, Settings, Rasa_Status, $interval) {
+  .controller("appCtrl", function ($rootScope, $scope, $route, $routeParams, $location, $timeout, $http, $sessionStorage, $cookies, appConfig, Auth, Settings, Rasa_Status, $interval, Rasa_Version) {
     $scope.$route = $route;
     $scope.$location = $location;
     $scope.$routeParams = $routeParams;
@@ -94,6 +94,10 @@ angular
       Rasa_Status.get(function (statusdata) {
         $rootScope.config = statusdata.toJSON();
         $rootScope.config.isonline = 1;
+
+        Rasa_Version.get(function (version_data) {
+          $rootScope.config.version_data = version_data.toJSON();
+        });
       }, function (error) {
         $rootScope.config.isonline = 0;
       });

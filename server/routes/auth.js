@@ -14,12 +14,12 @@ function authenticateUser(req, res, next) {
     try {
       token = jwt.sign(tokenData, global.jwtsecret);
     } catch (err) {
-      console.log(err);
+      logger.winston.error(err);
     };
     // return the information including token as JSON
     res.json({ username: 'admin', token: token });
   } else {
-    logger.winston.info('Information didnt match or not provided.');
+    logger.winston.error('Information didnt match or not provided.');
     return res.status(401).send({
       success: false,
       message: 'Username and password didnt match.'});
@@ -43,13 +43,13 @@ function authenticateClient(req, res, next) {
       try {
         const token = jwt.sign(tokenData, global.jwtsecret);
       } catch (err) {
-        console.log(err);
+        logger.winston.error(err);
       };
       // return the information including token as JSON
       res.status(200).json({ username: req.body.username, token: token });
     })
     .catch(function(err) {
-      logger.winston.info('Client Authentication error: ' + err);
+      logger.winston.error('Client Authentication error: ' + err);
       return res.status(401).send({
         success: false,
         message: 'Client Authentication failed.'});

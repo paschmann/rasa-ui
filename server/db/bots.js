@@ -5,7 +5,7 @@ function getAllBots(req, res, next) {
   logger.winston.info('Bot.getAllBots');
   db.all('select * from bots order by bot_id desc', function(err, data) {
     if (err) {
-      logger.winston.info(err);
+      logger.winston.error(err);
     } else {
       res.status(200).json(data);
     }
@@ -16,7 +16,7 @@ function getSingleBot(req, res, next) {
   logger.winston.info('Bot.getSingleBot');
   db.get('select * from bots where bot_id = ?', req.params.bot_id, function(err, data) {
     if (err) {
-      logger.winston.info(err);
+      logger.winston.error(err);
     } else {
       res.status(200).json(data);
     }
@@ -27,7 +27,7 @@ function createBot(req, res, next) {
   logger.winston.info('Bot.createBot');
   db.run('insert into bots(bot_name, bot_config, output_folder)' + 'values (?,?,?)', [req.body.bot_name, req.body.bot_config, req.body.output_folder], function(err) {
     if (err) {
-      logger.winston.info("Error inserting a new record");
+      logger.winston.error("Error inserting a new record");
     } else {
       res.status(200).json({ status: 'success', message: 'Inserted' });
     }
@@ -38,7 +38,7 @@ function updateBot(req, res, next) {
   logger.winston.info('Bot.updateBot');
   db.run('update bots set bot_name = ?, output_folder = ?, bot_config = ? where bot_id = ?', [req.body.bot_name, req.body.output_folder, req.body.bot_config, req.body.bot_id], function(err) {
     if (err) {
-      logger.winston.info("Error updating the record");
+      logger.winston.error("Error updating the record");
     } else {
       res.status(200).json({ status: 'success', message: 'Updated' });
     }
@@ -49,7 +49,7 @@ function removeBot(req, res) {
   logger.winston.info('Bot.updateBot');
   db.run('delete from bots where bot_id = ?', req.params.bot_id, function(err) {
     if (err) {
-      logger.winston.info("Error removing the record");
+      logger.winston.error("Error removing the record");
     } else {
       res.status(200).json({ status: 'success', message: 'Removed' });
     }

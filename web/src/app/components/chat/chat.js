@@ -1,10 +1,9 @@
 angular.module('app').controller('ChatController', ChatController);
 
 function ChatController($scope, $rootScope, $interval, $http, Rasa_Version, Settings, Rasa_Status, appConfig, Rasa_Parse, $timeout, Conversations, Bot, Rasa_Story) {
-  $scope.test_text = "Hello";
+  $scope.test_text = "";
   $scope.test_text_response = {};
   $scope.transactions = [];
-  $rootScope.config = {}; //Initilize in case server is not online at startup
   $scope.selected_conversation = {};
   $scope.conversationsList = [];
   $scope.bot = {};
@@ -80,7 +79,6 @@ function ChatController($scope, $rootScope, $interval, $http, Rasa_Version, Sett
   $scope.executeCoreRequest = function () {
     let reqMessage = {};
     reqMessage = { text: $scope.test_text, sender: "user", conversation_id: $scope.selected_conversation.conversation_id };
-    //addTransaction($scope.test_text, "user");
     //TODO: We should use a factory method for this
     if ($scope.test_text) {
       //make a httpcall

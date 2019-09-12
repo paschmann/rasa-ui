@@ -28,7 +28,7 @@ function logRequest(req, type, data) {
     
     db.run('insert into nlu_log (ip_address, query, event_type, event_data)' + 'values (?,?,?,?)', [obj.ip_address, obj.query, obj.event_type, obj.event_data], function(err) {
       if (err) {
-        logger.winston.info("Error inserting a new record");
+        logger.winston.error("Error inserting a new record");
       }
     });
   } catch (err) {
@@ -39,7 +39,7 @@ function logRequest(req, type, data) {
 function getLogs(req, res, next) {
   db.all('select * from nlu_log where event_type = ? order by timestamp desc', req.params.query, function(err, data) {
     if (err) {
-      logger.winston.info(err);
+      logger.winston.error(err);
     } else {
       res.status(200).json(data);
     }
@@ -49,7 +49,7 @@ function getLogs(req, res, next) {
 function getRequestUsageTotal(req, res, next) {
   db.get("select count(*) from nlu_log where event_type = 'parse'", req.params.query, function(err, data) {
     if (err) {
-      logger.winston.info(err);
+      logger.winston.error(err);
     } else {
       res.status(200).json({total_request_usage: data['count(*)']});
     }
@@ -59,7 +59,7 @@ function getRequestUsageTotal(req, res, next) {
 function getTotalLogEntries(req, res, next) {
   db.get("select count(*) from nlu_log", req.params.query, function(err, data) {
     if (err) {
-      logger.winston.info(err);
+      logger.winston.error(err);
     } else {
       res.status(200).json({total_log_entries: data['count(*)']});
     }
@@ -69,7 +69,7 @@ function getTotalLogEntries(req, res, next) {
 function getIntentUsageByDay(req, res, next) {
   db.all("select strftime('%m/%d', timestamp) as day, count(*) as cnt from nlu_log group by strftime('%m/%d', timestamp)", req.params.query, function(err, data) {
     if (err) {
-      logger.winston.info(err);
+      logger.winston.error(err);
     } else {
       res.status(200).json(data);
     }

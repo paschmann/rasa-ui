@@ -20,8 +20,8 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Rasa NLU</td>
-                    <td>{{ rasa_version }}</td>
+                    <td>Rasa</td>
+                    <td>{{ config.version_data.version }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -33,7 +33,7 @@
             <strong>Raw Config</strong>
           </div>
           <div class="card-block">
-            <json-formatter json="config" open="0"></json-formatter>
+            <json-formatter json="config" open="3"></json-formatter>
           </div>
         </div>
       </div>

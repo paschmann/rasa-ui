@@ -74,10 +74,10 @@ function checkRasa() {
         logger.winston.info('--> Connected');
       }
       if (error !== null) {
-        logger.winston.info('--> Unable to connect to Rasa Server: ' + error);
+        logger.winston.error('--> Unable to connect to Rasa Server: ' + error);
       }
     } catch (err) {
-      logger.winston.info('Rasa Connection Error: ' + err);
+      logger.winston.error('Rasa Connection Error: ' + err);
     }
   });
 }

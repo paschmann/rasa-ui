@@ -7,7 +7,7 @@ function getSingleSetting(req, res, next) {
 
   db.get('select * from settings where setting_name = ?', req.params.bot_id, function(err, data) {
     if (err) {
-      logger.winston.info(err);
+      logger.winston.error(err);
     } else {
       res.status(200).json(data);
     }
@@ -16,11 +16,14 @@ function getSingleSetting(req, res, next) {
 
 function getSettings(req, res, next) {
   logger.winston.info('settings.getSettings');
-  db.all('select * from settings', function(err, data) {
+  db.all('select * from settings', function(err, settings) {
     if (err) {
-      logger.winston.info(err);
+      logger.winston.error(err);
     } else {
-      res.status(200).json(data);
+      db.all('select * from version', function(err, version) {
+        settings.push({ 'ui_version': version[0].version }); 
+        res.status(200).json(settings);
+      });
     }
   });
 }
@@ -29,7 +32,7 @@ function updateSetting(req, res, next) {
   logger.winston.info('settings.updateSetting');
   db.run('update settings set setting_value = ? where setting_name = ?', [req.body.setting_value, req.body.setting_name], function(err) {
     if (err) {
-      logger.winston.info("Error updating the record");
+      logger.winston.error("Error updating the record");
     } else {
       res.status(200).json({ status: 'success', message: 'Updated' });
     }
