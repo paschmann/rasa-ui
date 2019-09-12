@@ -49,13 +49,15 @@ Your web application should be available on http://localhost:5001
 
 ## Running from Docker
 
-If you already have a Rasa instance setup and running, you can run Rasa UI from docker hub using [paschmann/rasa-ui](https://hub.docker.com/r/paschmann/rasa-ui/).
+If you **already** have a Rasa instance setup and running, you can run Rasa UI from docker hub using [paschmann/rasa-ui](https://hub.docker.com/r/paschmann/rasa-ui/). You will need to edit the environment variables, specifically the **rasa_endpoint**.
 
-If you dont have a Rasa instance setup, you can run both Rasa and Rasa UI using the [docker-compose file](https://github.com/paschmann/rasa-ui/blob/master/docker-compose.yml), copy the file to a local directory and run the command below:
+If you **dont** have a Rasa instance setup, you can run both Rasa and Rasa UI using the [docker-compose file](https://github.com/paschmann/rasa-ui/blob/master/docker-compose.yml), copy the file to a local directory and run the command below:
 
 ```
 docker-compose up
 ```
+
+The docker-compose up command will use the docker-compose.yml file to create both the Rasa container and Rasa UI container, and create a networked connection between both.
 
 ## Upgrading
 
