@@ -13,8 +13,7 @@
             <div class="form-group row">
               <label for="select" class="col-sm-2 col-form-label">Bot</label>
               <div class="col-sm-10">
-                <select id="bot_name" ng-change="getData(bot.bot_id)" ng-options="bot.bot_id as bot.bot_name for bot in botList" ng-model="bot.bot_id"
-                  class="form-control">
+                <select id="bot_name" ng-change="getData(bot.bot_id)" ng-options="bot.bot_id as bot.bot_name for bot in botList" ng-model="bot.bot_id" class="form-control">
                   <option value="">Please select one</option>
                 </select>
               </div>
@@ -51,12 +50,11 @@
           <div class="card-header">
             <strong>Models</strong>
             <span class="float-right">
-                <a class="btn btn-ghost-primary" href="#/models/{{ bot.bot_id }}/add" data-toggle="tooltip"
-                  data-placement="top" title="Click to Add a Model" tooltip><i class="icon-plus"></i></a>
-              </span>
+              <a class="btn btn-ghost-primary" href="#/models/{{ bot.bot_id }}/add" data-toggle="tooltip" data-placement="top" title="Click to Add a Model" tooltip><i class="icon-plus"></i></a>
+            </span>
           </div>
           <div class="card-block">
-            <table class="table table-bordered"> 
+            <table class="table table-bordered">
               <thead>
                 <tr>
                   <th>Create Date/Time</th>
@@ -66,19 +64,15 @@
                 </tr>
               </thead>
               <tbody>
-                <tr dir-paginate="model in modelList | itemsPerPage: 10"
-                pagination-id="modelList">
+                <tr dir-paginate="model in modelList | itemsPerPage: 10" pagination-id="modelList">
                   <td>{{ model.timestamp }}</td>
-                  <td>File: {{ model.model_name }}<br>Local Path: {{ model.local_path }}<br>Rasa Server Path:
-                    {{ selectedBot.output_folder + "/" + model.server_path }}</td>
+                  <td>File: {{ model.model_name }}<br>Local Path: {{ model.local_path }}<br>Rasa Server Path: {{ model.server_path }}</td>
                   <td>{{ model.comment }}</td>
                   <td>
                     <button class="btn btn-outline-secondary" ng-click="loadRasaModel(model.server_path)">
                       <span class="icon-energy"></span>
                     </button>
-                    <button class="btn btn btn-outline-danger" confirm-click-title="Delete Model"
-                      confirm-click="Are you sure? This will delete local model."
-                      ng-click="deleteModel(model.model_id)">
+                    <button class="btn btn btn-outline-danger" confirm-click-title="Delete Model" confirm-click="Are you sure? This will delete local model." ng-click="deleteModel(model.model_id)">
                       <span class="icon-trash"></span>
                     </button>
                   </td>
@@ -86,8 +80,8 @@
               </tbody>
             </table>
             <div style="float:right">
-                <dir-pagination-controls pagination-id="modelList"></dir-pagination-controls>
-              </div>
+              <dir-pagination-controls pagination-id="modelList"></dir-pagination-controls>
+            </div>
           </div>
         </div>
       </div>

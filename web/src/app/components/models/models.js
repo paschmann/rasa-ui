@@ -33,6 +33,12 @@ function ModelController($scope, $rootScope, appConfig, Model, Bot, Rasa_Status,
 
   function loadBotModels(bot_id) {
     Model.query({ bot_id: bot_id }, function (data) {
+      data = $scope.cleanResponse(data);
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].local_path != "Manually added") {
+          data[i].server_path = $scope.selectedBot.output_folder + "/" + data[i].server_path
+        }
+      }
       $scope.modelList = data;
     });
     checkRasaStatus();
@@ -49,7 +55,7 @@ function ModelController($scope, $rootScope, appConfig, Model, Bot, Rasa_Status,
     let botToTrain = $scope.objectFindByKey($scope.botList, 'bot_id', $scope.bot.bot_id);
     $scope.message = {text: "Loading model: " + server_model, type: "info"};
     /* TODO: Replace with factory methods */
-    $http.put(appConfig.api_endpoint_v2 + "/rasa/model", { "model_file": botToTrain.output_folder + "/" + server_model }).then(
+    $http.put(appConfig.api_endpoint_v2 + "/rasa/model", { "model_file": server_model }).then(
       function (response) {
         if (response.data.code && response.data.code == 400) {
           $scope.message = {text: "Error loading model: " +  JSON.stringify(response), type: "danger"};

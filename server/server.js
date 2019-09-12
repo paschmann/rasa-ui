@@ -5,6 +5,7 @@ global.loglevel = process.env.loglevel || process.env.npm_package_config_logleve
 global.admin_username = process.env.admin_username || process.env.npm_package_config_admin_username;
 global.admin_password = process.env.admin_password || process.env.npm_package_config_admin_password;
 global.db_schema = process.env.db_schema || process.env.npm_package_config_db_schema;
+global.db_autoupdate = process.env.db_autoupdate || process.env.npm_package_config_db_autoupdate;
 
 const express = require('express');
 const proxy = require('http-proxy-middleware');

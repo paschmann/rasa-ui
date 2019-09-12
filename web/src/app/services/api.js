@@ -39,6 +39,12 @@ app.factory('Actions', function ($resource, appConfig) {
   );
 });
 
+app.factory('Conversations', function ($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + '/conversations/:bot_id', {
+    bot_id: '@id'
+  });
+});
+
 
 app.factory('BotActions', function ($resource, appConfig) {
   return $resource(appConfig.api_endpoint_v2 + '/bots/:bot_id/actions', {

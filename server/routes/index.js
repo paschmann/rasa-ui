@@ -14,6 +14,7 @@ const responses = require('../db/responses');
 const models = require('../db/models');
 const stories = require('../db/stories');
 const actions = require('../db/actions');
+const conversations = require('../db/conversations');
 
 const rasa_router = require('./rasa_router');
 const auth = require('./auth');
@@ -119,17 +120,24 @@ router.get('/avgUserResponseTimesLast30Days', logs.getAvgUserResponseTimesLast30
 router.get('/activeUserCountLast12Months', logs.getActiveUserCountLast12Months);
 router.get('/activeUserCountLast30Days', logs.getActiveUserCountLast30Days);
 
+//Conversations
+router.get('/conversations/:bot_id', conversations.getConversations);
+router.post('/conversations', conversations.createConversation);
+router.delete('/conversations', conversations.removeConversation);
+
 //rasa api's
 router.get('/rasa/status', rasa_router.getRasaNluStatus);
 router.get('/rasa/url', rasa_router.getRasaNluEndpoint);
-//router.get('/rasa/config', rasa_router.getRasaNluConfig);
 router.get('/rasa/version', rasa_router.getRasaNluVersion);
 router.post('/rasa/model/train', rasa_router.trainRasaNlu);
 router.put('/rasa/model', rasa_router.loadRasaModel);
 router.delete('/rasa/model', rasa_router.unloadRasaModel);
 router.post('/rasa/model/parse', rasa_router.modelParseRequest);
-router.post('/rasa/webhooks/rest/webhook', rasa_router.conversationParseRequest);
+router.post('/rasa/conversations/messages', rasa_router.conversationParseRequest);
 router.post('/rasa/restart', rasa_router.restartRasaCoreConversation);
+router.get('/rasa/story', rasa_router.getConversationStory);
+
+
 
 //authentication js
 router.post('/auth', auth.authenticateUser);

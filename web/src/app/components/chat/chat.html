@@ -5,42 +5,134 @@
   <div class="animated fadeIn">
     <div class="row">
       <div class="col-sm-12">
+        <div class="alert alert-{{message.type}}" role="alert" ng-show="message.text !== ''">
+          {{message.text}}
+        </div>
+        <div class="card">
+          <div class="card-block">
+            <div class="form-group row">
+              <label for="select" class="col-sm-2 col-form-label">Bot</label>
+              <div class="col-sm-10">
+                <select id="bot_name" ng-change="loadBotConversations(bot.bot_id)" ng-options="bot.bot_id as bot.bot_name for bot in botList" ng-model="bot.bot_id" class="form-control">
+                  <option value="">Please select one</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="row" ng-show="bot.bot_id">
+
+      <div class="col-sm-4">
+        <div class="card" style="max-height: 910px;">
+          <div class="card-block">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <button type="button" class="btn btn-info active float-right" ng-class=" bot.bot_id ? '' : 'disabled' " ng-click="addBotConversation()"><i class="icon-add"></i>&nbsp;Add Conversation</button><br />&nbsp;
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="wrapper">
+                  <div class="list-group">
+                    <div class="list-group-item" ng-repeat="conversation in conversationsList" ng-class=" conversation.conversation_id == selected_conversation.conversation_id ? 'active' : '' ">
+                      <span ng-click="loadConversation(conversation)">
+                        {{ conversation.timestamp | date: 'MM/dd/yyyy h:mm:ss a' }}</a>
+                      </span>
+                      <span class="float-right">
+                        <button class="btn btn-outline-danger" confirm-click-title="Delete Conversation" confirm-click="Are you sure? This will delete the Conversation." ng-click="deleteConversation(conversation.conversation_id)">
+                          <span class="icon-trash"></span>
+                        </button>
+                        <button type="button" class="btn btn-outline-info" confirm-click-title="Reset Conversation" confirm-click="Are you sure? This will reset the conversation tracker." ng-click="resetConversation(conversation.conversation_id)">
+                          <span class="icon-refresh"></span>
+                        </button>
+                      </span>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-5">
         <form ng-submit="executeCoreRequest()">
           <div class="card">
             <div class="card-block">
               <div class="form-group row">
                 <div class="col-sm-12 wrapper" id="container">
                   <div id="chat">
-                      <div class="msg_history" id="message_history">
-                        <div ng-repeat="transaction in transactions" ng-if="transaction.text">
-                          <div ng-class=" transaction.source == 'server' ? 'incoming_msg' : 'outgoing_msg' ">
-                            <div ng-class=" transaction.source == 'server' ? 'received_msg' : 'sent_msg' ">
-                              <div ng-class=" transaction.source == 'server' ? 'received_withd_msg' : '' ">
-                                <p>{{ transaction.text }}</p>
-                              </div>
-                              <div ng-class=" transaction.source == 'server' ? 'received_withd_msg' : '' ">
-                                <span class="time_date" ng-class=" transaction.source != 'server' ? 'sent' : '' "> {{ transaction.transaction_date | date: 'MM/dd/yyyy h:mm:ss a' }}</span>
-                              </div>
+                    <div class="msg_history" id="message_history">
+                      <div ng-repeat="transaction in transactions" ng-if="transaction.text" ng-click="loadConversationDetail(transaction)">
+                        <div ng-class=" transaction.source == 'server' ? 'incoming_msg' : 'outgoing_msg' ">
+                          <div ng-class=" transaction.source == 'server' ? 'received_msg' : 'sent_msg' ">
+                            <div ng-class=" transaction.source == 'server' ? 'received_withd_msg' : '' ">
+                              <p>{{ transaction.text }}</p>
+                            </div>
+                            <div ng-class=" transaction.source == 'server' ? 'received_withd_msg' : '' ">
+                              <span class="time_date" ng-class=" transaction.source != 'server' ? 'sent' : '' ">
+                                {{ transaction.timestamp * 1000 | date: 'MM/dd/yyyy h:mm:ss a' }}</span>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                </div>
-              </div>
-              <div class="col-sm-12"></div>
-                <div class="type_msg">
-                  <div class="input_msg_write">
-                    <input type="text" class="write_msg" ng-model="test_text" placeholder="Type a message" />
-                    <button class="msg_btn reset" id="msg_send_btn" type="button" ng-click="resetConversation()"><i class="icon-refresh"
-                      aria-hidden="true"></i></button>
-                    <button class="msg_btn send" id="msg_send_btn" type="submit"><i class="icon-paper-plane"
-                        aria-hidden="true"></i></button>
                   </div>
                 </div>
               </div>
+              <div class="col-sm-12">
+
+                <div class="form-group row">
+
+                  <div class="input-group">
+                    <input class="form-control" ng-model="test_text" placeholder="Type a message">
+                    <span class="input-group-append">
+                      <button class="btn btn-primary" id="msg_send_btn" type="submit" ng-class=" selected_conversation.conversation_id ? '' : 'disabled' "><i class="icon-paper-plane" aria-hidden="true"></i></button>
+                    </span>
+                  </div>
+                </div>
+
+              </div>
             </div>
+          </div>
         </form>
+      </div>
+
+
+
+      <div class="col-sm-3">
+        <tabset class="tab-container" id="tabs">
+          <ul class="nav nav-tabs">
+            <li class="nav-item active"><a class="nav-link active" data-target="#story" data-toggle="tab"> Story</a>
+            </li>
+            <li class="nav-item"><a class="nav-link" data-target="#message" data-toggle="tab">Message</a></li>
+          </ul>
+          <div class="tab-content">
+            <tab class="tab-pane active" id="story">
+              <textarea class="datainput form-control" ng-model="selected_conversation.story">{{ selected_conversation.story }}</textarea>
+            </tab>
+            <tab class="tab-pane" id="message">
+              <json-formatter json="selected_message" open="3"></json-formatter>
+            </tab>
+            <tab class="tab-pane" id="nlu_data">
+              <textarea class="datainput" ng-model="raw_data.nlu" ng-change="stringifyData()">{{ raw_data.nlu }}</textarea>
+            </tab>
+            <tab class="tab-pane" id="stories">
+              <textarea class="datainput" ng-model="raw_data.stories" ng-change="stringifyData()">{{ raw_data.stories }}</textarea>
+            </tab>
+            <tab class="tab-pane" id="domain">
+              <textarea class="datainput" ng-model="raw_data.domain" ng-change="stringifyData()">{{ raw_data.domain }}</textarea>
+            </tab>
+          </div>
+        </tabset>
       </div>
 
     </div>

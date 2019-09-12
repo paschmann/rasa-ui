@@ -18,3 +18,7 @@ app.factory('Rasa_Config', function($resource, appConfig) {
 app.factory('Rasa_Version', function($resource, appConfig) {
   return $resource(appConfig.api_endpoint_v2 + '/rasa/version');
 });
+
+app.factory('Rasa_Story', function($resource, appConfig) {
+  return $resource(appConfig.api_endpoint_v2 + '/rasa/story');
+});

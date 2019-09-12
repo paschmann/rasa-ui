@@ -35,11 +35,13 @@
     "jwtsecret": "mysecret",
     "admin_username": "admin",
     "admin_password": "admin",
-    "db_schema": "3.0.0"
+    "db_schema": "3.0.1",
+    "db_autoupdate": "true"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/server.js"
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js --ignore 'server/data/'"
   },
   "author": "Paul Aschmann",
   "url": "https://github.com/paschmann/rasa-ui",

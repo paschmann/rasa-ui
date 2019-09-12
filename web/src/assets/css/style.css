@@ -1,3 +1,7 @@
+.list-group-item.active {
+  background-color: #CCC;
+  border-color: #20a8d8;
+}
 
 .app-header.navbar .navbar-brand {
   background-image: url("../img/logo.png");
@@ -214,15 +218,14 @@ tags-input .tags .tag-item .remove-button {
   top: 8px;
   width: 33px;
   padding-top:5px;
-  padding-right:8px;
 }
 
 .send {
-  margin-right: 50px;
+  padding-right:8px;
 }
 
 .reset {
-  padding-right:8px;
+  bottom: 0px;
 }
 
 .msg_history {
