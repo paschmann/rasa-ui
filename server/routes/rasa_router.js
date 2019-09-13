@@ -251,14 +251,20 @@ function conversationParseRequest(req, res, next) {
               server_response: body,
               query: req.body.q
             });
-          //Update conversation table with updated conversation response from rasa ...
-          db.run('update conversations set conversation = ? where conversation_id = ?', [body, req.body.conversation_id], function(err) {
-            if (err) {
-              logger.winston.error("Error updating the record");
-            } else {
-              sendOutput(200, res, body);
-            }
-          });
+            //Maybe we should run this before the DB update and save both to the DB at the same time and then return both responses to the client
+            request({ method: 'POST', uri: global.rasa_endpoint + "/conversations/" + req.body.conversation_id + "/predict", body: JSON.stringify(req.body) },
+            function (err, response, predict_body) {
+              //console.log(body);
+              //Update conversation table with updated conversation response from rasa ...
+              db.run('update conversations set conversation = ? where conversation_id = ?', [predict_body, req.body.conversation_id], function(err) {
+                if (err) {
+                  logger.winston.error("Error updating the record");
+                } else {
+                  
+                  sendOutput(200, res, predict_body);
+                }
+              });
+            });
         } catch (err) {
           logger.winston.error(err);
           sendOutput(500, res, '{"error" : ' + err + "}");
@@ -290,6 +296,7 @@ function restartRasaCoreConversation(req, res, next) {
         if (err) {
           logger.winston.error("Error updating the record");
         } else {
+          //Predict the next action?
           sendOutput(200, res, body);
         }
       });

@@ -50,8 +50,8 @@ function ChatController($scope, $rootScope, $interval, $http, Rasa_Version, Sett
       $scope.selected_conversation = selected_conversation;
       if (selected_conversation.conversation) {
         var conversation = JSON.parse(selected_conversation.conversation);
-        if (conversation && conversation.events) {
-          $scope.transactions = conversation.events;
+        if (conversation && conversation.tracker.events) {
+          $scope.transactions = conversation.tracker.events;
         }
         $scope.loadConversationStory(selected_conversation.conversation_id);
       }
@@ -85,9 +85,9 @@ function ChatController($scope, $rootScope, $interval, $http, Rasa_Version, Sett
       $scope.test_text = "";
       $('.write_msg').focus();
       $http.post(appConfig.api_endpoint_v2 + '/rasa/conversations/messages', JSON.stringify(reqMessage)).then(function (response) {
-        if (response.data && response.data.events) {
+        if (response.data && response.data.tracker) {
           $scope.selected_conversation.conversation = JSON.stringify(response.data);
-          $scope.transactions = response.data.events;
+          $scope.transactions = response.data.tracker.events;
           $scope.loadConversationStory($scope.selected_conversation.conversation_id);
           scrollToMessage();
         }
