@@ -71,18 +71,45 @@
                 <div class="col-sm-12 wrapper" id="container">
                   <div id="chat">
                     <div class="msg_history" id="message_history">
-                      <div ng-repeat="transaction in transactions" ng-if="transaction.text" ng-click="loadConversationDetail(transaction)">
-                        <div ng-class=" transaction.source == 'server' ? 'incoming_msg' : 'outgoing_msg' ">
-                          <div ng-class=" transaction.source == 'server' ? 'received_msg' : 'sent_msg' ">
-                            <div ng-class=" transaction.source == 'server' ? 'received_withd_msg' : '' ">
+                      <div ng-repeat="transaction in transactions" ng-click="loadConversationDetail(transaction)">
+
+                        <!-- Sent Message -->
+                        <div ng-if="transaction.event == 'user'" class="outgoing_msg">
+                          <div class="sent_msg">
+                            <div class="">
                               <p>{{ transaction.text }}</p>
                             </div>
-                            <div ng-class=" transaction.source == 'server' ? 'received_withd_msg' : '' ">
-                              <span class="time_date" ng-class=" transaction.source != 'server' ? 'sent' : '' ">
-                                {{ transaction.timestamp * 1000 | date: 'MM/dd/yyyy h:mm:ss a' }}</span>
+                            <div class="">
+                              <span class="time_date sent">{{ transaction.parse_data.intent.name }}</span>
+                            </div>
+                            <div class="">
+                              <span class="time_date sent">{{ transaction.timestamp * 1000 | chatDate }}</span>
                             </div>
                           </div>
                         </div>
+
+                        <!-- Received Message -->
+                        <div ng-if="transaction.event == 'bot'" class="incoming_msg">
+                          <div class="received_msg">
+                            <div class="received_withd_msg">
+                              <p>{{ transaction.text }}</p>
+                            </div>
+                            <div class="received_withd_msg">
+                              <span class="time_date">
+                                {{ transaction.timestamp * 1000 | chatDate }}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Action -->
+                        <div class="action_msg">
+                          <div>
+                            <div>
+                              <p>{{ transaction.name }}</p>
+                            </div>
+                          </div>
+                        </div>
+
                       </div>
                     </div>
                   </div>
@@ -95,7 +122,7 @@
                   <div class="input-group">
                     <input class="form-control" ng-model="test_text" placeholder="Type a message">
                     <span class="input-group-append">
-                      <button class="btn btn-primary" id="msg_send_btn" type="submit" ng-class=" selected_conversation.conversation_id ? '' : 'disabled' "><i class="icon-paper-plane" aria-hidden="true"></i></button>
+                      <button class="btn btn-primary" id="msg_send_btn" type="submit" ng-disabled=" selected_message.event != 'user'"><i class="icon-paper-plane" aria-hidden="true"></i></button>
                     </span>
                   </div>
                 </div>
@@ -111,25 +138,32 @@
       <div class="col-sm-3">
         <tabset class="tab-container" id="tabs">
           <ul class="nav nav-tabs">
-            <li class="nav-item active"><a class="nav-link active" data-target="#story" data-toggle="tab"> Story</a>
-            </li>
+            <li class="nav-item active"><a class="nav-link active" data-target="#story" data-toggle="tab"> Story</a></li>
             <li class="nav-item"><a class="nav-link" data-target="#message" data-toggle="tab">Message</a></li>
+            <li class="nav-item"><a class="nav-link" data-target="#conversation" data-toggle="tab">Conversation</a></li>
           </ul>
           <div class="tab-content">
             <tab class="tab-pane active" id="story">
               <textarea class="datainput form-control" ng-model="selected_conversation.story">{{ selected_conversation.story }}</textarea>
             </tab>
             <tab class="tab-pane" id="message">
-              <json-formatter json="selected_message" open="3"></json-formatter>
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <button type="button" class="btn btn-info active float-right" ng-disabled=" selected_message.event != 'user'" ng-click="resendMessage()"><i class="icon-plus"></i>&nbsp;Resend</button><br />&nbsp;
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <json-formatter json="selected_message" open="3"></json-formatter>
+                </div>
+              </div>
             </tab>
-            <tab class="tab-pane" id="nlu_data">
-              <textarea class="datainput" ng-model="raw_data.nlu" ng-change="stringifyData()">{{ raw_data.nlu }}</textarea>
-            </tab>
-            <tab class="tab-pane" id="stories">
-              <textarea class="datainput" ng-model="raw_data.stories" ng-change="stringifyData()">{{ raw_data.stories }}</textarea>
-            </tab>
-            <tab class="tab-pane" id="domain">
-              <textarea class="datainput" ng-model="raw_data.domain" ng-change="stringifyData()">{{ raw_data.domain }}</textarea>
+            <tab class="tab-pane" id="conversation">
+              <div class="col-sm-12">
+                <json-formatter json="selected_conversation" open="3"></json-formatter>
+              </div>
             </tab>
           </div>
         </tabset>

@@ -38,7 +38,18 @@ angular.module('app')
         return $sce.trustAsHtml(ss)
       };
     }
-  );
+  ).filter('chatDate', function($filter) {    
+    var angularDateFilter = $filter('date');
+    return function(theDate) {
+      const today = new Date();
+      const filterDate = new Date(theDate);
+      if (filterDate.setHours(0,0,0,0) == today.setHours(0,0,0,0)) {
+        return angularDateFilter(theDate, 'HH:mm:ss');
+      } else {
+        return angularDateFilter(theDate, 'MM/dd/yyyy h:mm:ss a');
+      }
+    }
+  });;
 
 function confirmClickDirective() {
   let i = 0;

@@ -136,7 +136,7 @@ router.post('/rasa/model/parse', rasa_router.modelParseRequest);
 router.post('/rasa/conversations/messages', rasa_router.conversationParseRequest);
 router.post('/rasa/restart', rasa_router.restartRasaCoreConversation);
 router.get('/rasa/story', rasa_router.getConversationStory);
-
+router.post('/rasa/conversations/execute', rasa_router.runActionInConversation);
 
 
 //authentication js

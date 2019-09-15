@@ -17,7 +17,8 @@ module.exports = {
   loadRasaModel: loadRasaModel,
   conversationParseRequest: conversationParseRequest,
   restartRasaCoreConversation: restartRasaCoreConversation,
-  getConversationStory: getConversationStory
+  getConversationStory: getConversationStory,
+  runActionInConversation: runActionInConversation
 };
 
 /* -------------------------------- Util Functions ----------------------------------------------------------------------------------------------------- */
@@ -207,8 +208,7 @@ function modelParseRequest(req, res, next) {
 function getConversationStory(req, res, next) {
   try {
     logger.winston.info("Routing to Model Rasa Story Request -> " + global.rasa_endpoint + "/conversations/" + req.query.conversation_id + "/story");
-    request({ method: 'GET', uri: global.rasa_endpoint + "/conversations/" + req.query.conversation_id + "/story" },
-      function (err, response, body) {
+    request({ method: 'GET', uri: global.rasa_endpoint + "/conversations/" + req.query.conversation_id + "/story" }, function (err, response, body) {
         try {
           logger.winston.verbose('Rasa Response: ' + body.substring(1, 200) + ' ... ');
           logs.logRequest(req, 'parse',
@@ -216,16 +216,8 @@ function getConversationStory(req, res, next) {
               server_response: body,
               query: req.body.q
             });
-          //Update conversation table with updated conversation response from rasa ...
-          //TODO: Add story?
-          db.run('update conversations set story = ? where conversation_id = ?', [body, req.query.conversation_id], function(err) {
-            if (err) {
-              logger.winston.info("Error updating the record");
-            } else {
-              //http_code, res, body, headers, type
-              sendOutput(200, res, body, { 'Content-Type': 'plain/text' }, '');
-            }
-          });
+          updateStory(req.query.conversation_id, body);
+          sendOutput(200, res, body, { 'Content-Type': 'plain/text' }, '');
         } catch (err) {
           logger.winston.error(err);
           sendOutput(500, res, '{"error" : ' + err + "}");
@@ -236,8 +228,27 @@ function getConversationStory(req, res, next) {
   }
 }
 
+function updateStory(conversation_id, story) {
+  db.run('update conversations set story = ? where conversation_id = ?', [story, conversation_id], function (err) {
+    if (err) {
+      logger.winston.info("Error updating the record");
+    } else {
+      logger.winston.info("Updated story");
+    }
+  });
+}
 
 
+function updateConversation(conversation_id, conversation) {
+  //Update the DB with the latest results
+  db.run('update conversations set conversation = ? where conversation_id = ?', [conversation, conversation_id], function (err) {
+    if (err) {
+      logger.winston.error("Error updating the record");
+    } else {
+      logger.winston.info("Updated conversation");
+    }
+  });
+}
 
 function conversationParseRequest(req, res, next) {
   try {
@@ -251,20 +262,11 @@ function conversationParseRequest(req, res, next) {
               server_response: body,
               query: req.body.q
             });
-            //Maybe we should run this before the DB update and save both to the DB at the same time and then return both responses to the client
-            request({ method: 'POST', uri: global.rasa_endpoint + "/conversations/" + req.body.conversation_id + "/predict", body: JSON.stringify(req.body) },
-            function (err, response, predict_body) {
-              //console.log(body);
-              //Update conversation table with updated conversation response from rasa ...
-              db.run('update conversations set conversation = ? where conversation_id = ?', [predict_body, req.body.conversation_id], function(err) {
-                if (err) {
-                  logger.winston.error("Error updating the record");
-                } else {
-                  
-                  sendOutput(200, res, predict_body);
-                }
-              });
-            });
+
+          request({ method: 'POST', uri: global.rasa_endpoint + "/conversations/" + req.body.conversation_id + "/predict", body: JSON.stringify(req.body) }, function (err, response, predict_body) {
+            updateConversation(req.body.conversation_id, predict_body);
+            sendOutput(200, res, predict_body);
+          });
         } catch (err) {
           logger.winston.error(err);
           sendOutput(500, res, '{"error" : ' + err + "}");
@@ -275,31 +277,40 @@ function conversationParseRequest(req, res, next) {
   }
 }
 
+function runActionInConversation(req, res, next) {
+  logger.winston.info("Rasa Core Run Action Request -> " + global.rasa_endpoint + "/conversations/" + req.body.conversation_id + "/execute");
+  try {
+    request({ method: "POST", uri: global.rasa_endpoint + "/conversations/" + req.body.conversation_id + "/execute", body: JSON.stringify(req.body.action) }, function (err, response, execute_body) {
+      if (err) {
+        logger.winston.error(err);
+        sendOutput(500, res, '{"error" : "Exception caught !!"}');
+        return;
+      }
+      logger.winston.verbose("Run Action Response" + JSON.stringify(execute_body));
+      updateConversation(req.body.conversation_id, execute_body);
+      sendOutput(200, res, execute_body);
+    });
+  } catch (err) {
+    logger.winston.error(err);
+    sendOutput(500, res, '{"error" : "Exception caught !!"}');
+    return;
+  }
+}
+
 
 function restartRasaCoreConversation(req, res, next) {
   logger.winston.info("Rasa Core Restart Request -> " + global.rasa_endpoint + "/conversations/" + req.body.conversation_id + "/tracker/events");
   try {
     var body = JSON.stringify({ "event": "restart" });
-    request({
-      method: "POST",
-      uri: global.rasa_endpoint + "/conversations/" + req.body.conversation_id + "/tracker/events",
-      body: body
-    }, function (err, response, body) {
+    request({ method: "POST", uri: global.rasa_endpoint + "/conversations/" + req.body.conversation_id + "/tracker/events", body: body }, function (err, response, body) {
       if (err) {
         logger.winston.error(err);
         sendOutput(500, res, '{"error" : "Exception caught !!"}');
         return;
       }
       logger.winston.verbose("Restart Response" + JSON.stringify(body));
-      //Update conversation table with updated conversation response from rasa ...
-      db.run('update conversations set conversation = ?, story = ? where conversation_id = ?', [body, '', req.body.conversation_id], function(err) {
-        if (err) {
-          logger.winston.error("Error updating the record");
-        } else {
-          //Predict the next action?
-          sendOutput(200, res, body);
-        }
-      });
+      updateConversation(req.body.conversation_id, body);
+      sendOutput(200, res, body);
     });
   } catch (err) {
     logger.winston.error(err);

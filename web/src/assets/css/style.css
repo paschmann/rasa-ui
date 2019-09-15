@@ -1,6 +1,7 @@
 .list-group-item.active {
-  background-color: #CCC;
+  background-color: #EEE;
   border-color: #20a8d8;
+  color: #151b1e
 }
 
 .app-header.navbar .navbar-brand {
@@ -157,6 +158,7 @@ tags-input .tags .tag-item .remove-button {
 }
 
 .time_date {
+  text-align: left;
   color: #747474;
   display: block;
   font-size: 12px;
@@ -247,4 +249,9 @@ tags-input .tags .tag-item .remove-button {
 .wrapper {
   max-height: 800px;
   overflow-y: scroll;
+}
+
+.action_msg {
+  text-align: center;
+  color: lightgray;
 }

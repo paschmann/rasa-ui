@@ -30,6 +30,11 @@ function ChatController($scope, $rootScope, $interval, $http, Rasa_Version, Sett
     });
   }
 
+  $scope.resendMessage = function() {
+    $scope.test_text = $scope.selected_message.text;
+    $scope.executeCoreRequest();
+  }
+
   $scope.addBotConversation = function () {
     this.formData.bot_id = $scope.selectedBot.bot_id;
     Conversations.save(this.formData).$promise.then(function () {
@@ -50,7 +55,7 @@ function ChatController($scope, $rootScope, $interval, $http, Rasa_Version, Sett
       $scope.selected_conversation = selected_conversation;
       if (selected_conversation.conversation) {
         var conversation = JSON.parse(selected_conversation.conversation);
-        if (conversation && conversation.tracker.events) {
+        if (conversation && conversation.tracker && conversation.tracker.events) {
           $scope.transactions = conversation.tracker.events;
         }
         $scope.loadConversationStory(selected_conversation.conversation_id);
@@ -86,8 +91,9 @@ function ChatController($scope, $rootScope, $interval, $http, Rasa_Version, Sett
       $('.write_msg').focus();
       $http.post(appConfig.api_endpoint_v2 + '/rasa/conversations/messages', JSON.stringify(reqMessage)).then(function (response) {
         if (response.data && response.data.tracker) {
-          $scope.selected_conversation.conversation = JSON.stringify(response.data);
+          $scope.selected_conversation.conversation = response.data;
           $scope.transactions = response.data.tracker.events;
+          checkForActions(response.data);
           $scope.loadConversationStory($scope.selected_conversation.conversation_id);
           scrollToMessage();
         }
@@ -98,6 +104,24 @@ function ChatController($scope, $rootScope, $interval, $http, Rasa_Version, Sett
       );
     }
   };
+
+  function checkForActions(messages_response) {
+    if (messages_response.confidence && messages_response.confidence >= 1) {
+      var body = {'conversation_id': $scope.selected_conversation.conversation_id, action : {'name': messages_response.scores[0].action }};
+      $http.post(appConfig.api_endpoint_v2 + '/rasa/conversations/execute', JSON.stringify(body)).then(function (response) {
+        if (response.data && response.data.tracker) {
+          $scope.selected_conversation.conversation = response.data;
+          $scope.transactions = response.data.tracker.events;
+          $scope.loadConversationStory($scope.selected_conversation.conversation_id);
+          scrollToMessage();
+        }
+      },
+        function (errorResponse) {
+          //
+        }
+      );
+    }
+  }
 
   function clearScreen() {
     $scope.transactions = [];
