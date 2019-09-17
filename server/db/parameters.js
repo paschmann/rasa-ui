@@ -1,31 +1,6 @@
 const db = require('./db');
 const logger = require('../util/logger');
 
-/*
-function getSingleParameter(req, res, next) {
-  logger.winston.info('parameters.getSingleParameter');
-  const parameterID = req.params.parameter_id;
-
-  const data = db.get('parameters')
-    .filter({ parameter_id: parameterID })
-    .value()
-  res.status(200).json(data);
-}
-
-function removeParameter(req, res, next) {
-  const parameterID = req.params.parameter_id;
-
-  db.get('parameters')
-    .remove({ parameter_id: parameterID })
-    .write()
-    
-    res.status(200).json({
-        status: 'success',
-        message: 'Removed'
-    });
-}
-*/
-
 function getExpressionParametersQuery(req, res, next) {
   logger.winston.info('parameters.getExpressionParametersQuery');
   const expressionIds = req.query.expression_ids;
@@ -96,12 +71,10 @@ function removeExpressionParameter(req, res, next) {
 }
 
 module.exports = {
-  //getSingleParameter,
   getExpressionParameters,
   getIntentParameters,
   createExpressionParameter,
   removeExpressionParameter,
-  //removeParameter,
   updateParameter,
   getExpressionParametersQuery
 };
