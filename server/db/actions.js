@@ -1,14 +1,6 @@
 const db = require('./db');
 const logger = require('../util/logger');
 
-/*
-if (!String.prototype.splice) { //Needed?
-  String.prototype.splice = function(start, delCount, newSubStr) {
-      return this.slice(0, start) + newSubStr + this.slice(start + Math.abs(delCount));
-  };
-}
-*/
-
 function getBotActionsAndResponses(req, res, next) {
   logger.winston.info('actions.getBotActionsAndResponses');
   db.all('select * from actions where bot_id = ? order by action_id desc', req.query.bot_id, function(err, actions) {
@@ -47,7 +39,7 @@ function createAction(req, res, next) {
 
 
 function removeAction(req, res, next) {
-  logger.winston.info('actions..removeAction');
+  logger.winston.info('actions.removeAction');
   db.run('delete from actions where action_id = ?', req.query.action_id, function(err) {
     if (err) {
       logger.winston.error("Error removing the record");

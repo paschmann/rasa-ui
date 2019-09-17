@@ -81,3 +81,5 @@ function checkRasa() {
     }
   });
 }
+
+module.exports = server

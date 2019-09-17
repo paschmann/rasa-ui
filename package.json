@@ -1,6 +1,6 @@
 {
   "name": "RasaUI",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Rasa UI is a web application built on top of, and for, Rasa.",
   "dependencies": {
     "angular": "1.7.2",
@@ -39,7 +39,7 @@
     "db_autoupdate": "true"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:server": "mocha server/test/test.js --delay true --exit",
     "start": "node server/server.js",
     "dev": "nodemon server/server.js --ignore 'server/data/'"
   },
@@ -50,5 +50,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/paschmann/rasa-ui.git"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^6.2.0"
   }
 }

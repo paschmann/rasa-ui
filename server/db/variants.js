@@ -36,17 +36,6 @@ function getSynonymsVariants(req, res, next) {
   });
 }
 
-function getAllSynonymVariants(req, res, next) {
-  logger.winston.info('variants.getAllSynonymVariants');
-  db.all("select synonym_reference as value, '[' || string_agg('\'' || synonym_value || '\'', ', ') || ']' as synonyms from entity_synonym_variants group by 1", function(err, data) {
-    if (err) {
-      logger.winston.error(err);
-    } else {
-      res.status(200).json(data);
-    }
-  });
-}
-
 function createVariant(req, res, next) {
   logger.winston.info('variants.createVariant');
   db.run('insert into synonym_variants (synonym_id, synonym_value)' + 'values (?, ?)', [req.body.synonym_id, req.body.synonym_value], function(err) {
@@ -92,5 +81,5 @@ module.exports = {
   createVariant,
   removeVariant,
   removeSynonymVariants,
-  getSynonymsVariants,
-  getAllSynonymVariants};
+  getSynonymsVariants
+};

@@ -91,7 +91,7 @@ function ChatController($scope, $rootScope, $interval, $http, Rasa_Version, Sett
       $('.write_msg').focus();
       $http.post(appConfig.api_endpoint_v2 + '/rasa/conversations/messages', JSON.stringify(reqMessage)).then(function (response) {
         if (response.data && response.data.tracker) {
-          $scope.selected_conversation.conversation = response.data;
+          $scope.selected_conversation.conversation = JSON.stringify(response.data);
           $scope.transactions = response.data.tracker.events;
           checkForActions(response.data);
           $scope.loadConversationStory($scope.selected_conversation.conversation_id);
@@ -110,7 +110,7 @@ function ChatController($scope, $rootScope, $interval, $http, Rasa_Version, Sett
       var body = {'conversation_id': $scope.selected_conversation.conversation_id, action : {'name': messages_response.scores[0].action }};
       $http.post(appConfig.api_endpoint_v2 + '/rasa/conversations/execute', JSON.stringify(body)).then(function (response) {
         if (response.data && response.data.tracker) {
-          $scope.selected_conversation.conversation = response.data;
+          $scope.selected_conversation.conversation = JSON.stringify(response.data);
           $scope.transactions = response.data.tracker.events;
           $scope.loadConversationStory($scope.selected_conversation.conversation_id);
           scrollToMessage();
