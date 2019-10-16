@@ -89,12 +89,12 @@
                         </div>
 
                         <!-- Received Message -->
-                        <div ng-if="transaction.event == 'bot'" class="incoming_msg">
+                        <div ng-if=" transaction.event == 'bot' " class="incoming_msg">
                           <div class="received_msg">
                             <div class="received_withd_msg">
                               <p>{{ transaction.text }}</p>
                             </div>
-                            <div class="received_withd_msg">
+                            <div class="received_withd_msg" ng-if=" transaction.timestamp ">
                               <span class="time_date">
                                 {{ transaction.timestamp * 1000 | chatDate }}</span>
                             </div>
