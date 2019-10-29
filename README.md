@@ -35,7 +35,7 @@ Rasa UI can run on your Rasa instance, or on a separate machine. Technically Ras
 
 ```
 git clone https://github.com/paschmann/rasa-ui.git
-cd rasaui
+cd rasa-ui
 npm install
 ```
 
