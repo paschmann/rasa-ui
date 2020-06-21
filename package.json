@@ -30,7 +30,7 @@
     "winston": "^3.2.1"
   },
   "config": {
-    "rasa_endpoint": "http://10.211.55.8:5005",
+    "rasa_endpoint": "http://localhost:5005",
     "loglevel": "info",
     "jwtsecret": "mysecret",
     "admin_username": "admin",
