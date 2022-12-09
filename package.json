@@ -15,7 +15,7 @@
     "bootstrap": "latest",
     "chart.js": "^2.7.3",
     "cors": "^2.8.5",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "http-proxy-middleware": "^0.19.1",
     "jquery": "3.4.0",
     "jsonformatter": "^0.6.0",
