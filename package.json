@@ -19,7 +19,7 @@
     "http-proxy-middleware": "^0.19.1",
     "jquery": "3.4.0",
     "jsonformatter": "^0.6.0",
-    "jsonwebtoken": "^8.4.0",
+    "jsonwebtoken": "^9.0.0",
     "ng-file-upload": "^12.2.13",
     "ng-tags-input": "^3.2.0",
     "ngstorage": "^0.3.11",
