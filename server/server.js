@@ -55,10 +55,10 @@ if (app.get('env') === 'development') {
   });
 }
 
-const listener = server.listen(5001);
-
-checkRasaUI();
-checkRasa();
+const listener = server.listen(5001, () => {
+  checkRasaUI();
+  checkRasa();
+});
 
 function checkRasaUI() {
   logger.winston.info(

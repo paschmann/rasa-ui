@@ -2,9 +2,11 @@
 npm-debug.log
 node_modules
 server/data/db.sqlite3
+CLAUDE.md
 
 # editors
 .idea
 *.swp
 *.iml
-
+.github/
+.claude/

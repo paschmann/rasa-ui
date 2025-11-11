@@ -1,18 +1,26 @@
 angular.module('app').controller('TrainingController', TrainingController);
 
-function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Bot, BotRegex, ExpressionParameters, IntentExpressions, BotEntities, BotActions, BotSynonyms, SynonymsVariants, appConfig, Stories, Response, Actions) {
+function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, Bot, BotRegex, ExpressionParameters, IntentExpressions, BotEntities, BotActions, BotSynonyms, SynonymsVariants, appConfig, Stories, Response, Actions, ErrorHandler) {
   $scope.generateError = '';
   $scope.message = '';
   $scope.comment = '';
+  $scope.isLoadingBots = true;
 
   $scope.raw_data = {}; //this is the formatted data for each compoennt
   $scope.bot_data = {}; //Save all bot details in a data object so we can reuse it in various places
 
   $scope.bool_force_model_update = false;
-  
-  Bot.query(function (data) {
-    $scope.botList = data;
-  });
+
+  Bot.query(
+    function (data) {
+      $scope.botList = data;
+      $scope.isLoadingBots = false;
+    },
+    function (error) {
+      $scope.isLoadingBots = false;
+      ErrorHandler.handleError(error, 'loading bots');
+    }
+  );
 
   $scope.updateData = function() {
     if ($scope.bot_data.stories != "") {
@@ -35,15 +43,19 @@ function TrainingController($scope, $rootScope, $interval, $http, Rasa_Status, B
   $scope.trainUsingRawData = function () {
     let botToTrain = $scope.objectFindByKey($scope.botList, 'bot_id', $scope.bot.bot_id);
     $rootScope.trainings_under_this_process = 1;
+    $scope.generateError = '';
+    $scope.message = '';
+
     //TODO: Replace with API Factory method
     $http.post(appConfig.api_endpoint_v2 + "/rasa/model/train?bot_name=" + botToTrain.bot_name + "&bot_id=" + botToTrain.bot_id + "&comment=" + $scope.comment, $scope.raw_data_stringified).then(
       function (response) {
         $scope.message = "Training for " + botToTrain.bot_name + " completed successfully, open models to view and load the bots models";
         $rootScope.trainings_under_this_process = 0;
       },
-      function (err) {
-        $scope.generateError = JSON.stringify(err);
+      function (error) {
         $rootScope.trainings_under_this_process = 0;
+        $scope.generateError = ErrorHandler.formatErrorMessage(error, 'training model');
+        ErrorHandler.handleError(error, 'training model');
       }
     );
   }

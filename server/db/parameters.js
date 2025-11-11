@@ -4,15 +4,22 @@ const logger = require('../util/logger');
 function getExpressionParametersQuery(req, res, next) {
   logger.winston.info('parameters.getExpressionParametersQuery');
   const expressionIds = req.query.expression_ids;
-  var array_expressionIds = expressionIds.split(","); //Very hacky due to the node-sqlite not supporting IN from an array
-  db.all("select * from expression_parameters inner join entities on expression_parameters.entity_id = entities.entity_id where expression_id in (" + array_expressionIds + ")", function(err, data) {
+  var array_expressionIds = expressionIds.split(",").map(id => id.trim()).filter(id => /^\d+$/.test(id));
+
+  if (array_expressionIds.length === 0) {
+    return res.status(400).json({ status: 'error', message: 'Invalid expression_ids provided' });
+  }
+
+  // Create parameterized placeholders for safe SQL query
+  var placeholders = array_expressionIds.map(() => '?').join(',');
+  db.all("select * from expression_parameters inner join entities on expression_parameters.entity_id = entities.entity_id where expression_id in (" + placeholders + ")", array_expressionIds, function(err, data) {
     if (err) {
-      logger.winston.error(err);
+      logger.winston.error('Error in getExpressionParametersQuery:', err);
     } else {
       res.status(200).json(data);
     }
   });
-  
+
 }
 
 function getIntentParameters(req, res, next) {

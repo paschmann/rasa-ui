@@ -26,10 +26,17 @@ function getIntentExpressions(req, res, next) {
 
 function getIntentExpressionQuery(req, res, next) {
   logger.winston.info('expression.getIntentExpressionQuery');
-  var array_intentIds = req.query.intent_ids.split(","); //Very hacky due to the node-sqlite not supporting IN from an array
-  db.all('select * from expressions where intent_id in (' + array_intentIds + ')  order by expression_id desc', function(err, data) {
+  var array_intentIds = req.query.intent_ids.split(",").map(id => id.trim()).filter(id => /^\d+$/.test(id));
+
+  if (array_intentIds.length === 0) {
+    return res.status(400).json({ status: 'error', message: 'Invalid intent_ids provided' });
+  }
+
+  // Create parameterized placeholders for safe SQL query
+  var placeholders = array_intentIds.map(() => '?').join(',');
+  db.all('select * from expressions where intent_id in (' + placeholders + ')  order by expression_id desc', array_intentIds, function(err, data) {
     if (err) {
-      logger.winston.error(err);
+      logger.winston.error('Error in getIntentExpressionQuery:', err);
     } else {
       res.status(200).json(data);
     }

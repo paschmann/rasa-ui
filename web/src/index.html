@@ -76,6 +76,7 @@
   <script src="app/shared/aside/aside.js"></script>
 
   <!-- Services -->
+  <script src="app/services/error-handler.js"></script>
   <script src="app/services/api.js"></script>
   <script src="app/services/rasa_api.js"></script>
   <script src="app/services/log.js"></script>
@@ -94,6 +95,15 @@
       <span aria-hidden="true">&times;</span>
     </button>
     <span class="alert-text"><strong>{{ alert_text }}</strong></span>
+  </div>
+
+  <!-- Global Error Message Display -->
+  <div ng-if="errorMessage && errorMessage.visible" class="alert alert-{{errorMessage.type || 'danger'}} alert-dismissible fade show alert-div" role="alert" style="position: fixed; top: 60px; right: 20px; z-index: 9999; max-width: 500px;">
+    <button type="button" class="close" ng-click="errorMessage.visible = false" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <strong><i class="fa fa-exclamation-triangle"></i> Error</strong>
+    <div>{{ errorMessage.text }}</div>
   </div>
 
   <div ng-if="authenticated">

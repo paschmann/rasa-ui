@@ -26,10 +26,17 @@ function getSynonymVariants(req, res, next) {
 function getSynonymsVariants(req, res, next) {
   logger.winston.info('variants.getSynonymVariants');
   const synonymsId = req.params.synonyms_id;
-  var array_synonymIds = synonymsId.split(","); //Very hacky due to the node-sqlite not supporting IN from an array
-  db.all('select * from synonym_variants where synonym_id in (' + array_synonymIds + ')', function(err, data) {
+  var array_synonymIds = synonymsId.split(",").map(id => id.trim()).filter(id => /^\d+$/.test(id));
+
+  if (array_synonymIds.length === 0) {
+    return res.status(400).json({ status: 'error', message: 'Invalid synonyms_id provided' });
+  }
+
+  // Create parameterized placeholders for safe SQL query
+  var placeholders = array_synonymIds.map(() => '?').join(',');
+  db.all('select * from synonym_variants where synonym_id in (' + placeholders + ')', array_synonymIds, function(err, data) {
     if (err) {
-      logger.winston.error(err);
+      logger.winston.error('Error in getSynonymsVariants:', err);
     } else {
       res.status(200).json(data);
     }

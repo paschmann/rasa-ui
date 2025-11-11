@@ -19,6 +19,17 @@ const conversations = require('../db/conversations');
 const rasa_router = require('./rasa_router');
 const auth = require('./auth');
 const logs = require('../db/logs');
+const { verifyToken } = require('../middleware/auth');
+
+// Public routes (no authentication required)
+// These must be defined BEFORE the authentication middleware
+
+//authentication endpoints - public
+router.post('/auth', auth.authenticateUser);
+router.post('/authclient', auth.authenticateClient);
+
+// Apply authentication middleware to all routes below this point
+router.use(verifyToken);
 
 //routes model
 router.get('/models/:bot_id', models.getBotModels);
@@ -139,10 +150,5 @@ router.post('/rasa/conversations/messages', rasa_router.conversationParseRequest
 router.post('/rasa/restart', rasa_router.restartRasaCoreConversation);
 router.get('/rasa/story', rasa_router.getConversationStory);
 router.post('/rasa/conversations/execute', rasa_router.runActionInConversation);
-
-
-//authentication js
-router.post('/auth', auth.authenticateUser);
-router.post('/authclient', auth.authenticateClient);
 
 module.exports = router;

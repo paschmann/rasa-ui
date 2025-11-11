@@ -1,28 +1,63 @@
 const jwt = require('jsonwebtoken');
 const db = require('../db/db');
 const logger = require('../util/logger');
+const { verifyPassword, isHashedPassword } = require('../util/password');
 
-function authenticateUser(req, res, next) {
+async function authenticateUser(req, res, next) {
   //authenticate user
   logger.winston.info('Authenticate User');
-  if (req.body.username === global.admin_username && req.body.password === global.admin_password) {
-    //create token and send it back
-    const tokenData = { username: 'admin', name: 'Portal Administrator' };
-    // if user is found and password is right
-    // create a token]
-    var token = ""
-    try {
-      token = jwt.sign(tokenData, global.jwtsecret);
-    } catch (err) {
-      logger.winston.error(err);
-    };
-    // return the information including token as JSON
-    res.json({ username: 'admin', token: token });
-  } else {
-    logger.winston.error('Information didnt match or not provided.');
-    return res.status(401).send({
+
+  try {
+    // Check username first
+    if (req.body.username !== global.admin_username) {
+      logger.winston.warn('Authentication failed: Invalid username');
+      return res.status(401).send({
+        success: false,
+        message: 'Username and password didnt match.'
+      });
+    }
+
+    // Verify password (supports both plain text for backward compatibility and hashed)
+    let isPasswordValid = false;
+
+    if (isHashedPassword(global.admin_password)) {
+      // Password is hashed - use bcrypt to verify
+      isPasswordValid = await verifyPassword(req.body.password, global.admin_password);
+    } else {
+      // Legacy plain text password comparison (for backward compatibility)
+      logger.winston.warn('WARNING: Admin password is not hashed. Please hash it using the provided script.');
+      isPasswordValid = (req.body.password === global.admin_password);
+    }
+
+    if (isPasswordValid) {
+      //create token and send it back
+      const tokenData = { username: 'admin', name: 'Portal Administrator' };
+      // if user is found and password is right, create a token with expiration
+      let token = "";
+      try {
+        token = jwt.sign(tokenData, global.jwtsecret, { expiresIn: '24h' });
+      } catch (err) {
+        logger.winston.error('Error creating JWT token:', err);
+        return res.status(500).send({
+          success: false,
+          message: 'Error creating authentication token.'
+        });
+      }
+      // return the information including token as JSON
+      res.json({ username: 'admin', token: token });
+    } else {
+      logger.winston.warn('Authentication failed: Invalid password');
+      return res.status(401).send({
+        success: false,
+        message: 'Username and password didnt match.'
+      });
+    }
+  } catch (error) {
+    logger.winston.error('Authentication error:', error);
+    return res.status(500).send({
       success: false,
-      message: 'Username and password didnt match.'});
+      message: 'Authentication error occurred.'
+    });
   }
 }
 
@@ -39,17 +74,22 @@ function authenticateClient(req, res, next) {
         username: req.body.username,
         name: req.body.user_fullname};
       // if user is found and password is right
-      // create a token
+      // create a token with expiration
+      let token = "";
       try {
-        const token = jwt.sign(tokenData, global.jwtsecret);
+        token = jwt.sign(tokenData, global.jwtsecret, { expiresIn: '24h' });
       } catch (err) {
-        logger.winston.error(err);
-      };
+        logger.winston.error('Error creating JWT token:', err);
+        return res.status(500).send({
+          success: false,
+          message: 'Error creating authentication token.'
+        });
+      }
       // return the information including token as JSON
       res.status(200).json({ username: req.body.username, token: token });
     })
     .catch(function(err) {
-      logger.winston.error('Client Authentication error: ' + err);
+      logger.winston.error('Client Authentication error:', err);
       return res.status(401).send({
         success: false,
         message: 'Client Authentication failed.'});

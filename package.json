@@ -11,6 +11,7 @@
     "angular-route": "1.7.2",
     "angular-sanitize": "1.7.2",
     "angular-utils-pagination": "^0.11.1",
+    "bcrypt": "^6.0.0",
     "body-parser": "^1.18.3",
     "bootstrap": "latest",
     "chart.js": "^2.7.3",
@@ -23,10 +24,11 @@
     "ng-file-upload": "^12.2.13",
     "ng-tags-input": "^3.2.0",
     "ngstorage": "^0.3.11",
+    "nodemon": "^3.1.10",
     "popper.js": "^1.15.0",
     "request": "^2.88.0",
     "simple-line-icons": "^2.4.1",
-    "sqlite3": "^4.1.0",
+    "sqlite3": "^5.1.7",
     "winston": "^3.2.1"
   },
   "config": {
