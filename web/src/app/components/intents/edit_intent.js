@@ -1,57 +1,103 @@
 angular.module('app').controller('EditIntentController', EditIntentController);
 
-function EditIntentController($rootScope, $scope, Bot, BotEntities, Intent, Expressions, Expression, Parameter, Parameters, Entities, Response, Response) {
-  Bot.get({ bot_id: $scope.$routeParams.bot_id }, function (data) {
-    $scope.bot = data;
-  });
+function EditIntentController($rootScope, $scope, Bot, BotEntities, Intent, Expressions, Expression, Parameter, Parameters, Entities, Response, Response, ErrorHandler) {
+  $scope.isLoadingBot = true;
+  $scope.isLoadingEntities = true;
+  $scope.isLoadingIntent = true;
+  $scope.isLoadingExpressions = true;
+  $scope.isSaving = false;
+  $scope.isDeleting = false;
 
-  BotEntities.query({ bot_id: $scope.$routeParams.bot_id }, function (data) {
-    $scope.entityList = data;
-  });
+  Bot.get({ bot_id: $scope.$routeParams.bot_id },
+    function (data) {
+      $scope.bot = data;
+      $scope.isLoadingBot = false;
+    },
+    function (error) {
+      $scope.isLoadingBot = false;
+      ErrorHandler.handleError(error, 'loading bot');
+    }
+  );
 
-  Intent.get({ intent_id: $scope.$routeParams.intent_id }, function (data) {
-    $scope.intent = data;
-  });
+  BotEntities.query({ bot_id: $scope.$routeParams.bot_id },
+    function (data) {
+      $scope.entityList = data;
+      $scope.isLoadingEntities = false;
+    },
+    function (error) {
+      $scope.isLoadingEntities = false;
+      ErrorHandler.handleError(error, 'loading entities');
+    }
+  );
+
+  Intent.get({ intent_id: $scope.$routeParams.intent_id },
+    function (data) {
+      $scope.intent = data;
+      $scope.isLoadingIntent = false;
+    },
+    function (error) {
+      $scope.isLoadingIntent = false;
+      ErrorHandler.handleError(error, 'loading intent');
+    }
+  );
 
   loadExpressions();
 
   function loadExpressions() {
-    Expressions.query({ intent_id: $scope.$routeParams.intent_id }, function (data) {
-      $scope.expressionList = data;
-      loadExpressionParameters();
-    });
+    $scope.isLoadingExpressions = true;
+    Expressions.query({ intent_id: $scope.$routeParams.intent_id },
+      function (data) {
+        $scope.expressionList = data;
+        $scope.isLoadingExpressions = false;
+        loadExpressionParameters();
+      },
+      function (error) {
+        $scope.isLoadingExpressions = false;
+        ErrorHandler.handleError(error, 'loading expressions');
+      }
+    );
   }
 
   function loadExpressionParameters() {
-    Parameters.query({ intent_id: $scope.$routeParams.intent_id }, function (
-      data
-    ) {
-      $scope.parameterList = data;
-      $scope.parameterFilterList = data;
-      //Loop through each parameter and highlight the words it is for
-      for (let z = 0; z <= $scope.expressionList.length; z++) {
-        if ($scope.expressionList[z] !== undefined) {
-          let text = $scope.expressionList[z].expression_text;
-          for (let i = 0; i <= data.length - 1; i++) {
-            if (
-              $scope.expressionList[z].expression_id === data[i].expression_id
-            ) {
-              text = highlight(text, data[i].parameter_value);
+    Parameters.query({ intent_id: $scope.$routeParams.intent_id },
+      function (data) {
+        $scope.parameterList = data;
+        $scope.parameterFilterList = data;
+        //Loop through each parameter and highlight the words it is for
+        for (let z = 0; z <= $scope.expressionList.length; z++) {
+          if ($scope.expressionList[z] !== undefined) {
+            let text = $scope.expressionList[z].expression_text;
+            for (let i = 0; i <= data.length - 1; i++) {
+              if (
+                $scope.expressionList[z].expression_id === data[i].expression_id
+              ) {
+                text = highlight(text, data[i].parameter_value);
+              }
             }
+            $scope.expressionList[z].expression_highlighted_text = text;
           }
-          $scope.expressionList[z].expression_highlighted_text = text;
         }
+      },
+      function (error) {
+        ErrorHandler.handleError(error, 'loading parameters');
       }
-    });
+    );
   }
 
   $scope.updateIntentNameAndWebhook = function (intent) {
+    $scope.isSaving = true;
+
     Intent.update({ intent_id: intent.intent_id }, intent).$promise.then(
       function () {
+        $scope.isSaving = false;
         $rootScope.$broadcast(
           'setAlertText',
-          'Intent information updated Sucessfully!!'
+          'Intent information updated successfully!'
         );
+      },
+      function (error) {
+        $scope.isSaving = false;
+        ErrorHandler.handleError(error, 'updating intent');
       }
     );
   };
@@ -61,9 +107,16 @@ function EditIntentController($rootScope, $scope, Bot, BotEntities, Intent, Expr
   };
 
   $scope.deleteIntent = function () {
+    $scope.isDeleting = true;
+
     Intent.remove({ intent_id: $scope.$routeParams.intent_id }).$promise.then(
       function () {
+        $scope.isDeleting = false;
         $scope.go('/bot/' + $scope.$routeParams.bot_id);
+      },
+      function (error) {
+        $scope.isDeleting = false;
+        ErrorHandler.handleError(error, 'deleting intent');
       }
     );
   };
@@ -103,9 +156,15 @@ function EditIntentController($rootScope, $scope, Bot, BotEntities, Intent, Expr
       newObj.parameter_end = newObj.parameter_start + selectedText.length;
       newObj.parameter_value = selectedText;
       newObj.intent_id = Number($scope.$routeParams.intent_id);
-      Parameter.save(newObj).$promise.then(function () {
-        loadExpressions();
-      });
+
+      Parameter.save(newObj).$promise.then(
+        function () {
+          loadExpressions();
+        },
+        function (error) {
+          ErrorHandler.handleError(error, 'adding parameter');
+        }
+      );
 
       //Make sure parameter table is open
       $('#table_expression_' + expression_id).addClass('show');
@@ -113,9 +172,14 @@ function EditIntentController($rootScope, $scope, Bot, BotEntities, Intent, Expr
   };
 
   $scope.deleteParameter = function (parameter_id) {
-    Parameter.remove({ parameter_id: parameter_id }).$promise.then(function () {
-      loadExpressions();
-    });
+    Parameter.remove({ parameter_id: parameter_id }).$promise.then(
+      function () {
+        loadExpressions();
+      },
+      function (error) {
+        ErrorHandler.handleError(error, 'deleting parameter');
+      }
+    );
   };
 
   $scope.addExpression = function () {
@@ -123,26 +187,39 @@ function EditIntentController($rootScope, $scope, Bot, BotEntities, Intent, Expr
     newObj.intent_id = $scope.$routeParams.intent_id;
     newObj.expression_text = this.expression_text;
 
-    Expression.save(newObj).$promise.then(function () {
-      $scope.expression_text = '';
-      loadExpressions();
-    });
+    Expression.save(newObj).$promise.then(
+      function () {
+        $scope.expression_text = '';
+        loadExpressions();
+      },
+      function (error) {
+        ErrorHandler.handleError(error, 'adding expression');
+      }
+    );
   };
 
   $scope.updateParameterEntity = function (param_id, entity_id) {
     Parameter.update(
       { parameter_id: param_id },
       { parameter_id: param_id, entity_id: entity_id }
-    ).$promise.then(function () {
-      //loadUniqueIntentEntities();
-      //loadExpressions();
-    });
+    ).$promise.then(
+      function () {
+        //loadUniqueIntentEntities();
+        //loadExpressions();
+      },
+      function (error) {
+        ErrorHandler.handleError(error, 'updating parameter entity');
+      }
+    );
   };
 
   $scope.deleteExpression = function (expression_id) {
     Expression.remove({ expression_id: expression_id }).$promise.then(
       function () {
         loadExpressions();
+      },
+      function (error) {
+        ErrorHandler.handleError(error, 'deleting expression');
       }
     );
   };

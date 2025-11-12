@@ -32,6 +32,14 @@ A fixed-position alert component that displays errors globally:
 
 **Currently Updated:**
 - ✅ `web/src/app/components/bots/add_bot.js` - Add bot error handling
+- ✅ `web/src/app/components/bots/edit_bot.js` - Edit bot error handling
+- ✅ `web/src/app/components/bots/bots.js` - Bot listing error handling
+- ✅ `web/src/app/components/intents/add_intent.js` - Add intent error handling
+- ✅ `web/src/app/components/intents/edit_intent.js` - Edit intent error handling
+- ✅ `web/src/app/components/entities/add_entity.js` - Add entity error handling
+- ✅ `web/src/app/components/entities/edit_entity.js` - Edit entity error handling
+- ✅ `web/src/app/components/models/models.js` - Model operations error handling
+- ✅ `web/src/app/components/responses/responses.js` - Response management error handling
 - ✅ `web/src/app/components/training/training.js` - Training error handling
 
 ## How to Add Error Handling to Other Controllers
@@ -125,15 +133,16 @@ Bot.query(
 
 ### High Priority (User-Facing Actions):
 1. ✅ `web/src/app/components/bots/add_bot.js` - DONE
-2. `web/src/app/components/bots/edit_bot.js` - Update bot
-3. `web/src/app/components/bots/bots.js` - Delete bot
-4. `web/src/app/components/intents/add_intent.js` - Add intent
-5. `web/src/app/components/intents/edit_intent.js` - Edit intent, add expressions
-6. `web/src/app/components/entities/entities.js` - Entity management
-7. ✅ `web/src/app/components/training/training.js` - PARTIALLY DONE
-8. `web/src/app/components/models/models.js` - Model operations
-9. `web/src/app/components/stories/stories.js` - Story management
-10. `web/src/app/components/responses/responses.js` - Response management
+2. ✅ `web/src/app/components/bots/edit_bot.js` - DONE
+3. ✅ `web/src/app/components/bots/bots.js` - DONE
+4. ✅ `web/src/app/components/intents/add_intent.js` - DONE
+5. ✅ `web/src/app/components/intents/edit_intent.js` - DONE
+6. ✅ `web/src/app/components/entities/add_entity.js` - DONE
+7. ✅ `web/src/app/components/entities/edit_entity.js` - DONE
+8. ✅ `web/src/app/components/training/training.js` - DONE
+9. ✅ `web/src/app/components/models/models.js` - DONE
+10. ✅ `web/src/app/components/responses/responses.js` - DONE
+11. `web/src/app/components/stories/stories.js` - Story management (remaining)
 
 ### Medium Priority:
 11. `web/src/app/components/regex/regex.js`
